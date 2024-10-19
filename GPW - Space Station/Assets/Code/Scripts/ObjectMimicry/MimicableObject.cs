@@ -7,7 +7,7 @@ namespace GPW.Tests.Mimicry
 {
     public class MimicableObject : MonoBehaviour
     {
-        [SerializeField] private Transform _mimicGFXPrefab;
-        public Transform MimicGFXPrefab => _mimicGFXPrefab;
+        [SerializeField] private Transform _graphicsParent;
+        public Transform GetGraphicsParent() => _graphicsParent;
     }
 }

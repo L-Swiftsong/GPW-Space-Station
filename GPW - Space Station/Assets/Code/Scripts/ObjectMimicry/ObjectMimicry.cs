@@ -10,6 +10,7 @@ namespace GPW.Tests.Mimicry
         [Header("Target Detection")]
         [SerializeField] private float _maxMimicryRadius;
         [SerializeField] private LayerMask _mimicableLayers;
+        private MimicableObject _selectedMimicTarget = null;
 
 
         [Header("Mimicry")]
@@ -23,8 +24,7 @@ namespace GPW.Tests.Mimicry
 
 
         [Header("Debug")]
-        private List<MimicableObject> _allMimicTargets;
-        private MimicableObject _selectedMimicTarget;
+        private List<MimicableObject> _allMimicTargets = new List<MimicableObject>();
 
 
         private void Update()
@@ -51,55 +51,66 @@ namespace GPW.Tests.Mimicry
                 return;
             }
 
-            if (TryGetMimicTarget(out MimicableObject mimicTarget))
+            if (DetermineMimicTarget())
             {
-                _selectedMimicTarget = mimicTarget;
-                PerformMimicry(mimicTarget);
+                PerformMimicry(_selectedMimicTarget.GetGraphicsParent());
             }
         }
 
         private bool CanMimic() => true;
-        private bool TryGetMimicTarget(out MimicableObject mimicTarget)
+        private bool DetermineMimicTarget()
         {
             List<MimicableObject> mimicTargets = new List<MimicableObject>();
+            _allMimicTargets.Clear();
             foreach (Collider potentialMimicTarget in Physics.OverlapSphere(transform.position, _maxMimicryRadius, _mimicableLayers))
             {
                 if (potentialMimicTarget.TryGetComponentThroughParents<MimicableObject>(out MimicableObject mimicableObject))
                 {
+                    _allMimicTargets.Add(mimicableObject);
+
+
+                    if (mimicableObject == _selectedMimicTarget)
+                    {
+                        continue;
+                    }
+                    
                     mimicTargets.Add(mimicableObject);
                 }
             }
 
-            _allMimicTargets = mimicTargets;
-
             if (mimicTargets.Count <= 0)
             {
-                mimicTarget = null;
+                _selectedMimicTarget = null;
                 return false;
             }
 
-
-            // Cache found targets for gizmos.
-            mimicTarget = mimicTargets[Random.Range(0, mimicTargets.Count)];
+            _selectedMimicTarget = mimicTargets[Random.Range(0, mimicTargets.Count)];
             return true;
         }
 
-        private void PerformMimicry(MimicableObject mimicTarget)
+
+        private void PerformMimicry(Transform mimickedGraphicsPrefab)
         {
-            // Hide our default gfx.
+            RemoveExistingMimicGraphics();
+            
+            // Disable our default graphics.
             _defaultGFXParent.gameObject.SetActive(false);
 
 
-            // Instantiate the mimicked object's gfx.
-            Transform mimickedGFX = Instantiate(mimicTarget.MimicGFXPrefab, _mimicryGFXParent, false);
+            // Instantiate the mimicked object's graphics.
+            Transform mimickedGraphics = Instantiate(mimickedGraphicsPrefab, _mimicryGFXParent, false);
         }
-        private void StopMimicry()
+        private void RemoveExistingMimicGraphics()
         {
-            // Hide the mimicked gfx.
+            // Remove the mimicked graphics.
             foreach (Transform child in _mimicryGFXParent)
             {
                 Destroy(child.gameObject);
             }
+        }
+        private void StopMimicry()
+        {
+            RemoveExistingMimicGraphics();
 
             // Show the default gfx.
             _defaultGFXParent.gameObject.SetActive(true);
@@ -115,7 +126,7 @@ namespace GPW.Tests.Mimicry
             foreach (MimicableObject mimicableObject in _allMimicTargets)
             {
                 Gizmos.color = mimicableObject == _selectedMimicTarget ? Color.green : Color.red;
-                Gizmos.DrawSphere(mimicableObject.transform.position, 0.2f);
+                Gizmos.DrawSphere(mimicableObject.transform.position, 0.3f);
             }
         }
     }
