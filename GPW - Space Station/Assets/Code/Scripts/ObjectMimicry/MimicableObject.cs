@@ -9,5 +9,17 @@ namespace GPW.Tests.Mimicry
     {
         [SerializeField] private Transform _graphicsParent;
         public Transform GetGraphicsParent() => _graphicsParent;
+
+        private Rigidbody _rigidbody;
+
+
+        private void Awake()
+        {
+            _rigidbody = GetComponent<Rigidbody>();
+        }
+
+
+        public bool HasRigidbody() => _rigidbody != null;
+        public RigidbodyInformation GetRigidbodyInformation() => RigidbodyInformation.CreateFromRigidbody(_rigidbody);
     }
 }

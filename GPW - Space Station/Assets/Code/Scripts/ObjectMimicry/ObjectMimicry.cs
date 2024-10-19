@@ -17,6 +17,10 @@ namespace GPW.Tests.Mimicry
         [SerializeField] private Transform _defaultGFXParent;
         [SerializeField] private Transform _mimicryGFXParent;
 
+        [Space(5)]
+        private Rigidbody _rigidbody;
+        private RigidbodyInformation _defaultRigidbodyInformation;
+
 
         [Header("Testing")]
         [SerializeField] private bool _attemptMimicry;
@@ -27,6 +31,11 @@ namespace GPW.Tests.Mimicry
         private List<MimicableObject> _allMimicTargets = new List<MimicableObject>();
 
 
+        private void Awake()
+        {
+            _rigidbody = GetComponent<Rigidbody>();
+            _defaultRigidbodyInformation = RigidbodyInformation.CreateFromRigidbody(_rigidbody);
+        }
         private void Update()
         {
             if (_attemptMimicry)
@@ -53,7 +62,7 @@ namespace GPW.Tests.Mimicry
 
             if (DetermineMimicTarget())
             {
-                PerformMimicry(_selectedMimicTarget.GetGraphicsParent());
+                PerformMimicry();
             }
         }
 
@@ -89,7 +98,7 @@ namespace GPW.Tests.Mimicry
         }
 
 
-        private void PerformMimicry(Transform mimickedGraphicsPrefab)
+        private void PerformMimicry()
         {
             RemoveExistingMimicGraphics();
             
@@ -98,7 +107,13 @@ namespace GPW.Tests.Mimicry
 
 
             // Instantiate the mimicked object's graphics.
-            Transform mimickedGraphics = Instantiate(mimickedGraphicsPrefab, _mimicryGFXParent, false);
+            Transform mimickedGraphics = Instantiate(_selectedMimicTarget.GetGraphicsParent(), _mimicryGFXParent, false);
+
+            if (_selectedMimicTarget.HasRigidbody())
+            {
+                // Update our Rigidbody to match that of the mimicked object.
+                _selectedMimicTarget.GetRigidbodyInformation().ApplyToRigidbody(_rigidbody);
+            }
         }
         private void RemoveExistingMimicGraphics()
         {
@@ -114,6 +129,9 @@ namespace GPW.Tests.Mimicry
 
             // Show the default gfx.
             _defaultGFXParent.gameObject.SetActive(true);
+
+            // Revert our rigidbody to its default values.
+            _defaultRigidbodyInformation.ApplyToRigidbody(_rigidbody);
         }
 
 
