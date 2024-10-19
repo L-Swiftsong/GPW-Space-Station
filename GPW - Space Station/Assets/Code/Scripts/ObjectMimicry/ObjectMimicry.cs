@@ -22,6 +22,10 @@ namespace GPW.Tests.Mimicry
         private RigidbodyInformation _defaultRigidbodyInformation;
 
 
+        [Header("Effects")]
+        [SerializeField] private ParticleSystem _mimicryOccuredPS;
+
+
         [Header("Testing")]
         [SerializeField] private bool _attemptMimicry;
         [SerializeField] private bool _stopMimicry;
@@ -114,6 +118,10 @@ namespace GPW.Tests.Mimicry
                 // Update our Rigidbody to match that of the mimicked object.
                 _selectedMimicTarget.GetRigidbodyInformation().ApplyToRigidbody(_rigidbody);
             }
+
+
+            // Play Effects.
+            _mimicryOccuredPS.Play();
         }
         private void RemoveExistingMimicGraphics()
         {
@@ -132,6 +140,10 @@ namespace GPW.Tests.Mimicry
 
             // Revert our rigidbody to its default values.
             _defaultRigidbodyInformation.ApplyToRigidbody(_rigidbody);
+
+
+            // Play Effects.
+            _mimicryOccuredPS.Play();
         }
 
 
