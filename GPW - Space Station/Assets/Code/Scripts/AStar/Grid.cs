@@ -19,8 +19,8 @@ namespace AI.Pathfinding.AStar
 
 
         [Header("Gizmos")]
-        [SerializeField] private bool _drawGizmos;
-        public List<Node> CurrentPath { get; set; }
+        [SerializeField] private bool _drawGridSizeGizmos;
+        [SerializeField] private bool _drawNodeGizmos;
 
 
         private void Awake()
@@ -105,28 +105,19 @@ namespace AI.Pathfinding.AStar
 
         private void OnDrawGizmos()
         {
-            if (!_drawGizmos)
+            if (_drawGridSizeGizmos)
             {
-                return;
+                // Draw the total size of the grid.
+                Gizmos.DrawWireCube(transform.position, new Vector3(_gridWorldSize.x, 1, _gridWorldSize.y));
             }
-            
-            // Draw the total size of the grid.
-            Gizmos.DrawWireCube(transform.position, new Vector3(_gridWorldSize.x, 1, _gridWorldSize.y));
+
 
             // Draw each node in the grid.
-            if (_grid != null)
+            if (_grid != null && _drawNodeGizmos)
             {
                 foreach (Node node in _grid)
                 {
-                    if (CurrentPath != null && CurrentPath.Contains(node))
-                    {
-                        Gizmos.color = Color.black;
-                    }
-                    else
-                    {
-                        Gizmos.color = node.IsWalkable ? Color.white : Color.red;
-                    }
-                    
+                    Gizmos.color = node.IsWalkable ? Color.white : Color.red;
                     Gizmos.DrawCube(node.WorldPosition, Vector3.one * (_nodeDiameter - 0.1f));
                 }
             }
