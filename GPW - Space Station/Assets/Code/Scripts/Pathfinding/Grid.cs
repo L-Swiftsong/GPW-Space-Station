@@ -103,6 +103,63 @@ namespace AI.Pathfinding.AStar
         }
 
 
+        private HashSet<Node> _nodesInView = new HashSet<Node>();
+        public void GetNodesInViewCone(Vector3 coneOrigin, Vector3 coneForward, float coneLength, float coneAngle)
+        {
+            // Ensure that our cone origin has the same Y level as our grid (0.0f). (Prevents errors in angle calc).
+            coneOrigin.y = 0.0f;
+
+            // Clear our nodesInView.
+            foreach (Node node in _nodesInView)
+            {
+                node.IsVisible = false;
+            }
+            _nodesInView.Clear();
+
+
+            // Step 1: Test all nodes in a spherical radius.
+            Node originNode = GetNodeFromWorldPoint(coneOrigin);
+            float nodeTestDiameter = coneLength / _nodeRadius;
+            float nodeTestRadius = nodeTestDiameter / 2.0f;
+
+            int minX = Mathf.Max(0, Mathf.CeilToInt(originNode.GridX - nodeTestRadius));
+            int maxX = Mathf.Min(_gridSizeX - 1, Mathf.FloorToInt(originNode.GridX + nodeTestRadius));
+            int minY = Mathf.Max(0, Mathf.CeilToInt(originNode.GridY - nodeTestRadius));
+            int maxY = Mathf.Min(_gridSizeY - 1, Mathf.FloorToInt(originNode.GridY + nodeTestRadius));
+
+            for (int x = minX; x <= maxX; x++)
+            {
+                for (int y = minY; y <= maxY; y++)
+                {
+                    if (!IsInsideCircle(originNode.GridX, originNode.GridY, x, y, nodeTestRadius))
+                    {
+                        // The node is outwith the circle.
+                        continue;
+                    }
+                    if (Vector3.Angle(coneForward, _grid[x,y].WorldPosition - coneOrigin) > coneAngle / 2.0f)
+                    {
+                        // The node is not within the view angle.
+                        continue;
+                    }
+                    
+
+                    // The node is within the view cone.
+                    _nodesInView.Add(_grid[x,y]);
+                    _grid[x,y].IsVisible = true;
+                }
+            }
+        }
+        private bool IsInsideCircle(int centreX, int centreY, int targetX, int targetY, float radius)
+        {
+            float xDistance = centreX - targetX;
+            float yDistance = centreY - targetY;
+
+            float sqrDistance = xDistance * xDistance + yDistance * yDistance;
+            return sqrDistance <= (radius * radius);
+        }
+
+
+
         private void OnDrawGizmos()
         {
             if (_drawGridSizeGizmos)
@@ -117,7 +174,15 @@ namespace AI.Pathfinding.AStar
             {
                 foreach (Node node in _grid)
                 {
-                    Gizmos.color = node.IsWalkable ? Color.white : Color.red;
+                    if (node.IsVisible)
+                    {
+                        Gizmos.color = Color.blue;
+                    }
+                    else
+                    {
+                        Gizmos.color = node.IsWalkable ? Color.white : Color.red;
+                    }
+                    
                     Gizmos.DrawCube(node.WorldPosition, Vector3.one * (_nodeDiameter - 0.1f));
                 }
             }

@@ -607,7 +607,7 @@ MonoBehaviour:
   _nodeRadius: 0.2
   _gridWorldSize: {x: 20, y: 10}
   _drawGridSizeGizmos: 0
-  _drawNodeGizmos: 0
+  _drawNodeGizmos: 1
 --- !u!4 &169997509
 Transform:
   m_ObjectHideFlags: 0
@@ -2340,6 +2340,7 @@ GameObject:
   - component: {fileID: 343401097}
   - component: {fileID: 343401099}
   - component: {fileID: 343401098}
+  - component: {fileID: 343401100}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -2413,6 +2414,22 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &343401100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 343401096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63504ad903aab4c43b820efea5688df2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _orientation: {fileID: 1010665454}
+  _grid: {fileID: 169997508}
+  _viewRadius: 3
+  _viewAngle: 135
 --- !u!1 &352297676
 GameObject:
   m_ObjectHideFlags: 0
@@ -6275,7 +6292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &860003088
 Transform:
   m_ObjectHideFlags: 0

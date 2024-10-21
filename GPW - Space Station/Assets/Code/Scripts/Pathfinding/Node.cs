@@ -10,6 +10,7 @@ namespace AI.Pathfinding.AStar
         public Vector3 WorldPosition;
         public int GridX, GridY;
         public bool IsWalkable;
+        public bool IsVisible;
 
         public Node Parent;
 
