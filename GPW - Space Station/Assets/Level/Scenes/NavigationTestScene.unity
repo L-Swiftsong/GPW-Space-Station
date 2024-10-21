@@ -606,7 +606,6 @@ MonoBehaviour:
   _nodeRadius: 0.2
   _gridWorldSize: {x: 20, y: 10}
   _drawGizmos: 1
-  _playerTransform: {fileID: 343401097}
 --- !u!4 &169997509
 Transform:
   m_ObjectHideFlags: 0
@@ -634,6 +633,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7e67460f64acd14daae24680689e722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerTransform: {fileID: 343401097}
+  _seekerTransform: {fileID: 1235116320}
 --- !u!43 &190915888
 Mesh:
   m_ObjectHideFlags: 0

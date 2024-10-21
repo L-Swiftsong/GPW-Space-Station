@@ -7,15 +7,27 @@ namespace AI.Pathfinding.AStar
     [RequireComponent(typeof(Grid))]
     public class Pathfinding : MonoBehaviour
     {
-        private Grid _grid;
+        private Grid _grid = null;
+        private Heap<Node> _openSet = null;
+        private HashSet<Node> _closedSet = new HashSet<Node>();
 
         private const int GRID_DIAGONAL_DISTANCE = 14;
         private const int GRID_HORIZONTAL_DISTANCE = 10;
 
 
+        [Header("Testing")]
+        [SerializeField] private Transform _playerTransform;
+        [SerializeField] private Transform _seekerTransform;
+
+
         private void Awake()
         {
             _grid = GetComponent<Grid>();
+        }
+
+        private void Update()
+        {
+            FindPath(_seekerTransform.position, _playerTransform.position);
         }
 
 
@@ -24,24 +36,22 @@ namespace AI.Pathfinding.AStar
             Node startNode = _grid.GetNodeFromWorldPoint(startPos);
             Node targetNode = _grid.GetNodeFromWorldPoint(targetPos);
 
-            List<Node> openSet = new List<Node>();
-            HashSet<Node> closedSet = new HashSet<Node>();
-            openSet.Add(startNode);
-
-            while(openSet.Count > 0)
+            // Initialise the openSet if we haven't done so already.
+            if (_openSet == null)
             {
-                Node currentNode = openSet[0];
+                _openSet = new Heap<Node>(_grid.MaxSize);
+            }
+            
+            // Clear the openSet and closedSet.
+            _openSet.Clear();
+            _closedSet.Clear();
+            // Add the start node to the openSet.
+            _openSet.Add(startNode);
 
-                for (int i = 0; i < openSet.Count; i++)
-                {
-                    if (openSet[i].FCost < currentNode.FCost || (openSet[i].FCost == currentNode.FCost && openSet[i].HCost < currentNode.HCost))
-                    {
-                        currentNode = openSet[i];
-                    }
-                }
-
-                openSet.Remove(currentNode);
-                closedSet.Add(currentNode);
+            while(_openSet.Count > 0)
+            {
+                Node currentNode = _openSet.RemoveFirst();
+                _closedSet.Add(currentNode);
 
                 if (currentNode == targetNode)
                 {
@@ -57,7 +67,7 @@ namespace AI.Pathfinding.AStar
                         // The neightbour isn't walkable.
                         continue;
                     }
-                    if (closedSet.Contains(neighbour))
+                    if (_closedSet.Contains(neighbour))
                     {
                         // The neightbour has already been evaluated.
                         continue;
@@ -65,7 +75,7 @@ namespace AI.Pathfinding.AStar
                     
 
                     int newMovementCostToNeighbour = currentNode.GCost + GetDistance(currentNode, neighbour);
-                    if (newMovementCostToNeighbour < neighbour.GCost || !openSet.Contains(neighbour))
+                    if (newMovementCostToNeighbour < neighbour.GCost || !_openSet.Contains(neighbour))
                     {
                         // Calculate the neighbour node's new gCost & hCost (Subsequently also the fCost).
                         neighbour.GCost = newMovementCostToNeighbour;
@@ -74,10 +84,10 @@ namespace AI.Pathfinding.AStar
                         // Set the neighbour's parent for path retracing.
                         neighbour.Parent = currentNode;
 
-                        if (!openSet.Contains(neighbour))
+                        if (!_openSet.Contains(neighbour))
                         {
                             // Add the neighbour to the open set.
-                            openSet.Add(neighbour);
+                            _openSet.Add(neighbour);
                         }
                     }
                 }
@@ -99,6 +109,8 @@ namespace AI.Pathfinding.AStar
 
             // Reverse the path to get the correct order.
             path.Reverse();
+
+            _grid.CurrentPath = path;
         }
 
         public int GetDistance(Node nodeA, Node nodeB)

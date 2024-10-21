@@ -15,11 +15,11 @@ namespace AI.Pathfinding.AStar
         private int _gridSizeX, _gridSizeY;
 
         private Node[,] _grid;
+        public int MaxSize => _gridSizeX * _gridSizeY;
 
 
         [Header("Gizmos")]
         [SerializeField] private bool _drawGizmos;
-        [SerializeField] private Transform _playerTransform;
         public List<Node> CurrentPath { get; set; }
 
 
@@ -116,15 +116,9 @@ namespace AI.Pathfinding.AStar
             // Draw each node in the grid.
             if (_grid != null)
             {
-                Node playerNode = _playerTransform != null ? GetNodeFromWorldPoint(_playerTransform.position) : null;
-
                 foreach (Node node in _grid)
                 {
-                    if (node == playerNode)
-                    {
-                        Gizmos.color = Color.cyan;
-                    }
-                    else if (CurrentPath != null && CurrentPath.Contains(node))
+                    if (CurrentPath != null && CurrentPath.Contains(node))
                     {
                         Gizmos.color = Color.black;
                     }
