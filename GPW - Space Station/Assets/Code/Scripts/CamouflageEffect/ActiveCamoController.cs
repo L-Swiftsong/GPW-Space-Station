@@ -17,5 +17,7 @@ namespace GPW.Tests.Camouflage
                 _activeCamoRenderers[i].ActiveCamoRamp = _activeCampRamp;
             }
         }
+
+        public void SetActiveCamoRamp(float newValue) => _activeCampRamp = Mathf.Clamp01(newValue);
     }
 }
