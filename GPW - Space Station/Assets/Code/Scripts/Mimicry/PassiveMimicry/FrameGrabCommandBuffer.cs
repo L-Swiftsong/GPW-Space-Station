@@ -3,7 +3,7 @@ using UnityEngine.Rendering;
 
 
 // From: 'https://vfxmike.blogspot.com/2018/06/opaque-adaptive-camouflage.html'.
-namespace GPW.Tests.Camouflage
+namespace Mimicry.PassiveMimicry
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(Camera))]
@@ -21,7 +21,7 @@ namespace GPW.Tests.Camouflage
         private Camera _thisCamera;
 
 
-        private const string ACTIVE_CAMO_GLOBAL_FLOAT_IDENTIFIER = "_GlobalActiveCamo";
+        private const string PASSIVE_MIMICRY_GLOBAL_FLOAT_IDENTIFIER = "_GlobalPassiveMimicry";
         private const string LAST_FRAME_GLOBAL_TEXTURE_IDENTIFIER = "_LastFrame";
 
 
@@ -37,7 +37,7 @@ namespace GPW.Tests.Camouflage
 
             RebuildCBFrame();
 
-            Shader.SetGlobalFloat(ACTIVE_CAMO_GLOBAL_FLOAT_IDENTIFIER, 1.0f);
+            Shader.SetGlobalFloat(PASSIVE_MIMICRY_GLOBAL_FLOAT_IDENTIFIER, 1.0f);
         }
         private void OnDisable()
         {
@@ -58,7 +58,7 @@ namespace GPW.Tests.Camouflage
 
 
             // Ensure that no camo shaders attempt to render while there isn't a 'FrameGrabCommandBuffer' active.
-            Shader.SetGlobalFloat(ACTIVE_CAMO_GLOBAL_FLOAT_IDENTIFIER, 0.0f);
+            Shader.SetGlobalFloat(PASSIVE_MIMICRY_GLOBAL_FLOAT_IDENTIFIER, 0.0f);
         }
 
 

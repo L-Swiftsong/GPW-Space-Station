@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace GPW.Tests.Mimicry
+namespace Mimicry.ObjectMimicry
 {
     public class ObjectMimicry : MonoBehaviour
     {

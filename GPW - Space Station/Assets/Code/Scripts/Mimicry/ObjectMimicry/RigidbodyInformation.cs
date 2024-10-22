@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+/// <summary> A struct to store the required information of a Rigidbody when copying its values.</summary>
 public struct RigidbodyInformation
 {
     private float _mass;

@@ -11,7 +11,7 @@ Shader "Unlit/ActiveCamoUnlitSimple"
         [Tooltip(How extreme is the effect of the distortion (The pull of the text on the surrounding environment). Inverted from what you would expect (1 is weak while 0 is strong).)]
             _VertDistortAmount ("Vert Distortion Amount", Range(0,1)) = 0.025 // 
 
-        _ActiveCamoRamp("Active Camo Ramp", Range(0,1)) = 0.0
+        _PassiveMimicryRamp("Passive Mimicry Ramp", Range(0,1)) = 0.0
     }
     SubShader
     {
@@ -37,11 +37,11 @@ Shader "Unlit/ActiveCamoUnlitSimple"
             float _VertDistortAmount;
 
             // Per Instance Variables.
-            float _ActiveCamoRamp;
+            float _PassiveMimicryRamp;
 
             // Global Variables.
             sampler2D _LastFrame;
-            float _GlobalActiveCamo;
+            float _GlobalPassiveMimicry;
 
 
             struct v2f
@@ -72,17 +72,17 @@ Shader "Unlit/ActiveCamoUnlitSimple"
                 half2 distortion = tex2D(_DistortTex, IN.uv.xy * _DistortTexTiling.xy + _Time.yy * _DistortTexTiling.zw).xy;
                 distortion -= tex2D(_DistortTex, IN.uv.xy * _DistortTexTiling.xy + _Time.yy * _DistortTexTiling.zw).yz;
 
-                // Get the last frame to use as camo.
+                // Get the last frame to use for the mimicry effect.
                 float2 screenUV = IN.screenPos.xy / IN.screenPos.w;
                 screenUV += distortion * _DistortAmount * 0.1;
                 screenUV += IN.screenNormal * _VertDistortAmount * 0.1;
                 half3 lastFrame = tex2D(_LastFrame, screenUV).xyz;
 
-                // The final amount of active camo to apply.
-                half activeCamo = _ActiveCamoRamp * _GlobalActiveCamo;
+                // The strength of mimicry to apply.
+                half passiveMimicryStrength = _PassiveMimicryRamp * _GlobalPassiveMimicry;
 
-                // Premultiplied Alpha Camo.
-                half4 final = half4(lastFrame * activeCamo, activeCamo);
+                // Premultiplied Passive Mimicry (Premultiplied = Alpha included in colour).
+                half4 final = half4(lastFrame * passiveMimicryStrength, passiveMimicryStrength);
                 final.w = saturate(final.w);
 
                 return final;

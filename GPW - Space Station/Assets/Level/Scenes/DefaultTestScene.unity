@@ -1109,44 +1109,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!84 &421185060
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 457
-  m_Height: 257
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 0
-  m_ColorFormat: 48
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 0
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_EnableRandomWrite: 0
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &619747210
 GameObject:
   m_ObjectHideFlags: 0
@@ -1157,7 +1119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 619747211}
   m_Layer: 0
-  m_Name: MimicryTest
+  m_Name: MimicryTests
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2374,7 +2336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rbFrameQueue: 17
-  LastFrame: {fileID: 421185060}
+  LastFrame: {fileID: 1548292623}
   LastFrameTemp: {fileID: 0}
 --- !u!114 &963194230
 MonoBehaviour:
@@ -2388,7 +2350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9597a3bcbf164544ba8e7c91e8575569, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rbDrawACQueue: 11
+  _rbDrawPassiveMimicryQueue: 11
 --- !u!1 &1021795224
 GameObject:
   m_ObjectHideFlags: 0
@@ -2775,6 +2737,44 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1971005474}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!84 &1548292623
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 457
+  m_Height: 257
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 0
+  m_ColorFormat: 48
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 0
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_EnableRandomWrite: 0
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1001 &1682890599
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2899,8 +2899,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a1387d51f75174d917cf1c9c4c1d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeCamoMaterial: {fileID: 2100000, guid: f597ff92206ae334592aa6c9e9d98bcb, type: 2}
-  ActiveCamoRamp: 0
+  _passiveMimicryMaterial: {fileID: 2100000, guid: f597ff92206ae334592aa6c9e9d98bcb, type: 2}
+  PassiveMimicryRamp: 0
 --- !u!114 &1682890604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2913,9 +2913,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74334e0052d366c409e6fe95cfb806a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeCamoRenderers:
+  _passiveMimicryRenderers:
   - {fileID: 1682890603}
-  _activeCampRamp: 0
+  _passiveMimicryRamp: 0
 --- !u!114 &1682890608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2929,9 +2929,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 1021795225}
-  _minCamoDistance: 1
-  _maxCamoDistance: 3
-  _camoRampCurve:
+  _minMimicryDistance: 1
+  _maxMimicryDistance: 3
+  _mimicryStrengthCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -2955,6 +2955,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _drawGizmos: 1
+  _minDistanceColour: {r: 1, g: 1, b: 1, a: 0}
+  _maxDistanceColour: {r: 1, g: 1, b: 1, a: 0}
 --- !u!1 &1960282477
 GameObject:
   m_ObjectHideFlags: 0
