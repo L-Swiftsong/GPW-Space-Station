@@ -14,8 +14,8 @@ namespace Teleporters
 
         [Header("Teleportation Parameters")]
         [SerializeField] private float _teleporterWarmupTime;
-        private Coroutine _teleporterWarmupCoroutine;
-        private ITeleportableObject _currentTeleportTarget;
+        private Coroutine _teleporterWarmupCoroutine = null;
+        private HashSet<ITeleportableObject> _currentTeleportationTargets = new HashSet<ITeleportableObject>();
 
         [Space(5)]
         [SerializeField] private float _teleporterCooldown = 3.0f;
@@ -46,56 +46,56 @@ namespace Teleporters
                 // The teleporter is still in cooldown.
                 return;
             }
-            if (_currentTeleportTarget != null)
-            {
-                // We are already teleporting a target.
-                return;
-            }
-
 
             if (other.TryGetComponent<ITeleportableObject>(out ITeleportableObject teleportationTarget))
             {
-                if (_teleporterWarmupCoroutine != null)
-                    StopCoroutine(_teleporterWarmupCoroutine);
-                _teleporterWarmupCoroutine = StartCoroutine(TeleporterWarmup(teleportationTarget));
+                _currentTeleportationTargets.Add(teleportationTarget);
+
+
+                if (_teleporterWarmupCoroutine == null)
+                {
+                    _teleporterWarmupCoroutine = StartCoroutine(TeleporterWarmup());
+                }
             }
         }
         private void OnTriggerExit(Collider other)
         {
-            if (!other.TryGetComponent<ITeleportableObject>(out ITeleportableObject teleportationTarget))
+            if (other.TryGetComponent<ITeleportableObject>(out ITeleportableObject teleportationTarget))
             {
-                // The other collider isn't a teleportation target.
-                return;
-            }
-            
-            if (teleportationTarget == _currentTeleportTarget)
-            {
-                // The collider that left was our current teleportation target.
-                if (_teleporterWarmupCoroutine != null)
-                    StopCoroutine(_teleporterWarmupCoroutine);
+                _currentTeleportationTargets.Remove(teleportationTarget);
 
-                _currentTeleportTarget = null;
+                if (_currentTeleportationTargets.Count <= 0)
+                {
+                    // There are no more teleportation targets within the teleporter.
 
-                _teleporterEffect.Stop();
+                    if (_teleporterWarmupCoroutine != null)
+                    {
+                        StopCoroutine(_teleporterWarmupCoroutine);
+                        _teleporterWarmupCoroutine = null;
+                    }
+
+                    _teleporterEffect.Stop();
+                }
             }
         }
 
-        private IEnumerator TeleporterWarmup(ITeleportableObject teleportationTarget)
+        private IEnumerator TeleporterWarmup()
         {
             _teleporterEffect.Play();
 
-            _currentTeleportTarget = teleportationTarget;
             yield return new WaitForSeconds(_teleporterWarmupTime);
-            _currentTeleportTarget = null;
 
             _teleporterEffect.Stop();
-            TeleportTarget(teleportationTarget);
+            TeleportTarget();
         }
-        private void TeleportTarget(ITeleportableObject teleportationTarget)
+        private void TeleportTarget()
         {
             _linkedTeleporter.PrepareToReceiveTarget();
 
-            teleportationTarget.Teleport(_linkedTeleporter.TeleportPosition, _linkedTeleporter.transform.rotation, transform.forward);
+            foreach(ITeleportableObject teleportableObject in _currentTeleportationTargets)
+            {
+                teleportableObject.Teleport(_linkedTeleporter.TeleportPosition, _linkedTeleporter.transform.rotation, transform.forward);
+            }
 
             _teleporterReadyTime = Time.time + _teleporterCooldown;
         }
