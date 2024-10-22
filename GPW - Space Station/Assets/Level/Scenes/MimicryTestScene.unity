@@ -178,6 +178,7 @@ MonoBehaviour:
   _mimicryGFXParent: {fileID: 1973180917}
   _mimicryOccuredPS: {fileID: 2064576590}
   _attemptMimicry: 0
+  _timeBetweenMimicryAttempts: 3
   _stopMimicry: 0
 --- !u!54 &92283084
 Rigidbody:
@@ -345,7 +346,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 385348942}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!84 &439308019
+--- !u!84 &703142527
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -359,8 +360,8 @@ RenderTexture:
   m_DownscaleFallback: 0
   m_IsAlphaChannelOptional: 0
   serializedVersion: 5
-  m_Width: 447
-  m_Height: 251
+  m_Width: 457
+  m_Height: 257
   m_AntiAliasing: 1
   m_MipCount: -1
   m_DepthStencilFormat: 0
@@ -585,8 +586,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a1387d51f75174d917cf1c9c4c1d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeCamoMaterial: {fileID: 2100000, guid: 36129712c28cf5440812752ff74d6b1b, type: 2}
-  ActiveCamoRamp: 0
+  _passiveMimicryMaterial: {fileID: 2100000, guid: 36129712c28cf5440812752ff74d6b1b, type: 2}
+  PassiveMimicryRamp: 0
 --- !u!1 &868315979
 GameObject:
   m_ObjectHideFlags: 0
@@ -735,9 +736,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74334e0052d366c409e6fe95cfb806a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeCamoRenderers:
+  _passiveMimicryRenderers:
   - {fileID: 1004926623}
-  _activeCampRamp: 0
+  _passiveMimicryRamp: 0
 --- !u!114 &1004926623
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -750,8 +751,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a1387d51f75174d917cf1c9c4c1d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeCamoMaterial: {fileID: 2100000, guid: f597ff92206ae334592aa6c9e9d98bcb, type: 2}
-  ActiveCamoRamp: 0
+  _passiveMimicryMaterial: {fileID: 2100000, guid: f597ff92206ae334592aa6c9e9d98bcb, type: 2}
+  PassiveMimicryRamp: 0
 --- !u!1 &1198833449
 GameObject:
   m_ObjectHideFlags: 0
@@ -932,7 +933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9597a3bcbf164544ba8e7c91e8575569, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rbDrawACQueue: 11
+  _rbDrawPassiveMimicryQueue: 11
 --- !u!114 &1329757576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -946,7 +947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rbFrameQueue: 17
-  LastFrame: {fileID: 439308019}
+  LastFrame: {fileID: 703142527}
   LastFrameTemp: {fileID: 0}
 --- !u!1 &1758969851
 GameObject:
@@ -1298,8 +1299,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a1387d51f75174d917cf1c9c4c1d59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeCamoMaterial: {fileID: 2100000, guid: 36129712c28cf5440812752ff74d6b1b, type: 2}
-  ActiveCamoRamp: 0
+  _passiveMimicryMaterial: {fileID: 2100000, guid: 36129712c28cf5440812752ff74d6b1b, type: 2}
+  PassiveMimicryRamp: 0
 --- !u!23 &2031538262
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -6258,7 +6259,7 @@ GameObject:
   - component: {fileID: 2139009383}
   - component: {fileID: 2139009384}
   m_Layer: 0
-  m_Name: ActiveCamoTest
+  m_Name: PassiveMimicryTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6293,10 +6294,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74334e0052d366c409e6fe95cfb806a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _activeCamoRenderers:
+  _passiveMimicryRenderers:
   - {fileID: 730566005}
   - {fileID: 2031538261}
-  _activeCampRamp: 0
+  _passiveMimicryRamp: 0
 --- !u!4 &1710355712259001644
 Transform:
   m_ObjectHideFlags: 0

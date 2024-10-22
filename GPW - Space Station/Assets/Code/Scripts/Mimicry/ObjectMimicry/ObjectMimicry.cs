@@ -27,8 +27,10 @@ namespace Mimicry.ObjectMimicry
 
 
         [Header("Testing")]
-        [SerializeField] private bool _attemptMimicry;
-        [SerializeField] private bool _stopMimicry;
+        [SerializeField] private bool _attemptMimicry = true;
+        [SerializeField] private float _timeBetweenMimicryAttempts = 3.0f;
+        private float _timeSinceLastMimicry = 0.0f;
+        [SerializeField] private bool _stopMimicry = false;
 
 
         [Header("Debug")]
@@ -39,18 +41,28 @@ namespace Mimicry.ObjectMimicry
         {
             _rigidbody = GetComponent<Rigidbody>();
             _defaultRigidbodyInformation = RigidbodyInformation.CreateFromRigidbody(_rigidbody);
+
+            _timeSinceLastMimicry = 0.0f;
         }
         private void Update()
         {
             if (_attemptMimicry)
             {
-                _attemptMimicry = false;
-                AttemptMimicry();
+                _timeSinceLastMimicry += Time.deltaTime;
+
+                if (_timeSinceLastMimicry > _timeBetweenMimicryAttempts)
+                {
+                    _timeSinceLastMimicry %= _timeBetweenMimicryAttempts;
+                    AttemptMimicry();
+                }
             }
 
             if (_stopMimicry)
             {
+                _attemptMimicry = false;
                 _stopMimicry = false;
+                _timeSinceLastMimicry = 0.0f;
+
                 StopMimicry();
             }
         }
@@ -121,7 +133,10 @@ namespace Mimicry.ObjectMimicry
 
 
             // Play Effects.
-            _mimicryOccuredPS.Play();
+            if (_mimicryOccuredPS != null)
+            {
+                _mimicryOccuredPS.Play();
+            }
         }
         private void RemoveExistingMimicGraphics()
         {
