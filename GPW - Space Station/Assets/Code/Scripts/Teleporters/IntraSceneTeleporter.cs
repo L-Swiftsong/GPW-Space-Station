@@ -15,7 +15,7 @@ namespace Teleporters
         [Header("Teleportation Parameters")]
         [SerializeField] private float _teleporterWarmupTime;
         private Coroutine _teleporterWarmupCoroutine;
-        private Transform _currentTeleportTarget;
+        private ITeleportableObject _currentTeleportTarget;
 
         [Space(5)]
         [SerializeField] private float _teleporterCooldown = 3.0f;
@@ -53,14 +53,24 @@ namespace Teleporters
             }
 
 
-            if (_teleporterWarmupCoroutine != null)
-                StopCoroutine(_teleporterWarmupCoroutine);
-            _teleporterWarmupCoroutine = StartCoroutine(TeleporterWarmup(other.transform));
+            if (other.TryGetComponent<ITeleportableObject>(out ITeleportableObject teleportationTarget))
+            {
+                if (_teleporterWarmupCoroutine != null)
+                    StopCoroutine(_teleporterWarmupCoroutine);
+                _teleporterWarmupCoroutine = StartCoroutine(TeleporterWarmup(teleportationTarget));
+            }
         }
         private void OnTriggerExit(Collider other)
         {
-            if (other.transform == _currentTeleportTarget)
+            if (!other.TryGetComponent<ITeleportableObject>(out ITeleportableObject teleportationTarget))
             {
+                // The other collider isn't a teleportation target.
+                return;
+            }
+            
+            if (teleportationTarget == _currentTeleportTarget)
+            {
+                // The collider that left was our current teleportation target.
                 if (_teleporterWarmupCoroutine != null)
                     StopCoroutine(_teleporterWarmupCoroutine);
 
@@ -70,30 +80,22 @@ namespace Teleporters
             }
         }
 
-        private IEnumerator TeleporterWarmup(Transform target)
+        private IEnumerator TeleporterWarmup(ITeleportableObject teleportationTarget)
         {
             _teleporterEffect.Play();
 
-            _currentTeleportTarget = target;
+            _currentTeleportTarget = teleportationTarget;
             yield return new WaitForSeconds(_teleporterWarmupTime);
             _currentTeleportTarget = null;
 
             _teleporterEffect.Stop();
-            TeleportTarget(target);
+            TeleportTarget(teleportationTarget);
         }
-        private void TeleportTarget(Transform target)
+        private void TeleportTarget(ITeleportableObject teleportationTarget)
         {
             _linkedTeleporter.PrepareToReceiveTarget();
-            
-            if (target.TryGetComponent<CharacterController>(out CharacterController controller))
-            {
-                controller.Move(_linkedTeleporter.TeleportPosition - target.position);
-            }
-            else
-            {
-                target.position = _linkedTeleporter.TeleportPosition;
-            }
 
+            teleportationTarget.Teleport(_linkedTeleporter.TeleportPosition, _linkedTeleporter.transform.rotation, transform.forward);
 
             _teleporterReadyTime = Time.time + _teleporterCooldown;
         }
