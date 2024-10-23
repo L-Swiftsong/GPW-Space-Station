@@ -11,7 +11,7 @@ namespace Teleporters
         private static bool _allowTeleportation = true; // Set to false when teleporting objects between scenes.
         
         
-        [SerializeField] private SceneTransitionData _teleportationDataSO;
+        [SerializeField] private SceneTransition _sceneTransition;
 
 
         protected override void PerformTeleportation()
@@ -20,7 +20,24 @@ namespace Teleporters
             _allowTeleportation = false;
 
 
-            Debug.Log("Load Scene: " + _teleportationDataSO.TargetSceneIndex);
+            SceneLoader.PerformTransition(_sceneTransition);
+            StartCoroutine(DebugProgress());
+        }
+        private IEnumerator DebugProgress() // Instantly stop swhen scene is unloaded.
+        {
+            float progress = 0.0f; 
+            while(progress < 1.0f)
+            {
+                progress = SceneLoader.GetSceneLoadProgress();
+                Debug.Log(progress);
+                yield return null;
+            }
+
+            Debug.Log("100%");
+
+            yield return new WaitForSeconds(0.5f);
+
+            Debug.Log("Completed");
         }
 
 
