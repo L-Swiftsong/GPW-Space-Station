@@ -6,15 +6,17 @@ namespace Teleporters
 {
     public class TeleportableObject : MonoBehaviour, ITeleportableObject
     {
-        public void Teleport(Vector3 destinationPosition, Quaternion destinationRotation, Vector3 originForward)
+        public Vector3 Position => transform.position;
+        public Vector3 Forward => transform.forward;
+        
+        public void Teleport(Vector3 newPosition, Quaternion newRotation)
         {
             // Update position.
-            transform.position = destinationPosition;
-            Physics.SyncTransforms(); // Allows for the teleportation of PhysicsObjects and CharacterControllers.
+            transform.position = newPosition;
+            Physics.SyncTransforms(); // Allows for the teleportation of Physics Objects and CharacterControllers.
 
-            // Update rotation (Maintaining relative rotation compared to each teleporter's forward vector).
-            Quaternion initialTeleporterRotation = Quaternion.FromToRotation(originForward, transform.forward);
-            transform.rotation = initialTeleporterRotation * destinationRotation;
+            // Update rotation.
+            transform.rotation = newRotation;
         }
     }
 }

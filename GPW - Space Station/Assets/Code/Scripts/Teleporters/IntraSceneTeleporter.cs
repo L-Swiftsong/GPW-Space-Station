@@ -5,17 +5,13 @@ using UnityEngine;
 namespace Teleporters
 {
     /// <summary> A teleporter which acts within a single scene.</summary>
-    public class IntraSceneTeleporter : MonoBehaviour
+    public class IntraSceneTeleporter : BaseTeleporter
     {
-        [Header("References")]
-        [SerializeField] private IntraSceneTeleporter _linkedTeleporter;
-        [SerializeField] private ParticleSystem _teleporterEffect;
-
-
-        [Header("Teleportation Parameters")]
-        [SerializeField] private float _teleporterWarmupTime;
-        private Coroutine _teleporterWarmupCoroutine = null;
         private HashSet<ITeleportableObject> _currentTeleportationTargets = new HashSet<ITeleportableObject>();
+
+
+        [Header("Intra-Scene Teleporter Settings")]
+        [SerializeField] private IntraSceneTeleporter _linkedTeleporter;
 
         [Space(5)]
         [SerializeField] private float _teleporterCooldown = 3.0f;
@@ -51,11 +47,7 @@ namespace Teleporters
             {
                 _currentTeleportationTargets.Add(teleportationTarget);
 
-
-                if (_teleporterWarmupCoroutine == null)
-                {
-                    _teleporterWarmupCoroutine = StartCoroutine(TeleporterWarmup());
-                }
+                StartTeleportation();
             }
         }
         private void OnTriggerExit(Collider other)
@@ -67,40 +59,32 @@ namespace Teleporters
                 if (_currentTeleportationTargets.Count <= 0)
                 {
                     // There are no more teleportation targets within the teleporter.
-
-                    if (_teleporterWarmupCoroutine != null)
-                    {
-                        StopCoroutine(_teleporterWarmupCoroutine);
-                        _teleporterWarmupCoroutine = null;
-                    }
-
-                    _teleporterEffect.Stop();
+                    StopTeleportation();
                 }
             }
         }
 
-        private IEnumerator TeleporterWarmup()
+        protected override void PerformTeleportation()
         {
-            _teleporterEffect.Play();
-
-            yield return new WaitForSeconds(_teleporterWarmupTime);
-
-            _teleporterEffect.Stop();
-            TeleportTarget();
-        }
-        private void TeleportTarget()
-        {
+            // Notify the linked teleporter that we are teleporting to them.
             _linkedTeleporter.PrepareToReceiveTarget();
 
+            // Teleport each teleportable object currently within the teleporter's trigger volume.
             foreach(ITeleportableObject teleportableObject in _currentTeleportationTargets)
             {
-                teleportableObject.Teleport(_linkedTeleporter.TeleportPosition, _linkedTeleporter.transform.rotation, transform.forward);
+                // Preserve local positioning within the teleporter.
+                Vector3 destinationPosition = _linkedTeleporter.TeleportPosition + (TeleportPosition - teleportableObject.Position);
+
+                // Preserve local rotation within the teleporter.
+                Quaternion initialTeleporterRotation = Quaternion.FromToRotation(transform.forward, teleportableObject.Forward);
+                Quaternion targetRotation = initialTeleporterRotation * _linkedTeleporter.transform.rotation;
+
+                // Teleport the teleporation target.
+                teleportableObject.Teleport(destinationPosition, targetRotation);
             }
 
             _teleporterReadyTime = Time.time + _teleporterCooldown;
         }
-
-        
         public void PrepareToReceiveTarget() => _teleporterReadyTime = Time.time + 1.0f;
 
 

@@ -6,6 +6,9 @@ namespace Teleporters
 {
     public interface ITeleportableObject
     {
-        public void Teleport(Vector3 destinationPosition, Quaternion destinationRotation, Vector3 originForward);
+        public Vector3 Position { get; }
+        public Vector3 Forward { get; }
+
+        public void Teleport(Vector3 newPosition, Quaternion newRotation);
     }
 }
