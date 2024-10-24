@@ -1,6 +1,7 @@
 using SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LoadingScreenUI : MonoBehaviour
@@ -9,11 +10,16 @@ public class LoadingScreenUI : MonoBehaviour
 
 
     [Header("Loading Bar")]
-    [SerializeField] private TMPro.TMP_Text _loadingText;
+    [SerializeField] private TMP_Text _currentProgressText;
+    [SerializeField] private ProgressBar _loadingProgressBar;
 
 
 
-    private void Awake() => Hide();
+    private void Start()
+    {
+        _loadingProgressBar.SetValues(current: 0.0f, max: 100.0f);
+        Hide();
+    }
     private void OnEnable()
     {
         SceneLoader.OnHardLoadStarted += SceneLoader_OnHardLoadStarted;
@@ -37,16 +43,20 @@ public class LoadingScreenUI : MonoBehaviour
         float progress = 0f;
         while(progress < 1.0f)
         {
-            progress = SceneLoader.Instance.GetSceneLoadProgress();
-            _loadingText.text = progress.ToString();
+            // Get the current progress percentage.
+            progress = SceneLoader.Instance.GetSceneLoadProgress() * 100.0f;
+
+            // Update the UI to show the current progress.
+            _currentProgressText.text = Mathf.CeilToInt(progress).ToString() + "%";
+            _loadingProgressBar.SetCurrentValue(progress);
+
+            // Wait a frame between checks.
             yield return null;
         }
 
-        float fullyLoadedDisplayDelay = 0.1f;
-        yield return new WaitForSeconds(fullyLoadedDisplayDelay);
-
         // Finished loading.
-        _loadingText.text = "Scene Loaded";
+        _currentProgressText.text = "100%";
+        _loadingProgressBar.SetCurrentValue(100.0f);
     }
 
 
