@@ -6,14 +6,41 @@ using UnityEngine.SceneManagement;
 
 namespace SceneManagement
 {
-    public static class SceneLoader
+    public class SceneLoader : MonoBehaviour
     {
+        #region Singleton
+
+        private static SceneLoader _instance;
+        public static SceneLoader Instance
+        {
+            get => _instance;
+            private set
+            {
+                if (Instance != null)
+                {
+                    Debug.LogErrorFormat("Error: A SceneLoader instance already exists: {0}. \nDestroying {1}", Instance.name, value.name);
+                }
+                
+                _instance = value;
+            }
+        }
+
+        #endregion
+
+
+        #region Scene Loading
+
         private static List<AsyncOperation> _scenesUnloading = new List<AsyncOperation>();
         private static List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
+
+        #endregion
 
 
         public static event Action OnHardLoadStarted; // Hard Load -> Loading Screen.
         public static event Action OnSoftLoadStarted; // Soft Load -> Load in Background.
+
+
+        private void Awake() => Instance = this;
 
 
         public static void PerformTransition(SceneTransition transition)
