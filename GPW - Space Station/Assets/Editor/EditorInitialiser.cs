@@ -74,6 +74,7 @@ public class EditorInitialiser
             Debug.LogErrorFormat("Could not find the first scene to load (Path: {0})", scenePath);
         }
     }
+
     private static void LoadExtraScenes()
     {
         // Load extra scenes.
@@ -84,11 +85,19 @@ public class EditorInitialiser
 
         // Load the original scene.
         string originalScene = EditorPrefs.GetString(ACTIVE_EDITOR_SCENE_PREF_IDENTIFIER);
-        SceneManager.LoadSceneAsync(originalScene, LoadSceneMode.Additive);
+        AsyncOperation async = SceneManager.LoadSceneAsync(originalScene, LoadSceneMode.Additive);
 
-        // Figure out a way to have the previous scene be set to the active one (Check out the UniTask repo).
-        //SceneManager.SetActiveScene(SceneManager.GetSceneByName(originalScene));
+        // Ensure that the original scene is set to the active scene once it has been loaded.
+        async.completed += OriginalSceneLoading_Completed;
     }
+    private static void OriginalSceneLoading_Completed(AsyncOperation operation)
+    {
+        operation.completed -= OriginalSceneLoading_Completed;
+
+        string originalScene = EditorPrefs.GetString(ACTIVE_EDITOR_SCENE_PREF_IDENTIFIER);
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(originalScene));
+    }
+
 
     private static bool IsValidScene(List<string> invalidScenes, out string sceneName)
     {

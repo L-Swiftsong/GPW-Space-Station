@@ -19,25 +19,8 @@ namespace Teleporters
             // Prevent immediate teleportation when we arrive at our target.
             _allowTeleportation = false;
 
-
-            SceneLoader.PerformTransition(_sceneTransition);
-            StartCoroutine(DebugProgress());
-        }
-        private IEnumerator DebugProgress() // Instantly stop swhen scene is unloaded.
-        {
-            float progress = 0.0f; 
-            while(progress < 1.0f)
-            {
-                progress = SceneLoader.GetSceneLoadProgress();
-                Debug.Log(progress);
-                yield return null;
-            }
-
-            Debug.Log("100%");
-
-            yield return new WaitForSeconds(0.5f);
-
-            Debug.Log("Completed");
+            // Load the target scene using our given transition.
+            SceneLoader.Instance.PerformTransition(_sceneTransition);
         }
 
 

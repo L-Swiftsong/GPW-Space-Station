@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.SceneManagement;
 
 namespace SceneManagement
@@ -30,8 +33,11 @@ namespace SceneManagement
 
         #region Scene Loading
 
-        private static List<AsyncOperation> _scenesUnloading = new List<AsyncOperation>();
-        private static List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
+        private List<AsyncOperation> _scenesUnloading = new List<AsyncOperation>();
+        private List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
+
+        private const float SCRIPT_INITIALISATION_DELAY = 0.25f;
+        private string _activeScene = null;
 
         #endregion
 
@@ -39,15 +45,17 @@ namespace SceneManagement
         public static event Action OnHardLoadStarted; // Hard Load -> Loading Screen.
         public static event Action OnSoftLoadStarted; // Soft Load -> Load in Background.
 
+        public static event Action OnLoadFinished;
+
 
         private void Awake() => Instance = this;
 
 
-        public static void PerformTransition(SceneTransition transition)
+        public void PerformTransition(SceneTransition transition)
         {
             // Cancel current loading.
 
-            
+
             // Notify loading start.
             if (transition.LoadInBackground)
             {
@@ -59,6 +67,10 @@ namespace SceneManagement
                 // Hard/Foreground load.
                 OnHardLoadStarted?.Invoke();
             }
+
+
+            // Save what scene we want to have as our active scene.
+            _activeScene = transition.ActiveScene;
 
 
             // Determine if we are unloading all active scenes (For error prevention).
@@ -85,44 +97,41 @@ namespace SceneManagement
                     _scenesUnloading.Add(SceneManager.UnloadSceneAsync(transition.ScenesToUnload[i]));
                 }
             }
-        }
 
-        /// <summary> Outputs the current progress of the scene loading in terms of a float value between 0.0f &amp; 1.0f representing a percentage between 0% &amp; 100%.</summary>
-        /// <returns> True if there are currently scenes loading. False if there are no scenes loading.</returns>
-        public static bool TryGetSceneLoadProgress(out float currentSceneProgress, out float totalLoadProgress)
+            StartCoroutine(NotifyWhenScenesAreLoaded(!transition.LoadInBackground));
+        }
+        private IEnumerator NotifyWhenScenesAreLoaded(bool isHardTransition)
         {
-            // Set default values for progress.
-            totalLoadProgress = 0.0f;
-            currentSceneProgress = 0.0f;
+            // Wait until all scenes are loaded.
+            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone) && _scenesLoading.All(t => t.isDone));
 
-            if (_scenesLoading == null || _scenesLoading.Count < 0)
+            if (_activeScene != null)
             {
-                // No scenes are being loaded.
-                return false;
-            }
-            
-            // Loop through each currently loading scene and total their progress.
-            float perScenePercentage = 1.0f / _scenesLoading.Count;
-            for (int i = 0; i < _scenesLoading.Count; i++)
-            {
-                if (_scenesLoading[i].isDone)
-                {
-                    // This scene has already been fully loaded.
-                    totalLoadProgress += perScenePercentage;
-                    continue;
-                }
-
-                // This scene has not been fully loaded.
-                currentSceneProgress = _scenesLoading[i].progress;
-                return true;
+                // Set the active scene.
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
             }
 
-            return true;
+            // Wait for script inialisation.
+            yield return new WaitForSeconds(SCRIPT_INITIALISATION_DELAY);
+
+            // Once we recieve player input, continue.
+#if ENABLE_INPUT_SYSTEM
+            InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+#elif ENABLE_LEGACY_INPUT_MANAGER
+            yield return new WaitUntil(() => Input.anyKeyDown);
+            FinishLoading();
+#endif
         }
-        public static float GetSceneLoadProgress()
+
+
+
+        #region Progress Accessing 
+
+        public float GetSceneLoadProgress()
         {
             if (_scenesLoading == null || _scenesLoading.Count == 0)
             {
+                // No scenes are currently loading.
                 return -1.0f;
             }
             
@@ -141,6 +150,14 @@ namespace SceneManagement
             }
 
             return 1.0f;
+        }
+
+        #endregion
+
+
+        private void FinishLoading()
+        {
+            OnLoadFinished?.Invoke();
         }
     }
 }
