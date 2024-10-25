@@ -21,7 +21,9 @@ namespace SceneManagement
             {
                 if (Instance != null)
                 {
-                    Debug.LogErrorFormat("Error: A SceneLoader instance already exists: {0}. \nDestroying {1}", Instance.name, value.name);
+                    Debug.LogError("Error: A SceneLoader instance already exists: " + Instance.name + ". \nDestroying " + value.name);
+                    Destroy(value.gameObject);
+                    return;
                 }
                 
                 _instance = value;
@@ -38,6 +40,8 @@ namespace SceneManagement
 
         private const float SCRIPT_INITIALISATION_DELAY = 0.25f;
         private string _activeScene = null;
+
+        private float _previousTimeScale = 1.0f;
 
         #endregion
 
@@ -98,9 +102,9 @@ namespace SceneManagement
                 }
             }
 
-            StartCoroutine(NotifyWhenScenesAreLoaded(!transition.LoadInBackground));
+            StartCoroutine(NotifyWhenScenesAreLoaded(transition));
         }
-        private IEnumerator NotifyWhenScenesAreLoaded(bool isHardTransition)
+        private IEnumerator NotifyWhenScenesAreLoaded(SceneTransition transition)
         {
             // Wait until all scenes are loaded.
             yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone) && _scenesLoading.All(t => t.isDone));
@@ -111,16 +115,37 @@ namespace SceneManagement
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
             }
 
+            _previousTimeScale = Time.timeScale;
+            if (!transition.LoadInBackground)
+            {
+                Time.timeScale = 0.0f;
+            }
+
+
+            // Update the player's position.
+            if (transition.AlterPlayerLocation)
+            {
+                PlayerManager.Instance.SetPlayerPositionAndRotation(transition.EntryPosition, transition.EntryRotation);
+            }
+
+
             // Wait for script inialisation.
-            yield return new WaitForSeconds(SCRIPT_INITIALISATION_DELAY);
+            yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
 
             // Once we recieve player input, continue.
+            if (transition.LoadInBackground)
+            {
+                FinishLoading();
+            }
+            else
+            {
 #if ENABLE_INPUT_SYSTEM
-            InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
 #elif ENABLE_LEGACY_INPUT_MANAGER
-            yield return new WaitUntil(() => Input.anyKeyDown);
-            FinishLoading();
+                yield return new WaitUntil(() => Input.anyKeyDown);
+                FinishLoading();
 #endif
+            }
         }
 
 
@@ -158,6 +183,7 @@ namespace SceneManagement
         private void FinishLoading()
         {
             OnLoadFinished?.Invoke();
+            Time.timeScale = _previousTimeScale;
         }
     }
 }
