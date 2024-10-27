@@ -59,7 +59,7 @@ namespace AI.Pathfinding.AStar
 
                 foreach (Node neighbour in _grid.GetNeighbours(currentNode))
                 {
-                    if (!neighbour.IsWalkable)
+                    if (!neighbour.IsWalkable || neighbour.IsVisible)
                     {
                         // The neightbour isn't walkable.
                         continue;

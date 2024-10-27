@@ -19,8 +19,10 @@ namespace AI.Pathfinding
         [SerializeField] private float _pathWaypointSize = 0.2f;
 
 
-        private void Start()
+        private IEnumerator Start()
         {
+            yield return new WaitForSeconds(0.5f);
+
             PathRequestManager.RequestPath(transform.position, _target.position, OnPathFound);
         }
 
@@ -34,6 +36,7 @@ namespace AI.Pathfinding
                 {
                     StopCoroutine(_followPathCoroutine);
                 }
+                Debug.Log(wasSuccessful);
                 _followPathCoroutine = StartCoroutine(FollowPath());
             }
         }
