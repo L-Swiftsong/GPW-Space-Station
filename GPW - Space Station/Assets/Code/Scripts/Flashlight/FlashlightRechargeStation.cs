@@ -8,10 +8,9 @@ using TMPro;
  * 
  * This script handles the Flashlight recharge process 
  */
-public class FlashLightRechargeController : MonoBehaviour
+public class FlashlightRechargeStation : MonoBehaviour, IInteractable
 {
     [Header("Recharge Settings")]
-
     [SerializeField] private Transform rechargePoint;
     [SerializeField] private AudioClip rechargeSound;
     [SerializeField] private float rechargeDuration = 5.0f;
@@ -19,48 +18,56 @@ public class FlashLightRechargeController : MonoBehaviour
     private bool _isRecharging = false;
     private GameObject _currentFlashlight;
 
-    private void OnTriggerStay(Collider other)
+
+    public void Interact(PlayerInteraction playerInteraction)
     {
-        if (other.CompareTag("Player"))
+        if (_isRecharging)
         {
-            HandleRecharge(other);
-            HandleFlashlightPickup(other);
+            // We are in the process of recharging.
+            return;
+        }
+
+        if (_currentFlashlight == null)
+        {
+            // The station currently doesn't have a flashlight inside it.
+            // Start recharging the flashlight.
+            HandleRecharge(playerInteraction.transform);
+        }
+        else
+        {
+            // The station currently has a flashlight inside it.
+            // Stop recharging the flashlight and return it to the player.
+            HandleFlashlightPickup(playerInteraction.transform);
         }
     }
 
 
+
    // INPUT TO START THE CHARGE 
 
-    private void HandleRecharge(Collider other)
+    private void HandleRecharge(Transform player)
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !_isRecharging && _currentFlashlight == null)
+        FlashLightController flashlightController = player.GetComponentInChildren<FlashLightController>();
+        if (flashlightController != null && flashlightController.HasFlashlight())
         {
-            FlashLightController flashlightController = other.GetComponentInChildren<FlashLightController>();
-            if (flashlightController != null && flashlightController.HasFlashlight())
-            {
-                StartRecharge(flashlightController);
-            }
+            StartRecharge(flashlightController);
         }
     }
 
     // ALLOWS PICKUP AFTER CHARGE IS COMPLETE 
 
-    private void HandleFlashlightPickup(Collider other)
+    private void HandleFlashlightPickup(Transform player)
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) && _currentFlashlight != null && !_isRecharging)
-        {
-            TmpFlashlightController flashlightController = other.GetComponent<TmpFlashlightController>();
-            Debug.Log(flashlightController.name);
-            AttachFlashlightToHolder(flashlightController);
-        }
+        TmpFlashlightController flashlightController = player.GetComponent<TmpFlashlightController>();
+        Debug.Log(flashlightController.name);
+        AttachFlashlightToHolder(flashlightController);
     }
 
 
-  // STARTS THE RECHARGE PROCESS 
+    // STARTS THE RECHARGE PROCESS 
   
     private void StartRecharge(FlashLightController flashlightController)
     {
-        
         flashlightController.DisableFlashlight();
 
         _currentFlashlight = flashlightController.gameObject;
@@ -122,13 +129,5 @@ public class FlashLightRechargeController : MonoBehaviour
     {
         _currentFlashlight.transform.SetParent(null);
         _isRecharging = false;
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player") && _currentFlashlight != null && !_isRecharging)
-        {
-            _currentFlashlight.transform.SetParent(null);
-        }
     }
 }

@@ -52,9 +52,6 @@ public class FlareThrowing : MonoBehaviour
     [SerializeField] private int _maxFlares = 20;
     private int _remainingFlares;
 
-    [Space(5)]
-    [SerializeField] private float _flareLifetime = 10.0f;
-
 
     private const int MAX_FLARES_IN_SCENE = 50;
 

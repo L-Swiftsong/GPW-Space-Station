@@ -1,6 +1,7 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class KeyCard : MonoBehaviour
+public class KeyCard : MonoBehaviour, IInteractable
 {
     [SerializeField]
     private int keyCardId;
@@ -33,7 +34,12 @@ public class KeyCard : MonoBehaviour
             materialInstance.SetColor("_Color", keyCardColour);
         }
     }
+
+
+    public void Interact(PlayerInteraction playerInteraction)
+    {
+        playerInteraction.Inventory.AddKeyCard(this.KeyCardId);
+        Debug.Log($"Picked up {this.KeyCardId}");
+        Destroy(this.gameObject);
+    }
 }
-
-
-

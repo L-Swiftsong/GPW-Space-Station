@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Door : MonoBehaviour
+public class Door : MonoBehaviour, IInteractable
 {   
     private bool isLocked = true;
 
@@ -37,6 +37,12 @@ public class Door : MonoBehaviour
 
         }
     }
+
+    public void Interact(PlayerInteraction playerInteraction)
+    {
+        TryUnlockDoor(playerInteraction.Inventory);
+    }
+
 
     public void TryUnlockDoor(PlayerInventory playerInventory)
     {

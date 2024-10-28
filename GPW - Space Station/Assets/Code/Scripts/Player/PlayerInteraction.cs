@@ -9,6 +9,10 @@ public class PlayerInteraction : MonoBehaviour
     public Camera cam;
     private PlayerHide playerHide;  
 
+    public PlayerInventory Inventory => playerInventory;
+    public PlayerHide PlayerHide => playerHide;
+
+
     [Header("Layers")]
     public LayerMask interactableLayer;
 
@@ -17,87 +21,37 @@ public class PlayerInteraction : MonoBehaviour
         playerInventory = GetComponent<PlayerInventory>();
         playerHide = GetComponent<PlayerHide>();
     }
-
-    private void Update()
+    private void OnEnable()
     {
-        HandleKeyCardPickup();
-        HandleDoorInteraction();
-        HandleHideInteraction();
+        PlayerInput.OnInteractPerformed += PlayerInput_OnInteractPerformed;
+    }
+    private void OnDisable()
+    {
+        PlayerInput.OnInteractPerformed -= PlayerInput_OnInteractPerformed;
     }
 
-    private void HandleKeyCardPickup()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            RaycastHit hit;
-            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 3f, interactableLayer))
-            {
-                KeyCard keyCard = hit.collider.GetComponent<KeyCard>();
+    private void PlayerInput_OnInteractPerformed() => AttemptInteraction();
 
-                if (keyCard != null)
-                {
-                    playerInventory.AddKeyCard(keyCard.KeyCardId);
-                    Destroy(keyCard.gameObject);
-                    Debug.Log($"Picked up {keyCard.KeyCardId}");
-                }
-            }
-            else
-            {
-                Debug.Log("Raycast did not hit any objects.");
-            }
+
+    private void AttemptInteraction()
+    {
+        if (playerHide.isHiding && !playerHide.isTransitioning)
+        {
+            // We are wanting to exit a hiding spot.
+            playerHide.StopHiding();
+            return;
         }
-    }
 
-    private void HandleDoorInteraction()
-    {
-        if (Input.GetMouseButtonDown(0))
+
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, 3f, interactableLayer))
         {
-            RaycastHit hit;
-            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 3f, interactableLayer))
+            // We found a potential interactable.
+
+            if (hit.collider.TryGetComponentThroughParents<IInteractable>(out IInteractable interactableScript))
             {
-                Door door = hit.collider.GetComponent<Door>();
-
-                if (door != null)
-                {
-                    door.TryUnlockDoor(playerInventory);
-                }
+                // We are interacting with an interactable.
+                interactableScript.Interact(this);
             }
-            else
-            {
-                Debug.Log("Raycast did not hit any objects.");
-            }
-        }
-    }
-
-    private void HandleHideInteraction()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (playerHide.isHiding && !playerHide.isTransitioning)
-            {
-                StartCoroutine(playerHide.ExitHidingCoroutine());
-            }
-            else
-            {
-                RaycastHit hit;
-
-                if (Physics.Raycast(cam.transform.position, cam.transform.forward, out hit, 3f, interactableLayer))
-                {
-                    if (hit.collider.CompareTag("Hideable"))
-                    {
-                        StartCoroutine(playerHide.HideCoroutine(hit.collider.transform));
-                    }
-
-                }
-                else
-                {
-                    Debug.Log("No hideable object found");
-                }
-            }
-
-
         }
     }
 }
-
-

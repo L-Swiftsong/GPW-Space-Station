@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 7082672160838738137}
   - component: {fileID: 140996577595345685}
   - component: {fileID: 6757341486113817742}
-  - component: {fileID: 4601638561913859177}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1142,28 +1141,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2194822393640284165}
   m_Mesh: {fileID: 0}
---- !u!64 &4601638561913859177
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2194822393640284165}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &2386680224711263512
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,7 +1150,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8909357502185475476}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1205,7 +1182,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5787899306660397302}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ChargePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1237,7 +1214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 944380221664380704}
   - component: {fileID: 1617085133212888907}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ChargingLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1332,7 +1309,7 @@ GameObject:
   - component: {fileID: 4906502041027619336}
   - component: {fileID: 5817799951404751190}
   - component: {fileID: 3064538979455302853}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: RechargeStation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1387,9 +1364,9 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 2, z: 1.5}
-  m_Center: {x: 0, y: 1, z: 0.75}
+  m_Size: {x: 1, y: 2, z: 0.5}
+  m_Center: {x: 0, y: 1, z: 0.25}

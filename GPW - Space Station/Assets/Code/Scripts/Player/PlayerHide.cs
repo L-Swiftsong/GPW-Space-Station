@@ -13,6 +13,9 @@ public class PlayerHide : MonoBehaviour
     public float transitionTime = 0.5f;
     private float elapsedTime;
 
+    private Coroutine _hidingCoroutine;
+
+
     [Header("Bools")]
     public bool isHiding = false;
     public bool isTransitioning = false;
@@ -34,7 +37,32 @@ public class PlayerHide : MonoBehaviour
     }
 
 
-    public IEnumerator HideCoroutine(Transform hidePosition)
+    public void StartHiding(Vector3 hidePosition)
+    {
+        // Stop the current hiding coroutine.
+        if (_hidingCoroutine != null)
+        {
+            StopCoroutine(_hidingCoroutine);
+        }
+
+        // Start hiding.
+        _hidingCoroutine = StartCoroutine(HideCoroutine(hidePosition));
+    }
+    public void StopHiding()
+    {
+        // Stop the current hiding coroutine.
+        if (_hidingCoroutine != null)
+        {
+            StopCoroutine(_hidingCoroutine);
+        }
+
+        // Stop hiding.
+        _hidingCoroutine = StartCoroutine(ExitHidingCoroutine());
+    }
+
+
+
+    public IEnumerator HideCoroutine(Vector3 hidePosition)
     {
         elapsedTime = 0f;
 
@@ -43,7 +71,8 @@ public class PlayerHide : MonoBehaviour
         transform.localScale = hidingScale;
 
         Vector3 startPosition = transform.position;
-        Vector3 endPosition = hidePosition.position + new Vector3(0, -heightOffset, 0);
+        //Vector3 endPosition = hidePosition.position + new Vector3(0, -heightOffset, 0);
+        Vector3 endPosition = hidePosition;
 
         yield return SmoothMoveToPosition(startPosition, endPosition);
 

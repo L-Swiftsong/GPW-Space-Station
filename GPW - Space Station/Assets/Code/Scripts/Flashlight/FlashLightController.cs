@@ -30,8 +30,9 @@ public class FlashLightController : MonoBehaviour
 
     private Light _flashlight;         
     private bool _isOn = false;        
+    private bool _isFocused = false;
     private bool _hasFlashlight = false;
-    private float _defaultIntensity;   
+    private float _defaultIntensity;
 
     /// <summary>
     /// Public getter for the flashlight battery level.
@@ -43,12 +44,29 @@ public class FlashLightController : MonoBehaviour
         _flashlightBattery = maxBattery;
         InitializeFlashlight();
     }
-    
+    private void OnEnable()
+    {
+        PlayerInput.OnToggleFlashlightPerformed += PlayerInput_OnToggleFlashlightPerformed;
+        PlayerInput.OnFocusFlashlightStarted += PlayerInput_OnFocusFlashlightStarted;
+        PlayerInput.OnFocusFlashlightCancelled += PlayerInput_OnFocusFlashlightCancelled;
+    }
+    private void OnDisable()
+    {
+        PlayerInput.OnToggleFlashlightPerformed -= PlayerInput_OnToggleFlashlightPerformed;
+        PlayerInput.OnFocusFlashlightStarted -= PlayerInput_OnFocusFlashlightStarted;
+        PlayerInput.OnFocusFlashlightCancelled -= PlayerInput_OnFocusFlashlightCancelled;
+    }
+
+
+    private void PlayerInput_OnToggleFlashlightPerformed() => ToggleFlashlight();
+    private void PlayerInput_OnFocusFlashlightStarted() => EnableFocusMode();
+    private void PlayerInput_OnFocusFlashlightCancelled() => DisableFocusMode();
+
+
     private void Update()
     {
         if (_hasFlashlight)
         {
-            HandleFlashlightToggle();
             HandleFocusMode();
         }
     }
@@ -81,11 +99,11 @@ public class FlashLightController : MonoBehaviour
     }
 
     /// <summary>
-    /// Toggle the flashlight on/off when the player presses the F key.
+    /// Toggle the flashlight on/off.
     /// </summary>
-    private void HandleFlashlightToggle()
+    private void ToggleFlashlight()
     {
-        if (Input.GetKeyDown(KeyCode.F) && _flashlight != null && _flashlightBattery > 0)
+        if (_flashlight != null && _flashlightBattery > 0)
         {
             _isOn = !_isOn;
             _flashlight.enabled = _isOn; // Enable or disable the flashlight
@@ -108,9 +126,10 @@ public class FlashLightController : MonoBehaviour
                 _flashlightBattery = 0;
                 _flashlight.enabled = false;
                 _isOn = false;
+                DisableFlashlight();
             }
 
-            if (Input.GetMouseButton(1) && _flashlightBattery > 0) // Focus mode (right mouse button)
+            if (_isFocused) // Focus mode (right mouse button)
             {
                 _flashlight.spotAngle = Mathf.Lerp(_flashlight.spotAngle, decreaseSpotAngle, Time.deltaTime * increaseRate);
                 _flashlight.intensity = Mathf.Lerp(_flashlight.intensity, _defaultIntensity * intensityMultiplier, Time.deltaTime * increaseRate);
@@ -126,6 +145,17 @@ public class FlashLightController : MonoBehaviour
             UpdateBatteryUI(); 
         }
     }
+
+    private void EnableFocusMode()
+    {
+        if (_flashlight != null && _isOn && _flashlightBattery > 0.0f)
+        {
+            _isFocused = true;
+        }
+    }
+    private void DisableFocusMode() => _isFocused = false;
+    
+
 
     /// <summary>
     /// Update the battery level in the UI.
