@@ -15,7 +15,6 @@ public class FlashLightRechargeController : MonoBehaviour
     [SerializeField] private Transform rechargePoint;
     [SerializeField] private AudioClip rechargeSound;
     [SerializeField] private float rechargeDuration = 5.0f;
-    [SerializeField] private Transform flashlightHolder;
 
     private bool _isRecharging = false;
     private GameObject _currentFlashlight;
@@ -50,7 +49,9 @@ public class FlashLightRechargeController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) && _currentFlashlight != null && !_isRecharging)
         {
-            AttachFlashlightToHolder();
+            TmpFlashlightController flashlightController = other.GetComponent<TmpFlashlightController>();
+            Debug.Log(flashlightController.name);
+            AttachFlashlightToHolder(flashlightController);
         }
     }
 
@@ -98,9 +99,9 @@ public class FlashLightRechargeController : MonoBehaviour
 
     /// GIVES PLAYER FLASH BACK 
 
-    private void AttachFlashlightToHolder()
+    private void AttachFlashlightToHolder(TmpFlashlightController tmpFlashlightController)
     {
-        _currentFlashlight.transform.SetParent(flashlightHolder);
+        _currentFlashlight.transform.SetParent(tmpFlashlightController.FlashlightHolder);
         _currentFlashlight.transform.localPosition = Vector3.zero;
         _currentFlashlight.transform.localRotation = Quaternion.identity;
 

@@ -17,9 +17,6 @@ public class EnemyController : MonoBehaviour
     private float rotationSpeed = 5f;
 
     [SerializeField]
-    private Transform player;
-
-    [SerializeField]
     private float soundDistance = 10f;
 
     private AudioSource[] audioSources;
@@ -44,7 +41,7 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        float distanceToPlayer = Vector3.Distance(transform.position, PlayerManager.Instance.Player.position);
 
         if (distanceToPlayer <= soundDistance && !isAudioPlaying)
         {

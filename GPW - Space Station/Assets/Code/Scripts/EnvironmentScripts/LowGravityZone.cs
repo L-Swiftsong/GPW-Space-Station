@@ -29,12 +29,8 @@ public class LowGravityZone : MonoBehaviour
 
     private void Start()
     {
-        //finds player tag 
-        GameObject player = GameObject.FindGameObjectWithTag(playerTag);
-        if (player != null)
-        {
-            playerController = player.GetComponent<CharacterController>();
-        }
+        // Find the player's character controller.
+        playerController = PlayerManager.Instance.Player.GetComponent<CharacterController>();
 
         // Start coroutine to apply drift forces at intervals
         InvokeRepeating(nameof(ApplyDriftToObjects), 0f, driftForceInterval);

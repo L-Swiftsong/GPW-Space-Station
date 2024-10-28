@@ -12,7 +12,6 @@ public class FlashLightPickUpController : MonoBehaviour
     [Header("Flashlight Pickup Settings")]
 
     [SerializeField] private GameObject flashlightPrefab;
-    [SerializeField] private Transform flashlightHolder;
     [SerializeField] private TextMeshProUGUI batteryTextUI;
 
     private bool _hasFlashlight = false;
@@ -39,12 +38,15 @@ public class FlashLightPickUpController : MonoBehaviour
 
     private void PickUpFlashlight()
     {
+        // Temp.
+        Transform flashlightHolder = PlayerManager.Instance.Player.GetComponent<TmpFlashlightController>().FlashlightHolder;
         GameObject flashlightInstance = Instantiate(
             flashlightPrefab,
             flashlightHolder.position,
             flashlightHolder.rotation,
             flashlightHolder
         );
+
         _hasFlashlight = true;
 
         FlashLightController flashlightController = flashlightInstance.GetComponent<FlashLightController>();

@@ -6,8 +6,6 @@ public class EnemyChaser : MonoBehaviour
 {
     [Header("Player Settings")]
     [SerializeField]
-    private Transform player;
-    [SerializeField]
     private float detectionRange = 15f;
 
     [Header("Movement Settings")]
@@ -34,19 +32,6 @@ public class EnemyChaser : MonoBehaviour
 
     private void Start()
     {
-        if (player == null)
-        {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
-            {
-                player = playerObj.transform;
-            }
-            else
-            {
-                Debug.LogError("Player not assigned and no GameObject with 'Player' tag found.");
-            }
-        }
-
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
     }
@@ -69,9 +54,7 @@ public class EnemyChaser : MonoBehaviour
 
     private bool HasLineOfSightToPlayer()
     {
-        if (player == null) return false;
-
-        Vector3 directionToPlayer = player.position - transform.position;
+        Vector3 directionToPlayer = PlayerManager.Instance.Player.position - transform.position;
         float distanceToPlayer = directionToPlayer.magnitude;
 
         if (distanceToPlayer <= detectionRange)
@@ -79,7 +62,7 @@ public class EnemyChaser : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(transform.position, directionToPlayer.normalized, out hit, detectionRange, ~obstacleMask))
             {
-                if (hit.transform == player)
+                if (hit.transform == PlayerManager.Instance.Player)
                 {
                     Debug.Log("Player detected!");
                     return true;
@@ -91,7 +74,7 @@ public class EnemyChaser : MonoBehaviour
 
     private void ChasePlayer()
     {
-        Vector3 direction = (player.position - transform.position).normalized;
+        Vector3 direction = (PlayerManager.Instance.Player.position - transform.position).normalized;
         direction.y = 0;
 
         Quaternion targetRotation = Quaternion.LookRotation(direction);
@@ -173,10 +156,10 @@ public class EnemyChaser : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
-        if (player != null)
+        if (PlayerManager.Exists && PlayerManager.Instance.Player != null)
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, player.position);
+            Gizmos.DrawLine(transform.position, PlayerManager.Instance.Player.position);
         }
     }
 }

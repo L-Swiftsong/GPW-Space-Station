@@ -27,19 +27,17 @@ public class OpenMainDoor : MonoBehaviour
     private bool isOpening = false;
     private bool isClosing = false;
     private AudioSource audioSource;
-    private GameObject player;
 
     void Start()
     {
         closedPosition = transform.position;
         openPosition = new Vector3(closedPosition.x, closedPosition.y + openHeight, closedPosition.z);
         audioSource = gameObject.AddComponent<AudioSource>();
-        player = GameObject.FindWithTag("Player");
     }
 
     void Update()
     {
-        float distanceToPlayer = Vector3.Distance(player.transform.position, transform.position);
+        float distanceToPlayer = Vector3.Distance(PlayerManager.Instance.Player.position, transform.position);
 
         if (distanceToPlayer <= triggerDistance && !isOpening && !isClosing)
         {

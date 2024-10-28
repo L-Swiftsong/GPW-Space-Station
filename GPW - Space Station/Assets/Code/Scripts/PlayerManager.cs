@@ -24,6 +24,8 @@ public class PlayerManager : MonoBehaviour
     }
 
     #endregion
+    public static bool Exists => _instance != null;
+
 
 
     [Header("References")]
@@ -41,4 +43,9 @@ public class PlayerManager : MonoBehaviour
         _player.SetPositionAndRotation(desiredPosition, Quaternion.Euler(desiredRotationEulerAngles));
         Physics.SyncTransforms();
     }
+
+
+
+    /// <summary> To-do: Remove.</summary>
+    public Transform Player => _player;
 }

@@ -5,35 +5,19 @@ using UnityEngine;
 public class MimicController : MonoBehaviour
 {
     [SerializeField]
-    private float moveSpeed = 3f;       
-
-    private Transform playerTransform;  
-    private void Start()
-    {
-        
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-
-        if (player != null)
-        {
-            playerTransform = player.transform;
-        }
-        else
-        {
-            Debug.LogError("Player not found! Please tag the player GameObject with 'Player'.");
-        }
-    }
+    private float moveSpeed = 3f;
 
     private void Update()
     {
-        if (playerTransform != null)
+        if (PlayerManager.Instance.Player != null)
         {
             if (HasLineOfSightToPlayer())
             {
                 
                 Vector3 direction = new Vector3(
-                    playerTransform.position.x - transform.position.x,
-                    0f, 
-                    playerTransform.position.z - transform.position.z
+                    PlayerManager.Instance.Player.position.x - transform.position.x,
+                    0f,
+                    PlayerManager.Instance.Player.position.z - transform.position.z
                 );
 
                 if (direction.sqrMagnitude > 0.01f) 
@@ -54,12 +38,12 @@ public class MimicController : MonoBehaviour
     private bool HasLineOfSightToPlayer()
     {
         RaycastHit hit;
-        Vector3 directionToPlayer = playerTransform.position - transform.position;
+        Vector3 directionToPlayer = PlayerManager.Instance.Player.position - transform.position;
         float distanceToPlayer = directionToPlayer.magnitude;
 
         if (Physics.Raycast(transform.position, directionToPlayer.normalized, out hit, distanceToPlayer))
         {
-            if (hit.transform == playerTransform)
+            if (hit.transform == PlayerManager.Instance.Player)
             { 
                 return true;
             }

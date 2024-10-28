@@ -18,7 +18,7 @@ public class EditorInitialiser
     private const string EDITOR_INITIALISED_PREF_IDENTIFIER = "EditorInitialisation";
 
 
-    // The names of the scenes which we wish to do the Editor Initialisation on.
+    // The names of the scenes which we wish to not do the Editor Initialisation from.
     private static List<string> _invalidScenes = new List<string>
     {
         Path.GetFileNameWithoutExtension(PERSISTENT_SCENE_PATH),
@@ -41,11 +41,18 @@ public class EditorInitialiser
 
     private static void OnPlayModeStateChanged(PlayModeStateChange state)
     {
-        if (state == PlayModeStateChange.ExitingEditMode && IsValidScene(_invalidScenes, out string sceneName))
+        if (state == PlayModeStateChange.ExitingEditMode)
         {
-            EditorPrefs.SetString(ACTIVE_EDITOR_SCENE_PREF_IDENTIFIER, sceneName);
-            EditorPrefs.SetBool(EDITOR_INITIALISED_PREF_IDENTIFIER, true);
-            SetStartScene(PERSISTENT_SCENE_PATH);
+            if (!IsActiveSceneInvalid(_invalidScenes, out string activeSceneName))
+            {
+                EditorPrefs.SetString(ACTIVE_EDITOR_SCENE_PREF_IDENTIFIER, activeSceneName);
+                EditorPrefs.SetBool(EDITOR_INITIALISED_PREF_IDENTIFIER, true);
+                SetStartScene(PERSISTENT_SCENE_PATH);
+            }
+            else
+            {
+                SetStartScene(SceneManager.GetActiveScene().path);
+            }
         }
 
         if (state == PlayModeStateChange.EnteredPlayMode && EditorPrefs.GetBool(EDITOR_INITIALISED_PREF_IDENTIFIER))
@@ -99,9 +106,9 @@ public class EditorInitialiser
     }
 
 
-    private static bool IsValidScene(List<string> invalidScenes, out string sceneName)
+    private static bool IsActiveSceneInvalid(List<string> invalidScenes, out string sceneName)
     {
         sceneName = SceneManager.GetActiveScene().name;
-        return !invalidScenes.Contains(sceneName);
+        return invalidScenes.Contains(sceneName);
     }
 }

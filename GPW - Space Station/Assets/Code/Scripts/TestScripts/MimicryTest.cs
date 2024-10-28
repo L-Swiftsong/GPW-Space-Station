@@ -26,6 +26,7 @@ namespace Testing.Mimicry
 
 
         private void Awake() => _mimicryController = GetComponent<PassiveMimicryController>();
+        private void Start() => _player = FindObjectOfType<PlayerController>().transform; // Replace ASAP.
 
         private void Update()
         {
