@@ -57,6 +57,8 @@ public class PlayerController : MonoBehaviour
     private bool _canJump = true;
     private bool _inLowGravityZone = false;
 
+    private bool isHiding = false;
+
     private void Start()
     {
         // character controller and camera settings
@@ -68,12 +70,18 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        GroundedCheck();            
-        HandleMovement();           
-        HandleJumpAndGravity();     
-        HandleLook();               
-        HandleCrouch();             
-        HandleTilt();               
+        GroundedCheck();
+
+        if (!isHiding)
+        {
+            HandleMovement();
+            HandleJumpAndGravity();
+            HandleCrouch();
+            HandleTilt();
+        }
+           
+        
+        HandleLook();             
     }
 
     private void GroundedCheck()
@@ -240,5 +248,10 @@ public class PlayerController : MonoBehaviour
     public void ExitLowGravityZone()
     {
         _inLowGravityZone = false;
+    }
+
+    public void SetHiding(bool hiding)
+    {
+        isHiding = hiding;
     }
 }
