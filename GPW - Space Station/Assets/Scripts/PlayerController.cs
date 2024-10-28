@@ -95,14 +95,18 @@ public class PlayerController : MonoBehaviour
         if (inputDirection.magnitude >= 0.1f)
         {
             inputDirection = transform.right * inputDirection.x + transform.forward * inputDirection.z;
+            _speed = targetSpeed;  
         }
-
-       
-        _speed = Mathf.Lerp(_speed, targetSpeed, Time.deltaTime * speedChangeRate);
+        else
+        {
+            _speed = 0; 
+        }
 
         _controller.Move(inputDirection * (_speed * Time.deltaTime) + Vector3.up * _verticalVelocity * Time.deltaTime);
     }
 
+
+    
     /// <summary>
     /// Handles jumping and applies gravity based on the player's environment (normal or low-gravity).
     /// </summary>
