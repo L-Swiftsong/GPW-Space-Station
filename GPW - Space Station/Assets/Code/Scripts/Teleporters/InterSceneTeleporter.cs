@@ -31,8 +31,7 @@ namespace Teleporters
                 return;
             }
             
-            Debug.LogWarning("Replace the 'BasicPlayerController' script with whatever our primary player script will be.");
-            if (!other.GetComponent<BasicPlayerController>())
+            if (!other.GetComponent<PlayerController>())
             {
                 // The exiting collider is not the player.
                 return;
@@ -42,8 +41,7 @@ namespace Teleporters
         }
         private void OnTriggerExit(Collider other)
         {
-            Debug.LogWarning("Replace the 'BasicPlayerController' script with whatever our primary player script will be.");
-            if (!other.GetComponent<BasicPlayerController>())
+            if (!other.GetComponent<PlayerController>())
             {
                 // The exiting collider is not the player.
                 return;

@@ -116,7 +116,7 @@ public class FlareThrowing : MonoBehaviour
 
         // Set the flare's initial velocity.
         Rigidbody flareRB = flareInstance.GetComponent<Rigidbody>();
-        flareRB.velocity = _flareOrigin.InverseTransformDirection(_localStartingVelocity);
+        flareRB.velocity = _flareOrigin.TransformDirection(_localStartingVelocity);
 
         // Release the flare to the object pool once its lifetime has elapsed.
         flareInstance.GetComponent<Flare>().OnFlareLifetimeElapsed += FlareInstance_OnFlareLifetimeElapsed;
@@ -171,6 +171,6 @@ public class FlareThrowing : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawRay(_flareOrigin.position, _flareOrigin.InverseTransformDirection(_localStartingVelocity.normalized));
+        Gizmos.DrawRay(_flareOrigin.position, _flareOrigin.TransformDirection(_localStartingVelocity.normalized));
     }
 }

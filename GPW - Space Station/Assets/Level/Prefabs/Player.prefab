@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 411927885907842514}
   - component: {fileID: 8693319973723978382}
   - component: {fileID: 8139872491201410922}
-  m_Layer: 0
+  - component: {fileID: 705897611202681789}
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -134,6 +135,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _flashlightHolder: {fileID: 8032084819142272055}
+--- !u!114 &705897611202681789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158607398074236420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eab8e903b0273348a95750fb16ae7c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _flareOrigin: {fileID: 3112507552405676298}
+  _localStartingVelocity: {x: 0, y: 1, z: 5}
+  _flarePrefab: {fileID: 7327497489989148767, guid: 34e0b731588690c4bab41005b889c7f3, type: 3}
+  _maxFlares: 20
+  _flareLifetime: 10
 --- !u!1 &1672738083798791572
 GameObject:
   m_ObjectHideFlags: 0
@@ -143,7 +161,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7289571754049141677}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,7 +194,7 @@ GameObject:
   - component: {fileID: 7218605297924278843}
   - component: {fileID: 8477169093863296874}
   - component: {fileID: 8438334135008519930}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -257,7 +275,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5601821708097476428}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -293,7 +311,7 @@ GameObject:
   - component: {fileID: 4036509156788563338}
   - component: {fileID: 4845363826999704475}
   - component: {fileID: 1134158709837719830}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -308,7 +326,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6298730244541538129}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -411,7 +429,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8032084819142272055}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FlashlightHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -442,7 +460,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5472899290436885377}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RotationPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
