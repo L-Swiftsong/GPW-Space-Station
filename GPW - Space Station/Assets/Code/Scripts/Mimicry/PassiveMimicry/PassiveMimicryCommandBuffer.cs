@@ -33,6 +33,9 @@ namespace Mimicry.PassiveMimicry
             _rbDrawPassiveMimicry = new CommandBuffer();
             _rbDrawPassiveMimicry.name = "DrawPassiveMimicry";
             _thisCamera.AddCommandBuffer(_rbDrawPassiveMimicryQueue, _rbDrawPassiveMimicry);
+
+            RenderPipelineManager.beginCameraRendering += BeginCameraRendering;
+            
             _updatePassiveMimicryCB = true;
         }
         private void OnDisable()
@@ -82,6 +85,14 @@ namespace Mimicry.PassiveMimicry
                 // The command buffer needs rebuilt.
                 RebuildPassiveMimicryCB();
             }
+        }
+
+        private void BeginCameraRendering(ScriptableRenderContext context, Camera camera)
+        {
+            OnPreRender();
+
+            context.ExecuteCommandBuffer(_rbDrawPassiveMimicry);
+            context.Submit();
         }
     }
 }
