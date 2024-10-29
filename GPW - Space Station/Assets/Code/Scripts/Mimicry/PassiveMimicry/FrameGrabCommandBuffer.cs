@@ -11,6 +11,7 @@ namespace Mimicry.PassiveMimicry
     {
         private CommandBuffer _rbFrame;
         [SerializeField] private CameraEvent _rbFrameQueue = CameraEvent.AfterForwardAlpha;
+        [SerializeField] private Material _mat;
 
         public RenderTexture LastFrame;
         public RenderTexture LastFrameTemp;
@@ -36,6 +37,8 @@ namespace Mimicry.PassiveMimicry
             _thisCamera.AddCommandBuffer(_rbFrameQueue, _rbFrame);
 
             RebuildCBFrame();
+
+            RenderPipelineManager.beginCameraRendering += CheckRebuildCB;
 
             Shader.SetGlobalFloat(PASSIVE_MIMICRY_GLOBAL_FLOAT_IDENTIFIER, 1.0f);
         }
@@ -116,17 +119,32 @@ namespace Mimicry.PassiveMimicry
             // Get the RTI of the camera and copy its pixel data to the lastFrameRTI.
             RenderTargetIdentifier cameraTargetID = new RenderTargetIdentifier(BuiltinRenderTextureType.CameraTarget);
             _rbFrame.Blit(cameraTargetID, LastFrameRTI);
+
+
+            _mat.SetTexture("_Test", LastFrame);
         }
 
-
-        private void OnPreRender()
+        private void CheckRebuildCB(ScriptableRenderContext context, Camera camera)
         {
-            if (_screenX != _thisCamera.pixelWidth || _screenY != _thisCamera.pixelHeight)
+            CheckRebuildCB(camera);
+
+            context.ExecuteCommandBuffer(_rbFrame);
+            context.Submit();
+        }    
+        private void CheckRebuildCB(Camera camera)
+        {
+            if (_screenX != camera.pixelWidth || _screenY != camera.pixelHeight)
             {
                 // The screen size has changed.
                 // Rebuild the CommandBuffer.
                 RebuildCBFrame();
             }
+        }
+
+
+        private void OnPreRender()
+        {
+            CheckRebuildCB(_thisCamera);
         }
     }
 }
