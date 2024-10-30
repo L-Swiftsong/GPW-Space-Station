@@ -1,32 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mimicry.PassiveMimicry;
 
 
 namespace Testing.Mimicry
 {
-    [RequireComponent(typeof(PassiveMimicryController))]
     public class MimicryTest : MonoBehaviour
     {
-        [SerializeField] private Transform _player;
-        private PassiveMimicryController _mimicryController;
+        private Transform _player;
+
+        [SerializeField] private Renderer _renderer;
+        private Material _mimicryMaterial;
+
+        private const string PASSIVE_MIMICRY_RAMP_IDENTIFIER = "_PassiveMimicryStrength";
 
 
         [Header("Strength Settings")]
-        [SerializeField] private float _minMimicryDistance;
-        [SerializeField] private float _maxMimicryDistance;
+        [SerializeField] private float _minMimicryDistance = 1.5f;
+        [SerializeField] private float _maxMimicryDistance = 3.0f;
         [SerializeField] private AnimationCurve _mimicryStrengthCurve;
 
 
         [Header("Debug")]
-        [SerializeField] private bool _drawGizmos;
-        [SerializeField] private Color _minDistanceColour;
-        [SerializeField] private Color _maxDistanceColour;
+        [SerializeField] private bool _drawGizmos = false;
+        [SerializeField] private Color _minDistanceColour = Color.red;
+        [SerializeField] private Color _maxDistanceColour = Color.green;
 
 
-        private void Awake() => _mimicryController = GetComponent<PassiveMimicryController>();
-        private void Start() => _player = FindObjectOfType<PlayerController>().transform; // Replace ASAP.
+        private void Awake() => _mimicryMaterial = _renderer.material;
+        private void Start() => _player = PlayerManager.Instance.Player;
 
         private void Update()
         {
@@ -36,9 +38,9 @@ namespace Testing.Mimicry
 
             // Determine the percentage strength to apply for our mimicry.
             float mimicryPercentageStrength = _mimicryStrengthCurve.Evaluate(percentageDistance);
-            
+
             // Set our controller's passiveMimicryRamp value to the percentage strength
-            _mimicryController.SetPassiveMimicryRamp(mimicryPercentageStrength);
+            _mimicryMaterial.SetFloat(PASSIVE_MIMICRY_RAMP_IDENTIFIER, mimicryPercentageStrength);
         }
 
 
