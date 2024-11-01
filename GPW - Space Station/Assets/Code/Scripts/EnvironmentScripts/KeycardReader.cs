@@ -7,6 +7,7 @@ public class KeycardReader : MonoBehaviour, IInteractable
 {
     [SerializeField] private ExternalInputDoor _connectedDoor;
     [SerializeField] private int _requiredKeycardID = -1;
+    public int RequiredKeycardID => _requiredKeycardID;
 
     [Space(5)]
     [SerializeField] private bool _interactOnlyOpens = false;
@@ -55,5 +56,18 @@ public class KeycardReader : MonoBehaviour, IInteractable
     {
         yield return new WaitForSeconds(_duration);
         _connectedDoor.Close();
+    }
+
+
+    public void OverrideMaterial(Material overrideMaterial)
+    {
+        // Override the material list of the renderers in the keycard reader.
+        foreach (Renderer renderer in transform.GetComponentsInChildren<Renderer>())
+        {
+            renderer.material = overrideMaterial;
+        }
+
+        // Ensure our connected door matches our override material.
+        _connectedDoor.OverrideMaterial(overrideMaterial);
     }
 }

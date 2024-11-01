@@ -13,6 +13,8 @@ namespace Environment.Doors
         private bool _wasOpenedFromFacingDirection = true;
         public bool WasOpenedFromFacingDirection => _wasOpenedFromFacingDirection;
 
+        public int RequiredKeycardID => _requiredKeycardID;
+
 
         private void Start()
         {

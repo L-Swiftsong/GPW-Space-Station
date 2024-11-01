@@ -3,43 +3,26 @@ using UnityEngine.InputSystem;
 
 public class KeyCard : MonoBehaviour, IInteractable
 {
-    [SerializeField]
-    private int keyCardId;
-
-    public int KeyCardId 
+    [SerializeField] private int m_keyCardID;
+    public int KeyCardID
     {
-        get => keyCardId; 
-        set => keyCardId = value;
+        get => m_keyCardID;
+        set => m_keyCardID = value;
     }
 
-    [SerializeField]
-    private Color keyCardColour; 
 
-    public Color KeyCardColour 
+    public void SetupKeycard(int id, Material material)
     {
-        get => keyCardColour;
-        set => keyCardColour = value;
-    }
-
-    private void Start()
-    {
+        this.KeyCardID = id;
+        
         Renderer renderer = GetComponent<Renderer>();
-
-        if (renderer != null)
-        {
-            Material materialInstance = new Material(renderer.sharedMaterial);
-
-            renderer.material = materialInstance;            
-            
-            materialInstance.SetColor("_Color", keyCardColour);
-        }
+        renderer.material = material;
     }
-
 
     public void Interact(PlayerInteraction playerInteraction)
     {
-        playerInteraction.Inventory.AddKeyCard(this.KeyCardId);
-        Debug.Log($"Picked up {this.KeyCardId}");
+        playerInteraction.Inventory.AddKeyCard(this.KeyCardID);
+        Debug.Log($"Picked up {this.KeyCardID}");
         Destroy(this.gameObject);
     }
 }
