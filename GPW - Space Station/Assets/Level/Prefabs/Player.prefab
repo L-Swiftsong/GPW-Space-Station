@@ -88,9 +88,9 @@ MonoBehaviour:
   speedChangeRate: 10
   _toggleSprint: 0
   jumpHeight: 1.2
+  jumpTimeout: 0.1
   gravity: -15
   lowGravity: -2
-  jumpTimeout: 0.1
   fallTimeout: 0.15
   groundCheck: {fileID: 7289571754049141677}
   groundedRadius: 0.5
@@ -98,15 +98,26 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _toggleCrouch: 0
-  crouchHeight: 0.9
+  crouchHeight: 1.35
   normalHeight: 1.8
-  crouchSpeedMultiplier: 0.5
-  tiltAngle: 15
+  _crouchSpeed: 2
+  _crouchObstacleLayers:
+    serializedVersion: 2
+    m_Bits: 193
+  _crawlingHeight: 0.85
+  _crawlingSpeed: 2
+  _crawlingCameraHeight: 0.7
   tiltSpeed: 5
+  tiltAngle: 15
   peekOffset: 0.3
-  camera: {fileID: 6298730244541538129}
+  _playerCamera: {fileID: 6298730244541538129}
   _horizontalLookSensitivity: 10
   _verticalLookSensitivity: 7.5
+  _defaultCameraHeight: 1.6
+  _crouchedCameraHeight: 1.15
+  _drawGizmos: 1
+  _drawCameraGizmos: 1
+  _gizmoState: 1
 --- !u!114 &411927885907842514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,7 +690,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0
