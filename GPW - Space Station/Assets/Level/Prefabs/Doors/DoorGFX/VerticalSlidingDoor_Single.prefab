@@ -363,6 +363,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5691432816732315959}
   - component: {fileID: 140993862091525239}
+  - component: {fileID: -8040233390186703779}
   m_Layer: 9
   m_Name: VerticalSlidingDoor_Single
   m_TagString: Untagged
@@ -456,3 +457,19 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
+--- !u!208 &-8040233390186703779
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6893551385818824946}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.75, y: 1, z: 0.1}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 1, z: 0}
+  m_TimeToStationary: 0.5

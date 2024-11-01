@@ -29,10 +29,12 @@ namespace Environment.Doors
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!_detectedLayers.Contains(other.gameObject))
+            if (!_detectedLayers.Contains(other.gameObject.layer))
             {
+                Debug.Log(other.name + " was invalid");
                 return;
             }
+            Debug.Log(other.name + " was valid");
 
             _openCount++;
             if (_openCount == 1)
@@ -43,7 +45,7 @@ namespace Environment.Doors
         }
         private void OnTriggerExit(Collider other)
         {
-            if (!_detectedLayers.Contains(other.gameObject))
+            if (!_detectedLayers.Contains(other.gameObject.layer))
             {
                 return;
             }

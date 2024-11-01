@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 
 namespace Environment.Doors
@@ -12,6 +13,8 @@ namespace Environment.Doors
         private bool _wasPreviouslyOpenedFromFacingDirection = false;
 
         [SerializeField] private DoorFrame[] _doorFrames;
+        private NavMeshObstacle _navMeshObstacle;
+        private bool _shouldToggleObstalce = true;
 
 
         private void Awake()
@@ -22,9 +25,17 @@ namespace Environment.Doors
                 Debug.LogError("Error: Failed to get Door reference for the DoorOpener: " + this + ". Ensure that a parent object contains a 'Door' instance.");
             }
 
-
             // Subscribe to Door Events.
             _door.OnOpenStateChanged += Door_OnOpenStateChanged;
+
+
+            // Get NavMeshObstacle instance.
+            _navMeshObstacle = GetComponent<NavMeshObstacle>();
+            if (_door is MotionActivatedDoor)
+            {
+                _shouldToggleObstalce = false;
+                _navMeshObstacle.enabled = false;
+            }
         }
         private void OnDestroy() => _door.OnOpenStateChanged -= Door_OnOpenStateChanged;
         
@@ -47,6 +58,13 @@ namespace Environment.Doors
             // If we are opening the door from the facing direction, or are closing it after doing so, alter the DoorFrames.
             bool openedFromFacingDirection = isOpen ? (_door is InteractableDoor) && (_door as InteractableDoor).WasOpenedFromFacingDirection : _wasPreviouslyOpenedFromFacingDirection;
             _wasPreviouslyOpenedFromFacingDirection = openedFromFacingDirection;
+
+            if (_shouldToggleObstalce && _navMeshObstacle != null)
+            {
+                // Toggle NavMeshObstacle enabled status (Closed = enabled).
+                _navMeshObstacle.enabled = !isOpen;
+            }
+
 
             while (!allComplete)
             {
