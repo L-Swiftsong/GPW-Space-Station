@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; 
-using TMPro; 
 /*
  * CONTEXT:
  * 
@@ -12,6 +10,12 @@ using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    private CharacterController _controller;
+
+    [System.Serializable] private enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
+    private MovementState _currentMovementState = MovementState.Walking;
+
+
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 4.0f;
     [SerializeField] private float sprintSpeed = 6.0f;
@@ -19,70 +23,91 @@ public class PlayerController : MonoBehaviour
 
     [Space(5)]
     [SerializeField] private bool _toggleSprint = false;
-    private bool _isSprinting = false;
 
 
-    [Header("Jump and Gravity Settings")]
+    [Header("Jumping Settings")]
     [SerializeField] private float jumpHeight = 1.2f;
+    [SerializeField] private float jumpTimeout = 0.1f;
+    private bool _canJump = true;
+
+
+    [Header("Gravity Settings")]
     [SerializeField] private float gravity = -15.0f;    
     [SerializeField] private float lowGravity = -2.0f;  
-    [SerializeField] private float jumpTimeout = 0.1f;
     [SerializeField] private float fallTimeout = 0.15f;
     private float _verticalVelocity;
-    private float _terminalVelocity = 53.0f;
+    private const float TERMINAL_VELOCITY = 53.0f;
+    private bool _inLowGravityZone = false;
 
 
     [Header("Grounded Settings")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private float groundedRadius = 0.5f;
     [SerializeField] private LayerMask groundLayers;
-    private bool _grounded = true; 
+    private bool _isGrounded = true; 
 
 
     [Header("Crouch Settings")]
     [SerializeField] private bool _toggleCrouch = false;
+    [SerializeField] private float _crouchSpeed = 2.0f;
 
     [Space(5)]
-    [SerializeField] private float crouchHeight = 1.0f;
-    [SerializeField] private float normalHeight = 2.0f;
-    [SerializeField] private float crouchSpeedMultiplier = 0.5f;
-    private bool _isCrouching = false;
+    [SerializeField] private float crouchHeight = 1.35f;
+    [SerializeField] private float normalHeight = 1.8f;
+    [SerializeField] private float _heightSpeedChange = 3.0f;
+
+    [Space(5)]
+    [SerializeField] private LayerMask _crouchObstacleLayers;
+
+
+    [Header("Crawling Settings")]
+    [SerializeField] private float _crawlingHeight = 0.9f;
+    [SerializeField] private float _crawlingSpeed = 2.0f;
+    [SerializeField] private float _crawlingCameraHeight = 0.75f;
 
 
     [Header("Tilt Settings")]
-    [SerializeField] private float tiltAngle = 15.0f;
     [SerializeField] private float tiltSpeed = 5.0f;
-    [SerializeField] private float peekOffset = 0.3f;  
+    [SerializeField] private float tiltAngle = 15.0f;
+    [SerializeField] private float peekOffset = 0.3f;
     private float _currentTilt = 0.0f;
-    private Vector3 _cameraInitialPosition;
-    private Vector3 _cameraPeekPosition;
+    private float _currentPeekOffset = 0.0f;
 
     private Coroutine _tiltingCoroutine;
-    private bool _tiltingLeft;
+
+    [System.Serializable] enum CurrentTiltState { NotTilting, Left, Right };
+    private CurrentTiltState _currentTiltState;
 
 
     [Header("Camera Settings")]
-    [SerializeField] private GameObject camera;
+    [SerializeField] private GameObject _playerCamera;
     private float _rotationX = 0.0f;
 
+    [Space(5)]
     [SerializeField] private float _horizontalLookSensitivity = 100.0f;
     [SerializeField] private float _verticalLookSensitivity = 75.0f;
 
+    [Space(5)]
+    [SerializeField] private float _defaultCameraHeight = 1.6f;
+    [SerializeField] private float _crouchedCameraHeight = 1.0f;
 
-    private float _speed;
-    private CharacterController _controller;
-    private bool _canJump = true;
-    private bool _inLowGravityZone = false;
 
-    private bool isHiding = false;
+    private bool _wantsToSprint = false;
+    private bool _wantsToCrouch = false;
+    private bool _wantsToCrawl = false;
+    private bool _isHiding = false;
+
 
     private void Start()
     {
-        // character controller and camera settings
+        // Get references.
         _controller = GetComponent<CharacterController>();
+
+        // Start walking.
+        _currentMovementState = MovementState.Walking;
+
+        // Ensure that the cursor starts locked.
         Cursor.lockState = CursorLockMode.Locked;
-        _cameraInitialPosition = camera.transform.localPosition;
-        _cameraPeekPosition = _cameraInitialPosition;
     }
     private void OnEnable()
     {
@@ -134,7 +159,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (_isCrouching)
+        if (_wantsToCrouch)
         {
             // We are currently crouching. Stop crouching.
             StopCrouching();
@@ -168,28 +193,35 @@ public class PlayerController : MonoBehaviour
     {
         if (_toggleSprint)
         {
-            _isSprinting = !_isSprinting;
+            if (_wantsToSprint)
+            {
+                StopSprinting();
+            }
+            else
+            {
+                StartSprinting();
+            }
         }
     }
     private void PlayerInput_OnSprintStarted()
     {
         if (!_toggleSprint)
         {
-            _isSprinting = true;
+            StartSprinting();
         }
     }
     private void PlayerInput_OnSprintCancelled()
     {
         if (!_toggleSprint)
         {
-            _isSprinting = false;
+            StopSprinting();
         }
     }
 
     private void PlayerInput_OnLeanLeftStarted() => StartTilting(tiltLeft: true);
     private void PlayerInput_OnLeanLeftCancelled()
     {
-        if (_tiltingLeft)
+        if (_currentTiltState == CurrentTiltState.Left)
         {
             // We were leaning to the left. Stop leaning.
             StopTilting();
@@ -199,7 +231,7 @@ public class PlayerController : MonoBehaviour
     private void PlayerInput_OnLeanRightStarted() => StartTilting(tiltLeft: false);
     private void PlayerInput_OnLeanRightCancelled()
     {
-        if (!_tiltingLeft)
+        if (_currentTiltState == CurrentTiltState.Right)
         {
             // We were leaning to the right. Stop leaning.
             StopTilting();
@@ -214,42 +246,111 @@ public class PlayerController : MonoBehaviour
     {
         GroundedCheck();
 
-        if (!isHiding)
+        if (!_isHiding)
         {
+            HandleStateChange();
+            
             HandleMovement();
-            HandleSprintCheck();
             HandleGravity();
-            HandleTilt();
+            UpdateCameraTransform();
+            HandleSprintToggleCheck();
+
+            UpdateCharacterHeight();
         }
         
         HandleLook();             
     }
 
+
+    private void HandleStateChange()
+    {
+        if (_isHiding)
+        {
+            // We are currently hiding.
+            _currentMovementState = MovementState.Hiding;
+            return;
+        }
+        
+
+        if ((_currentMovementState == MovementState.Crouching || _wantsToCrouch) && _wantsToCrawl)
+        {
+            // We are wanting to crawl.
+            _currentMovementState = MovementState.Crawling;
+            return;
+        }
+
+        if (_wantsToCrouch)
+        {
+            // We are wanting to crouch.
+            _currentMovementState = MovementState.Crouching;
+            return;
+        }
+
+
+        if ((_currentMovementState == MovementState.Crouching || _currentMovementState == MovementState.Crawling) && !CanStopCrouching())
+        {
+            // We are currently crouching/crawling (Even though we don't want to be), and cannot stop doing so.
+            return;
+        }
+
+        if (_wantsToSprint)
+        {
+            // We are wanting to sprint.
+            _currentMovementState = MovementState.Sprinting;
+            return;
+        }
+
+
+        // Default to the 'Walking' state.
+        _currentMovementState = MovementState.Walking;
+    }
+    
+    
     private void GroundedCheck()
     {
-        _grounded = Physics.CheckSphere(groundCheck.position, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
+        _isGrounded = Physics.CheckSphere(groundCheck.position, groundedRadius, groundLayers, QueryTriggerInteraction.Ignore);
     }
 
     /// <summary>
-    /// Handles player movement, sprinting, and crouch speed adjustment.
+    /// Handles player movement.
     /// </summary>
     private void HandleMovement()
     {
-        float targetSpeed = _isCrouching
-            ? moveSpeed * crouchSpeedMultiplier
-            : (_isSprinting ? sprintSpeed : moveSpeed);
+        // Determine our current Movement Speed based on our current Movement State.
+        float targetSpeed = _currentMovementState switch
+        {
+            MovementState.Sprinting => sprintSpeed,
+            MovementState.Crouching => _crouchSpeed,
+            MovementState.Crawling => _crawlingSpeed,
+            _ => moveSpeed,
+        };
 
+        // Calculate our desired movement direction.
         Vector2 movementInput = PlayerInput.MovementInput;
         Vector3 inputDirection = transform.right * movementInput.x + transform.forward * movementInput.y;
-
-        _speed = inputDirection.magnitude >= 0.1f ? targetSpeed : 0.0f;
         
-
-        _controller.Move(inputDirection * (_speed * Time.deltaTime) + Vector3.up * _verticalVelocity * Time.deltaTime);
+        // Apply movement.
+        _controller.Move(inputDirection * targetSpeed * Time.deltaTime);
     }
 
+    private void UpdateCharacterHeight()
+    {
+        float targetHeight = _currentMovementState switch
+        {
+            MovementState.Crouching => crouchHeight,
+            MovementState.Crawling => _crawlingHeight,
+            _ => normalHeight,
+        };
+        _controller.height = Mathf.MoveTowards(_controller.height, targetHeight, _heightSpeedChange * Time.deltaTime);
+
+        _controller.center = new Vector3(0.0f, _controller.height / 2.0f, 0.0f);
+    }
+
+
+    #region Camera
+
     /// <summary>
-    /// Handles player look/rotation using clamping to avoid over-rotating. Also appllies camera tilt.
+    /// Handles player look/rotation using clamping to avoid over-rotating.
     /// </summary>
     private void HandleLook()
     {
@@ -259,25 +360,61 @@ public class PlayerController : MonoBehaviour
         _rotationX -= lookY;
         _rotationX = Mathf.Clamp(_rotationX, -90f, 90f);
 
-        camera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
         transform.Rotate(Vector3.up * lookX);
     }
 
-
-    private void HandleSprintCheck()
+    /// <summary>
+    /// Updates the camera's current position and rotation for crouching & peeking.
+    /// </summary>
+    private void UpdateCameraTransform()
     {
-        if (!_toggleSprint || !_isSprinting)
+        // Apply the tilt and peek to camera
+        _playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
+
+        float cameraHeight = Mathf.MoveTowards(_playerCamera.transform.localPosition.y, GetDesiredCameraHeight(), _heightSpeedChange * Time.deltaTime);
+        _playerCamera.transform.localPosition = new Vector3(_currentPeekOffset, cameraHeight, 0.0f);
+    }
+
+    private float GetDesiredCameraHeight()
+    {
+        return _currentMovementState switch
         {
-            // We aren't using Toggle Sprint (Or aren't sprinting), so this function shouldn't be run.
+            MovementState.Crouching => _crouchedCameraHeight,
+            MovementState.Crawling => _crawlingCameraHeight,
+            _ => _defaultCameraHeight,
+        };
+    }
+
+    #endregion
+
+
+    #region Sprinting
+
+    private void HandleSprintToggleCheck()
+    {
+        if (!_toggleSprint || !_wantsToSprint)
+        {
+            // We aren't using Toggle Sprint (Or don't want to sprint), so this function shouldn't be run.
             return;
         }
 
-        if (_speed == 0.0f)
+        if (PlayerInput.MovementInput == Vector2.zero)
         {
-            // We aren't moving. Stop Sprinting
-            _isSprinting = false;
+            // We aren't moving. Stop Sprinting.
+            _wantsToSprint = false;
         }
     }
+
+    private void StartSprinting()
+    {
+        if (_toggleCrouch)
+            _wantsToCrouch = false;
+
+        _wantsToSprint = true;
+    }
+    private void StopSprinting() => _wantsToSprint = false;
+
+    #endregion
 
 
     #region Jumping
@@ -285,7 +422,7 @@ public class PlayerController : MonoBehaviour
     /// <summary> Handles jumping.</summary>
     private void PerformJump()
     {
-        if (!_grounded && _canJump && !_isCrouching)
+        if (!_isGrounded && _canJump && !(_currentMovementState == MovementState.Crouching || _currentMovementState == MovementState.Crawling))
         {
             // We cannot jump.
             return;
@@ -311,45 +448,41 @@ public class PlayerController : MonoBehaviour
 
     #region Crouching
 
-    /// <summary> Start Crouching. Adjusts player height and movement speed.</summary>
+    /// <summary> Notify the controller that we want to start crouching.</summary>
     private void StartCrouching()
     {
-        _controller.height = crouchHeight;
-        camera.transform.localPosition = new Vector3(
-            _cameraInitialPosition.x,
-            _cameraInitialPosition.y - 0.3f,
-            _cameraInitialPosition.z
-        );
+        if (_toggleSprint)
+            StopSprinting();
 
-        _isCrouching = true;
+        _wantsToCrouch = true;
     }
-    /// <summary> Stop Crouching. Adjusts player height and movement speed.</summary>
-    private void StopCrouching()
-    {
-        _controller.height = normalHeight;
-        camera.transform.localPosition = _cameraInitialPosition;
+    /// <summary> Notify the controller that we want to stop crouching. We'll stop crouching once we are able to.</summary>
+    private void StopCrouching() => _wantsToCrouch = false;
 
-        _isCrouching = false;
+    private bool CanStopCrouching()
+    {
+        if (Physics.Raycast(transform.position, Vector3.up, normalHeight, _crouchObstacleLayers))
+        {
+            // There is an obstacle stopping us from standing up.
+            return false;
+        }
+
+        return true;
     }
 
     #endregion
 
 
-    #region Tilting
+    #region Crawling
 
-    /// <summary>
-    /// Handles the camera's current tilt.
-    /// </summary>
-    private void HandleTilt()
-    {
-        // Apply the tilt and peek to camera
-        camera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
-        camera.transform.localPosition = Vector3.Lerp(
-            camera.transform.localPosition,
-            _cameraPeekPosition,
-            Time.deltaTime * tiltSpeed
-        );
-    }
+    public void TryStartCrawling() => _wantsToCrawl = true;
+    public void TryStopCrawling() => _wantsToCrawl = false;
+    
+
+    #endregion
+
+
+    #region Tilting
 
     /// <summary> Starts the camera tilting in the desired direction.</summary>
     private void StartTilting(bool tiltLeft)
@@ -359,17 +492,12 @@ public class PlayerController : MonoBehaviour
         {
             StopCoroutine(_tiltingCoroutine);
         }
-        _tiltingCoroutine = StartCoroutine(LerpTilt(tiltLeft ? tiltAngle : -tiltAngle));
 
-        _tiltingLeft = tiltLeft;
+        float targetTilt = tiltLeft ? tiltAngle : -tiltAngle;
+        float targetPeekOffset = tiltLeft ? -peekOffset : peekOffset;
+        _tiltingCoroutine = StartCoroutine(LerpTilt(targetTilt, targetPeekOffset));
 
-
-        // Set the camera's position to the desired lean position.
-        _cameraPeekPosition = new Vector3(
-            _cameraInitialPosition.x + (tiltLeft ? -peekOffset : peekOffset),
-            _cameraInitialPosition.y,
-            _cameraInitialPosition.z
-        );
+        _currentTiltState = tiltLeft ? CurrentTiltState.Left : CurrentTiltState.Right;
     }
     /// <summary> Reverts the camera tilt so that it is no longer tilting.</summary>
     private void StopTilting()
@@ -379,22 +507,21 @@ public class PlayerController : MonoBehaviour
         {
             StopCoroutine(_tiltingCoroutine);
         }
-        _tiltingCoroutine = StartCoroutine(LerpTilt(0.0f));
+        _tiltingCoroutine = StartCoroutine(LerpTilt(0.0f, 0.0f));
 
-        _tiltingLeft = false;
-
-        // Reset the camera's position.
-        _cameraPeekPosition = _cameraInitialPosition;
+        _currentTiltState = CurrentTiltState.NotTilting;
     }
 
     /// <summary> Lerp the value of '_currentTilt' towards the value of 'targetTilt'.</summary>
-    private IEnumerator LerpTilt(float targetTilt)
+    private IEnumerator LerpTilt(float targetTilt, float targetOffset)
     {
         // Loop until we have reached our desired tilt.
-        while(_currentTilt != targetTilt)
+        while(_currentTilt != targetTilt || _currentPeekOffset != targetOffset)
         {
             // Lerp the current tilt towards the target tilt.
             _currentTilt = Mathf.Lerp(_currentTilt, targetTilt, tiltSpeed * Time.deltaTime);
+            _currentPeekOffset = Mathf.Lerp(_currentPeekOffset, targetOffset, tiltSpeed * Time.deltaTime);
+
             yield return null;
         }
     }
@@ -407,8 +534,9 @@ public class PlayerController : MonoBehaviour
     /// <summary> Applies gravity based on the player's environment (normal or low-gravity).</summary>
     private void HandleGravity()
     {
+        // Determine current vertical velocity using gravity.
         float appliedGravity = _inLowGravityZone ? lowGravity : gravity;
-        if (_grounded)
+        if (_isGrounded)
         {
             if (_verticalVelocity < 0.0f)
             {
@@ -417,11 +545,14 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (_verticalVelocity < _terminalVelocity)
+            if (_verticalVelocity < TERMINAL_VELOCITY)
             {
                 _verticalVelocity += appliedGravity * Time.deltaTime;
             }
         }
+
+        // Apply current vertical velocity (Mainly gravity).
+        _controller.Move(Vector3.up * _verticalVelocity * Time.deltaTime);
     }
 
     /// <summary> For when the player enters a low-gravity zone.</summary>
@@ -439,8 +570,5 @@ public class PlayerController : MonoBehaviour
     #endregion
 
 
-    public void SetHiding(bool hiding)
-    {
-        isHiding = hiding;
-    }
+    public void SetHiding(bool hiding) => _isHiding = hiding;
 }

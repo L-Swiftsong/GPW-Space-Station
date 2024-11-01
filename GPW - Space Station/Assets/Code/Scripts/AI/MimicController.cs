@@ -1,62 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class MimicController : MonoBehaviour
+
+namespace AI.Mimic
 {
-    [SerializeField]
-    private float moveSpeed = 3f;
-
-    private void Update()
+    [RequireComponent(typeof(NavMeshAgent), typeof(EntitySenses))]
+    public class MimicController : MonoBehaviour
     {
-        if (PlayerManager.Instance.Player != null)
+        private NavMeshAgent _agent;
+        private EntitySenses _entitySenses;
+
+
+        private void Awake()
         {
-            if (HasLineOfSightToPlayer())
-            {
-                
-                Vector3 direction = new Vector3(
-                    PlayerManager.Instance.Player.position.x - transform.position.x,
-                    0f,
-                    PlayerManager.Instance.Player.position.z - transform.position.z
-                );
-
-                if (direction.sqrMagnitude > 0.01f) 
-                {
-                    direction = direction.normalized;
-
-                    
-                    transform.position += direction * moveSpeed * Time.deltaTime;
-
-                    
-                    Quaternion lookRotation = Quaternion.LookRotation(direction);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-                }
-            }
+            _agent = GetComponent<NavMeshAgent>();
+            _entitySenses = GetComponent<EntitySenses>();
         }
-    }
 
-    private bool HasLineOfSightToPlayer()
-    {
-        RaycastHit hit;
-        Vector3 directionToPlayer = PlayerManager.Instance.Player.position - transform.position;
-        float distanceToPlayer = directionToPlayer.magnitude;
 
-        if (Physics.Raycast(transform.position, directionToPlayer.normalized, out hit, distanceToPlayer))
+        private void Update()
         {
-            if (hit.transform == PlayerManager.Instance.Player)
-            { 
-                return true;
+            if (_entitySenses.HasTarget)
+            {
+                // We can see the player.
+                _agent.SetDestination(_entitySenses.TargetPosition);
+            }
+            else if (_entitySenses.CurrentPointOfInterest.HasValue)
+            {
+                // We cannot see the player but have heard something.
+                _agent.SetDestination(_entitySenses.CurrentPointOfInterest.Value);
+
+                if (_agent.remainingDistance < 0.5f)
+                {
+                    // Don't keep pathing to the same POI if we've discovered it.
+                    _entitySenses.ClearPointOfInterest();
+                }
             }
             else
             {
+                // We cannot see the player and don't currently have a set POI.
                 
-                return false;
             }
-        }
-        else
-        {
-       
-            return true;
         }
     }
 }

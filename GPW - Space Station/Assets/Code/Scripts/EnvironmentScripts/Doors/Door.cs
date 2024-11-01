@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 
 namespace Environment.Doors
 {
@@ -66,5 +67,19 @@ namespace Environment.Doors
         }
 
         private void ResetCanOpen() => _canOpen = true;
+
+
+
+        public void OverrideMaterial(Material overrideMaterial)
+        {
+            // The transform with the DoorOpener script will hold the GFX of the actual door.
+            Transform gfxContainer = transform.GetComponentInChildren<DoorOpener>().transform;
+
+            // Override the material list of all child renderers under the gfxContainer.
+            foreach (Renderer renderer in gfxContainer.GetComponentsInChildren<Renderer>())
+            {
+                renderer.material = overrideMaterial;
+            }
+        }
     }
 }
