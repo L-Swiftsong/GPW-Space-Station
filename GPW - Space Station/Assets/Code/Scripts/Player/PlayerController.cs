@@ -571,4 +571,5 @@ public class PlayerController : MonoBehaviour
 
 
     public void SetHiding(bool hiding) => _isHiding = hiding;
+    public bool GetHiding() => _isHiding;
 }

@@ -23,11 +23,6 @@ public class FlashlightPickup : MonoBehaviour, IInteractable
         Transform flashlightHolder = playerTransform.GetComponent<TmpFlashlightController>().FlashlightHolder;
         GameObject flashlightInstance = Instantiate(flashlightPrefab, flashlightHolder.position, flashlightHolder.rotation, flashlightHolder);
 
-        if (flashlightInstance.TryGetComponent<FlashLightController>(out FlashLightController flashlightController))
-        {
-            flashlightController.PickUpFlashlight();
-        }
-
         Destroy(gameObject); // remioves the flashlight the player picked up 
     }
 }

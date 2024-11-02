@@ -48,7 +48,7 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     private void HandleRecharge(Transform player)
     {
         FlashLightController flashlightController = player.GetComponentInChildren<FlashLightController>();
-        if (flashlightController != null && flashlightController.HasFlashlight())
+        if (flashlightController != null)
         {
             StartRecharge(flashlightController);
         }
