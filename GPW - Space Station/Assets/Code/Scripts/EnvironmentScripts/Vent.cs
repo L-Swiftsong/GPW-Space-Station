@@ -1,21 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Vent : MonoBehaviour
 {
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.TryGetComponent<PlayerController>(out PlayerController playerController))
-        {
-            playerController.TryStartCrawling();
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent<PlayerController>(out PlayerController playerController))
-        {
-            playerController.TryStopCrawling();
-        }
-    }
+    private List<VentEntrance> _ventEntrances;
+    public List<VentEntrance> VentEntrances => _ventEntrances;
+
+    private void Awake() => _ventEntrances = GetComponentsInChildren<VentEntrance>().ToList();
 }

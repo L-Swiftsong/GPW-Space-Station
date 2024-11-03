@@ -7,6 +7,7 @@ using UnityEngine;
 public class VentEntrance : MonoBehaviour
 {
     [SerializeField] private bool _isOmnidirectional = false;
+    public bool IsOmnidirectional => _isOmnidirectional;
 
 
 #if UNITY_EDITOR

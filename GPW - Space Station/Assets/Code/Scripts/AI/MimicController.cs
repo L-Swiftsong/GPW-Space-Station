@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -30,6 +33,11 @@ namespace AI.Mimic
         [SerializeField] private Vector3 _mapCentre;
         [SerializeField] private Vector3 _mapExtents;
 
+        [Space(5)]
+        [SerializeField] private float _minWanderDecisionTime = 1.0f;
+        [SerializeField] private float _maxWanderDecisionTime = 15.0f;
+        private float _wanderDecisionTimeRemaining = 0.0f;
+
 
         [Header("Searching Settings")]
 
@@ -55,6 +63,10 @@ namespace AI.Mimic
         [SerializeField] private float _minTimeBetweenVents = 10.0f; // The minimum time between the agent entering the vents.
         private float _ventCooldownRemaining;
 
+        private Vent _targetVent;
+        private VentEntrance _targetEntrance;
+        private bool _isInVent = false;
+
 
 
         private void Awake()
@@ -75,6 +87,7 @@ namespace AI.Mimic
 
 
             _ventCooldownRemaining -= Time.deltaTime;
+            _wanderDecisionTimeRemaining -= Time.deltaTime;
         }
 
 
@@ -124,16 +137,32 @@ namespace AI.Mimic
                 return;
             }
 
-            float _rndBehaviourDecision = Random.Range(0.0f, 1.0f);
 
-            if (_rndBehaviourDecision <= 0.2f)
+            if (_wanderDecisionTimeRemaining <= 0.0f)
             {
-                _currentState = State.Vent;
-                EnterVentState();
+                float _rndBehaviourDecision = Random.Range(0.0f, 1.0f);
+
+                float ventChance = 0.2f;
+                float setTrapChance = 0.2f;
+                if (_rndBehaviourDecision <= ventChance && _ventCooldownRemaining <= 0.0f)
+                {
+                    TryEnterVentState();
+                    return;
+                }
+                else if (_rndBehaviourDecision <= (ventChance + setTrapChance))
+                {
+                    _currentState = State.SetTrap;
+                    return;
+                }
+
+                _currentState = State.Wander;
+                _wanderDecisionTimeRemaining = Random.Range(_minWanderDecisionTime, _maxWanderDecisionTime);
                 return;
             }
-
-            _currentState = State.Wander;
+            else
+            {
+                _currentState = State.Wander;
+            }
         }
         private void HandleActiveState()
         {
@@ -237,39 +266,101 @@ namespace AI.Mimic
         {
             if (_agent.remainingDistance <= 0.5f)
             {
-                // We have reached a vent.
+                if (_isInVent)
+                {
+                    // We have reached the vent exit.
+                    // Exit the vent.
+                    _isInVent = false;
+                    _currentState = State.Wander;
+                }
+                else
+                {
+                    // We have reached our target vent.
+                    _isInVent = true;
+
+                    // Choose a random vent entrance (Which is not our current entrance, unless said entrance is Omnidirectional).
+                    int maxIndex = _targetVent.VentEntrances.Count - (_targetEntrance.IsOmnidirectional ? 0 : 1);
+                    int randomIndex = Random.Range(0, maxIndex);
+
+                    VentEntrance newTarget = _targetVent.VentEntrances[randomIndex];
+                    _targetEntrance = ((!_targetEntrance.IsOmnidirectional && newTarget != _targetEntrance) ? newTarget : (_targetVent.VentEntrances[randomIndex == 0 ? 1 : randomIndex - 1]));
+
+
+                    // (Temp) Move towards the vent exit.
+                    _agent.enabled = false;
+                    transform.position = _targetEntrance.transform.position;
+                    _agent.enabled = true;
+                    _ventCooldownRemaining = _minTimeBetweenVents;
+                }
             }
         }
 
-        private void EnterVentState()
+        [ContextMenu(itemName: "Test/Enter Vent State")]
+        private void TryEnterVentState()
         {
-            // Find the nearest vent entrance.
+            // Reset previous references.
+            _targetVent = null;
+            _targetEntrance = null;
+            _isInVent = false;
 
-            _agent.SetDestination(Vector3.zero);
+            Debug.Log("Attempt Enter Vent State");
+
+
+            // Get the closest Vent Entrance (Based on NavMesh distance, not Euclidean distance).
+            List<VentEntrance> ventEntrances = new List<VentEntrance>();
+            foreach(Collider collider in Physics.OverlapSphere(transform.position, _maxVentDetectionRadius))
+            {
+                if (collider.TryGetComponent<VentEntrance>(out VentEntrance ventEntrance))
+                {
+                    ventEntrances.Add(ventEntrance);
+                }
+            }
+
+            // Set our target entrance to the closest vent entrance (Based on NavMesh distance, not Euclidean distance).
+            float closestSqrDistance = float.PositiveInfinity;
+            NavMeshPath closestVentPath = null;
+            NavMeshPath path = new NavMeshPath();
+            for (int i = 0; i < ventEntrances.Count; i++)
+            {
+                if (!NavMesh.SamplePosition(ventEntrances[i].transform.position, out NavMeshHit hit, 1.0f, _agent.areaMask))
+                {
+                    // No valid point for this Vent Entrance.
+                    continue;
+                }
+                
+                if (!NavMesh.CalculatePath(transform.position, hit.position, _agent.areaMask, path) || (path.corners[path.corners.Length - 1] - hit.position).sqrMagnitude >= 0.5f)
+                {
+                    // No valid path to this Vent Entrance (Either as CalculatePath() failed or the path couldn't reach the destination).
+                    continue;
+                }
+                
+                // Determine if this vent entrance is the closest of those checked.
+                float sqrDistance = CalculatePathSqrLength(path);
+                if (sqrDistance < closestSqrDistance)
+                {
+                    _targetEntrance = ventEntrances[i];
+                    closestSqrDistance = sqrDistance;
+                    closestVentPath = path;
+                }
+            }
+
+            if (_targetEntrance == null)
+            {
+                // We were unable to find a path to a valid entrance.
+                _currentState = State.Wander;
+                Debug.Log("Vent State Failure");
+                return;
+            }
+
+            _targetVent = _targetEntrance.GetComponentInParent<Vent>();
+            _agent.SetDestination(_targetEntrance.transform.position);
+            _currentState = State.Vent;
+            Debug.Log("Vent State Success");
         }
 
         #endregion
 
 
-        private bool TryFindRandomPoint(Vector3 centre, float maxRadius, out Vector3 result, int maxAttempts = 5)
-        {
-            Vector3 randomPoint;
-            NavMeshHit hit;
-            for (int i = 0; i < maxAttempts; i++)
-            {
-                randomPoint = centre + (Random.insideUnitSphere * maxRadius);
-                if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, _agent.areaMask))
-                {
-                    // We found a suitable point on the navmesh.
-                    result = hit.position;
-                    return true;
-                }
-            }
-
-            // We couldn't find a suitable point on the navmesh.
-            result = Vector3.zero;
-            return false;
-        }
         private bool TryFindRandomPoint(Vector3 centre, Vector3 extents, out Vector3 result, int maxAttempts = 5)
         {
             Vector3 randomPoint;
@@ -292,6 +383,26 @@ namespace AI.Mimic
             // We couldn't find a suitable point on the navmesh.
             result = Vector3.zero;
             return false;
+        }
+
+        
+        private float CalculatePathSqrLength(NavMeshPath path)
+        {
+            if (path == null || path.corners.Length == 0)
+            {
+                // Invalid path for calculation.
+                return 0.0f;
+            }
+
+            float sqrDistance = 0.0f;
+            Vector3 previousPosition = path.corners[0];
+            for (int i = 1; i < path.corners.Length; i++)
+            {
+                sqrDistance += (path.corners[i] - previousPosition).sqrMagnitude;
+                previousPosition = path.corners[i];
+            }
+
+            return sqrDistance;
         }
 
 
