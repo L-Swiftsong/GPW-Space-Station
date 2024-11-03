@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 4.0f;
     [SerializeField] private float sprintSpeed = 6.0f;
-    [SerializeField] private float speedChangeRate = 10.0f;
 
     [Space(5)]
     [SerializeField] private bool _toggleSprint = false;
@@ -33,8 +32,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Gravity Settings")]
     [SerializeField] private float gravity = -15.0f;    
-    [SerializeField] private float lowGravity = -2.0f;  
-    [SerializeField] private float fallTimeout = 0.15f;
+    [SerializeField] private float lowGravity = -2.0f;
     private float _verticalVelocity;
     private const float TERMINAL_VELOCITY = 53.0f;
     private bool _inLowGravityZone = false;

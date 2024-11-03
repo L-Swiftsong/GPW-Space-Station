@@ -13,6 +13,7 @@ namespace AI.Mimic
         private NavMeshAgent _agent;
         private EntitySenses _entitySenses;
         private FlashlightStunnable _flashlightStunnableScript;
+        private PassiveMimicryController _passiveMimicryController;
 
 
         [System.Serializable] private enum State { Wander, Search, Chase, SetTrap, Vent, Stunned };
@@ -46,11 +47,13 @@ namespace AI.Mimic
         [Header("Lay In Wait Settings")]
         [SerializeField] private float _trapDetectionRadius = 10.0f; // How close the agent must be to a potential trap spot to consider laying a trap.
         [SerializeField] private float _maxTrapTime = 0.0f; // The maximum time that the agent can be preparing a trap.
+        private float _currentTrapTime;
 
 
         [Header("Venting Settings")]
+        [SerializeField] private float _maxVentDetectionRadius = 5.0f;
         [SerializeField] private float _minTimeBetweenVents = 10.0f; // The minimum time between the agent entering the vents.
-        private float _lastVentExitTime;
+        private float _ventCooldownRemaining;
 
 
 
@@ -59,6 +62,7 @@ namespace AI.Mimic
             _agent = GetComponent<NavMeshAgent>();
             _entitySenses = GetComponent<EntitySenses>();
             _flashlightStunnableScript = GetComponent<FlashlightStunnable>();
+            _passiveMimicryController = GetComponent<PassiveMimicryController>();
         }
 
 
@@ -67,6 +71,10 @@ namespace AI.Mimic
             DetermineActiveState();
             SetAgentVariables();
             HandleActiveState();
+            UpdateMimicryRenderer();
+
+
+            _ventCooldownRemaining -= Time.deltaTime;
         }
 
 
@@ -104,6 +112,27 @@ namespace AI.Mimic
             }
 
             // Trap | Vent | Wander.
+
+            if (_currentState == State.SetTrap && _currentTrapTime >= _maxTrapTime)
+            {
+                // We have exceeded our maximum trap time. Stop waiting for the player.
+                _currentState = State.Wander;
+                return;
+            }
+            if (_currentState == State.Vent)
+            {
+                return;
+            }
+
+            float _rndBehaviourDecision = Random.Range(0.0f, 1.0f);
+
+            if (_rndBehaviourDecision <= 0.2f)
+            {
+                _currentState = State.Vent;
+                EnterVentState();
+                return;
+            }
+
             _currentState = State.Wander;
         }
         private void HandleActiveState()
@@ -140,6 +169,16 @@ namespace AI.Mimic
                     _agent.acceleration = _defaultAcceleration;
                     break;
             }
+        }
+        private void UpdateMimicryRenderer()
+        {
+            float mimicryStrength = _currentState switch
+            {
+                State.Chase => 0.0f,
+                _ => 1.0f,
+            };
+
+            _passiveMimicryController.SetMimicryStrengthTarget(mimicryStrength);
         }
 
 
@@ -196,7 +235,17 @@ namespace AI.Mimic
         /// <summary> Makes the agent move to the nearest vent and enter it. If in a vent, it instead moves around the level.</summary>
         private void HandleVentBehaviour()
         {
+            if (_agent.remainingDistance <= 0.5f)
+            {
+                // We have reached a vent.
+            }
+        }
 
+        private void EnterVentState()
+        {
+            // Find the nearest vent entrance.
+
+            _agent.SetDestination(Vector3.zero);
         }
 
         #endregion
