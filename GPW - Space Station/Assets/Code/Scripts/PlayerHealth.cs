@@ -19,9 +19,13 @@ public class PlayerHealth : MonoBehaviour
     public GameObject brokenVisor3;
 
     public GameObject healthPack;
+    public GameObject healthPack2;
 
     public int healAmount = 25;
     public int healthPackAmount;
+
+    public float healDuration = 3f;
+    public bool isHealing = false;
 
     void Start()
     {
@@ -41,7 +45,7 @@ public class PlayerHealth : MonoBehaviour
         }
 
         //Equip Heal
-        if (Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKeyDown(KeyCode.H) && !isHealing)
         {
             if (healthPack.activeSelf)
             {
@@ -59,11 +63,10 @@ public class PlayerHealth : MonoBehaviour
             healthPack.SetActive(false);
         }
 
-        //Use Heal
-        if (Input.GetKeyDown(KeyCode.Mouse0) && healthPack.activeSelf)
+        //Use Heal when healthpack is equipped and health isn't full
+        if (Input.GetKeyDown(KeyCode.Mouse0) && healthPack.activeSelf && health < maxHealth)
         {
-            PlayerHeal();
-            healthPackAmount--;
+            StartCoroutine(PlayerHealDelay());
         }
 
         //Ensure player doesnt overheal
@@ -143,5 +146,21 @@ public class PlayerHealth : MonoBehaviour
         //Timer for when the enemy can damage the player again
         yield return new WaitForSeconds(damageCooldown);
         isDamageOnCooldown = false;
+    }
+
+    IEnumerator PlayerHealDelay()
+    {
+        isHealing = true;
+        healthPack.SetActive(false);
+        healthPack2.SetActive(true);
+
+        yield return new WaitForSeconds(healDuration);
+
+        isHealing = false;
+        healthPack.SetActive(true);
+        healthPack2.SetActive(false);
+
+        PlayerHeal();
+        healthPackAmount--;
     }
 }

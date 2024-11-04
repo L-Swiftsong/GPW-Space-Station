@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HealthPack : MonoBehaviour
+public class HealthPack : MonoBehaviour, IInteractable
 {
     //Reference to PlayerHealth script
     private PlayerHealth playerHealth;
 
-    //Upon colliding with player call the PlayerHeal function from PlayerHealth script
-    private void OnTriggerEnter(Collider other)
+    private void Start()
     {
-        if (other.tag == "Player")
+        playerHealth = FindObjectOfType<PlayerHealth>();
+    }
+
+    public void Interact(PlayerInteraction playerInteraction)
+    {
+        if (playerHealth != null)
         {
-            other.GetComponent<PlayerHealth>().PickUpHeal();
+            playerHealth.PickUpHeal();
             Destroy(gameObject);
         }
     }
