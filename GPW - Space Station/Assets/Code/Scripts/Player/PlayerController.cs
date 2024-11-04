@@ -10,6 +10,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private PlayerHealth playerHealth;
     private CharacterController _controller;
 
     [System.Serializable] private enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
@@ -97,17 +98,28 @@ public class PlayerController : MonoBehaviour
     private bool _wantsToCrawl = false;
     private bool _isHiding = false;
 
+    private float baseMoveSpeed;
+    private float baseSprintSpeed;
+    private float healMoveSpeed = 2f;
+    private float healSprintSpeed = 3f;
+
 
     private void Start()
     {
         // Get references.
         _controller = GetComponent<CharacterController>();
+        playerHealth = GetComponent<PlayerHealth>();
 
         // Start walking.
         _currentMovementState = MovementState.Walking;
 
         // Ensure that the cursor starts locked.
         Cursor.lockState = CursorLockMode.Locked;
+
+        // Get player speed.
+        baseMoveSpeed = moveSpeed;
+        baseSprintSpeed = sprintSpeed;
+
     }
     private void OnEnable()
     {
@@ -258,7 +270,18 @@ public class PlayerController : MonoBehaviour
             UpdateCharacterHeight();
         }
         
-        HandleLook();             
+        HandleLook();   
+        
+        if (playerHealth.isHealing)
+        {
+            moveSpeed = healMoveSpeed;
+            sprintSpeed = healSprintSpeed;
+        }
+        else
+        {
+            moveSpeed = baseMoveSpeed;
+            sprintSpeed = baseSprintSpeed;
+        }
     }
 
 
