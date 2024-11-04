@@ -85,22 +85,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   sprintSpeed: 6
-  speedChangeRate: 10
   _toggleSprint: 0
   jumpHeight: 1.2
   jumpTimeout: 0.1
   gravity: -15
   lowGravity: -2
-  fallTimeout: 0.15
   groundCheck: {fileID: 7289571754049141677}
   groundedRadius: 0.5
   groundLayers:
     serializedVersion: 2
     m_Bits: 64
   _toggleCrouch: 0
+  _crouchSpeed: 2
   crouchHeight: 1.35
   normalHeight: 1.8
-  _crouchSpeed: 2
+  _heightSpeedChange: 3
   _crouchObstacleLayers:
     serializedVersion: 2
     m_Bits: 193
@@ -115,9 +114,6 @@ MonoBehaviour:
   _verticalLookSensitivity: 7.5
   _defaultCameraHeight: 1.6
   _crouchedCameraHeight: 1.15
-  _drawGizmos: 1
-  _drawCameraGizmos: 1
-  _gizmoState: 1
 --- !u!114 &411927885907842514
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -536,7 +532,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 767
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 1734072f7075699459659102a7d2ba22, type: 2}
   m_TargetDisplay: 0

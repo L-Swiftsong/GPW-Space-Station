@@ -56,6 +56,7 @@ namespace AI.Mimic
         [SerializeField] private float _trapDetectionRadius = 10.0f; // How close the agent must be to a potential trap spot to consider laying a trap.
         [SerializeField] private float _maxTrapTime = 0.0f; // The maximum time that the agent can be preparing a trap.
         private float _currentTrapTime;
+        private TrapPoint _targetTrapPoint;
 
 
         [Header("Venting Settings")]
@@ -75,6 +76,11 @@ namespace AI.Mimic
             _entitySenses = GetComponent<EntitySenses>();
             _flashlightStunnableScript = GetComponent<FlashlightStunnable>();
             _passiveMimicryController = GetComponent<PassiveMimicryController>();
+
+
+            // Start in the wander state.
+            _currentState = State.Wander;
+            _wanderDecisionTimeRemaining = Random.Range(_minWanderDecisionTime, _maxWanderDecisionTime);
         }
 
 
@@ -88,6 +94,7 @@ namespace AI.Mimic
 
             _ventCooldownRemaining -= Time.deltaTime;
             _wanderDecisionTimeRemaining -= Time.deltaTime;
+            _currentTrapTime += Time.deltaTime;
         }
 
 
@@ -103,8 +110,10 @@ namespace AI.Mimic
             if (_entitySenses.HasTarget || (_currentState == State.Chase && _agent.remainingDistance > 1.0f))
             {
                 // We can see the player.
-                if (_currentState != State.Chase)
+                if (_currentState != State.Chase || _currentState != State.SetTrap)
                 {
+                    // We just entered the Chase State from a state where we didn't expect to see the player.
+                    // Add a delay before we start properly chasing the player.
                     _chaseReadyTime = Time.time + _chaseStartTime;
                     _agent.isStopped = true;
                 }
@@ -126,10 +135,8 @@ namespace AI.Mimic
 
             // Trap | Vent | Wander.
 
-            if (_currentState == State.SetTrap && _currentTrapTime >= _maxTrapTime)
+            if (_currentState == State.SetTrap)
             {
-                // We have exceeded our maximum trap time. Stop waiting for the player.
-                _currentState = State.Wander;
                 return;
             }
             if (_currentState == State.Vent)
@@ -151,7 +158,7 @@ namespace AI.Mimic
                 }
                 else if (_rndBehaviourDecision <= (ventChance + setTrapChance))
                 {
-                    _currentState = State.SetTrap;
+                    TryEnterTrapState();
                     return;
                 }
 
@@ -251,7 +258,7 @@ namespace AI.Mimic
 
             // We've reached our desired wander destination.
             // Pick a new destination.
-            if (TryFindRandomPoint(_mapCentre, _mapExtents, out Vector3 result))
+            if (_agent.TryFindRandomPoint(_mapCentre, _mapExtents, out Vector3 result))
             {
                 _agent.SetDestination(result);
             }
@@ -259,12 +266,31 @@ namespace AI.Mimic
         /// <summary> Makes the agent move to a hidden position until the player moves past or it gets bored.</summary>
         private void HandlePrepareTrapBehaviour()
         {
+            if (_agent.remainingDistance > 0.2f)
+            {
+                // We haven't reached the target trap.
+                _currentTrapTime = 0.0f;
+                return;
+            }
 
+            // We have reached the target trap.
+            // Ensure we are at the trap's position.
+            _agent.isStopped = true;
+            transform.position = _targetTrapPoint.transform.position;
+
+            // Rotate to face the trap's forward.
+            transform.rotation = Quaternion.RotateTowards(_agent.transform.rotation, Quaternion.LookRotation(_targetTrapPoint.transform.forward, transform.up), _agent.angularSpeed * Time.deltaTime);
+
+            if (_currentTrapTime >= _maxTrapTime)
+            {
+                // We have exceeded our maximum trap time. Stop waiting for the player.
+                _currentState = State.Wander;
+            }
         }
         /// <summary> Makes the agent move to the nearest vent and enter it. If in a vent, it instead moves around the level.</summary>
         private void HandleVentBehaviour()
         {
-            if (_agent.remainingDistance <= 0.5f)
+            if ((transform.position - _targetEntrance.transform.position).sqrMagnitude <= 0.5f)
             {
                 if (_isInVent)
                 {
@@ -295,7 +321,34 @@ namespace AI.Mimic
             }
         }
 
-        [ContextMenu(itemName: "Test/Enter Vent State")]
+
+        [ContextMenu(itemName: "Test Trap State")]
+        private void TryEnterTrapState()
+        {
+            // Reset previous references.
+            _targetTrapPoint = null;
+
+            Debug.Log("Attempt Enter Trap State");
+
+            // Find all nearby TrapPoints.
+            List<TrapPoint> nearbyTrapPoints = TrapManager.GetTrapPointsWithinRange(transform.position, _trapDetectionRadius);
+
+            if (nearbyTrapPoints.Count <= 0)
+            {
+                // There were no trap points in range. We cannot enter the SetTrap state.
+                Debug.Log("Trap State Failure");
+                return;
+            }
+
+            // Choose a random trapPoint for our target.
+            _targetTrapPoint = nearbyTrapPoints[Random.Range(0, nearbyTrapPoints.Count)];
+            _agent.SetDestination(_targetTrapPoint.transform.position);
+            _currentTrapTime = 0.0f;
+            _currentState = State.SetTrap;
+            Debug.Log("Trap State Success");
+        }
+
+
         private void TryEnterVentState()
         {
             // Reset previous references.
@@ -318,29 +371,22 @@ namespace AI.Mimic
 
             // Set our target entrance to the closest vent entrance (Based on NavMesh distance, not Euclidean distance).
             float closestSqrDistance = float.PositiveInfinity;
-            NavMeshPath closestVentPath = null;
             NavMeshPath path = new NavMeshPath();
             for (int i = 0; i < ventEntrances.Count; i++)
             {
-                if (!NavMesh.SamplePosition(ventEntrances[i].transform.position, out NavMeshHit hit, 1.0f, _agent.areaMask))
+                if (!_agent.TryCalculateSqrDistanceToPoint(ventEntrances[i].transform.position, out float sqrDistance, ref path))
                 {
-                    // No valid point for this Vent Entrance.
+                    // We couldn't find a valid path to this Vent Entrance.
                     continue;
                 }
-                
-                if (!NavMesh.CalculatePath(transform.position, hit.position, _agent.areaMask, path) || (path.corners[path.corners.Length - 1] - hit.position).sqrMagnitude >= 0.5f)
-                {
-                    // No valid path to this Vent Entrance (Either as CalculatePath() failed or the path couldn't reach the destination).
-                    continue;
-                }
-                
-                // Determine if this vent entrance is the closest of those checked.
-                float sqrDistance = CalculatePathSqrLength(path);
+
+                // We found a valid path to this Vent Entrance.
+
                 if (sqrDistance < closestSqrDistance)
                 {
+                    // This vent entrance is closer than our cached closest vent.
                     _targetEntrance = ventEntrances[i];
                     closestSqrDistance = sqrDistance;
-                    closestVentPath = path;
                 }
             }
 
@@ -359,51 +405,6 @@ namespace AI.Mimic
         }
 
         #endregion
-
-
-        private bool TryFindRandomPoint(Vector3 centre, Vector3 extents, out Vector3 result, int maxAttempts = 5)
-        {
-            Vector3 randomPoint;
-            NavMeshHit hit;
-            for(int i = 0; i < maxAttempts; i++)
-            {
-                randomPoint = centre + new Vector3(
-                    x: Random.Range(-extents.x, extents.x),
-                    y: Random.Range(-extents.y, extents.y),
-                    z: Random.Range(-extents.z, extents.z));
-
-                if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, _agent.areaMask))
-                {
-                    // We found a suitable point on the navmesh.
-                    result = hit.position;
-                    return true;
-                }
-            }
-
-            // We couldn't find a suitable point on the navmesh.
-            result = Vector3.zero;
-            return false;
-        }
-
-        
-        private float CalculatePathSqrLength(NavMeshPath path)
-        {
-            if (path == null || path.corners.Length == 0)
-            {
-                // Invalid path for calculation.
-                return 0.0f;
-            }
-
-            float sqrDistance = 0.0f;
-            Vector3 previousPosition = path.corners[0];
-            for (int i = 1; i < path.corners.Length; i++)
-            {
-                sqrDistance += (path.corners[i] - previousPosition).sqrMagnitude;
-                previousPosition = path.corners[i];
-            }
-
-            return sqrDistance;
-        }
 
 
         private void OnDrawGizmosSelected()
