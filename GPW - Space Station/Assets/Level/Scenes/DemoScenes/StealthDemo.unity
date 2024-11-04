@@ -33913,6 +33913,12 @@ GameObject:
   - component: {fileID: 2080594885}
   - component: {fileID: 2080594890}
   - component: {fileID: 2080594891}
+  - component: {fileID: 2080594897}
+  - component: {fileID: 2080594896}
+  - component: {fileID: 2080594895}
+  - component: {fileID: 2080594894}
+  - component: {fileID: 2080594893}
+  - component: {fileID: 2080594892}
   m_Layer: 0
   m_Name: Mimic
   m_TagString: Untagged
@@ -33976,7 +33982,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _viewAngle: 90
+  _viewAngle: 235
   _detectableLayers:
     serializedVersion: 2
     m_Bits: 8
@@ -33996,19 +34002,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa1aa9664c09b9140a771b3c19377769, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultMovementSpeed: 2
-  _defaultAcceleration: 8
-  _mapCentre: {x: 2.5, y: 0, z: 17.5}
-  _mapExtents: {x: 29, y: 1, z: 41}
-  _minWanderDecisionTime: 1
-  _maxWanderDecisionTime: 15
-  _chaseStartTime: 0.75
-  _chaseMovementSpeed: 4.5
-  _chaseAcceleration: 8
-  _trapDetectionRadius: 10
-  _maxTrapTime: 10
-  _maxVentDetectionRadius: 15
-  _minTimeBetweenVents: 10
+  _currentState: {fileID: 0}
+  _currentStatePath: 
 --- !u!195 &2080594887
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -34019,7 +34014,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.4
-  m_Speed: 3.5
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -34110,6 +34105,101 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _strengthChangeRate: 0.5
   _passiveMimicryGFXRoot: {fileID: 247311156}
+--- !u!114 &2080594892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080594883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa9ccfe852b3c7146b3a579bdb5143cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 2080594887}
+  _trapDetectionRadius: 10
+  _maxTrapTime: 10
+  _minTimeBetweenEntries: 10
+--- !u!114 &2080594893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080594883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a13297d463e550418d00a5448f18157, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 2080594887}
+  _maxVentDetectionRadius: 5
+  _minTimeBetweenVents: 10
+--- !u!114 &2080594894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080594883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b8d7f56c7081804297e0f2104a1ebdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 2080594887}
+  _entitySenses: {fileID: 2080594885}
+--- !u!114 &2080594895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080594883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a445bf55d0c84a42aa3316b6374ab2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 2080594887}
+  _entitySenses: {fileID: 2080594885}
+  _passiveMimicryController: {fileID: 2080594891}
+  _chaseMovementSpeed: 4.5
+  _chaseAcceleration: 8
+--- !u!114 &2080594896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080594883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f062615ee35b77a45a185d1476a32784, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 2080594887}
+  _passiveMimicryController: {fileID: 2080594891}
+  _chaseStartTime: 0.75
+--- !u!114 &2080594897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080594883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1537313ddecf6b4f825858ebdd943f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 2080594887}
+  _reachedDestinationDistance: 0.5
+  _mapCentre: {x: 2.5, y: 0, z: 17.5}
+  _mapExtents: {x: 29, y: 1, z: 41}
+  _minWanderDecisionTime: 1
+  _maxWanderDecisionTime: 15
 --- !u!1 &2108652882
 GameObject:
   m_ObjectHideFlags: 0
