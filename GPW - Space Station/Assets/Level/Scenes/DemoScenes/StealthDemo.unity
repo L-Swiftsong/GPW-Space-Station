@@ -33919,6 +33919,7 @@ GameObject:
   - component: {fileID: 2080594894}
   - component: {fileID: 2080594893}
   - component: {fileID: 2080594892}
+  - component: {fileID: 2080594898}
   m_Layer: 0
   m_Name: Mimic
   m_TagString: Untagged
@@ -34200,6 +34201,20 @@ MonoBehaviour:
   _mapExtents: {x: 29, y: 1, z: 41}
   _minWanderDecisionTime: 1
   _maxWanderDecisionTime: 15
+--- !u!114 &2080594898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2080594883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0c69624e27d92247858e0ec5ec2c66c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 2080594887}
+  _passiveMimicryController: {fileID: 2080594891}
 --- !u!1 &2108652882
 GameObject:
   m_ObjectHideFlags: 0

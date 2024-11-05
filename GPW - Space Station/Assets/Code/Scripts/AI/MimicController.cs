@@ -30,7 +30,7 @@ namespace AI.Mimic
         private SearchState _searchState;
         private VentState _ventState;
         private SetTrapState _setTrapState;
-        //private StunnedState _stunnedState;
+        private StunnedState _stunnedState;
 
 
 
@@ -50,7 +50,7 @@ namespace AI.Mimic
             _searchState = GetComponent<SearchState>();
             _ventState = GetComponent<VentState>();
             _setTrapState = GetComponent<SetTrapState>();
-            //_stunnedState = GetComponent<StunnedState>();
+            _stunnedState = GetComponent<StunnedState>();
 
 
             // Start in the wander state.
@@ -70,8 +70,12 @@ namespace AI.Mimic
         private void HandleStateTransitions()
         {
             // ----- GLOBAL TRANSITIONS -----
-            // Stunned State.
-            
+            if (_flashlightStunnableScript.IsStunned && _currentState != _stunnedState) // Stunned State.
+            {
+                // We have been stunned.
+                SetActiveState(_stunnedState);
+                return;
+            }
 
             // ----- LOCAL TRANSITIONS -----
             if (_currentState == _wanderState) // Transitions FROM WanderState.
@@ -173,10 +177,15 @@ namespace AI.Mimic
                     return;
                 }
             }
-            /*else if (_currentState == _stunnedState)
+            else if (_currentState == _stunnedState)
             {
-                // A.
-            }*/
+                if (!_flashlightStunnableScript.IsStunned)
+                {
+                    // We are no longer stunned.
+                    SetActiveState(_wanderState);
+                    return;
+                }
+            }
         }
         private void SetActiveState(State newState)
         {
