@@ -66,7 +66,8 @@ namespace SceneManagement
             //DontDestroyOnLoad(this.gameObject);
         }
 
-        public void PerformTransition(SceneTransition transition)
+        public void PerformTransition(SceneTransition transition) => StartCoroutine(PerformTransition_Coroutine(transition));
+        public IEnumerator PerformTransition_Coroutine(SceneTransition transition)
         {
             // Cancel current loading.
 
@@ -88,37 +89,29 @@ namespace SceneManagement
             _activeScene = transition.ActiveScene;
 
 
-            // Determine if we are unloading all active scenes (For error prevention).
-            bool unloadAllActiveScenes = SceneManager.loadedSceneCount <= transition.ScenesToUnload.Length;
-            if (unloadAllActiveScenes)
+            // Unload desired scenes.
+            for (int i = 0; i < transition.ScenesToUnload.Length; i++)
             {
-                // Load desired scenes.
-                for (int i = 0; i < transition.ScenesToLoad.Length; i++)
-                {
-                    _scenesLoading.Add(SceneManager.LoadSceneAsync(transition.ScenesToLoad[i], (i == 0) ? LoadSceneMode.Single : LoadSceneMode.Additive));
-                }
+                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(transition.ScenesToUnload[i]));
             }
-            else
-            {
-                // Load desired scenes.
-                for (int i = 0; i < transition.ScenesToLoad.Length; i++)
-                {
-                    _scenesLoading.Add(SceneManager.LoadSceneAsync(transition.ScenesToLoad[i], LoadSceneMode.Additive));
-                }
+            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
 
-                // Unload desired scenes (Done after loading in case we are unloading the only active scene).
-                for (int i = 0; i < transition.ScenesToUnload.Length; i++)
-                {
-                    _scenesUnloading.Add(SceneManager.UnloadSceneAsync(transition.ScenesToUnload[i]));
-                }
+
+            // Load desired scenes.
+            for (int i = 0; i < transition.ScenesToLoad.Length; i++)
+            {
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(transition.ScenesToLoad[i], LoadSceneMode.Additive));
             }
+            yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
+
 
             StartCoroutine(NotifyWhenScenesAreLoaded(transition));
         }
-        public void ReloadActiveScenes()
+        public void ReloadActiveScenes() => StartCoroutine(ReloadActiveScenes_Coroutine());
+        public IEnumerator ReloadActiveScenes_Coroutine()
         {
             // Get the scenes we wish to reload.
-            List<Scene> scenesToReload = new List<Scene>();
+            List<int> scenesToReload = new List<int>();
             for(int i = 0; i < SceneManager.sceneCount; i++)
             {
                 if (SceneManager.GetSceneAt(i).name == "PersistentScene")
@@ -127,29 +120,25 @@ namespace SceneManagement
                     continue;
                 }
 
-                scenesToReload.Add(SceneManager.GetSceneAt(i));
+                scenesToReload.Add(SceneManager.GetSceneAt(i).buildIndex);
             }
 
             // Unload scenes.
             for (int i = 0; i < scenesToReload.Count; i++)
             {
-                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(scenesToReload[i].buildIndex));
+                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(scenesToReload[i]));
             }
+
+            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
 
             // Load scenes.
             for (int i = 0; i < scenesToReload.Count; i++)
             {
-                _scenesLoading.Add(SceneManager.LoadSceneAsync(scenesToReload[i].buildIndex, LoadSceneMode.Additive));
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(scenesToReload[i], LoadSceneMode.Additive));
             }
 
-            StartCoroutine(NotifyForReload());
-        }
+            yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
-
-        private IEnumerator NotifyForReload()
-        {
-            // Wait until all scenes are loaded.
-            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone) && _scenesLoading.All(t => t.isDone));
 
             Debug.Log("Reload Finished");
 
@@ -168,6 +157,8 @@ namespace SceneManagement
             FinishReload();
 #endif
         }
+
+
         private IEnumerator NotifyWhenScenesAreLoaded(SceneTransition transition)
         {
             // Wait until all scenes are loaded.

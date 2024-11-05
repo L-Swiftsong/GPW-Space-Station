@@ -11,9 +11,8 @@ namespace Saving
         {
             public PlayerManager.PlayerSetupData PlayerData;
         }
-        [SerializeField] private TempSaveData _visibleSaveData;
         private static TempSaveData s_saveData;
-        
+
 
         private void OnEnable() => SceneManagement.SceneLoader.OnReloadFinished += SceneLoader_OnReloadFinished;
         private void OnDisable() => SceneManagement.SceneLoader.OnReloadFinished -= SceneLoader_OnReloadFinished;
@@ -25,10 +24,10 @@ namespace Saving
         {
             LoadGameState();
         }
-
-        [ContextMenu(itemName: "Save Game Test")]
-        public void SaveGameState()
+        public static void SaveGameState()
         {
+            Debug.Log("Saving Game");
+
             // Clear current save data.
             s_saveData = new TempSaveData();
 
@@ -42,22 +41,13 @@ namespace Saving
 
 
             #endregion
-
-            // (Debug) Duplicate static data to local variable for inspector viewing.
-            _visibleSaveData = s_saveData;
         }
-
-        [ContextMenu(itemName: "Load Game Test")]
-        public void LoadGameState()
+        public static void LoadGameState()
         {
             // Load Player Data.
             PlayerManager.Instance.LoadFromPlayerData(s_saveData.PlayerData);
 
             // Load Level Data.
         }
-
-
-        [ContextMenu(itemName: "Reload Scene")]
-        public void ReloadScene() => SceneManagement.SceneLoader.Instance.ReloadActiveScenes();
     }
 }

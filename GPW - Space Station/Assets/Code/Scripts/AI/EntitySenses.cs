@@ -36,7 +36,7 @@ namespace AI
         #region Properties
 
         public bool HasTarget => _canSeePlayer;
-        public Vector3 TargetPosition => _player.position;
+        public Vector3 TargetPosition => _player != null ? _player.position : Vector3.zero;
 
         public Vector3? CurrentPointOfInterest => _pointOfInterest;
 
@@ -57,6 +57,14 @@ namespace AI
 
         private void Update()
         {
+            if (_player == null)
+            {
+                if (PlayerManager.Exists)
+                    _player = PlayerManager.Instance.Player;
+                else
+                    return;
+            }
+            
             _canSeePlayer = (TryFindTarget() != null);
         }
 
