@@ -58,7 +58,7 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
 
     private void HandleFlashlightPickup(Transform player)
     {
-        TmpFlashlightController flashlightController = player.GetComponent<TmpFlashlightController>();
+        PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
         Debug.Log(flashlightController.name);
         AttachFlashlightToHolder(flashlightController);
     }
@@ -106,7 +106,7 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
 
     /// GIVES PLAYER FLASH BACK 
 
-    private void AttachFlashlightToHolder(TmpFlashlightController tmpFlashlightController)
+    private void AttachFlashlightToHolder(PlayerFlashlightController tmpFlashlightController)
     {
         _currentFlashlight.transform.SetParent(tmpFlashlightController.FlashlightHolder);
         _currentFlashlight.transform.localPosition = Vector3.zero;

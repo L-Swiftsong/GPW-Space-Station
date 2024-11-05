@@ -30,6 +30,11 @@ public class PlayerManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Transform _player;
+    [SerializeField] private Transform _playerCamera;
+
+    [Space(5)]
+    [SerializeField] private PlayerInventory _playerInventory;
+    [SerializeField] private PlayerFlashlightController _playerFlashlightController;
 
 
     private void Awake()
@@ -43,9 +48,73 @@ public class PlayerManager : MonoBehaviour
         _player.SetPositionAndRotation(desiredPosition, Quaternion.Euler(desiredRotationEulerAngles));
         Physics.SyncTransforms();
     }
+    public void LoadFromPlayerData(PlayerSetupData setupData)
+    {
+        // Root Position.
+        _player.position = setupData.RootPosition;
+        _player.rotation = setupData.RootRotation;
+        Physics.SyncTransforms();
+
+        // Camera Rotation.
+        _playerCamera.localEulerAngles = new Vector3(setupData.CameraXRotation, 0.0f, 0.0f); // Not working - PlayerController conflict?.
+
+
+        // Flashlight.
+        if (setupData.CurrentFlashlightPrefab != null)
+        {
+            _playerFlashlightController.AddFlashlight(setupData.CurrentFlashlightPrefab);
+            // Flashlight battery.
+        }
+
+
+        // Set Collected Items.
+        _playerInventory.keyCards = setupData.CollectedKeycardIDs;
+    }
+    public PlayerSetupData GetCurrentPlayerData()
+    {
+        PlayerSetupData setupData = new PlayerSetupData();
+
+        // Root Position.
+        setupData.RootPosition = _player.position;
+        setupData.RootRotation = _player.rotation;
+
+        // Camera Rotation.
+        setupData.CameraXRotation = _playerCamera.localEulerAngles.x;
+
+
+        // Flashlight.
+        setupData.CurrentFlashlightPrefab = _playerFlashlightController.CurrentFlashlightPrefab;
+        setupData.FlashlightBatteryRemaining = _playerFlashlightController.GetFlashlightCharge();
+
+
+        // Collected Items.
+        setupData.CollectedKeycardIDs = _playerInventory.keyCards;
+
+        return setupData;
+    }
 
 
 
     /// <summary> To-do: Remove.</summary>
     public Transform Player => _player;
+
+
+    [System.Serializable]
+    public struct PlayerSetupData
+    {
+        // Position & Rotation Information.
+        public Vector3 RootPosition;
+        public Quaternion RootRotation;
+        public float CameraXRotation;
+
+
+        // Flashlight Information.
+        public GameObject CurrentFlashlightPrefab;
+        public float FlashlightBatteryRemaining;
+
+
+        // Collected Item Information.
+        public int MedkitCount;
+        public List<int> CollectedKeycardIDs;
+    }
 }

@@ -32,6 +32,11 @@ namespace Testing.Mimicry
 
         private void Update()
         {
+            if (_player == null)
+            {
+                return;
+            }
+            
             // Determine the percentage distance between this object and the player, clamped between min and max mimicry distance.
             float distanceToPlayer = Vector3.Distance(_player.position, transform.position);
             float percentageDistance = Mathf.Clamp01((distanceToPlayer - _minMimicryDistance) / (_maxMimicryDistance - _minMimicryDistance));

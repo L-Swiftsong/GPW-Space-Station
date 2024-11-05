@@ -51,9 +51,20 @@ namespace SceneManagement
 
         public static event Action OnLoadFinished;
 
+        public static event Action OnReloadFinished;
 
-        private void Awake() => Instance = this;
 
+        private void Awake()
+        {
+            if (Instance != null)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+            
+            Instance = this;
+            //DontDestroyOnLoad(this.gameObject);
+        }
 
         public void PerformTransition(SceneTransition transition)
         {
@@ -103,6 +114,59 @@ namespace SceneManagement
             }
 
             StartCoroutine(NotifyWhenScenesAreLoaded(transition));
+        }
+        public void ReloadActiveScenes()
+        {
+            // Get the scenes we wish to reload.
+            List<Scene> scenesToReload = new List<Scene>();
+            for(int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                if (SceneManager.GetSceneAt(i).name == "PersistentScene")
+                {
+                    // We aren't wanting to reload the Persistent Scene.
+                    continue;
+                }
+
+                scenesToReload.Add(SceneManager.GetSceneAt(i));
+            }
+
+            // Unload scenes.
+            for (int i = 0; i < scenesToReload.Count; i++)
+            {
+                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(scenesToReload[i].buildIndex));
+            }
+
+            // Load scenes.
+            for (int i = 0; i < scenesToReload.Count; i++)
+            {
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(scenesToReload[i].buildIndex, LoadSceneMode.Additive));
+            }
+
+            StartCoroutine(NotifyForReload());
+        }
+
+
+        private IEnumerator NotifyForReload()
+        {
+            // Wait until all scenes are loaded.
+            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone) && _scenesLoading.All(t => t.isDone));
+
+            Debug.Log("Reload Finished");
+
+            // Freeze time.
+            _previousTimeScale = Time.timeScale;
+            Time.timeScale = 0.0f;
+
+            // Wait for script inialisation.
+            //yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
+            yield return null;
+
+#if ENABLE_INPUT_SYSTEM
+            InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishReload());
+#elif ENABLE_LEGACY_INPUT_MANAGER
+            yield return new WaitUntil(() => Input.anyKeyDown);
+            FinishReload();
+#endif
         }
         private IEnumerator NotifyWhenScenesAreLoaded(SceneTransition transition)
         {
@@ -183,6 +247,11 @@ namespace SceneManagement
         private void FinishLoading()
         {
             OnLoadFinished?.Invoke();
+            Time.timeScale = _previousTimeScale;
+        }
+        private void FinishReload()
+        {
+            OnReloadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
         }
     }
