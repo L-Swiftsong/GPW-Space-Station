@@ -85,13 +85,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   sprintSpeed: 6
-  speedChangeRate: 10
   _toggleSprint: 0
   jumpHeight: 1.2
   jumpTimeout: 0.1
   gravity: -15
   lowGravity: -2
-  fallTimeout: 0.15
   groundCheck: {fileID: 7289571754049141677}
   groundedRadius: 0.5
   groundLayers:
@@ -536,7 +534,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 767
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 1734072f7075699459659102a7d2ba22, type: 2}
   m_TargetDisplay: 0
@@ -657,6 +655,7 @@ Transform:
   m_Children:
   - {fileID: 6472891270617481410}
   - {fileID: 7583895527164993959}
+  - {fileID: 8032084819142272055}
   m_Father: {fileID: 5472899290436885377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &6197061550710832611
@@ -786,12 +785,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6360137195861660517}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 1, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.5, y: -0.45, z: 0.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5472899290436885377}
+  m_Father: {fileID: 3112507552405676298}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7652028204156465192
 GameObject:
@@ -891,7 +890,6 @@ Transform:
   m_Children:
   - {fileID: 5601821708097476428}
   - {fileID: 3112507552405676298}
-  - {fileID: 8032084819142272055}
   m_Father: {fileID: 8513550301921697003}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3951385965267006184

@@ -8,5 +8,12 @@ namespace AI
     {
         [SerializeField] private List<Transform> _detectionTargets = new List<Transform>();
         public List<Transform> DetectionTargets => _detectionTargets;
+
+
+        private PlayerController _playerController; // Temp.
+        public bool IsHidden => _playerController.GetHiding();
+
+
+        private void Awake() => _playerController = GetComponent<PlayerController>();
     }
 }

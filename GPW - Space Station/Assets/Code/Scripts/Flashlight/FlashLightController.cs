@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI; 
-using TMPro; 
+using TMPro;
+using AI;
 /*
  * FlashLightController.cs
  * 
@@ -12,38 +13,60 @@ using TMPro;
 
 public class FlashLightController : MonoBehaviour
 {
-    [Header("Flashlight Settings")]
-    [SerializeField] private GameObject flashlightLightObject; 
-    [SerializeField] private float normalSpotAngle = 30f;     
-    [SerializeField] private float decreaseSpotAngle = 20f;    
-    [SerializeField] private float increaseRate = 2f;          
-    [SerializeField] private float intensityMultiplier = 1.5f; 
-    [SerializeField] private float maxBattery = 100f;          
-    private float _flashlightBattery;                          
+    private Light _flashlightLight;
+    private bool _isOn = false;
+    private bool _isFocused = false;
 
-    [Header("Battery Drain Settings")]
-    [SerializeField] private float batteryDrainRate = 5f;      
-    [SerializeField] private float focusBatteryDrainRate = 15f;
+
+    [Header("Flashlight Light Settings")]
+    [SerializeField] private float _defaultConeAngle = 45.0f;
+    [SerializeField] private float _defaultIntensity = 2.5f;
+
+    [Space(5)]
+    [SerializeField] private float _focusedConeAngle = 25.0f;
+    [SerializeField] private float _focusedIntensity = 4.0f;
+
+
+    [Space(5)]
+    [SerializeField] private float _angleChangeRate = 2.0f;
+    [SerializeField] private float _intensityChangeRate = 2.0f;
+
+
+    [Header("Battery Settings")]
+    [SerializeField] private float _maxBattery = 100.0f;
+    private float _currentBattery;
+    
+    [Space(5)]
+    [SerializeField] private float _defaultBatteryDrainRate = 5.0f;
+    
+    [Space(5)]
+    [SerializeField] private float _focusedBatteryDrainRate = 15f;
+
+
+    [Header("Stun Settings")]
+    [SerializeField] private LayerMask _stunnableLayers;
+    [SerializeField] private float _focusStunRate = 35.0f;
+
 
     [Header("UI Settings")]
-    [SerializeField] private TextMeshProUGUI batteryTextUI;    
+    [SerializeField] private TextMeshProUGUI batteryTextUI;
 
-    private Light _flashlight;         
-    private bool _isOn = false;        
-    private bool _isFocused = false;
-    private bool _hasFlashlight = false;
-    private float _defaultIntensity;
+
 
     /// <summary>
     /// Public getter for the flashlight battery level.
     /// </summary>
-    public float FlashlightBattery => _flashlightBattery;
+    public float FlashlightBattery => _currentBattery;
 
-    private void Start()
+    private void Awake()
     {
-        _flashlightBattery = maxBattery;
+        _currentBattery = _maxBattery;
         InitializeFlashlight();
     }
+
+
+    #region Input Handling
+
     private void OnEnable()
     {
         PlayerInput.OnToggleFlashlightPerformed += PlayerInput_OnToggleFlashlightPerformed;
@@ -56,105 +79,76 @@ public class FlashLightController : MonoBehaviour
         PlayerInput.OnFocusFlashlightStarted -= PlayerInput_OnFocusFlashlightStarted;
         PlayerInput.OnFocusFlashlightCancelled -= PlayerInput_OnFocusFlashlightCancelled;
     }
-
-
-    private void PlayerInput_OnToggleFlashlightPerformed() => ToggleFlashlight();
+    private void PlayerInput_OnToggleFlashlightPerformed() => TryToggleFlashlight();
     private void PlayerInput_OnFocusFlashlightStarted() => EnableFocusMode();
     private void PlayerInput_OnFocusFlashlightCancelled() => DisableFocusMode();
+
+#endregion
 
 
     private void Update()
     {
-        if (_hasFlashlight)
+        HandleFlashlightBattery();
+        UpdateFlashlightLight();
+
+        if (_isFocused)
         {
-            HandleFocusMode();
+            HandleFocusModeDamage();
         }
     }
 
-    /// <summary>
-    /// Initialize the flashlight and check for the necessary components.
-    /// </summary>
+    /// <summary> Initialize the flashlight and check for the necessary components.</summary>
     private void InitializeFlashlight()
     {
-        if (flashlightLightObject != null)
+        _flashlightLight = GetComponentInChildren<Light>();
+        if (_flashlightLight == null)
         {
-            _flashlight = flashlightLightObject.GetComponent<Light>();
-
-            if (_flashlight == null)
-            {
-                Debug.LogError("No Light component found on the flashlightLightObject.");
-                return;
-            }
-
-            _flashlight.enabled = false;                      
-            _flashlight.spotAngle = normalSpotAngle;          
-            _defaultIntensity = _flashlight.intensity;        
-        }
-        else
-        {
-            Debug.LogError("FlashlightLightObject is not assigned.");
+            Debug.LogError("No Light component found on the Flashlight: " + this.name + ".");
         }
 
+        // Setup the Flashlight Light.
+        _flashlightLight.enabled = false;
+        _flashlightLight.spotAngle = _defaultConeAngle;
+        _flashlightLight.intensity = _flashlightLight.intensity;
+
+        // (Temp) Setup the UI.
         UpdateBatteryUI(); 
     }
 
-    /// <summary>
-    /// Toggle the flashlight on/off.
-    /// </summary>
-    private void ToggleFlashlight()
+
+    #region Enabling/Disabling
+
+    /// <summary> Toggle the flashlight on/off.</summary>
+    private void TryToggleFlashlight()
     {
-        if (_flashlight != null && _flashlightBattery > 0)
+        if (_currentBattery <= 0.0f)
         {
-            _isOn = !_isOn;
-            _flashlight.enabled = _isOn; // Enable or disable the flashlight
+            // We cannot toggle the flashlight (Out of battery).
+            return;
+        }
+
+        // Toggle the flashlight.
+        if (_isOn)
+        {
+            DisableFlashlight();
+        }
+        else
+        {
+            EnableFlashlight();
         }
     }
-
-    /// <summary>
-    /// Handle the focus mode, adjusting beam angle and intensity + applying battery drain.
-    /// </summary>
-    private void HandleFocusMode()
+    public void EnableFlashlight()
     {
-        if (_isOn && _flashlight != null)
-        {
-            //  battery drain when the flashlight is on
-            _flashlightBattery -= batteryDrainRate * Time.deltaTime;
-            _flashlightBattery = Mathf.Clamp(_flashlightBattery, 0, maxBattery);
-
-            if (_flashlightBattery <= 0)
-            {
-                _flashlightBattery = 0;
-                _flashlight.enabled = false;
-                _isOn = false;
-                DisableFlashlight();
-            }
-
-            if (_isFocused) // Focus mode (right mouse button)
-            {
-                _flashlight.spotAngle = Mathf.Lerp(_flashlight.spotAngle, decreaseSpotAngle, Time.deltaTime * increaseRate);
-                _flashlight.intensity = Mathf.Lerp(_flashlight.intensity, _defaultIntensity * intensityMultiplier, Time.deltaTime * increaseRate);
-                _flashlightBattery -= focusBatteryDrainRate * Time.deltaTime; // Increased drain for focus mode
-                CheckForMimic(); // Check for Mimic in focus mode
-            }
-            else
-            {
-                _flashlight.spotAngle = Mathf.Lerp(_flashlight.spotAngle, normalSpotAngle, Time.deltaTime * increaseRate);
-                _flashlight.intensity = Mathf.Lerp(_flashlight.intensity, _defaultIntensity, Time.deltaTime * increaseRate);
-            }
-
-            UpdateBatteryUI(); 
-        }
+        _isOn = true;
+        _flashlightLight.enabled = true;
+    }
+    public void DisableFlashlight()
+    {
+        _isOn = false;
+        _flashlightLight.enabled = false;
     }
 
-    private void EnableFocusMode()
-    {
-        if (_flashlight != null && _isOn && _flashlightBattery > 0.0f)
-        {
-            _isFocused = true;
-        }
-    }
-    private void DisableFocusMode() => _isFocused = false;
-    
+#endregion
 
 
     /// <summary>
@@ -164,76 +158,106 @@ public class FlashLightController : MonoBehaviour
     {
         if (batteryTextUI != null)
         {
-            batteryTextUI.text = "Battery: " + Mathf.RoundToInt(_flashlightBattery) + "%";
+            batteryTextUI.text = "Battery: " + Mathf.RoundToInt(_currentBattery) + "%";
         }
     }
 
-    /// <summary>
-    /// a raycast to check if the flashlight is hitting the mimic and apply damage to its shield if so.
-    /// </summary>
-    private void CheckForMimic()
+
+    private void UpdateFlashlightLight()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(flashlightLightObject.transform.position, flashlightLightObject.transform.forward, out hit))
+        if (_isFocused)
         {
-            if (hit.collider.CompareTag("Mimic"))
-            {
-                MimicShieldController mimicShield = hit.collider.GetComponent<MimicShieldController>();
-                mimicShield?.StartTakingDamage(); // Apply damage to 
-            }
+            // Is Focused.
+            _flashlightLight.spotAngle = Mathf.Lerp(_flashlightLight.spotAngle, _focusedConeAngle, Time.deltaTime * _angleChangeRate);
+            _flashlightLight.intensity = Mathf.Lerp(_flashlightLight.intensity, _focusedIntensity, Time.deltaTime * _intensityChangeRate);
+
         }
         else
         {
-            StopDamageMimic(); // Stop damaging if mimic isn't hit
+            // Not Focused.
+            _flashlightLight.spotAngle = Mathf.Lerp(_flashlightLight.spotAngle, _defaultConeAngle, Time.deltaTime * _angleChangeRate);
+            _flashlightLight.intensity = Mathf.Lerp(_flashlightLight.intensity, _defaultIntensity, Time.deltaTime * _intensityChangeRate);
         }
     }
 
-    /// <summary>
-    /// Stop damaging mimic shield
-    /// </summary>
-    private void StopDamageMimic()
+
+    #region Focus Mode
+
+    private void EnableFocusMode()
     {
-        MimicShieldController[] mimics = FindObjectsOfType<MimicShieldController>();
-        foreach (var mimic in mimics)
+        if (_isOn && _currentBattery > 0.0f)
         {
-            mimic.StopTakingDamage();
+            _isFocused = true;
+        }
+    }
+    private void DisableFocusMode() => _isFocused = false;
+
+
+    /// <summary> Apply stun to any stunnable entities within our flashlight cone.</summary>
+    private void HandleFocusModeDamage()
+    {
+        List<RaycastHit> coneHits = ConeCastAll(transform.position, transform.forward, _flashlightLight.range, _flashlightLight.spotAngle, _stunnableLayers);
+
+        for (int i = 0; i < coneHits.Count; i++)
+        {
+            if (coneHits[i].collider.TryGetComponent<FlashlightStunnable>(out FlashlightStunnable stunnableScript))
+            {
+                stunnableScript.ApplyStun(_focusStunRate * Time.deltaTime);
+            }
         }
     }
 
-    /// <summary>
-    /// Called when the player picks up the flashlight flashlight 
-    /// </summary>
-    public void PickUpFlashlight()
+    // Adapted from: 'https://github.com/walterellisfun/ConeCast/blob/master/ConeCastExtension.cs'.
+    private List<RaycastHit> ConeCastAll(Vector3 origin, Vector3 direction, float coneRange, float coneAngle, int layerMask)
     {
-        _hasFlashlight = true;
+        RaycastHit[] sphereCastHits = Physics.SphereCastAll(origin - new Vector3(0.0f, 0.0f, coneRange), coneRange, direction, coneRange);
+        List<RaycastHit> coneCastHitList = new List<RaycastHit>();
+
+        for (int i = 0; i < sphereCastHits.Length; i++)
+        {
+            Vector3 hitPoint = sphereCastHits[i].point;
+            Vector3 directionToHit = (hitPoint - origin).normalized;
+            float angleToHit = Vector3.Angle(direction, directionToHit);
+
+            if (angleToHit < coneAngle)
+            {
+                coneCastHitList.Add(sphereCastHits[i]);
+            }
+        }
+
+        return coneCastHitList;
+    }
+
+    #endregion
+
+
+    #region Battery
+
+    private void HandleFlashlightBattery()
+    {
+        if (!_isOn)
+        {
+            return;
+        }
+
+        // Decrease our remaining battery with a rate determined by if we are focused or not.
+        float drainRate = _isFocused ? _focusedBatteryDrainRate : _defaultBatteryDrainRate;
+        _currentBattery -= drainRate * Time.deltaTime;
+
+        if (_currentBattery <= 0.0f)
+        {
+            // We have ran out of battery.
+            DisableFlashlight();
+        }
+
         UpdateBatteryUI();
-        Debug.Log("Flashlight picked up!");
     }
 
-    /// <summary>
-    /// Disables the flashlight and prevents it from being used.
-    /// </summary>
-    public void DisableFlashlight()
-    {
-        _hasFlashlight = false;
-        _flashlight.enabled = false;
-        _isOn = false;
-    }
 
-    /// <summary>
-    /// Enables the flashlight, allowing it to be used.
-    /// </summary>
-    public void EnableFlashlight()
-    {
-        _hasFlashlight = true;
-    }
-
-    /// <summary>
-    /// Sets the flashlight battery level and updates the UI.
-    /// </summary>
+    /// <summary> Sets the flashlight battery level and updates the UI.</summary>
     public void SetBatteryLevel(float batteryLevel)
     {
-        _flashlightBattery = Mathf.Clamp(batteryLevel, 0, maxBattery);
+        _currentBattery = Mathf.Clamp(batteryLevel, 0, _maxBattery);
         UpdateBatteryUI();
     }
 
@@ -243,11 +267,5 @@ public class FlashLightController : MonoBehaviour
         UpdateBatteryUI();
     }
 
-    /// <summary>
-    /// Public method to check if the player has the flashlight.
-    /// </summary>
-    public bool HasFlashlight()
-    {
-        return _hasFlashlight;
-    }
+    #endregion
 }
