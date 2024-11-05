@@ -21,10 +21,17 @@ namespace AI.States
         [SerializeField] private Vector3 _mapCentre;
         [SerializeField] private Vector3 _mapExtents;
 
-        [Space(5)]
+        [Header("Wander Decision Settings")]
         [SerializeField] private float _minWanderDecisionTime = 1.0f;
         [SerializeField] private float _maxWanderDecisionTime = 15.0f;
         private float _wanderDecisionTimeRemaining = 0.0f;
+
+        [Space(5)]
+        [SerializeField] private float _enterVentChance = 0.2f;
+        [SerializeField] private float _setTrapChance = 0.2f;
+
+        public float VentChance => _enterVentChance;
+        public float SetTrapChance => _setTrapChance;
 
 
         public bool ShouldMakeNewDecision() => _wanderDecisionTimeRemaining <= 0.0f;

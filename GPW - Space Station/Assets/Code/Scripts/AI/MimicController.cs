@@ -99,14 +99,12 @@ namespace AI.Mimic
                     // We should attempt to exit the Wander State.
                     float _rndBehaviourDecision = Random.Range(0.0f, 1.0f);
 
-                    float ventChance = 0.2f;
-                    float setTrapChance = 0.2f;
-                    if (_rndBehaviourDecision <= ventChance && _ventState.CanEnter())
+                    if (_rndBehaviourDecision <= _wanderState.VentChance && _ventState.CanEnter())
                     {
                         SetActiveState(_ventState);
                         return;
                     }
-                    else if (_rndBehaviourDecision <= (ventChance + setTrapChance) && _setTrapState.CanEnter())
+                    else if (_rndBehaviourDecision <= (_wanderState.VentChance + _wanderState.SetTrapChance) && _setTrapState.CanEnter())
                     {
                         SetActiveState(_setTrapState);
                         return;
