@@ -15,8 +15,6 @@ namespace AI.States
         [SerializeField] private EntitySenses _entitySenses;
         [SerializeField] private PassiveMimicryController _passiveMimicryController;
 
-        [SerializeField] private GameObject _tmpGameOverUIContainer;
-
 
         [Header("Settings")]
         [SerializeField] private float _chaseMovementSpeed;
@@ -51,8 +49,7 @@ namespace AI.States
             if ((transform.position - _entitySenses.TargetPosition).sqrMagnitude <= (_playerCatchRadius * _playerCatchRadius))
             {
                 // We are close enough to catch the player.
-                Debug.Log("The player has been caught!");
-                _tmpGameOverUIContainer.SetActive(true);
+                UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
             }
         }
         public override void OnExit()

@@ -9,17 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f5a2528f1d1c8c459f44ebeecbf88c7, type: 3}
-  m_Name: DefaultTestScene-TeleporterDestinationScene_ForegroundTransition
+  m_Script: {fileID: 11500000, guid: 6e65b5b0c14a12e47822648c6596711f, type: 3}
+  m_Name: PrototypeHub_Reload
   m_EditorClassIdentifier: 
   ScenesToLoad:
-  - _sceneAsset: {fileID: 102900000, guid: 4c718824702d7634e96023d160164aeb, type: 3}
-    _sceneName: TeleporterDestinationTestScene
-  ScenesToUnload:
   - _sceneAsset: {fileID: 102900000, guid: 9fc0d4010bbf28b4594072e72b8655ab, type: 3}
     _sceneName: DefaultTestScene
+  - _sceneAsset: {fileID: 102900000, guid: ed6342c6e18043d439224ff71d189c70, type: 3}
+    _sceneName: PlayerScene
   ActiveSceneIndex: 0
-  LoadInBackground: 0
+  IsHubTransition: 0
   AlterPlayerLocation: 1
   EntryPosition: {x: 0, y: 0, z: 0}
   EntryRotation: {x: 0, y: 0, z: 0}
