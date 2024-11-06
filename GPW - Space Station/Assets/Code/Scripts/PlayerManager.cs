@@ -115,6 +115,21 @@ public class PlayerManager : MonoBehaviour
 
         // Collected Item Information.
         public int MedkitCount;
+        public int FlareCount;
         public List<int> CollectedKeycardIDs;
+
+
+        public static PlayerSetupData Default => new PlayerSetupData() {
+            RootPosition = Vector3.zero,
+            RootRotation = Quaternion.identity,
+            CameraXRotation = 0.0f,
+
+            CurrentFlashlightPrefab = null,
+            FlashlightBatteryRemaining = 100.0f,
+
+            MedkitCount = 0,
+            FlareCount = 0,
+            CollectedKeycardIDs = new List<int>(),
+        };
     }
 }

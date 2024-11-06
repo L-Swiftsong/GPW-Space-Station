@@ -47,7 +47,7 @@ namespace SceneManagement
         [Tooltip("When performing a Foreground Transition, these are the scenes that will not be unloaded")]
             [SerializeField] private List<SceneField> _foregroundTransitionScenesToKeep = new List<SceneField>();
 
-        [SerializeField] private ForegroundSceneTransition _prototypeHubTransition;
+        private const string RELOAD_TO_HUB_TRANSITION_PATH = "Transitions/PrototypeHub_Reload";
 
         #endregion
 
@@ -56,7 +56,9 @@ namespace SceneManagement
         public static event Action OnSoftLoadStarted; // Soft Load -> Load in Background.
 
         public static event Action OnLoadFinished;
-        public static event Action OnLoadToHubFinished;
+        public static event Action OnHubLoadFinished;
+
+        public static event Action OnReloadToHubFinished;
         public static event Action OnReloadFinished;
 
 
@@ -142,10 +144,25 @@ namespace SceneManagement
 
             // Once we recieve player input, continue.
 #if ENABLE_INPUT_SYSTEM
-            InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+            if (transition.IsHubTransition)
+            {
+                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishHubLoading());
+            }
+            else
+            {
+                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+            }
 #elif ENABLE_LEGACY_INPUT_MANAGER
             yield return new WaitUntil(() => Input.anyKeyDown);
-            FinishLoading();
+
+            if (transition.IsHubTransition)
+            {
+                FinishHubLoading();
+            }
+            else
+            {
+                FinishLoading();
+            }
 #endif
         }
         private IEnumerator PerformBackgroundTransition(BackgroundSceneTransition transition)
@@ -237,8 +254,12 @@ namespace SceneManagement
         }
         private IEnumerator ResetActiveAndLoadHubScene()
         {
+            // Retrieve the 'Reload to Hub' Transition.
+            ForegroundSceneTransition hubTransition = Resources.Load<ForegroundSceneTransition>(RELOAD_TO_HUB_TRANSITION_PATH);
+
+
             // Save what scene we want to have as our active scene.
-            _activeScene = _prototypeHubTransition.ActiveScene;
+            _activeScene = hubTransition.ActiveScene;
 
 
             // Unload all scenes except from the persistent scene.
@@ -256,9 +277,9 @@ namespace SceneManagement
 
 
             // Load desired scenes.
-            for (int i = 0; i < _prototypeHubTransition.ScenesToLoad.Length; i++)
+            for (int i = 0; i < hubTransition.ScenesToLoad.Length; i++)
             {
-                _scenesLoading.Add(SceneManager.LoadSceneAsync(_prototypeHubTransition.ScenesToLoad[i], LoadSceneMode.Additive));
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(hubTransition.ScenesToLoad[i], LoadSceneMode.Additive));
             }
             yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
@@ -280,9 +301,9 @@ namespace SceneManagement
 
 
             // Alter player position & rotation.
-            if (_prototypeHubTransition.AlterPlayerLocation)
+            if (hubTransition.AlterPlayerLocation)
             {
-                PlayerManager.Instance.SetPlayerPositionAndRotation(_prototypeHubTransition.EntryPosition, _prototypeHubTransition.EntryRotation);
+                PlayerManager.Instance.SetPlayerPositionAndRotation(hubTransition.EntryPosition, hubTransition.EntryRotation);
             }
 
             // Wait for script inialisation.
@@ -328,9 +349,15 @@ namespace SceneManagement
             OnLoadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
         }
+        private void FinishHubLoading()
+        {
+            OnLoadFinished?.Invoke();
+            OnHubLoadFinished?.Invoke();
+            Time.timeScale = _previousTimeScale;
+        }
         private void FinishLoadToHub()
         {
-            OnLoadToHubFinished?.Invoke();
+            OnReloadToHubFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
         }
         private void FinishReload()

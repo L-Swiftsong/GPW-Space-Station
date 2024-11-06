@@ -25,12 +25,12 @@ namespace UI.GameOver
         private void OnEnable()
         {
             SceneLoader.OnReloadFinished += HideGameOverUI;
-            SceneLoader.OnLoadToHubFinished += HideGameOverUI;
+            SceneLoader.OnReloadToHubFinished += HideGameOverUI;
         }
         private void OnDisable()
         {
             SceneLoader.OnReloadFinished -= HideGameOverUI;
-            SceneLoader.OnLoadToHubFinished -= HideGameOverUI;
+            SceneLoader.OnReloadToHubFinished -= HideGameOverUI;
         }
 
         public void ShowGameOverUI()

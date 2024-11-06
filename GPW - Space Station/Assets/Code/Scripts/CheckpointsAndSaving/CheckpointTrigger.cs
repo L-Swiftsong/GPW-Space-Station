@@ -22,7 +22,9 @@ namespace Saving
                 return;
             }
 
-            SaveManager.SaveGameState();
+            Debug.Log("Checkpoint Save");
+
+            SaveManager.SaveCheckpoint();
 
             if (_onlyTriggerOnce)
             {
