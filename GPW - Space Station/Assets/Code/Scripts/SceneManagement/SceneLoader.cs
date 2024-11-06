@@ -43,6 +43,12 @@ namespace SceneManagement
 
         private float _previousTimeScale = 1.0f;
 
+        
+        [Tooltip("When performing a Foreground Transition, these are the scenes that will not be unloaded")]
+            [SerializeField] private List<SceneField> _foregroundTransitionScenesToKeep = new List<SceneField>();
+
+        [SerializeField] private ForegroundSceneTransition _prototypeHubTransition;
+
         #endregion
 
 
@@ -50,7 +56,7 @@ namespace SceneManagement
         public static event Action OnSoftLoadStarted; // Soft Load -> Load in Background.
 
         public static event Action OnLoadFinished;
-
+        public static event Action OnLoadToHubFinished;
         public static event Action OnReloadFinished;
 
 
@@ -63,26 +69,89 @@ namespace SceneManagement
             }
             
             Instance = this;
-            //DontDestroyOnLoad(this.gameObject);
         }
 
-        public void PerformTransition(SceneTransition transition) => StartCoroutine(PerformTransition_Coroutine(transition));
-        public IEnumerator PerformTransition_Coroutine(SceneTransition transition)
+
+        public void PerformTransition(SceneTransition transition)
         {
-            // Cancel current loading.
-
-
-            // Notify loading start.
-            if (transition.LoadInBackground)
+            if (transition is ForegroundSceneTransition)
             {
-                // Soft/Background load.
-                OnSoftLoadStarted?.Invoke();
+                StartCoroutine(PerformForegroundTransition(transition as ForegroundSceneTransition));
             }
             else
             {
-                // Hard/Foreground load.
-                OnHardLoadStarted?.Invoke();
+                StartCoroutine(PerformBackgroundTransition(transition as BackgroundSceneTransition));
             }
+        }
+        public void ResetActiveScenes() => StartCoroutine(ReloadActiveScenes());
+        public void ReloadToHub() => StartCoroutine(ResetActiveAndLoadHubScene());
+
+        private IEnumerator PerformForegroundTransition(ForegroundSceneTransition transition)
+        {
+            // Hard/Foreground load.
+            OnHardLoadStarted?.Invoke();
+
+
+            // Save what scene we want to have as our active scene.
+            _activeScene = transition.ActiveScene;
+
+
+            // Unload all non-persistent scenes.
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                if (_foregroundTransitionScenesToKeep.Any(t => t == SceneManager.GetSceneAt(i).name))
+                {
+                    continue;
+                }
+
+                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i).buildIndex));
+            }
+            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
+
+
+            // Load desired scenes.
+            for (int i = 0; i < transition.ScenesToLoad.Length; i++)
+            {
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(transition.ScenesToLoad[i], LoadSceneMode.Additive));
+            }
+            yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
+
+
+            if (_activeScene != null)
+            {
+                // Set the active scene.
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
+            }
+
+
+            // Stop time while things load.
+            _previousTimeScale = Time.timeScale;
+            Time.timeScale = 0.0f;
+
+
+            // Wait for script inialisation.
+            yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
+
+
+            // Alter player rotation.
+            if (transition.AlterPlayerLocation)
+            {
+                PlayerManager.Instance.SetPlayerPositionAndRotation(transition.EntryPosition, transition.EntryRotation);
+            }
+
+
+            // Once we recieve player input, continue.
+#if ENABLE_INPUT_SYSTEM
+            InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+#elif ENABLE_LEGACY_INPUT_MANAGER
+            yield return new WaitUntil(() => Input.anyKeyDown);
+            FinishLoading();
+#endif
+        }
+        private IEnumerator PerformBackgroundTransition(BackgroundSceneTransition transition)
+        {
+            // Notify background load.
+            OnSoftLoadStarted?.Invoke();
 
 
             // Save what scene we want to have as our active scene.
@@ -105,14 +174,24 @@ namespace SceneManagement
             yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
 
-            StartCoroutine(NotifyWhenScenesAreLoaded(transition));
+            if (_activeScene != null)
+            {
+                // Set the active scene.
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
+            }
+
+
+            // Wait for script inialisation.
+            yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
+
+            // Finish loading.
+            FinishLoading();
         }
-        public void ReloadActiveScenes() => StartCoroutine(ReloadActiveScenes_Coroutine());
-        public IEnumerator ReloadActiveScenes_Coroutine()
+        private IEnumerator ReloadActiveScenes()
         {
             // Get the scenes we wish to reload.
             List<int> scenesToReload = new List<int>();
-            for(int i = 0; i < SceneManager.sceneCount; i++)
+            for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 if (SceneManager.GetSceneAt(i).name == "PersistentScene")
                 {
@@ -147,7 +226,6 @@ namespace SceneManagement
             Time.timeScale = 0.0f;
 
             // Wait for script inialisation.
-            //yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
             yield return null;
 
 #if ENABLE_INPUT_SYSTEM
@@ -157,12 +235,33 @@ namespace SceneManagement
             FinishReload();
 #endif
         }
-
-
-        private IEnumerator NotifyWhenScenesAreLoaded(SceneTransition transition)
+        private IEnumerator ResetActiveAndLoadHubScene()
         {
-            // Wait until all scenes are loaded.
-            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone) && _scenesLoading.All(t => t.isDone));
+            // Save what scene we want to have as our active scene.
+            _activeScene = _prototypeHubTransition.ActiveScene;
+
+
+            // Unload all scenes except from the persistent scene.
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                if (SceneManager.GetSceneAt(i).name == "PersistentScene")
+                {
+                    // Don't unload the persistent scene.
+                    continue;
+                }
+
+                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i).buildIndex));
+            }
+            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
+
+
+            // Load desired scenes.
+            for (int i = 0; i < _prototypeHubTransition.ScenesToLoad.Length; i++)
+            {
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(_prototypeHubTransition.ScenesToLoad[i], LoadSceneMode.Additive));
+            }
+            yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
+
 
             if (_activeScene != null)
             {
@@ -170,39 +269,28 @@ namespace SceneManagement
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
             }
 
+
+            // Stop time while things load.
             _previousTimeScale = Time.timeScale;
-            if (!transition.LoadInBackground)
+            Time.timeScale = 0.0f;
+
+
+            // Wait long enough for Awake initialisations.
+            yield return null;
+
+
+            // Alter player position & rotation.
+            if (_prototypeHubTransition.AlterPlayerLocation)
             {
-                Time.timeScale = 0.0f;
+                PlayerManager.Instance.SetPlayerPositionAndRotation(_prototypeHubTransition.EntryPosition, _prototypeHubTransition.EntryRotation);
             }
-
-
-            // Update the player's position.
-            if (transition.AlterPlayerLocation)
-            {
-                PlayerManager.Instance.SetPlayerPositionAndRotation(transition.EntryPosition, transition.EntryRotation);
-            }
-
 
             // Wait for script inialisation.
             yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
 
-            // Once we recieve player input, continue.
-            if (transition.LoadInBackground)
-            {
-                FinishLoading();
-            }
-            else
-            {
-#if ENABLE_INPUT_SYSTEM
-                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
-#elif ENABLE_LEGACY_INPUT_MANAGER
-                yield return new WaitUntil(() => Input.anyKeyDown);
-                FinishLoading();
-#endif
-            }
+            // Finish loading to the hub.
+            FinishLoadToHub();
         }
-
 
 
         #region Progress Accessing 
@@ -238,6 +326,11 @@ namespace SceneManagement
         private void FinishLoading()
         {
             OnLoadFinished?.Invoke();
+            Time.timeScale = _previousTimeScale;
+        }
+        private void FinishLoadToHub()
+        {
+            OnLoadToHubFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
         }
         private void FinishReload()

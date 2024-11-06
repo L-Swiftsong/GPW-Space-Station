@@ -433,6 +433,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50f6513123123fd49bbfb62f5591346a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _foregroundTransitionScenesToKeep:
+  - _sceneAsset: {fileID: 102900000, guid: e892d070dcbf6544e882f9233ced195f, type: 3}
+    _sceneName: PersistentScene
+  - _sceneAsset: {fileID: 102900000, guid: ed6342c6e18043d439224ff71d189c70, type: 3}
+    _sceneName: PlayerScene
+  _prototypeHubTransition: {fileID: 11400000, guid: f88d2a6e7b0bbb24d911e17d7d74d661, type: 2}
 --- !u!1 &571482251
 GameObject:
   m_ObjectHideFlags: 0

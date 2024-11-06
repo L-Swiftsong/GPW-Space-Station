@@ -49,7 +49,6 @@ namespace AI.States
             if ((transform.position - _entitySenses.TargetPosition).sqrMagnitude <= (_playerCatchRadius * _playerCatchRadius))
             {
                 // We are close enough to catch the player.
-                Debug.Log("The player has been caught!");
                 UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
             }
         }

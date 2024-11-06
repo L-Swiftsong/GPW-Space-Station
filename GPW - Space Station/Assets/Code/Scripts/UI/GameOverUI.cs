@@ -13,7 +13,7 @@ namespace UI.GameOver
         public static GameOverUI Instance => s_instance;
 
 
-        private const string LOAD_PROTOTYPE_HUB_TRANSITION_PATH = "Transitions/PrototypeHub_Foreground";
+        private const string LOAD_PROTOTYPE_HUB_TRANSITION_PATH = "Transitions/PrototypeHub_FT";
 
 
         private void Awake()
@@ -22,9 +22,16 @@ namespace UI.GameOver
 
             _container.SetActive(false);
         }
-        private void OnEnable() => SceneLoader.OnReloadFinished += HideGameOverUI;
-        private void OnDisable() => SceneLoader.OnReloadFinished -= HideGameOverUI;
-
+        private void OnEnable()
+        {
+            SceneLoader.OnReloadFinished += HideGameOverUI;
+            SceneLoader.OnLoadToHubFinished += HideGameOverUI;
+        }
+        private void OnDisable()
+        {
+            SceneLoader.OnReloadFinished -= HideGameOverUI;
+            SceneLoader.OnLoadToHubFinished -= HideGameOverUI;
+        }
 
         public void ShowGameOverUI()
         {
@@ -38,11 +45,15 @@ namespace UI.GameOver
         }
 
 
-        public void RestartFromCheckpoint() => SceneLoader.Instance.ReloadActiveScenes();
+        public void RestartFromCheckpoint()
+        {
+            SceneLoader.Instance.ResetActiveScenes();
+            HideGameOverUI();
+        }
         public void RestartFromPrototypeHub()
         {
-            SceneTransition prototypeHubTransition = Resources.Load<SceneTransition>(LOAD_PROTOTYPE_HUB_TRANSITION_PATH);
-            SceneLoader.Instance.PerformTransition(prototypeHubTransition);
+            SceneLoader.Instance.ReloadToHub();
+            HideGameOverUI();
         }
         public void ExitToDesktop() => Application.Quit();
     }
