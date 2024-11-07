@@ -147,6 +147,12 @@ namespace AI.Mimic
             }
             else if (_currentState == _ventState) // Transitions FROM VentState.
             {
+                if (_entitySenses.HasTarget)
+                {
+                    // We can see the player.
+                    SetActiveState(_preparingToChaseState);
+                    return;
+                }
                 if (_entitySenses.CurrentPointOfInterest.HasValue)
                 {
                     // We have an active Point of Interest.
@@ -162,6 +168,12 @@ namespace AI.Mimic
             }
             else if (_currentState == _setTrapState) // Transitions FROM SetTrapState.
             {
+                if (_entitySenses.HasTarget)
+                {
+                    // We can see the player.
+                    SetActiveState(_preparingToChaseState);
+                    return;
+                }
                 if (_entitySenses.CurrentPointOfInterest.HasValue)
                 {
                     // We have an active Point of Interest.
