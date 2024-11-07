@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Environment.Doors;
 
-public class KeycardReader : MonoBehaviour, IInteractable
+public class DoorButton : MonoBehaviour, IInteractable
 {
     [SerializeField] private ExternalInputDoor _connectedDoor;
     [SerializeField] private int _requiredKeycardID = -1;
@@ -18,18 +18,9 @@ public class KeycardReader : MonoBehaviour, IInteractable
     private Coroutine _closeDoorCoroutine;
 
 
-    private void Start()
-    {
-        if (_requiredKeycardID == -1)
-        {
-            Debug.LogError("Error: Required Keycard Index of KeycardReader " + this.name +  " is not set");
-        }
-    }
-
-
     public void Interact(PlayerInteraction interactingScript)
     {
-        if (TestKeycard(interactingScript.Inventory))
+        if (_requiredKeycardID == -1 || TestKeycard(interactingScript.Inventory))
         {
             if (_interactOnlyOpens)
             {

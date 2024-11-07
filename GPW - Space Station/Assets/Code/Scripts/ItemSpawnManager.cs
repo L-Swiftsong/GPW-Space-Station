@@ -74,25 +74,31 @@ public class ItemSpawnManager : MonoBehaviour
             }
         }
 
-        // Override KeycardReader Materials.
-        foreach (KeycardReader keycardReader in FindObjectsOfType<KeycardReader>())
+        // Override DoorButton Materials.
+        foreach (DoorButton doorButton in FindObjectsOfType<DoorButton>())
         {
-            foundIDs.Add(keycardReader.RequiredKeycardID);
+            if (doorButton.RequiredKeycardID == -1)
+            {
+                // This button doesn't require a keycard to use.
+                continue;
+            }
+
+            foundIDs.Add(doorButton.RequiredKeycardID);
 
             if (_overrideKeycardReaderMateirals)
             {
                 Material overrideMaterial = null;
                 try
                 {
-                    overrideMaterial = _keycardSpawnPositionsList.Where(ksp => ksp.KeycardID == keycardReader.RequiredKeycardID).First().KeycardMaterial;
+                    overrideMaterial = _keycardSpawnPositionsList.Where(ksp => ksp.KeycardID == doorButton.RequiredKeycardID).First().KeycardMaterial;
                 }
                 catch
                 {
-                    Debug.LogError("Error: No spawned Keycards are assigned to the KeycardID " + keycardReader.RequiredKeycardID + ", however the Keycard Reader " + keycardReader.name + " requires it.");
+                    Debug.LogError("Error: No spawned Keycards are assigned to the KeycardID " + doorButton.RequiredKeycardID + ", however the Keycard Reader " + doorButton.name + " requires it.");
                     return;
                 }
 
-                keycardReader.OverrideMaterial(overrideMaterial);
+                doorButton.OverrideMaterial(overrideMaterial);
             }
         }
 
