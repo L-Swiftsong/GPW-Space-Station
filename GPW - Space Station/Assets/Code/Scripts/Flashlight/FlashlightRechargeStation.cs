@@ -13,20 +13,14 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     [Header("Recharge Settings")]
     [SerializeField] private Transform rechargePoint;
     [SerializeField] private AudioClip rechargeSound;
-    [SerializeField] private float rechargeDuration = 5.0f;
+    [SerializeField] private float _rechargeRate = 20.0f;
 
-    private bool _isRecharging = false;
+    private Coroutine _rechargeFlashlightCoroutine;
     private FlashLightController _currentFlashlight;
 
 
     public void Interact(PlayerInteraction playerInteraction)
     {
-        if (_isRecharging)
-        {
-            // We are in the process of recharging.
-            return;
-        }
-
         if (_currentFlashlight == null)
         {
             // The station currently doesn't have a flashlight inside it.
@@ -47,7 +41,7 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     private void HandleRecharge(Transform player)
     {
         PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
-        if (flashlightController != null)
+        if (flashlightController != null && !flashlightController.GetCurrentFlashlightController().IsFullyCharged())
         {
             StartRecharge(flashlightController);
         }
@@ -57,6 +51,11 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     // ALLOWS PICKUP AFTER CHARGE IS COMPLETE
     private void HandleFlashlightPickup(Transform player)
     {
+        if (_rechargeFlashlightCoroutine != null)
+        {
+            StopCoroutine(_rechargeFlashlightCoroutine);
+        }
+
         PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
         Debug.Log(flashlightController.name);
         AttachFlashlightToHolder(flashlightController);
@@ -69,32 +68,26 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
         FlashLightController flashlightController = playerFlashlightController.GetCurrentFlashlightController();
         _currentFlashlight = playerFlashlightController.DetatchFlashlight(rechargePoint);
 
-        _isRecharging = true;
-        StartCoroutine(RechargeFlashlight(flashlightController));
+        _rechargeFlashlightCoroutine = StartCoroutine(RechargeFlashlight(flashlightController));
     }
 
 
     /// Coroutine that recharges the flashlight battery over time.
     private IEnumerator RechargeFlashlight(FlashLightController flashlightController)
     {
-        float elapsedTime = 0f;
-        float startBattery = flashlightController.FlashlightBattery;
-        float rechargeTime = rechargeDuration;
-
-        while (elapsedTime < rechargeTime)
+        while (flashlightController.IsFullyCharged() == false)
         {
-            elapsedTime += Time.deltaTime;
-            float t = elapsedTime / rechargeTime;
-
-            float newBatteryLevel = Mathf.Lerp(startBattery, 100f, t);
-            flashlightController.SetBatteryLevel(newBatteryLevel);
+            // Recharge the flashlight at a fixed rate over time.
+            flashlightController.SetBatteryLevel(Mathf.MoveTowards(
+                current: flashlightController.GetCurrentBattery(),
+                target: flashlightController.GetMaxBattery(),
+                maxDelta: _rechargeRate * Time.deltaTime));
 
             yield return null;
         }
 
-        flashlightController.SetBatteryLevel(100f);
+        // Notify the player that we have finished charging.
         AudioSource.PlayClipAtPoint(rechargeSound, rechargePoint.position);
-        _isRecharging = false;
     }
 
 

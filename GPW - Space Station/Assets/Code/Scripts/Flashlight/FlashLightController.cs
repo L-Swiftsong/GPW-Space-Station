@@ -231,5 +231,9 @@ public class FlashLightController : MonoBehaviour
         OnFlashlightBatteryChanged?.Invoke(this, _currentBattery);
     }
 
+    public float GetMaxBattery() => _maxBattery;
+    public float GetCurrentBattery() => _currentBattery;
+    public bool IsFullyCharged() => _currentBattery == _maxBattery;
+
     #endregion
 }
