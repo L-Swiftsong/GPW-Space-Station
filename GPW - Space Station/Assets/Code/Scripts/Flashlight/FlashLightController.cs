@@ -48,8 +48,10 @@ public class FlashLightController : MonoBehaviour
     [SerializeField] private float _focusStunRate = 35.0f;
 
 
-    [Header("UI Settings")]
-    [SerializeField] private TextMeshProUGUI batteryTextUI;
+    
+    public static event System.Action<FlashLightController, float, float> OnFlashlightControllerChanged; // FlashlightController: newController, float currentBattery, float: maxBattery
+    public static event System.Action<FlashLightController, float> OnFlashlightMaxBatteryChanged; // FlashlightController: thisController, float maxBattery.
+    public static event System.Action<FlashLightController, float> OnFlashlightBatteryChanged; // FlashlightController: thisController, float currentBattery.
 
 
 
@@ -58,32 +60,9 @@ public class FlashLightController : MonoBehaviour
     /// </summary>
     public float FlashlightBattery => _currentBattery;
 
-    private void Awake()
-    {
-        _currentBattery = _maxBattery;
-        InitializeFlashlight();
-    }
 
-
-    #region Input Handling
-
-    private void OnEnable()
-    {
-        PlayerInput.OnToggleFlashlightPerformed += PlayerInput_OnToggleFlashlightPerformed;
-        PlayerInput.OnFocusFlashlightStarted += PlayerInput_OnFocusFlashlightStarted;
-        PlayerInput.OnFocusFlashlightCancelled += PlayerInput_OnFocusFlashlightCancelled;
-    }
-    private void OnDisable()
-    {
-        PlayerInput.OnToggleFlashlightPerformed -= PlayerInput_OnToggleFlashlightPerformed;
-        PlayerInput.OnFocusFlashlightStarted -= PlayerInput_OnFocusFlashlightStarted;
-        PlayerInput.OnFocusFlashlightCancelled -= PlayerInput_OnFocusFlashlightCancelled;
-    }
-    private void PlayerInput_OnToggleFlashlightPerformed() => TryToggleFlashlight();
-    private void PlayerInput_OnFocusFlashlightStarted() => EnableFocusMode();
-    private void PlayerInput_OnFocusFlashlightCancelled() => DisableFocusMode();
-
-#endregion
+    private void Awake() => _currentBattery = _maxBattery;
+    private void Start() => InitializeFlashlight();
 
 
     private void Update()
@@ -111,15 +90,18 @@ public class FlashLightController : MonoBehaviour
         _flashlightLight.spotAngle = _defaultConeAngle;
         _flashlightLight.intensity = _flashlightLight.intensity;
 
-        // (Temp) Setup the UI.
-        UpdateBatteryUI(); 
+        // Notify Listeners for UI.
+        OnFlashlightControllerChanged?.Invoke(this, _currentBattery, _maxBattery);
     }
+    public void OnFlashlightEquipped() => OnFlashlightControllerChanged?.Invoke(this, _currentBattery, _maxBattery);
+    public void OnFlashlightUnequipped() => OnFlashlightControllerChanged?.Invoke(null, 1.0f, 1.0f);
+
 
 
     #region Enabling/Disabling
 
     /// <summary> Toggle the flashlight on/off.</summary>
-    private void TryToggleFlashlight()
+    public void TryToggleFlashlight()
     {
         if (_currentBattery <= 0.0f)
         {
@@ -151,18 +133,6 @@ public class FlashLightController : MonoBehaviour
 #endregion
 
 
-    /// <summary>
-    /// Update the battery level in the UI.
-    /// </summary>
-    private void UpdateBatteryUI()
-    {
-        if (batteryTextUI != null)
-        {
-            batteryTextUI.text = "Battery: " + Mathf.RoundToInt(_currentBattery) + "%";
-        }
-    }
-
-
     private void UpdateFlashlightLight()
     {
         if (_isFocused)
@@ -183,14 +153,14 @@ public class FlashLightController : MonoBehaviour
 
     #region Focus Mode
 
-    private void EnableFocusMode()
+    public void EnableFocusMode()
     {
         if (_isOn && _currentBattery > 0.0f)
         {
             _isFocused = true;
         }
     }
-    private void DisableFocusMode() => _isFocused = false;
+    public void DisableFocusMode() => _isFocused = false;
 
 
     /// <summary> Apply stun to any stunnable entities within our flashlight cone.</summary>
@@ -250,7 +220,7 @@ public class FlashLightController : MonoBehaviour
             DisableFlashlight();
         }
 
-        UpdateBatteryUI();
+        OnFlashlightBatteryChanged?.Invoke(this, _currentBattery);
     }
 
 
@@ -258,13 +228,7 @@ public class FlashLightController : MonoBehaviour
     public void SetBatteryLevel(float batteryLevel)
     {
         _currentBattery = Mathf.Clamp(batteryLevel, 0, _maxBattery);
-        UpdateBatteryUI();
-    }
-
-    public void SetBatteryUI(TextMeshProUGUI batteryUI)
-    {
-        batteryTextUI = batteryUI;
-        UpdateBatteryUI();
+        OnFlashlightBatteryChanged?.Invoke(this, _currentBattery);
     }
 
     #endregion

@@ -8,7 +8,46 @@ public class PlayerFlashlightController : MonoBehaviour
     public Transform FlashlightHolder => _flashlightHolder;
 
     private FlashLightController _flashlightController;
-    
+
+
+    #region Input Events
+
+    private void OnEnable()
+    {
+        PlayerInput.OnToggleFlashlightPerformed += PlayerInput_OnToggleFlashlightPerformed;
+        PlayerInput.OnFocusFlashlightStarted += PlayerInput_OnFocusFlashlightStarted;
+        PlayerInput.OnFocusFlashlightCancelled += PlayerInput_OnFocusFlashlightCancelled;
+    }
+    private void OnDisable()
+    {
+        PlayerInput.OnToggleFlashlightPerformed -= PlayerInput_OnToggleFlashlightPerformed;
+        PlayerInput.OnFocusFlashlightStarted -= PlayerInput_OnFocusFlashlightStarted;
+        PlayerInput.OnFocusFlashlightCancelled -= PlayerInput_OnFocusFlashlightCancelled;
+    }
+    private void PlayerInput_OnToggleFlashlightPerformed()
+    {
+        if (HasFlashlight())
+        {
+            _flashlightController.TryToggleFlashlight();
+        }
+    }
+    private void PlayerInput_OnFocusFlashlightStarted()
+    {
+        if (HasFlashlight())
+        {
+            _flashlightController.EnableFocusMode();
+        }
+    }
+    private void PlayerInput_OnFocusFlashlightCancelled()
+    {
+        if (HasFlashlight())
+        {
+            _flashlightController.DisableFocusMode();
+        }
+    }
+
+#endregion
+
 
     public GameObject CurrentFlashlightPrefab { get; private set; } = null;
 
@@ -22,6 +61,8 @@ public class PlayerFlashlightController : MonoBehaviour
         // Add the new flashlight.
         CurrentFlashlightPrefab = flashlightPrefab;
         _flashlightController = Instantiate(flashlightPrefab, _flashlightHolder).GetComponent<FlashLightController>();
+
+        _flashlightController.OnFlashlightEquipped();
     }
     /// <summary> Delete the current flashlight.</summary>
     public void RemoveFlashlight()
@@ -32,6 +73,8 @@ public class PlayerFlashlightController : MonoBehaviour
             return;
         }
         
+        _flashlightController.OnFlashlightUnequipped();
+
         // Destroy and remove references to the flashlight instance.
         Destroy(_flashlightController.gameObject);
         _flashlightController = null;
@@ -52,9 +95,11 @@ public class PlayerFlashlightController : MonoBehaviour
 
         _flashlightController.transform.SetParent(_flashlightHolder);
         _flashlightController.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+
+        _flashlightController.OnFlashlightEquipped();
     }
     /// <summary> Remove the current flashlight from the player, if it exists, and set it's parent to the passed transform.</summary>
-    public GameObject DetatchFlashlight(Transform newParent)
+    public FlashLightController DetatchFlashlight(Transform newParent)
     {
         if (_flashlightController == null)
         {
@@ -62,20 +107,16 @@ public class PlayerFlashlightController : MonoBehaviour
             return null;
         }
 
-        GameObject flashlightInstance = _flashlightController.gameObject;
+        _flashlightController.OnFlashlightUnequipped();
+
+        FlashLightController flashlightInstanceCache = _flashlightController;
         _flashlightController = null;
 
-        flashlightInstance.transform.SetParent(newParent);
-        return flashlightInstance;
+        flashlightInstanceCache.transform.SetParent(newParent, worldPositionStays: false);
+        return flashlightInstanceCache;
     }
 
 
     public bool HasFlashlight() => _flashlightController != null;
-    public float GetFlashlightCharge()
-    {
-        if (!HasFlashlight())
-            return -1.0f;
-
-        return _flashlightController.FlashlightBattery;
-    }
+    public FlashLightController GetCurrentFlashlightController() => _flashlightController;
 }
