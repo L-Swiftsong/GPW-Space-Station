@@ -17,6 +17,7 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
 
     private Coroutine _rechargeFlashlightCoroutine;
     private FlashLightController _currentFlashlight;
+    private int _cachedFlashlightLayer;
 
 
     public void Interact(PlayerInteraction playerInteraction)
@@ -68,6 +69,10 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
         FlashLightController flashlightController = playerFlashlightController.GetCurrentFlashlightController();
         _currentFlashlight = playerFlashlightController.DetatchFlashlight(rechargePoint);
 
+        // (Temp) Prevent the flashlight from continually being drawn in front.
+        _cachedFlashlightLayer = _currentFlashlight.gameObject.layer;
+        SetLayerThroughChildren(_currentFlashlight.gameObject, 0);
+
         _rechargeFlashlightCoroutine = StartCoroutine(RechargeFlashlight(flashlightController));
     }
 
@@ -94,7 +99,21 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     /// GIVES PLAYER FLASH BACK
     private void AttachFlashlightToHolder(PlayerFlashlightController playerFlashlightController)
     {
+        // Revert the flashlight's layer.
+        SetLayerThroughChildren(_currentFlashlight.gameObject, _cachedFlashlightLayer);
+
         playerFlashlightController.AttachFlashlight(_currentFlashlight);
         _currentFlashlight = null;
+    }
+
+
+
+    private void SetLayerThroughChildren(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerThroughChildren(child.gameObject, layer);
+        }
     }
 }

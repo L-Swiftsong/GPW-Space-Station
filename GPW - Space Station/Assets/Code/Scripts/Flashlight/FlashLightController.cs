@@ -47,18 +47,11 @@ public class FlashLightController : MonoBehaviour
     [SerializeField] private LayerMask _stunnableLayers;
     [SerializeField] private float _focusStunRate = 35.0f;
 
-
     
     public static event System.Action<FlashLightController, float, float> OnFlashlightControllerChanged; // FlashlightController: newController, float currentBattery, float: maxBattery
     public static event System.Action<FlashLightController, float> OnFlashlightMaxBatteryChanged; // FlashlightController: thisController, float maxBattery.
     public static event System.Action<FlashLightController, float> OnFlashlightBatteryChanged; // FlashlightController: thisController, float currentBattery.
 
-
-
-    /// <summary>
-    /// Public getter for the flashlight battery level.
-    /// </summary>
-    public float FlashlightBattery => _currentBattery;
 
 
     private void Awake() => _currentBattery = _maxBattery;
