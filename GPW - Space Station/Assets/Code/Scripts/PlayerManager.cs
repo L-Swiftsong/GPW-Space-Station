@@ -84,7 +84,7 @@ public class PlayerManager : MonoBehaviour
 
         // Flashlight.
         setupData.CurrentFlashlightPrefab = _playerFlashlightController.CurrentFlashlightPrefab;
-        setupData.FlashlightBatteryRemaining = _playerFlashlightController.GetCurrentFlashlightController().GetCurrentBattery();
+        setupData.FlashlightBatteryRemaining = _playerFlashlightController.HasFlashlight() ? _playerFlashlightController.GetCurrentFlashlightController().GetCurrentBattery() : 0.0f;
 
 
         // Collected Items.
