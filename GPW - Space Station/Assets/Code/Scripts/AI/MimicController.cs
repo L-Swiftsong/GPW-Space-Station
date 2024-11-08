@@ -1,11 +1,9 @@
 using AI.States;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.AI;
+using Mimicry.PassiveMimicry;
 
 
 namespace AI.Mimic

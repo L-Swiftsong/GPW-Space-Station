@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mimicry.PassiveMimicry;
 
 
 namespace Testing.Mimicry
@@ -9,10 +10,7 @@ namespace Testing.Mimicry
     {
         private Transform _player;
 
-        [SerializeField] private Renderer _renderer;
-        private Material _mimicryMaterial;
-
-        private const string PASSIVE_MIMICRY_RAMP_IDENTIFIER = "_PassiveMimicryStrength";
+        [SerializeField] private PassiveMimicryController _passiveMimicryController;
 
 
         [Header("Strength Settings")]
@@ -27,7 +25,6 @@ namespace Testing.Mimicry
         [SerializeField] private Color _maxDistanceColour = Color.green;
 
 
-        private void Awake() => _mimicryMaterial = _renderer.material;
         private void Start() => _player = PlayerManager.Instance.Player;
 
         private void Update()
@@ -45,7 +42,7 @@ namespace Testing.Mimicry
             float mimicryPercentageStrength = _mimicryStrengthCurve.Evaluate(percentageDistance);
 
             // Set our controller's passiveMimicryRamp value to the percentage strength
-            _mimicryMaterial.SetFloat(PASSIVE_MIMICRY_RAMP_IDENTIFIER, mimicryPercentageStrength);
+            _passiveMimicryController.SetMimicryStrengthTarget(mimicryPercentageStrength);
         }
 
 

@@ -520,7 +520,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 843563098}
-  _playerCamera: {fileID: 843563095}
+  _playerMainCamera: {fileID: 843563095}
   _playerInventory: {fileID: 843563096}
   _playerFlashlightController: {fileID: 843563097}
 --- !u!1 &496153374
@@ -776,9 +776,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
---- !u!4 &843563095 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3112507552405676298, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
+--- !u!20 &843563095 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 6197061550710832611, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
   m_PrefabInstance: {fileID: 843563094}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &843563096 stripped

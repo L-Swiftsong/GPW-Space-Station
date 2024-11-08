@@ -30,7 +30,7 @@ public class PlayerManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Transform _player;
-    [SerializeField] private Transform _playerCamera;
+    [SerializeField] private Camera _playerMainCamera;
 
     [Space(5)]
     [SerializeField] private PlayerInventory _playerInventory;
@@ -56,7 +56,7 @@ public class PlayerManager : MonoBehaviour
         Physics.SyncTransforms();
 
         // Camera Rotation.
-        _playerCamera.localEulerAngles = new Vector3(setupData.CameraXRotation, 0.0f, 0.0f); // Not working - PlayerController conflict?.
+        _playerMainCamera.transform.localEulerAngles = new Vector3(setupData.CameraXRotation, 0.0f, 0.0f); // Not working - PlayerController conflict?.
 
 
         // Flashlight.
@@ -79,7 +79,7 @@ public class PlayerManager : MonoBehaviour
         setupData.RootRotation = _player.rotation;
 
         // Camera Rotation.
-        setupData.CameraXRotation = _playerCamera.localEulerAngles.x;
+        setupData.CameraXRotation = _playerMainCamera.transform.localEulerAngles.x;
 
 
         // Flashlight.
@@ -97,6 +97,9 @@ public class PlayerManager : MonoBehaviour
 
     /// <summary> To-do: Remove.</summary>
     public Transform Player => _player;
+
+    public Camera GetPlayerCamera() => _playerMainCamera;
+    public Transform GetPlayerCameraTransform() => _playerMainCamera.transform;
 
 
     [System.Serializable]
