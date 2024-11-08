@@ -38,9 +38,9 @@ namespace Mimicry.PassiveMimicry
                 _clipPlaneThreshold = collider.bounds.extents.magnitude;
             }
         }
-        private void OnEnable() => UnityEngine.Rendering.RenderPipelineManager.beginContextRendering += RenderPipelineManager_beginContextRendering;
-        private void OnDisable() => UnityEngine.Rendering.RenderPipelineManager.beginContextRendering -= RenderPipelineManager_beginContextRendering;
-        
+        private void OnEnable() => UnityEngine.Rendering.RenderPipelineManager.beginContextRendering += RenderPipelineManager_beginContextRendering; // Use Camera.OnWillRenderObject to support multiple cameras?
+        private void OnDisable() => UnityEngine.Rendering.RenderPipelineManager.beginContextRendering -= RenderPipelineManager_beginContextRendering; // Use Camera.OnWillRenderObject to support multiple cameras?
+
 
         private void RenderPipelineManager_beginContextRendering(UnityEngine.Rendering.ScriptableRenderContext context, List<Camera> cameras) => UpdateMimicryCamera();
 
