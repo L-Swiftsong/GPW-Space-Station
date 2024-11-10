@@ -62,6 +62,9 @@ namespace SceneManagement
         public static event Action OnReloadFinished;
 
 
+        public static bool s_HasGameStarted = false;
+
+
         private void Awake()
         {
             if (Instance != null)
@@ -71,6 +74,17 @@ namespace SceneManagement
             }
             
             Instance = this;
+        }
+
+
+        private void OnEnable() => SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+        private void OnDisable() => SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            if (scene.name != "MainMenuScene" && scene.name != "PersistentScene")
+            {
+                s_HasGameStarted = true;
+            }
         }
 
 
@@ -87,6 +101,7 @@ namespace SceneManagement
         }
         public void ResetActiveScenes() => StartCoroutine(ReloadActiveScenes());
         public void ReloadToHub() => StartCoroutine(ResetActiveAndLoadHubScene());
+        public void ForegroundLoadFromBuildIndices(int[] buildIndices, System.Action onCompleteCallback, bool hubTransition = false, int activeSceneIndex = -1) => StartCoroutine(PerformLoadFromSave(buildIndices, onCompleteCallback, hubTransition, activeSceneIndex));
 
         private IEnumerator PerformForegroundTransition(ForegroundSceneTransition transition)
         {
@@ -314,6 +329,93 @@ namespace SceneManagement
         }
 
 
+        public void LoadFromSave(int[] buildIndices, System.Action onCompleteCallback)
+        {
+            StartCoroutine(PerformLoadFromSave(buildIndices, onCompleteCallback, false, buildIndices[0]));
+        }
+        private IEnumerator PerformLoadFromSave(int[] buildIndices, System.Action onCompleteCallback, bool hubTransition = false, int activeSceneIndex = -1)
+        {
+            // Hard/Foreground load.
+            OnHardLoadStarted?.Invoke();
+
+
+            if (activeSceneIndex != -1)
+            {
+                // Save what scene we want to have as our active scene.
+                _activeScene = SceneManager.GetSceneByBuildIndex(buildIndices[0]).name;
+            }
+
+            // Unload all non-persistent scenes.
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                if (_foregroundTransitionScenesToKeep.Any(t => t == SceneManager.GetSceneAt(i).name))
+                {
+                    continue;
+                }
+
+                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i).buildIndex));
+            }
+            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
+
+
+            // Load desired scenes.
+            for (int i = 0; i < buildIndices.Length; i++)
+            {
+                if (i == activeSceneIndex)
+                {
+                    // Save what scene we want to have as our active scene.
+                    _activeScene = SceneManager.GetSceneByBuildIndex(buildIndices[i]).name;
+                }
+
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(buildIndices[i], LoadSceneMode.Additive));
+            }
+            yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
+
+
+            if (_activeScene != null)
+            {
+                // Set the active scene.
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
+            }
+
+
+            // Stop time while things load.
+            _previousTimeScale = Time.timeScale;
+            Time.timeScale = 0.0f;
+
+
+            // Wait for script inialisation.
+            yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
+
+
+            onCompleteCallback?.Invoke();
+
+
+            // Once we recieve player input, continue.
+#if ENABLE_INPUT_SYSTEM
+            if (hubTransition)
+            {
+                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishHubLoading());
+            }
+            else
+            {
+                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+            }
+#elif ENABLE_LEGACY_INPUT_MANAGER
+            yield return new WaitUntil(() => Input.anyKeyDown);
+
+            if (hubTransition)
+            {
+                FinishHubLoading();
+            }
+            else
+            {
+                FinishLoading();
+            }
+#endif
+        }
+
+
         #region Progress Accessing 
 
         public float GetSceneLoadProgress()
@@ -364,6 +466,27 @@ namespace SceneManagement
         {
             OnReloadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
+        }
+
+
+
+        /// <summary> Get an array of the build indices of the currently active scenes.</summary>
+        /// <param name="ignorePersistents"> If true, we don't include scenes such as the 'PersistentScene' and 'PlayerScene' in the array.</param>
+        public static int[] GetActiveSceneBuildIndices(bool ignorePersistents = true)
+        {
+            List<int> sceneIndexes = new List<int>();
+            for (int i = 0; i < SceneManager.loadedSceneCount; i++)
+            {
+                Scene scene = SceneManager.GetSceneAt(i);
+                if (ignorePersistents && (scene.name == "PersistentScene"))
+                {
+                    continue;
+                }
+
+                sceneIndexes.Add(scene.buildIndex);
+            }
+
+            return sceneIndexes.ToArray();
         }
     }
 }

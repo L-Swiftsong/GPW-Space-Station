@@ -83,6 +83,12 @@ namespace Mimicry.PassiveMimicry
 
         private void UpdateMimicryCamera()
         {
+            if (_playerCamera == null || _mimicryCamera == null)
+            {
+                // We don't have a reference to one of the required cameras (Typically because we are reloading the scene).
+                return;
+            }
+
             _mimicryCamera.transform.position = _playerCamera.transform.position;
             _mimicryCamera.transform.rotation = _playerCamera.transform.rotation;
             SetMimicryCameraNearClipPlane(_playerCamera);

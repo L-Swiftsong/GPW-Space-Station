@@ -18,7 +18,7 @@ public class LoadingScreenUI : MonoBehaviour
     private void Start()
     {
         _loadingProgressBar.SetValues(current: 0.0f, max: 100.0f);
-        Hide();
+        _container.SetActive(false);
     }
     private void OnEnable()
     {
