@@ -62,6 +62,9 @@ namespace SceneManagement
         public static event Action OnReloadFinished;
 
 
+        public static bool s_HasGameStarted = false;
+
+
         private void Awake()
         {
             if (Instance != null)
@@ -71,6 +74,17 @@ namespace SceneManagement
             }
             
             Instance = this;
+        }
+
+
+        private void OnEnable() => SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+        private void OnDisable() => SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+        {
+            if (scene.name != "MainMenuScene" && scene.name != "PersistentScene")
+            {
+                s_HasGameStarted = true;
+            }
         }
 
 

@@ -60,6 +60,9 @@ namespace Saving
 
         private static IEnumerator HandleAutosaves()
         {
+            // Wait until the game has actually started (E.g. We're not in the Main Menu).
+            yield return new WaitUntil(() => SceneLoader.s_HasGameStarted == true);
+
             float initialDelay = (AUTOSAVE_DELAY * 60.0f) - (Time.time - s_previousAutosaveTime);
             Debug.Log("Initial Delay: " + initialDelay.ToString() + " seconds");
             yield return new WaitForSeconds(initialDelay);
@@ -178,7 +181,7 @@ namespace Saving
 
 
         [ContextMenu("Continue Test")]
-        private void LoadMostRecentSave()
+        private static void LoadMostRecentSave()
         {
             // Get the most recent save file.
             FileInfo mostRecentFile = GetMostRecentSaveFile();
@@ -191,14 +194,14 @@ namespace Saving
             LoadGameState(ref s_currentSaveData);
         }
 
-        private FileInfo[] GetAllSaveFiles()
+        public static FileInfo[] GetAllSaveFiles()
         {
             string path = Application.persistentDataPath + "/";
             DirectoryInfo directoryInfo = new System.IO.DirectoryInfo(path);
             FileInfo[] fileInfoArray = directoryInfo.GetFiles("*.json");
             return fileInfoArray;
         }
-        private FileInfo GetMostRecentSaveFile()
+        private static FileInfo GetMostRecentSaveFile()
         {
             FileInfo[] fileInfoArray = GetAllSaveFiles();
 

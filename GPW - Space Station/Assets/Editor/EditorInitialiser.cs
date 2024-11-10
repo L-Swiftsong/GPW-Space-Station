@@ -24,6 +24,7 @@ public class EditorInitialiser
         Path.GetFileNameWithoutExtension(PERSISTENT_SCENE_PATH),
         "MimicryTestScene",
         "TempStartScene",
+        "MainMenuScene",
     };
     // The names of the scenes which we wish to load in addition to the first scene. Loaded in the order they appear in the List.
     private static List<string> _extraScenesToLoad = new List<string>
