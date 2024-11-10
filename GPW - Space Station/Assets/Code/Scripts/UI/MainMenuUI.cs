@@ -12,6 +12,7 @@ namespace UI
     public class MainMenuUI : MonoBehaviour
     {
         [SerializeField] private SceneField _persistentScene;
+        [SerializeField] private ForegroundSceneTransition _firstSceneTransition;
 
 
         [Header("Menu References")]
@@ -45,7 +46,7 @@ namespace UI
 
         private void UpdateSavedGames()
         {
-            _saveGameFiles = SaveManager.GetAllSaveFiles();
+            _saveGameFiles = SaveManager.GetAllSaveFiles(ordered: true);
 
             if (_saveGameFiles.Length <= 0)
             {
@@ -94,16 +95,19 @@ namespace UI
         public void LoadSave(System.IO.FileInfo fileInfo)
         {
             Debug.Log("Loading Save: '" + fileInfo.Name + "' at path: " + fileInfo.FullName);
+            SaveManager.StartLoadFromFileInfo(fileInfo);
         }
 
 
         public void ContinueFromMostRecentSave()
         {
             Debug.Log("Continue from Most Recent Save");
+            SaveManager.StartLoadFromFileInfo(_saveGameFiles[0]);
         }
         public void StartNewGame()
         {
             Debug.Log("Start New Game");
+            SceneLoader.Instance.PerformTransition(_firstSceneTransition);
         }
 
 

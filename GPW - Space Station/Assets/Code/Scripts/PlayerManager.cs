@@ -59,11 +59,20 @@ public class PlayerManager : MonoBehaviour
         _playerMainCamera.transform.localEulerAngles = new Vector3(setupData.CameraXRotation, 0.0f, 0.0f); // Not working - PlayerController conflict?.
 
 
+        // Standing State.
+        PlayerController.MovementState startingMovementState = setupData.PlayerStandingState switch {
+            PlayerSetupData.StandingState.Crouching => PlayerController.MovementState.Crouching,
+            PlayerSetupData.StandingState.Crawling => PlayerController.MovementState.Crawling,
+            _ => PlayerController.MovementState.Walking,
+        };
+        _player.GetComponent<PlayerController>().InitialiseMovementState(startingMovementState);
+
+
         // Flashlight.
         if (setupData.CurrentFlashlightPrefab != null)
         {
             _playerFlashlightController.AddFlashlight(setupData.CurrentFlashlightPrefab);
-            // Flashlight battery.
+            _playerFlashlightController.GetCurrentFlashlightController().SetBatteryLevel(setupData.FlashlightBatteryRemaining);
         }
 
 
@@ -80,6 +89,14 @@ public class PlayerManager : MonoBehaviour
 
         // Camera Rotation.
         setupData.CameraXRotation = _playerMainCamera.transform.localEulerAngles.x;
+
+
+        // Standing State.
+        setupData.PlayerStandingState = _player.GetComponent<PlayerController>().GetCurrentMovementState() switch {
+            PlayerController.MovementState.Crouching => PlayerSetupData.StandingState.Crouching,
+            PlayerController.MovementState.Crawling => PlayerSetupData.StandingState.Crawling,
+            _ => PlayerSetupData.StandingState.Standing,
+        };
 
 
         // Flashlight.
@@ -110,6 +127,9 @@ public class PlayerManager : MonoBehaviour
         public Quaternion RootRotation;
         public float CameraXRotation;
 
+        public enum StandingState { Standing, Crouching, Crawling };
+        public StandingState PlayerStandingState;
+
 
         // Flashlight Information.
         public GameObject CurrentFlashlightPrefab;
@@ -126,6 +146,8 @@ public class PlayerManager : MonoBehaviour
             RootPosition = Vector3.zero,
             RootRotation = Quaternion.identity,
             CameraXRotation = 0.0f,
+
+            PlayerStandingState = StandingState.Standing,
 
             CurrentFlashlightPrefab = null,
             FlashlightBatteryRemaining = 100.0f,

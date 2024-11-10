@@ -13,12 +13,14 @@ namespace Saving
         private struct SaveData
         {
             public float SaveTime;
+            public int[] LoadedSceneIndices;
 
             public PlayerManager.PlayerSetupData PlayerData;
 
             public static SaveData Default = new SaveData() {
-                PlayerData = PlayerManager.PlayerSetupData.Default,
                 SaveTime = 0.0f,
+                LoadedSceneIndices = null,
+                PlayerData = PlayerManager.PlayerSetupData.Default,
             };
         }
         [System.Serializable]
@@ -61,7 +63,14 @@ namespace Saving
         private static IEnumerator HandleAutosaves()
         {
             // Wait until the game has actually started (E.g. We're not in the Main Menu).
+            bool updateAutosaveTime = !SceneLoader.s_HasGameStarted;
             yield return new WaitUntil(() => SceneLoader.s_HasGameStarted == true);
+
+            if (updateAutosaveTime)
+            {
+                // We're to update the previous autosave time as when we loaded the game wasn't ready.
+                s_previousAutosaveTime = Time.time;
+            }
 
             float initialDelay = (AUTOSAVE_DELAY * 60.0f) - (Time.time - s_previousAutosaveTime);
             Debug.Log("Initial Delay: " + initialDelay.ToString() + " seconds");
@@ -146,7 +155,11 @@ namespace Saving
         {
             // Clear current save data.
             saveData = new SaveData();
+
+            // General Save Data.
             saveData.SaveTime = Time.time;
+            saveData.LoadedSceneIndices = SceneLoader.GetActiveSceneBuildIndices(ignorePersistents: true);
+            
 
             // Save Player Data.
             saveData.PlayerData = PlayerManager.Instance.GetCurrentPlayerData();
@@ -158,6 +171,21 @@ namespace Saving
 
 
             #endregion
+        }
+
+        public static void StartLoadFromFileInfo(FileInfo fileInfo)
+        {
+            // Load the data from the file.
+            SaveDataBundle saveDataBundle = JsonDataService.LoadDataRelative<SaveDataBundle>(fileInfo.Name);
+            OverrideFromSaveDataBundle(saveDataBundle);
+
+            // Load the current save data from the retrieved data.
+            StartLoadGameState(s_currentSaveData.SaveTime > s_checkpointSaveData.SaveTime ? s_currentSaveData : s_checkpointSaveData);
+        }
+        private static void StartLoadGameState(SaveData saveData) // Note: Cannot pass 'saveData' as a reference due to using it in a lambda expression. We need to let it be copied instead.
+        {
+            // Load active scenes. Then, once complete, load the rest of the save data.
+            SceneLoader.Instance.LoadFromSave(saveData.LoadedSceneIndices, () => LoadGameState(ref saveData));
         }
         private static void LoadGameState(ref SaveData saveData)
         {
@@ -181,29 +209,30 @@ namespace Saving
 
 
         [ContextMenu("Continue Test")]
-        private static void LoadMostRecentSave()
+        private static void LoadMostRecentSave() => StartLoadFromFileInfo(GetMostRecentSaveFile());
+
+        public static FileInfo[] GetAllSaveFiles(bool ordered = false)
         {
-            // Get the most recent save file.
-            FileInfo mostRecentFile = GetMostRecentSaveFile();
-
-            // Load the data from the file.
-            SaveDataBundle saveDataBundle = JsonDataService.LoadDataRelative<SaveDataBundle>(mostRecentFile.Name);
-            OverrideFromSaveDataBundle(saveDataBundle);
-
-            // Load the current save data from the retrieved data.
-            LoadGameState(ref s_currentSaveData);
-        }
-
-        public static FileInfo[] GetAllSaveFiles()
-        {
+            // Get all '.json' files in our save directory.
             string path = Application.persistentDataPath + "/";
             DirectoryInfo directoryInfo = new System.IO.DirectoryInfo(path);
             FileInfo[] fileInfoArray = directoryInfo.GetFiles("*.json");
+
+            if (ordered)
+            {
+                // Order the files by their creation time in descending order (Index 0 is the newest file).
+                // Courtesy of 'Henrik'. Link: 'https://stackoverflow.com/a/23627452'.
+                System.Array.Sort(fileInfoArray, delegate(FileInfo f1, FileInfo f2)
+                {
+                    return f2.CreationTime.CompareTo(f1.CreationTime);
+                });
+            }
+
             return fileInfoArray;
         }
         private static FileInfo GetMostRecentSaveFile()
         {
-            FileInfo[] fileInfoArray = GetAllSaveFiles();
+            FileInfo[] fileInfoArray = GetAllSaveFiles(ordered: true);
 
             if (fileInfoArray.Length <= 0)
             {
@@ -211,22 +240,8 @@ namespace Saving
                 return null;
             }
 
-            // Find the most recently saved file and retreive its data.
-            int mostRecentSaveIndex = 0;
-            Debug.Log("Initial File: '" + fileInfoArray[mostRecentSaveIndex].Name + "'. Created: " + fileInfoArray[mostRecentSaveIndex].CreationTimeUtc);
-
-            for (int i = 1; i < fileInfoArray.Length; i++)
-            {
-                Debug.Log("Check File: '" + fileInfoArray[i].Name + "'. Created: " + fileInfoArray[i].CreationTimeUtc);
-                if (fileInfoArray[i].CreationTimeUtc > fileInfoArray[mostRecentSaveIndex].CreationTimeUtc)
-                {
-                    mostRecentSaveIndex = i;
-                }
-            }
-            Debug.Log("Most Recent File: '" + fileInfoArray[mostRecentSaveIndex].Name + "'. Created: " + fileInfoArray[mostRecentSaveIndex].CreationTimeUtc);
-
             // Return the most recently saved file.
-            return fileInfoArray[mostRecentSaveIndex];
+            return fileInfoArray[0];
         }
     }
 }
