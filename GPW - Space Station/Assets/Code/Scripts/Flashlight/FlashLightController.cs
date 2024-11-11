@@ -17,6 +17,8 @@ public class FlashLightController : MonoBehaviour
     private bool _isOn = false;
     private bool _isFocused = false;
 
+    private PlayerInventory playerInventory;
+
 
     [Header("Flashlight Light Settings")]
     [SerializeField] private float _defaultConeAngle = 45.0f;
@@ -55,8 +57,13 @@ public class FlashLightController : MonoBehaviour
 
 
     private void Awake() => _currentBattery = _maxBattery;
-    private void Start() => InitializeFlashlight();
-
+    private void Start()
+    {
+        InitializeFlashlight();
+        
+        // Refereneces.
+        playerInventory = FindObjectOfType<PlayerInventory>();
+    }
 
     private void Update()
     {
@@ -66,6 +73,11 @@ public class FlashLightController : MonoBehaviour
         if (_isFocused)
         {
             HandleFocusModeDamage();
+            playerInventory.hasFlashLight = true; // Update bool in PlayerInventory script to know when flashlight is in possession.
+        }
+        else
+        {
+            playerInventory.hasFlashLight = false;
         }
     }
 

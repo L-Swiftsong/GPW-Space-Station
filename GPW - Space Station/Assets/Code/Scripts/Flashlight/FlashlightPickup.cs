@@ -22,4 +22,4 @@ public class FlashlightPickup : MonoBehaviour, IInteractable
         playerTransform.GetComponent<PlayerFlashlightController>().AddFlashlight(_flashlightPrefab);
         Destroy(gameObject);
     }
-}
+}                                       

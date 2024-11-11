@@ -10,7 +10,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private PlayerHealth playerHealth;
     private CharacterController _controller;
+    private PlayerInventory playerInventory;
 
     [System.Serializable] public enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
     private MovementState _currentMovementState = MovementState.Walking;
@@ -95,17 +97,33 @@ public class PlayerController : MonoBehaviour
     private bool _wantsToCrawl = false;
     private bool _isHiding = false;
 
+    private float baseMoveSpeed;
+    private float baseSprintSpeed;
+    private float healMoveSpeed = 2f;
+    private float healSprintSpeed = 3f;
+
+    private float _baseHorizontalLookSensitivity;
+    private float _baseVerticalLookSensitivity;
 
     private void Start()
     {
         // Get references.
         _controller = GetComponent<CharacterController>();
+        playerHealth = GetComponent<PlayerHealth>();
+        playerInventory = GetComponent<PlayerInventory>();
 
         // Start walking.
         _currentMovementState = MovementState.Walking;
 
         // Ensure that the cursor starts locked.
         Cursor.lockState = CursorLockMode.Locked;
+
+        // Get player speed.
+        baseMoveSpeed = moveSpeed;
+        baseSprintSpeed = sprintSpeed;
+
+        _baseHorizontalLookSensitivity = _horizontalLookSensitivity;
+        _baseVerticalLookSensitivity = _verticalLookSensitivity;
     }
     private void OnEnable()
     {
@@ -256,7 +274,29 @@ public class PlayerController : MonoBehaviour
             UpdateCharacterHeight();
         }
         
-        HandleLook();             
+        HandleLook();   
+        
+        if (playerHealth.isHealing)
+        {
+            moveSpeed = healMoveSpeed;
+            sprintSpeed = healSprintSpeed;
+        }
+        else
+        {
+            moveSpeed = baseMoveSpeed;
+            sprintSpeed = baseSprintSpeed;
+        }
+
+        if (playerInventory.inventoryMenuOpen)
+        {
+            _horizontalLookSensitivity = 0f;
+            _verticalLookSensitivity = 0f;
+        }
+        else
+        {
+            _horizontalLookSensitivity = _baseHorizontalLookSensitivity;
+            _verticalLookSensitivity = _baseVerticalLookSensitivity;
+        }
     }
 
 
