@@ -25,6 +25,7 @@ public class PlayerInventory : MonoBehaviour
     private int equippedSlotIndex = -1;
 
     public bool inventoryMenuOpen = false;
+    [SerializeField] private bool _toggleInventory = false;
 
     public bool hasFlashLight = false;
     public bool flashLightPickedUp = false;
@@ -43,31 +44,73 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
-        //References
+        // References.
         playerHealth = FindObjectOfType<PlayerHealth>();
+
+        // Start with all items unequipped.
+        UnequipItems();
+
+        // Setup the UI buttons.
+        for(int i = 0; i < inventoryButtons.Count; i++)
+        {
+            int slotIndex = i;
+            inventoryButtons[i].onClick.AddListener(() => EquipItem(slotIndex));
+        }
     }
+
+
+    #region Input Events
+
+    private void OnEnable()
+    {
+        PlayerInput.OnOpenInventoryPerformed += PlayerInput_OnOpenInventoryPerformed;
+        PlayerInput.OnOpenInventoryStarted += PlayerInput_OnOpenInventoryStarted;
+        PlayerInput.OnOpenInventoryCancelled += PlayerInput_OnOpenInventoryCancelled;
+    }
+    private void OnDisable()
+    {
+        PlayerInput.OnOpenInventoryPerformed -= PlayerInput_OnOpenInventoryPerformed;
+        PlayerInput.OnOpenInventoryStarted -= PlayerInput_OnOpenInventoryStarted;
+        PlayerInput.OnOpenInventoryCancelled -= PlayerInput_OnOpenInventoryCancelled;
+    }
+
+    private void PlayerInput_OnOpenInventoryPerformed()
+    {
+        if (!_toggleInventory)
+        {
+            return;
+        }
+
+        // Toggle the inventory open state.
+        if (inventoryMenuOpen)
+        {
+            CloseInventory();
+        }
+        else
+        {
+            OpenInventory();
+        }
+    }
+    private void PlayerInput_OnOpenInventoryStarted()
+    {
+        if (!_toggleInventory)
+        {
+            OpenInventory();
+        }
+    }
+    private void PlayerInput_OnOpenInventoryCancelled()
+    {
+        if (!_toggleInventory)
+        {
+            CloseInventory();
+        }
+    }
+
+    #endregion
+
 
     void Update()
     {
-        //Hold tab to open inventory, activates menu game object and unlocks cursor
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            inventoryMenu.SetActive(true);
-            inventoryMenuOpen = true; //Bool used in player controller script to prevent moving camera when menu is open
-
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-
-        if (Input.GetKeyUp(KeyCode.Tab))
-        {
-            inventoryMenu.SetActive(false);
-            inventoryMenuOpen = false;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
         //If condition to check when the player picks up flashlight
         if (hasFlashLight && !flashLightPickedUp)
         {
@@ -78,6 +121,24 @@ public class PlayerInventory : MonoBehaviour
 
         UpdateInventoryButtonText(); //Updates UI
     }
+
+    private void OpenInventory()
+    {
+        inventoryMenu.SetActive(true);
+        inventoryMenuOpen = true; //Bool used in player controller script to prevent moving camera when menu is open
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    private void CloseInventory()
+    {
+        inventoryMenu.SetActive(false);
+        inventoryMenuOpen = false;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
 
     //Functions called to add items to inventory list
     public void PickupFlashlight() => AddItem(ItemType.Flashlight);
@@ -103,11 +164,6 @@ public class PlayerInventory : MonoBehaviour
 
     public void EquipItem(int slotIndex)
     {
-        //Close inventory and lock cursor when equipping an item
-        inventoryMenu.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         if (slotIndex >= 0 && slotIndex < inventorySlots.Count && !playerHealth.isHealing) //Finds a valid slot index corresponding to item slot pressed, cant change current item if player is healing
         {
             //Update currently equipped item
@@ -117,54 +173,57 @@ public class PlayerInventory : MonoBehaviour
             if (currentItem == ItemType.HealthPack) //Checks if curent item is healthpack
             {
                 //UnEquips all items
-                UnEquipItems();
+                UnequipItems();
 
                 //Equip heal
                 playerHealth.EquipHeal();
             }
             else if (currentItem == ItemType.Flashlight) //Checks if current item is flashlight
             {
-                UnEquipItems();
+                UnequipItems();
 
                 //Equip flashlight
                 flashLight.SetActive(true);
             }
             else if (currentItem == ItemType.BlueKeyCard) //Checks if current item is blue keycard
             {
-                UnEquipItems();
+                UnequipItems();
 
                 //Equip blue keycard
                 blueKeyCard.SetActive(true);
             }
             else if (currentItem == ItemType.GreenKeyCard) //Checks if current item is green keycard
             {
-                UnEquipItems();
+                UnequipItems();
 
                 //Equip green keycard
                 greenKeyCard.SetActive(true);
             }
             else if (currentItem == ItemType.RedKeyCard) //Checks if current item is red keycard
             {
-                UnEquipItems();
+                UnequipItems();
 
                 //Equip red keycard
                 redKeyCard.SetActive(true);
             }
             else if (currentItem == ItemType.BlueKeyCard2) //Checks if current item is second blue keycard
             {
-                UnEquipItems();
+                UnequipItems();
 
                 //Equip second blue keycard
                 blueKeyCard2.SetActive(true);
             }
             else if (currentItem == ItemType.None) //Checks if current item is null
             {
-                UnEquipItems();
+                UnequipItems();
             }
         }
+
+        // Close the inventory after equipping an item.
+        CloseInventory();
     }
 
-    public void UnEquipItems()
+    public void UnequipItems()
     {
         //Unequip flashlight
         if (hasFlashLight)
@@ -211,23 +270,13 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    //Functions linked to each inventory slot button, equips item based on slot index pressed
-    public void InventorySlot1() => EquipItem(0);
-    public void InventorySlot2() => EquipItem(1);
-    public void InventorySlot3() => EquipItem(2);
-    public void InventorySlot4() => EquipItem(3);
-    public void InventorySlot5() => EquipItem(4);
-    public void InventorySlot6() => EquipItem(5);
-    public void InventorySlot7() => EquipItem(6);
-    public void InventorySlot8() => EquipItem(7);
-
 
     //Updates Button text based on item type
     private void UpdateInventoryButtonText()
     {
         for (int i = 0; i < inventorySlots.Count; i++)
         {
-            string itemText = inventorySlots[i] == ItemType.None ? "" : inventorySlots[i].ToString();
+            string itemText = inventorySlots[i] == ItemType.None ? "-" : inventorySlots[i].ToString();
             inventoryButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = itemText;
         }
     }

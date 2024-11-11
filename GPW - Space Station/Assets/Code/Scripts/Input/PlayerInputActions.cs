@@ -125,6 +125,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""c6c6004b-bfc9-436f-bf58-9eefb1a8847a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -402,6 +411,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c22658ce-0fae-4e54-930d-b8c09ec19a93"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6fb0c175-dd88-427f-be9a-21697b2c7754"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -449,6 +480,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Default_ThrowFlare = m_Default.FindAction("ThrowFlare", throwIfNotFound: true);
         m_Default_ToggleFlashlight = m_Default.FindAction("ToggleFlashlight", throwIfNotFound: true);
         m_Default_FocusFlashlight = m_Default.FindAction("FocusFlashlight", throwIfNotFound: true);
+        m_Default_OpenInventory = m_Default.FindAction("OpenInventory", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -521,6 +553,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_ThrowFlare;
     private readonly InputAction m_Default_ToggleFlashlight;
     private readonly InputAction m_Default_FocusFlashlight;
+    private readonly InputAction m_Default_OpenInventory;
     public struct DefaultActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -536,6 +569,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @ThrowFlare => m_Wrapper.m_Default_ThrowFlare;
         public InputAction @ToggleFlashlight => m_Wrapper.m_Default_ToggleFlashlight;
         public InputAction @FocusFlashlight => m_Wrapper.m_Default_FocusFlashlight;
+        public InputAction @OpenInventory => m_Wrapper.m_Default_OpenInventory;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -578,6 +612,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @FocusFlashlight.started += instance.OnFocusFlashlight;
             @FocusFlashlight.performed += instance.OnFocusFlashlight;
             @FocusFlashlight.canceled += instance.OnFocusFlashlight;
+            @OpenInventory.started += instance.OnOpenInventory;
+            @OpenInventory.performed += instance.OnOpenInventory;
+            @OpenInventory.canceled += instance.OnOpenInventory;
         }
 
         private void UnregisterCallbacks(IDefaultActions instance)
@@ -615,6 +652,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @FocusFlashlight.started -= instance.OnFocusFlashlight;
             @FocusFlashlight.performed -= instance.OnFocusFlashlight;
             @FocusFlashlight.canceled -= instance.OnFocusFlashlight;
+            @OpenInventory.started -= instance.OnOpenInventory;
+            @OpenInventory.performed -= instance.OnOpenInventory;
+            @OpenInventory.canceled -= instance.OnOpenInventory;
         }
 
         public void RemoveCallbacks(IDefaultActions instance)
@@ -663,5 +703,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnThrowFlare(InputAction.CallbackContext context);
         void OnToggleFlashlight(InputAction.CallbackContext context);
         void OnFocusFlashlight(InputAction.CallbackContext context);
+        void OnOpenInventory(InputAction.CallbackContext context);
     }
 }

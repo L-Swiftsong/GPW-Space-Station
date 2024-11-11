@@ -58,6 +58,11 @@ public class PlayerInput : MonoBehaviour
     public static event Action OnFocusFlashlightStarted;
     public static event Action OnFocusFlashlightCancelled;
 
+
+    public static event Action OnOpenInventoryPerformed;
+    public static event Action OnOpenInventoryStarted;
+    public static event Action OnOpenInventoryCancelled;
+
     #endregion
 
     #region Values
@@ -126,6 +131,10 @@ public class PlayerInput : MonoBehaviour
         _playerInput.Default.FocusFlashlight.started += FocusFlashlight_started;
         _playerInput.Default.FocusFlashlight.canceled += FocusFlashlight_cancelled;
 
+        _playerInput.Default.OpenInventory.performed += OpenInventory_Performed;
+        _playerInput.Default.OpenInventory.started += OpenInventory_Started;
+        _playerInput.Default.OpenInventory.canceled += OpenInventory_Cancelled;
+
         // Enable maps.
         _playerInput.Default.Enable();
 
@@ -162,33 +171,41 @@ public class PlayerInput : MonoBehaviour
         _playerInput.Default.FocusFlashlight.started -= FocusFlashlight_started;
         _playerInput.Default.FocusFlashlight.canceled -= FocusFlashlight_cancelled;
 
+        _playerInput.Default.OpenInventory.performed -= OpenInventory_Performed;
+        _playerInput.Default.OpenInventory.started -= OpenInventory_Started;
+        _playerInput.Default.OpenInventory.canceled -= OpenInventory_Cancelled;
+
 
         // Dispose of the PlayerInputAction instance.
         _playerInput.Dispose();
     }
 
 
-    private void Jump_performed(InputAction.CallbackContext obj) => OnJumpPerformed?.Invoke();
+    private void Jump_performed(InputAction.CallbackContext context) => OnJumpPerformed?.Invoke();
 
-    private void Crouch_performed(InputAction.CallbackContext obj) => OnCrouchPerformed?.Invoke();
-    private void Crouch_started(InputAction.CallbackContext obj) => OnCrouchStarted?.Invoke();
-    private void Crouch_cancelled(InputAction.CallbackContext obj) => OnCrouchCancelled?.Invoke();
+    private void Crouch_performed(InputAction.CallbackContext context) => OnCrouchPerformed?.Invoke();
+    private void Crouch_started(InputAction.CallbackContext context) => OnCrouchStarted?.Invoke();
+    private void Crouch_cancelled(InputAction.CallbackContext context) => OnCrouchCancelled?.Invoke();
 
-    private void Sprint_performed(InputAction.CallbackContext obj) => OnSprintPerformed?.Invoke();
-    private void Sprint_started(InputAction.CallbackContext obj) => OnSprintStarted?.Invoke();
-    private void Sprint_cancelled(InputAction.CallbackContext obj) => OnSprintCancelled?.Invoke();
+    private void Sprint_performed(InputAction.CallbackContext context) => OnSprintPerformed?.Invoke();
+    private void Sprint_started(InputAction.CallbackContext context) => OnSprintStarted?.Invoke();
+    private void Sprint_cancelled(InputAction.CallbackContext context) => OnSprintCancelled?.Invoke();
 
-    private void LeanLeft_started(InputAction.CallbackContext obj) => OnLeanLeftStarted?.Invoke();
-    private void LeanLeft_cancelled(InputAction.CallbackContext obj) => OnLeanLeftCancelled?.Invoke();
-    private void LeanRight_started(InputAction.CallbackContext obj) => OnLeanRightStarted?.Invoke();
-    private void LeanRight_cancelled(InputAction.CallbackContext obj) => OnLeanRightCancelled?.Invoke();
+    private void LeanLeft_started(InputAction.CallbackContext context) => OnLeanLeftStarted?.Invoke();
+    private void LeanLeft_cancelled(InputAction.CallbackContext context) => OnLeanLeftCancelled?.Invoke();
+    private void LeanRight_started(InputAction.CallbackContext context) => OnLeanRightStarted?.Invoke();
+    private void LeanRight_cancelled(InputAction.CallbackContext context) => OnLeanRightCancelled?.Invoke();
 
-    private void Interact_performed(InputAction.CallbackContext obj) => OnInteractPerformed?.Invoke();
-    private void ThrowFlare_performed(InputAction.CallbackContext obj) => OnThrowFlarePerformed?.Invoke();
+    private void Interact_performed(InputAction.CallbackContext context) => OnInteractPerformed?.Invoke();
+    private void ThrowFlare_performed(InputAction.CallbackContext context) => OnThrowFlarePerformed?.Invoke();
 
-    private void ToggleFlashlight_performed(InputAction.CallbackContext obj) => OnToggleFlashlightPerformed?.Invoke();
-    private void FocusFlashlight_started(InputAction.CallbackContext obj) => OnFocusFlashlightStarted?.Invoke();
-    private void FocusFlashlight_cancelled(InputAction.CallbackContext obj) => OnFocusFlashlightCancelled?.Invoke();
+    private void ToggleFlashlight_performed(InputAction.CallbackContext context) => OnToggleFlashlightPerformed?.Invoke();
+    private void FocusFlashlight_started(InputAction.CallbackContext context) => OnFocusFlashlightStarted?.Invoke();
+    private void FocusFlashlight_cancelled(InputAction.CallbackContext context) => OnFocusFlashlightCancelled?.Invoke();
+
+    private void OpenInventory_Performed(InputAction.CallbackContext context) => OnOpenInventoryPerformed?.Invoke();
+    private void OpenInventory_Started(InputAction.CallbackContext context) => OnOpenInventoryStarted?.Invoke();
+    private void OpenInventory_Cancelled(InputAction.CallbackContext context) => OnOpenInventoryCancelled?.Invoke();
 
 
     private void Update()
