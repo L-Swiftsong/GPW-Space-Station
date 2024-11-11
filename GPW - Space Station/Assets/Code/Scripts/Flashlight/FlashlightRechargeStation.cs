@@ -13,10 +13,11 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     [Header("Recharge Settings")]
     [SerializeField] private Transform rechargePoint;
     [SerializeField] private AudioClip rechargeSound;
-    [SerializeField] private float rechargeDuration = 5.0f;
+    [SerializeField] private float _rechargeRate = 20.0f;
 
-    private bool _isRecharging = false;
-    private GameObject _currentFlashlight;
+    private Coroutine _rechargeFlashlightCoroutine;
+    private FlashLightController _currentFlashlight;
+    private int _cachedFlashlightLayer;
 
     private PlayerInventory playerInventory;
 
@@ -29,12 +30,6 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
 
     public void Interact(PlayerInteraction playerInteraction)
     {
-        if (_isRecharging)
-        {
-            // We are in the process of recharging.
-            return;
-        }
-
         if (_currentFlashlight == null)
         {
             // The station currently doesn't have a flashlight inside it.
@@ -51,95 +46,88 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
 
 
 
-   // INPUT TO START THE CHARGE 
-
+   // INPUT TO START THE CHARGE
     private void HandleRecharge(Transform player)
     {
-        FlashLightController flashlightController = player.GetComponentInChildren<FlashLightController>();
-        if (flashlightController != null && flashlightController.HasFlashlight())
+        PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
+        if (flashlightController != null && !flashlightController.GetCurrentFlashlightController().IsFullyCharged())
         {
             StartRecharge(flashlightController);
 
-            playerInventory.RemoveFlashLight(); //Remove flashlight from inventory when recharge is started
+            // Remove flashlight from inventory when recharge is started.
+            playerInventory.RemoveFlashLight(); 
         }
     }
 
-    // ALLOWS PICKUP AFTER CHARGE IS COMPLETE 
 
+    // ALLOWS PICKUP AFTER CHARGE IS COMPLETE
     private void HandleFlashlightPickup(Transform player)
     {
-        TmpFlashlightController flashlightController = player.GetComponent<TmpFlashlightController>();
+        if (_rechargeFlashlightCoroutine != null)
+        {
+            StopCoroutine(_rechargeFlashlightCoroutine);
+        }
+
+        PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
         Debug.Log(flashlightController.name);
         AttachFlashlightToHolder(flashlightController);
     }
 
 
-    // STARTS THE RECHARGE PROCESS 
-  
-    private void StartRecharge(FlashLightController flashlightController)
+    // STARTS THE RECHARGE PROCESS
+    private void StartRecharge(PlayerFlashlightController playerFlashlightController)
     {
-        flashlightController.DisableFlashlight();
+        FlashLightController flashlightController = playerFlashlightController.GetCurrentFlashlightController();
+        _currentFlashlight = playerFlashlightController.DetatchFlashlight(rechargePoint);
 
-        _currentFlashlight = flashlightController.gameObject;
-        _currentFlashlight.transform.SetParent(rechargePoint);
-        _currentFlashlight.transform.position = rechargePoint.position;
-        _currentFlashlight.transform.rotation = rechargePoint.rotation;
+        // (Temp) Prevent the flashlight from continually being drawn in front.
+        _cachedFlashlightLayer = _currentFlashlight.gameObject.layer;
+        SetLayerThroughChildren(_currentFlashlight.gameObject, 0);
 
-        _isRecharging = true;
-        StartCoroutine(RechargeFlashlight(flashlightController));
+        _rechargeFlashlightCoroutine = StartCoroutine(RechargeFlashlight(flashlightController));
     }
 
+
     /// Coroutine that recharges the flashlight battery over time.
-  
     private IEnumerator RechargeFlashlight(FlashLightController flashlightController)
     {
-        float elapsedTime = 0f;
-        float startBattery = flashlightController.FlashlightBattery;
-        float rechargeTime = rechargeDuration;
-
-        while (elapsedTime < rechargeTime)
+        while (flashlightController.IsFullyCharged() == false)
         {
-            elapsedTime += Time.deltaTime;
-            float t = elapsedTime / rechargeTime;
-
-            float newBatteryLevel = Mathf.Lerp(startBattery, 100f, t);
-            flashlightController.SetBatteryLevel(newBatteryLevel);
+            // Recharge the flashlight at a fixed rate over time.
+            flashlightController.SetBatteryLevel(Mathf.MoveTowards(
+                current: flashlightController.GetCurrentBattery(),
+                target: flashlightController.GetMaxBattery(),
+                maxDelta: _rechargeRate * Time.deltaTime));
 
             yield return null;
         }
 
-        flashlightController.SetBatteryLevel(100f);
+        // Notify the player that we have finished charging.
         AudioSource.PlayClipAtPoint(rechargeSound, rechargePoint.position);
 
-        playerInventory.flashLightPickedUp = false; //Allows flashlight to be re-added to inventory after recharge is finished
-
-        DetachFlashlightFromRechargePoint();
+        // Allows flashlight to be re-added to inventory after recharge is finished.
+        playerInventory.flashLightPickedUp = false; 
     }
 
-    /// GIVES PLAYER FLASH BACK 
 
-    private void AttachFlashlightToHolder(TmpFlashlightController tmpFlashlightController)
+    /// GIVES PLAYER FLASH BACK
+    private void AttachFlashlightToHolder(PlayerFlashlightController playerFlashlightController)
     {
-        _currentFlashlight.transform.SetParent(tmpFlashlightController.FlashlightHolder);
-        _currentFlashlight.transform.localPosition = Vector3.zero;
-        _currentFlashlight.transform.localRotation = Quaternion.identity;
+        // Revert the flashlight's layer.
+        SetLayerThroughChildren(_currentFlashlight.gameObject, _cachedFlashlightLayer);
 
-        // Allow the player to use the flashlight again
-        FlashLightController flashlightController = _currentFlashlight.GetComponent<FlashLightController>();
-        if (flashlightController != null)
-        {
-            flashlightController.EnableFlashlight();
-        }
-
+        playerFlashlightController.AttachFlashlight(_currentFlashlight);
         _currentFlashlight = null;
     }
 
 
-    /// REMOVES THE FLASHLIGHT FROM THE DEVICE WHEN PLAYER PICKS IT BACK UP 
-  
-    private void DetachFlashlightFromRechargePoint()
+
+    private void SetLayerThroughChildren(GameObject obj, int layer)
     {
-        _currentFlashlight.transform.SetParent(null);
-        _isRecharging = false;
+        obj.layer = layer;
+        foreach (Transform child in obj.transform)
+        {
+            SetLayerThroughChildren(child.gameObject, layer);
+        }
     }
 }

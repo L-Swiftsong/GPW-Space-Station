@@ -10,7 +10,7 @@ using TMPro;
 public class FlashlightPickup : MonoBehaviour, IInteractable
 {
     [Header("Flashlight Pickup Settings")]
-    [SerializeField] private GameObject flashlightPrefab;
+    [SerializeField] private GameObject _flashlightPrefab;
 
     public void Interact(PlayerInteraction playerInteraction)
     {
@@ -19,15 +19,7 @@ public class FlashlightPickup : MonoBehaviour, IInteractable
 
     private void PickUpFlashlight(Transform playerTransform)
     {
-        // Temp.
-        Transform flashlightHolder = playerTransform.GetComponent<TmpFlashlightController>().FlashlightHolder;
-        GameObject flashlightInstance = Instantiate(flashlightPrefab, flashlightHolder.position, flashlightHolder.rotation, flashlightHolder);
-
-        if (flashlightInstance.TryGetComponent<FlashLightController>(out FlashLightController flashlightController))
-        {
-            flashlightController.PickUpFlashlight();
-        }
-
-        Destroy(gameObject); // removes the flashlight the player picked up 
+        playerTransform.GetComponent<PlayerFlashlightController>().AddFlashlight(_flashlightPrefab);
+        Destroy(gameObject);
     }
 }                                       

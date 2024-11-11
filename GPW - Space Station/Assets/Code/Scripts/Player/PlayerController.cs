@@ -14,14 +14,13 @@ public class PlayerController : MonoBehaviour
     private CharacterController _controller;
     private PlayerInventory playerInventory;
 
-    [System.Serializable] private enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
+    [System.Serializable] public enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
     private MovementState _currentMovementState = MovementState.Walking;
 
 
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 4.0f;
     [SerializeField] private float sprintSpeed = 6.0f;
-    [SerializeField] private float speedChangeRate = 10.0f;
 
     [Space(5)]
     [SerializeField] private bool _toggleSprint = false;
@@ -35,8 +34,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Gravity Settings")]
     [SerializeField] private float gravity = -15.0f;    
-    [SerializeField] private float lowGravity = -2.0f;  
-    [SerializeField] private float fallTimeout = 0.15f;
+    [SerializeField] private float lowGravity = -2.0f;
     private float _verticalVelocity;
     private const float TERMINAL_VELOCITY = 53.0f;
     private bool _inLowGravityZone = false;
@@ -385,6 +383,20 @@ public class PlayerController : MonoBehaviour
 
         _controller.center = new Vector3(0.0f, _controller.height / 2.0f, 0.0f);
     }
+    private void UpdateCharacterHeightInstant()
+    {
+        float targetHeight = _currentMovementState switch
+        {
+            MovementState.Crouching => crouchHeight,
+            MovementState.Crawling => _crawlingHeight,
+            _ => normalHeight,
+        };
+        float heightOffset = targetHeight - _controller.height;
+        _controller.height = targetHeight;
+
+        _controller.center = new Vector3(0.0f, _controller.height / 2.0f, 0.0f);
+        transform.position += Vector3.up * heightOffset;
+    }
 
 
     #region Camera
@@ -412,6 +424,14 @@ public class PlayerController : MonoBehaviour
         _playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
 
         float cameraHeight = Mathf.MoveTowards(_playerCamera.transform.localPosition.y, GetDesiredCameraHeight(), _heightSpeedChange * Time.deltaTime);
+        _playerCamera.transform.localPosition = new Vector3(_currentPeekOffset, cameraHeight, 0.0f);
+    }
+    private void UpdateCameraTransformInstant()
+    {
+        // Apply the tilt and peek to camera
+        _playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
+
+        float cameraHeight = GetDesiredCameraHeight();
         _playerCamera.transform.localPosition = new Vector3(_currentPeekOffset, cameraHeight, 0.0f);
     }
 
@@ -611,4 +631,26 @@ public class PlayerController : MonoBehaviour
 
 
     public void SetHiding(bool hiding) => _isHiding = hiding;
+    public bool GetHiding() => _isHiding;
+
+    public MovementState GetCurrentMovementState() => _currentMovementState;
+    public void InitialiseMovementState(MovementState movementState)
+    {
+        // Set the current movement state.
+        switch (movementState)
+        {
+            case MovementState.Crouching:
+                _wantsToCrouch = true;
+                break;
+            case MovementState.Crawling:
+                _wantsToCrouch = true;
+                _wantsToCrawl = true;
+                break;
+        }
+        _currentMovementState = movementState;
+
+        // Update the controller & camera heights.
+        UpdateCharacterHeightInstant();
+        UpdateCameraTransformInstant();
+    }
 }

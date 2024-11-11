@@ -36,7 +36,7 @@ namespace AI
         #region Properties
 
         public bool HasTarget => _canSeePlayer;
-        public Vector3 TargetPosition => _player.position;
+        public Vector3 TargetPosition => _player != null ? _player.position : Vector3.zero;
 
         public Vector3? CurrentPointOfInterest => _pointOfInterest;
 
@@ -57,25 +57,39 @@ namespace AI
 
         private void Update()
         {
-            TryFindTarget();
+            if (_player == null)
+            {
+                if (PlayerManager.Exists)
+                    _player = PlayerManager.Instance.Player;
+                else
+                    return;
+            }
+            
+            _canSeePlayer = (TryFindTarget() != null);
         }
 
 
 
         #region Sight
 
-        private void TryFindTarget()
+        private Transform TryFindTarget()
         {
             if ((_player.position - _headTransform.position).sqrMagnitude > (_maxSightRange * _maxSightRange))
             {
                 // The player is out of our max sight range.
                 // We don't need to perform any further checks.
-                return;
+                return null;
+            }
+
+            if (_playerTargetableObject.IsHidden)
+            {
+                // The player is hidden. We cannot see them.
+                return null;
             }
 
 
             // Sight Strength Calculation.
-            for(int i = 0; i < _playerTargetableObject.DetectionTargets.Count; i++)
+            for (int i = 0; i < _playerTargetableObject.DetectionTargets.Count; i++)
             {
                 Vector3 detectionTargetPosition = _playerTargetableObject.DetectionTargets[i].position;
                 Vector3 directionToTargetableObject = (detectionTargetPosition - _headTransform.position).normalized;
@@ -95,8 +109,10 @@ namespace AI
 
 
                 // To-do: Add detection time based on the number of seen Detection Targets.
-                _canSeePlayer = true;
+                return _player;
             }
+
+            return null;
         }
 
         #endregion

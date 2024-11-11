@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -34,6 +36,12 @@ public class ProgressBar : MonoBehaviour
     [SerializeField] private Gradient _fillColour = new Gradient();
 
 
+    [Header("Text")]
+    [SerializeField] private TMP_Text _progressText = null;
+    [SerializeField] private bool _showExactValue = false; // False = Shows percentage value. True = Shows value of currentValue.
+    [SerializeField] private string _progressTextSuffix = string.Empty;
+
+
     [Header("Bar Settings")]
     [SerializeField] private float _maximumValue = 100.0f;
     [SerializeField] private float _minimumValue = 0.0f;
@@ -47,6 +55,18 @@ public class ProgressBar : MonoBehaviour
         _mask.fillAmount = fillPercentage;
 
         _fill.color = _fillColour.Evaluate(fillPercentage);
+
+        UpdateFillText();
+    }
+    private void UpdateFillText()
+    {
+        if (_progressText == null)
+        {
+            // We don't have any text we wish to update.
+            return;
+        }
+
+        _progressText.text = (_showExactValue ? _currentValue.ToString("0") : (GetCurrentFillPercentage() * 100.0f).ToString("0")) + _progressTextSuffix;
     }
 
 
