@@ -34,6 +34,8 @@ public class FlashLightController : MonoBehaviour
     private bool _hasFlashlight = false;
     private float _defaultIntensity;
 
+    private PlayerInventory playerInventory;
+
     /// <summary>
     /// Public getter for the flashlight battery level.
     /// </summary>
@@ -43,6 +45,9 @@ public class FlashLightController : MonoBehaviour
     {
         _flashlightBattery = maxBattery;
         InitializeFlashlight();
+
+        //Refereneces
+        playerInventory = FindObjectOfType<PlayerInventory>();
     }
     private void OnEnable()
     {
@@ -68,6 +73,11 @@ public class FlashLightController : MonoBehaviour
         if (_hasFlashlight)
         {
             HandleFocusMode();
+            playerInventory.hasFlashLight = true; //Update bool in PlayerInventory script to know when flashlight is in possession
+        }
+        else
+        {
+            playerInventory.hasFlashLight = false;
         }
     }
 

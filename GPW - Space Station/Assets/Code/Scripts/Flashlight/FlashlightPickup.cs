@@ -28,6 +28,6 @@ public class FlashlightPickup : MonoBehaviour, IInteractable
             flashlightController.PickUpFlashlight();
         }
 
-        Destroy(gameObject); // remioves the flashlight the player picked up 
+        Destroy(gameObject); // removes the flashlight the player picked up 
     }
-}
+}                                       

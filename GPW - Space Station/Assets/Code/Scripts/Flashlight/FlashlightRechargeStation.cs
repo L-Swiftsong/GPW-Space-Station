@@ -18,6 +18,14 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     private bool _isRecharging = false;
     private GameObject _currentFlashlight;
 
+    private PlayerInventory playerInventory;
+
+
+    private void Start()
+    {
+        //Refereneces
+        playerInventory = FindObjectOfType<PlayerInventory>();
+    }
 
     public void Interact(PlayerInteraction playerInteraction)
     {
@@ -51,6 +59,8 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
         if (flashlightController != null && flashlightController.HasFlashlight())
         {
             StartRecharge(flashlightController);
+
+            playerInventory.RemoveFlashLight(); //Remove flashlight from inventory when recharge is started
         }
     }
 
@@ -100,6 +110,8 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
 
         flashlightController.SetBatteryLevel(100f);
         AudioSource.PlayClipAtPoint(rechargeSound, rechargePoint.position);
+
+        playerInventory.flashLightPickedUp = false; //Allows flashlight to be re-added to inventory after recharge is finished
 
         DetachFlashlightFromRechargePoint();
     }

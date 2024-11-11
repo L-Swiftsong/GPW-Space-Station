@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 {
     private PlayerHealth playerHealth;
     private CharacterController _controller;
+    private PlayerInventory playerInventory;
 
     [System.Serializable] private enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
     private MovementState _currentMovementState = MovementState.Walking;
@@ -103,12 +104,15 @@ public class PlayerController : MonoBehaviour
     private float healMoveSpeed = 2f;
     private float healSprintSpeed = 3f;
 
+    private float _baseHorizontalLookSensitivity;
+    private float _baseVerticalLookSensitivity;
 
     private void Start()
     {
         // Get references.
         _controller = GetComponent<CharacterController>();
         playerHealth = GetComponent<PlayerHealth>();
+        playerInventory = GetComponent<PlayerInventory>();
 
         // Start walking.
         _currentMovementState = MovementState.Walking;
@@ -120,6 +124,8 @@ public class PlayerController : MonoBehaviour
         baseMoveSpeed = moveSpeed;
         baseSprintSpeed = sprintSpeed;
 
+        _baseHorizontalLookSensitivity = _horizontalLookSensitivity;
+        _baseVerticalLookSensitivity = _verticalLookSensitivity;
     }
     private void OnEnable()
     {
@@ -281,6 +287,17 @@ public class PlayerController : MonoBehaviour
         {
             moveSpeed = baseMoveSpeed;
             sprintSpeed = baseSprintSpeed;
+        }
+
+        if (playerInventory.inventoryMenuOpen)
+        {
+            _horizontalLookSensitivity = 0f;
+            _verticalLookSensitivity = 0f;
+        }
+        else
+        {
+            _horizontalLookSensitivity = _baseHorizontalLookSensitivity;
+            _verticalLookSensitivity = _baseVerticalLookSensitivity;
         }
     }
 
