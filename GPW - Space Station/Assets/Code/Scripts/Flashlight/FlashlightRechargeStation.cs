@@ -20,6 +20,7 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     private int _cachedFlashlightLayer;
 
     private PlayerInventory playerInventory;
+    private FlashLightController flashLightController;
 
 
     private void Start()
@@ -52,6 +53,9 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
         PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
         if (flashlightController != null && !flashlightController.GetCurrentFlashlightController().IsFullyCharged())
         {
+            flashLightController = FindObjectOfType<FlashLightController>();
+            flashLightController._hasFlashlight = false;
+
             StartRecharge(flashlightController);
 
             // Remove flashlight from inventory when recharge is started.
@@ -68,9 +72,14 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
             StopCoroutine(_rechargeFlashlightCoroutine);
         }
 
+        playerInventory.flashLightPickedUp = false;
+
         PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
         Debug.Log(flashlightController.name);
         AttachFlashlightToHolder(flashlightController);
+
+
+        flashLightController._hasFlashlight = true;
     }
 
 

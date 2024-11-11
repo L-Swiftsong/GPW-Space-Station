@@ -33,13 +33,21 @@ public class KeyCard : MonoBehaviour, IInteractable
         Debug.Log($"Picked up {this.KeyCardID}");
 
         //Add coloured keycard to inventory depending on keycard ID
-        if (this.KeyCardID == 0)
+        if (this.KeyCardID == 2)
         {
             playerInventory.PickupBlueKeyCard();
         }
         else if (this.KeyCardID == 1)
         {
             playerInventory.PickupGreenKeyCard();
+        }
+        else if (this.KeyCardID == 3)
+        {
+            playerInventory.PickupRedKeyCard();
+        }
+        else if (this.KeyCardID == 0)
+        {
+            playerInventory.PickupBlueKeyCard2();
         }
         else
         {

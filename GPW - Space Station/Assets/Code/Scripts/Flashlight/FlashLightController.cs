@@ -16,6 +16,7 @@ public class FlashLightController : MonoBehaviour
     private Light _flashlightLight;
     private bool _isOn = false;
     private bool _isFocused = false;
+    public bool _hasFlashlight = false;
 
     private PlayerInventory playerInventory;
 
@@ -73,6 +74,10 @@ public class FlashLightController : MonoBehaviour
         if (_isFocused)
         {
             HandleFocusModeDamage();
+        }
+
+        if (_hasFlashlight)
+        {
             playerInventory.hasFlashLight = true; // Update bool in PlayerInventory script to know when flashlight is in possession.
         }
         else
@@ -84,6 +89,8 @@ public class FlashLightController : MonoBehaviour
     /// <summary> Initialize the flashlight and check for the necessary components.</summary>
     private void InitializeFlashlight()
     {
+        _hasFlashlight = true;
+
         _flashlightLight = GetComponentInChildren<Light>();
         if (_flashlightLight == null)
         {

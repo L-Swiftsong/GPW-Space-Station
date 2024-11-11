@@ -1977,7 +1977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _connectedDoor: {fileID: 124006822}
-  _requiredKeycardID: 1
+  _requiredKeycardID: 2
   _interactOnlyOpens: 0
   _limitedDuration: 0
   _duration: 3
@@ -12778,6 +12778,10 @@ PrefabInstance:
     - target: {fileID: 7034755127385829495, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: keyCardId
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7034755127385829495, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
+      propertyPath: m_keyCardID
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7034755127385829495, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: keyCardColour.b

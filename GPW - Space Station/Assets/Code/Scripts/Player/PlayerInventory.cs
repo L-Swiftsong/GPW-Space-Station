@@ -15,6 +15,8 @@ public class PlayerInventory : MonoBehaviour
     public GameObject flashLight;
     public GameObject blueKeyCard;
     public GameObject greenKeyCard;
+    public GameObject redKeyCard;
+    public GameObject blueKeyCard2;
 
     private PlayerHealth playerHealth;
 
@@ -34,6 +36,8 @@ public class PlayerInventory : MonoBehaviour
         Flashlight,
         BlueKeyCard,
         GreenKeyCard,
+        RedKeyCard,
+        BlueKeyCard2,
         HealthPack
     }
 
@@ -80,6 +84,8 @@ public class PlayerInventory : MonoBehaviour
     public void PickupHealthPack() => AddItem(ItemType.HealthPack);
     public void PickupBlueKeyCard() => AddItem(ItemType.BlueKeyCard);
     public void PickupGreenKeyCard() => AddItem(ItemType.GreenKeyCard);
+    public void PickupRedKeyCard() => AddItem(ItemType.RedKeyCard);
+    public void PickupBlueKeyCard2() => AddItem(ItemType.BlueKeyCard2);
 
 
     //Finds an empty slot in inventory and occupies it with given item type
@@ -137,6 +143,20 @@ public class PlayerInventory : MonoBehaviour
                 //Equip green keycard
                 greenKeyCard.SetActive(true);
             }
+            else if (currentItem == ItemType.RedKeyCard) //Checks if current item is red keycard
+            {
+                UnEquipItems();
+
+                //Equip red keycard
+                redKeyCard.SetActive(true);
+            }
+            else if (currentItem == ItemType.BlueKeyCard2) //Checks if current item is second blue keycard
+            {
+                UnEquipItems();
+
+                //Equip second blue keycard
+                blueKeyCard2.SetActive(true);
+            }
             else if (currentItem == ItemType.None) //Checks if current item is null
             {
                 UnEquipItems();
@@ -158,6 +178,8 @@ public class PlayerInventory : MonoBehaviour
         //Unequip keycards
         blueKeyCard.SetActive(false);
         greenKeyCard.SetActive(false);
+        redKeyCard.SetActive(false);
+        blueKeyCard2.SetActive(false);
     }
 
     //Removes health pack from inventory when used

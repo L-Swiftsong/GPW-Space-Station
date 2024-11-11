@@ -15,11 +15,21 @@ namespace Environment.Doors
 
         public int RequiredKeycardID => _requiredKeycardID;
 
+        private PlayerInventory playerInventory;
+
 
         private void Start()
         {
             // A 'RequiredKeycardID' of -1 means that this door starts unlocked.
             _isLocked = _requiredKeycardID != -1;
+
+            //References
+            playerInventory = FindObjectOfType<PlayerInventory>();
+        }
+
+        private void Update()
+        {
+            
         }
 
 
@@ -41,7 +51,22 @@ namespace Environment.Doors
         {
             if (playerInventory.HasKeyCard(_requiredKeycardID))
             {
-                _isLocked = false;
+                if (_requiredKeycardID == 2 && playerInventory.blueKeyCard.activeSelf) //Checks if required keyCard is equipped
+                {
+                    _isLocked = false;
+                }
+                else if (_requiredKeycardID == 1 && playerInventory.greenKeyCard.activeSelf)
+                {
+                    _isLocked = false;
+                }
+                else if (_requiredKeycardID == 3 && playerInventory.redKeyCard.activeSelf)
+                {
+                    _isLocked = false;
+                }
+                else if (_requiredKeycardID == 0 && playerInventory.blueKeyCard2.activeSelf)
+                {
+                    _isLocked = false;
+                }
             }
         }
     }
