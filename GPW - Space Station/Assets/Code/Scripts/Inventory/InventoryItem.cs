@@ -2,16 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Inventory
+namespace Inventory.Data
 {
     public abstract class InventoryItem : MonoBehaviour
     {
+        private InventoryItemDataSO _itemData;
+
         [SerializeField] private Vector3 _localPosition = Vector3.zero;
         [SerializeField] private Vector3 _localEulerAngles = Vector3.zero;
 
         /// <summary> Initialise this item for the passed inventory.</summary>
-        public virtual void Initialise(PlayerInventory inventory)
+        public virtual void Initialise(PlayerInventory inventory, InventoryItemDataSO itemData, float[] itemValues)
         {
+            // Cache item data.
+            this._itemData = itemData;
+
+            // Setup positioning.
             transform.localPosition = _localPosition;
             transform.localEulerAngles = _localEulerAngles;
         }
@@ -36,5 +42,6 @@ namespace Inventory
 
         /// <summary> Get this item's name.</summary>
         public abstract string GetItemName();
+        public InventoryItemDataSO GetItemData() => _itemData;
     }
 }

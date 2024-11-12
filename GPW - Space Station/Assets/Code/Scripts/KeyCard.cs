@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Inventory;
 
 public class KeyCard : MonoBehaviour, IInteractable
 {
     [SerializeField] private int m_keyCardID;
+    [SerializeField] private Inventory.Data.InventoryItemDataSO _keycardInventoryData;
 
     public int KeyCardID
     {
@@ -22,7 +22,7 @@ public class KeyCard : MonoBehaviour, IInteractable
 
     public void Interact(PlayerInteraction playerInteraction)
     {
-        playerInteraction.Inventory.AddKeycard(this.KeyCardID);
+        playerInteraction.Inventory.AddItem(_keycardInventoryData, new float[1] { this.KeyCardID });
         Debug.Log($"Picked up {this.KeyCardID}");
 
         Destroy(this.gameObject);

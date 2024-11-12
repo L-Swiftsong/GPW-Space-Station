@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using static Inventory.PlayerInventory;
+using Inventory.Data;
+using Inventory.Items;
 
 namespace Inventory
 {
     public class PlayerInventory : MonoBehaviour
     {
         private const int MAX_INVENTORY_SIZE = 8;
-
 
 
         [Header("References")]
@@ -22,9 +22,6 @@ namespace Inventory
         public PlayerHealth PlayerHealth => _playerHealth;
 
         
-
-
-
         [Header("Inventory")]
         [SerializeField] private Transform _inventoryItemContainer;
         [SerializeField] private bool _toggleInventory = false;
@@ -39,15 +36,6 @@ namespace Inventory
         [Header("Inventory Item Prefab References")]
         [SerializeField] private InventoryKeycard _inventoryKeycardPrefab;
 
-
-        //enum of possible item types that can be held in inventory
-        public enum ItemType
-        {
-            None,
-            Flashlight,
-            Keycard,
-            HealthPack,
-        }
 
         private void Awake()
         {
@@ -196,24 +184,75 @@ namespace Inventory
         #region Item Adding
 
         // Finds an empty slot in inventory and occupies it with the given item.
-        public InventoryItem AddItem(InventoryItem inventoryItem) => AddInstantiatedItem(Instantiate<InventoryItem>(inventoryItem, _inventoryItemContainer));
-        public InventoryItem AddInstantiatedItem(InventoryItem inventoryItem)
+        public bool AddItem(InventoryItemDataSO itemData, float[] itemValues = null)
+        {
+            if (!TryGetFirstFreeSlotIndex(out int firstFreeIndex))
+            {
+                // We failed to add the item (No free slots).
+                return false;
+            }
+
+            // We have found a free slot.
+            // Instantiate the Inventory Item.
+            InventoryItem inventoryItem = Instantiate<InventoryItem>(itemData.ItemPrefab, _inventoryItemContainer);
+
+            // Setup the inventory item.
+            inventoryItem.Initialise(this, itemData, itemValues);
+            inventoryItem.Unequip();
+
+            // Add the item to the inventory.
+            _inventoryItems[firstFreeIndex] = inventoryItem;
+            return true;
+        }
+        public bool AddInstantiatedItem(InventoryItem inventoryItem, float[] itemValues = null)
+        {
+            if (!TryGetFirstFreeSlotIndex(out int firstFreeIndex))
+            {
+                // We failed to add the item (No free slots).
+                return false;
+            }
+
+            // We have found a free slot.
+            // Re-parent the inventory item.
+            inventoryItem.transform.SetParent(_inventoryItemContainer, worldPositionStays: false);
+
+            // Setup the inventory item.
+            inventoryItem.Initialise(this, inventoryItem.GetItemData(), itemValues);
+            inventoryItem.Unequip();
+
+            // Add the inventory item to the inventory.
+            _inventoryItems[firstFreeIndex] = inventoryItem;
+            return true;
+        }
+        public bool AddItemToIndex(int index, InventoryItemDataSO itemData, float[] itemValues = null)
+        {
+            // Instantiate the Inventory Item.
+            InventoryItem inventoryItem = Instantiate<InventoryItem>(itemData.ItemPrefab, _inventoryItemContainer);
+
+            // Setup the inventory item.
+            inventoryItem.Initialise(this, itemData, itemValues);
+            inventoryItem.Unequip();
+
+            // Add the item to the inventory.
+            _inventoryItems[index] = inventoryItem;
+            return true;
+        }
+
+        private bool TryGetFirstFreeSlotIndex(out int firstFreeIndex)
         {
             for (int i = 0; i < _inventoryItems.Length; i++)
             {
                 if (_inventoryItems[i] == null)
                 {
-                    _inventoryItems[i] = inventoryItem;
-
-                    inventoryItem.transform.SetParent(_inventoryItemContainer, worldPositionStays: false);
-                    _inventoryItems[i].Initialise(this);
-                    _inventoryItems[i].Unequip();
-
-                    return _inventoryItems[i];
+                    // This slot is empty.
+                    firstFreeIndex = i;
+                    return true;
                 }
             }
 
-            return null;
+            // There were no empty slots.
+            firstFreeIndex = -1;
+            return false;
         }
 
         #endregion
@@ -264,7 +303,7 @@ namespace Inventory
             // Finds a valid slot index corresponding to item slot pressed.
             if (slotIndex >= 0 && slotIndex < _inventoryItems.Length)
             {
-                //Update currently equipped item
+                // Update currently equipped item.
                 _equippedItemIndex = slotIndex;
 
                 UnequipItems();
@@ -294,22 +333,6 @@ namespace Inventory
 
         #endregion
 
-
-        
-
-        public void AddKeycard(int keycardID)
-        {
-            // Instantiate the keycard and set it up with it's ID.
-            InventoryKeycard inventoryKeycardScript = Instantiate<InventoryKeycard>(_inventoryKeycardPrefab, _inventoryItemContainer);
-            inventoryKeycardScript.SetKeycardID(keycardID);
-
-            // Add the instantiated keycard to the inventory.
-            AddInstantiatedItem(inventoryKeycardScript);
-
-            // Debug.
-            Debug.Log($"Picked up keycard: {keycardID}");
-        }
-
         public bool HasKeycardEquipped(int keycardID)
         {
             if (_currentItem != null && _currentItem is InventoryKeycard)
@@ -322,20 +345,31 @@ namespace Inventory
 
 
         public InventoryItem[] GetAllItems() => _inventoryItems;
-        public void SetInventoryItems(InventoryItem[] newItems)
+        public void SetInventoryItems(ItemSaveData[] itemSaveData, int equippedItemIndex)
         {
-            _inventoryItems = new InventoryItem[MAX_INVENTORY_SIZE];
-            for (int i = 0; i < MAX_INVENTORY_SIZE; i++)
+            if (itemSaveData.Length > MAX_INVENTORY_SIZE)
             {
-                if (newItems.Length < i)
+                Debug.LogError("Error: We are trying to add too many items to the inventory when loading from a save");
+                throw new System.ArgumentOutOfRangeException();
+            }
+
+            // Populate the inventory from our save data.
+            _inventoryItems = new InventoryItem[MAX_INVENTORY_SIZE];
+            for (int i = 0; i < itemSaveData.Length; i++)
+            {
+                if (itemSaveData[i].ItemData == null)
                 {
-                    // We've added all the items that were in the save data.
-                    return;
+                    // No item in this slot.
+                    continue;
                 }
 
-                _inventoryItems[i] = newItems[i];
+                AddItemToIndex(i, itemSaveData[i].ItemData, itemSaveData[i].ItemValues);
             }
+
+            // Equip our desired item.
+            EquipItem(equippedItemIndex);
         }
         public InventoryItem GetEquippedItem() => _currentItem;
+        public int GetEquippedItemIndex() => _equippedItemIndex;
     }
 }

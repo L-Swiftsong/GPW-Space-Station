@@ -110,7 +110,7 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
         SetLayerThroughChildren(_currentFlashlight.gameObject, _cachedFlashlightLayer);
 
         // Add the item back to the player's inventory.
-        playerInventory.AddInstantiatedItem(_currentFlashlight);
+        playerInventory.AddInstantiatedItem(_currentFlashlight, new float[1] { _currentFlashlight.GetCurrentBattery() });
         _currentFlashlight = null;
     }
 

@@ -1,26 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Inventory.Data;
 
-namespace Inventory
+namespace Inventory.Items
 {
     public class InventoryKeycard : InventoryItem
     {
         private int _keycardID;
 
-        public int GetKeycardID() => _keycardID;
-        public void SetKeycardID(int keycardID)
+        public override void Initialise(PlayerInventory inventory, InventoryItemDataSO itemData, float[] itemValues)
         {
-            // Set our Keycard ID.
-            _keycardID = keycardID;
+            base.Initialise(inventory, itemData, itemValues);
 
-            // Set the Keycard material.
-            Material keycardMaterial = ItemSpawnManager.GetMaterialFromID(keycardID);
-            if (keycardMaterial != null)
-            {
-                GetComponentInChildren<Renderer>().material = keycardMaterial;
-            }
+            _keycardID = Mathf.RoundToInt(itemValues[0]);
         }
+
+
+        public int GetKeycardID() => _keycardID;
 
 
         public override string GetItemName() => "Keycard (" + _keycardID + ")";

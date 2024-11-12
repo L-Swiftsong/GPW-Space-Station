@@ -1,16 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Inventory;
 
 public class HealthPack : MonoBehaviour, IInteractable
 {
-    [SerializeField] private InventoryHealthKit _inventoryHealthKitPrefab;
+    [SerializeField] private Inventory.Data.InventoryItemDataSO _healthKitInventoryData;
+    [SerializeField] private float _healingAmount = 25.0f;
+    [SerializeField] private float _healingDelay = 3.0f;
 
 
     public void Interact(PlayerInteraction playerInteraction)
     {
-        playerInteraction.Inventory.AddItem(_inventoryHealthKitPrefab);
+        playerInteraction.Inventory.AddItem(_healthKitInventoryData, new float[2] { _healingAmount, _healingDelay });
         Destroy(this.gameObject);
     }
 }

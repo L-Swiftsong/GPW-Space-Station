@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using AI;
+using Inventory.Data;
 using Inventory;
 /*
- * FlashLightController.cs
- * 
- * This script handles the flashlight functionality. It allows the player to toggle the flashlight,
- * enter focus mode to narrow the beam and increase intensity, and drains the battery + deals damage to enemies 
- */
+* FlashLightController.cs
+* 
+* This script handles the flashlight functionality. It allows the player to toggle the flashlight,
+* enter focus mode to narrow the beam and increase intensity, and drains the battery + deals damage to enemies 
+*/
 
 public class FlashlightController : InventoryItem
 {
@@ -58,6 +59,13 @@ public class FlashlightController : InventoryItem
 
 
     #region InventoryItem Functions
+
+    public override void Initialise(PlayerInventory inventory, InventoryItemDataSO itemData, float[] itemValues)
+    {
+        base.Initialise(inventory, itemData, itemValues);
+
+        _currentBattery = itemValues != null ? itemValues[0] : 100.0f;
+    }
 
     public override void StartUse() => EnableFocusMode();
     public override void StopUse() => DisableFocusMode();

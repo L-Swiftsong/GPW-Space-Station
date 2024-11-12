@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Inventory;
+using Inventory.Data;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -69,8 +70,8 @@ public class PlayerManager : MonoBehaviour
         _player.GetComponent<PlayerController>().InitialiseMovementState(startingMovementState);
 
 
-        // Set Collected Items.
-        _playerInventory.SetInventoryItems(setupData.CollectedItems);
+        // Setup the Player's Inventory.
+        _playerInventory.SetInventoryItems(setupData.ItemSaveData, setupData.EquippedItemIndex);
     }
     public PlayerSetupData GetCurrentPlayerData()
     {
@@ -92,9 +93,18 @@ public class PlayerManager : MonoBehaviour
         };
 
 
-        // Collected Items.
-        setupData.CollectedItems = _playerInventory.GetAllItems();
+        // Save Player Inventory.
+        setupData.EquippedItemIndex = _playerInventory.GetEquippedItemIndex();
 
+        InventoryItem[] inventoryItems = _playerInventory.GetAllItems();
+        setupData.ItemSaveData = new ItemSaveData[inventoryItems.Length];
+        for(int i = 0; i < inventoryItems.Length; i++)
+        {
+            setupData.ItemSaveData[i] = ItemSaveData.CreateFromItemInstance(inventoryItems[i]);
+        }
+
+
+        // Return the filled PlayerSetupData.
         return setupData;
     }
 
@@ -115,12 +125,13 @@ public class PlayerManager : MonoBehaviour
         public Quaternion RootRotation;
         public float CameraXRotation;
 
-        public enum StandingState { Standing, Crouching, Crawling };
+        [System.Serializable] public enum StandingState { Standing, Crouching, Crawling };
         public StandingState PlayerStandingState;
 
 
         // Inventory Information.
-        public InventoryItem[] CollectedItems;
+        public int EquippedItemIndex;
+        public ItemSaveData[] ItemSaveData;
 
 
         public static PlayerSetupData Default => new PlayerSetupData() {
@@ -130,7 +141,8 @@ public class PlayerManager : MonoBehaviour
 
             PlayerStandingState = StandingState.Standing,
 
-            CollectedItems = null,
+            EquippedItemIndex = -1,
+            ItemSaveData = null,
         };
     }
 }
