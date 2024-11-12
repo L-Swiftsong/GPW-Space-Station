@@ -78,16 +78,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ThrowFlare",
-                    "type": "Button",
-                    "id": "d92a6c65-e692-4821-bb87-573c3c2a1e87",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ToggleFlashlight",
+                    "name": "UseItem",
                     "type": "Button",
                     "id": "8f91832f-96e1-4020-9488-1e88f8b63191",
                     "expectedControlType": "Button",
@@ -96,7 +87,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "FocusFlashlight",
+                    "name": "AltUseItem",
                     "type": "Button",
                     "id": "5c6d4115-a49a-44ac-87ee-7b22d2475c39",
                     "expectedControlType": "Button",
@@ -227,17 +218,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f33ba85d-4208-47c1-9d77-8d57142c23d9",
-                    "path": "<Keyboard>/t",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "MnK",
-                    "action": "ThrowFlare",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "ccb6740e-fccd-4dcf-9ff6-4abb31eb8136",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -255,28 +235,6 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3dc9890b-2e32-4f6d-aebd-dda7e47b718b",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "MnK",
-                    "action": "ToggleFlashlight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4f3842c3-eafd-4b0d-8129-049c3f4999eb",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "ToggleFlashlight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -305,11 +263,11 @@
                 {
                     "name": "",
                     "id": "001636e3-eb1e-4c41-bb7c-88372b3142e1",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "MnK",
-                    "action": "FocusFlashlight",
+                    "action": "AltUseItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -320,7 +278,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "FocusFlashlight",
+                    "action": "AltUseItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -409,6 +367,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "OpenInventory",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3dc9890b-2e32-4f6d-aebd-dda7e47b718b",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "UseItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4f3842c3-eafd-4b0d-8129-049c3f4999eb",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "UseItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

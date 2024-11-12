@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
@@ -18,24 +17,17 @@ public class PlayerHealth : MonoBehaviour
     public GameObject brokenVisor2;
     public GameObject brokenVisor3;
 
-    public GameObject healthPack;
-    public GameObject healthPack2;
-
-    public int healAmount = 25;
-    public int healthPackAmount;
-
-    public float healDuration = 3f;
     public bool isHealing = false;
+    private Coroutine _healingCoroutine;
 
-    private PlayerInventory playerInventory;
+
+    public event System.Action OnUsedHealthKit;
+
 
     void Start()
     {
         //Set health to max at start of the game
         health = maxHealth;
-
-        //References
-        playerInventory = FindObjectOfType<PlayerInventory>();
     }
 
     void Update()
@@ -47,18 +39,6 @@ public class PlayerHealth : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             health -= damageTest;
-        }
-
-        //Cant Equip heal if there are no health packs currently held
-        if (healthPackAmount <= 0)
-        {
-            healthPack.SetActive(false);
-        }
-        
-        //Use Heal by left clicking when healthpack is equipped, health isn't full and inventory menu isn't open
-        if (Input.GetKeyDown(KeyCode.Mouse0) && healthPack.activeSelf && health < maxHealth && !playerInventory.inventoryMenuOpen)
-        {
-            StartCoroutine(PlayerHealDelay());
         }
 
         //Ensure player doesnt overheal
@@ -85,28 +65,6 @@ public class PlayerHealth : MonoBehaviour
             isDamageOnCooldown = true;
             StartCoroutine(StartDamageCooldown());
         }
-    }
-
-    //Counter to track number of heals held
-    public void PickUpHeal()
-    {
-        healthPackAmount++;
-        playerInventory.PickupHealthPack(); //Assigns health pack to inventory slot
-    }
-
-    //Equip heal called from Player Inventory script when an inventory slot with a health pack is pressed
-    public void EquipHeal()
-    {
-        if (!healthPack2.activeSelf) //Can't equip another health pack while healing
-        {
-            healthPack.SetActive(true);
-        } 
-    }
-
-    //Function to call player heal from external scripts
-    public void PlayerHeal()
-    {
-        health += healAmount;
     }
 
     //Reload Scene when player dies
@@ -151,20 +109,40 @@ public class PlayerHealth : MonoBehaviour
         isDamageOnCooldown = false;
     }
 
-    //Healing process functionality
-    IEnumerator PlayerHealDelay()
-    {
-        isHealing = true;
-        healthPack.SetActive(false); //change active health pack game object to show player is healing
-        healthPack2.SetActive(true);
 
-        yield return new WaitForSeconds(healDuration); //Wait a few seconds before player is healed and health pack disappears
+    /// <summary> Start healing the player from a Medkit.</summary>
+    public void StartHealing(float healingAmount, float healingDelay)
+    {
+        if (_healingCoroutine != null)
+        {
+            StopCoroutine(_healingCoroutine);
+        }
+
+        _healingCoroutine = StartCoroutine(HealPlayerAfterDelay(healingAmount, healingDelay));
+    }
+    /// <summary> Stop the current healing process.</summary>
+    public void CancelHealing()
+    {
+        if (_healingCoroutine != null)
+        {
+            StopCoroutine(_healingCoroutine);
+        }
 
         isHealing = false;
-        healthPack2.SetActive(false);
+    }
 
-        PlayerHeal();
-        healthPackAmount--;
-        playerInventory.RemoveHealthPack(); //Remove health pack from inventory slot
+    // Healing process functionality.
+    IEnumerator HealPlayerAfterDelay(float healingAmount, float healingDelay)
+    {
+        // Start healing.
+        isHealing = true;
+
+        // Wait a few seconds before player is healed and health pack disappears.
+        yield return new WaitForSeconds(healingDelay);
+
+        // Finish healing.
+        isHealing = false;
+        health += healingAmount;
+        OnUsedHealthKit?.Invoke();
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Environment.Doors;
+using Inventory;
 
 public class DoorButton : MonoBehaviour, IInteractable
 {
@@ -42,31 +43,8 @@ public class DoorButton : MonoBehaviour, IInteractable
     }
     private bool TestKeycard(PlayerInventory playerInventory)
     {
-        // Check if the keycard is in the players inventory
-        if (!playerInventory.HasKeyCard(_requiredKeycardID))
-        {
-            return false;
-        }
-
-        // Checks if required keycard is equipped
-        if (_requiredKeycardID == 2 && playerInventory.blueKeyCard.activeSelf)
-        {
-            return true;
-        }
-        else if (_requiredKeycardID == 1 && playerInventory.greenKeyCard.activeSelf)
-        {
-            return true;
-        }
-        else if (_requiredKeycardID == 3 && playerInventory.redKeyCard.activeSelf)
-        {
-            return true;
-        }
-        else if (_requiredKeycardID == 0 && playerInventory.blueKeyCard2.activeSelf)
-        {
-            return true;
-        }
-
-        return false;
+        // Check if the keycard is in the players inventory AND is equipped.
+        return playerInventory.HasKeycardEquipped(_requiredKeycardID);
     }
 
 

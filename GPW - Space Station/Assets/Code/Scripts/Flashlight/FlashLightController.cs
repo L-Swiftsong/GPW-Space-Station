@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; 
-using TMPro;
 using AI;
+using Inventory;
 /*
  * FlashLightController.cs
  * 
@@ -11,14 +10,11 @@ using AI;
  * enter focus mode to narrow the beam and increase intensity, and drains the battery + deals damage to enemies 
  */
 
-public class FlashLightController : MonoBehaviour
+public class FlashlightController : InventoryItem
 {
     private Light _flashlightLight;
     private bool _isOn = false;
     private bool _isFocused = false;
-    public bool _hasFlashlight = false;
-
-    private PlayerInventory playerInventory;
 
 
     [Header("Flashlight Light Settings")]
@@ -51,20 +47,27 @@ public class FlashLightController : MonoBehaviour
     [SerializeField] private float _focusStunRate = 35.0f;
 
     
-    public static event System.Action<FlashLightController, float, float> OnFlashlightControllerChanged; // FlashlightController: newController, float currentBattery, float: maxBattery
-    public static event System.Action<FlashLightController, float> OnFlashlightMaxBatteryChanged; // FlashlightController: thisController, float maxBattery.
-    public static event System.Action<FlashLightController, float> OnFlashlightBatteryChanged; // FlashlightController: thisController, float currentBattery.
+    public static event System.Action<FlashlightController, float, float> OnFlashlightControllerChanged; // FlashlightController: newController, float currentBattery, float: maxBattery
+    public static event System.Action<FlashlightController, float> OnFlashlightMaxBatteryChanged; // FlashlightController: thisController, float maxBattery.
+    public static event System.Action<FlashlightController, float> OnFlashlightBatteryChanged; // FlashlightController: thisController, float currentBattery.
 
 
 
     private void Awake() => _currentBattery = _maxBattery;
-    private void Start()
-    {
-        InitializeFlashlight();
-        
-        // Refereneces.
-        playerInventory = FindObjectOfType<PlayerInventory>();
-    }
+    private void Start() => InitializeFlashlight();
+
+
+    #region InventoryItem Functions
+
+    public override void StartUse() => EnableFocusMode();
+    public override void StopUse() => DisableFocusMode();
+
+    public override void StartAltUse() => TryToggleFlashlight();
+
+    public override string GetItemName() => "Flashlight";
+
+    #endregion
+
 
     private void Update()
     {
@@ -75,22 +78,12 @@ public class FlashLightController : MonoBehaviour
         {
             HandleFocusModeDamage();
         }
-
-        if (_hasFlashlight)
-        {
-            playerInventory.hasFlashLight = true; // Update bool in PlayerInventory script to know when flashlight is in possession.
-        }
-        else
-        {
-            playerInventory.hasFlashLight = false;
-        }
     }
+
 
     /// <summary> Initialize the flashlight and check for the necessary components.</summary>
     private void InitializeFlashlight()
     {
-        _hasFlashlight = true;
-
         _flashlightLight = GetComponentInChildren<Light>();
         if (_flashlightLight == null)
         {

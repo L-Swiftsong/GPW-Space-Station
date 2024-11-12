@@ -61,11 +61,11 @@ public class FlareThrowing : MonoBehaviour
     }
     private void OnEnable()
     {
-        PlayerInput.OnThrowFlarePerformed += PlayerInput_OnThrowFlarePerformed;
+        //PlayerInput.OnThrowFlarePerformed += PlayerInput_OnThrowFlarePerformed;
     }
     private void OnDisable()
     {
-        PlayerInput.OnThrowFlarePerformed -= PlayerInput_OnThrowFlarePerformed;
+        //PlayerInput.OnThrowFlarePerformed -= PlayerInput_OnThrowFlarePerformed;
     }
 
 

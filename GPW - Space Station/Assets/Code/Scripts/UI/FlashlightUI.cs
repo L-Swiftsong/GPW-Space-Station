@@ -10,25 +10,25 @@ namespace UI
         [Header("References")]
         [SerializeField] private GameObject _container;
         [SerializeField] private ProgressBar _flashlightBatteryBar;
-        private FlashLightController _currentFlashlightController;
+        private FlashlightController _currentFlashlightController;
 
 
         private void Awake() => _container.SetActive(false);
         private void OnEnable()
         {
-            FlashLightController.OnFlashlightControllerChanged += FlashLightController_OnFlashlightControllerChanged;
-            FlashLightController.OnFlashlightMaxBatteryChanged += FlashLightController_OnFlashlightMaxBatteryChanged;
-            FlashLightController.OnFlashlightBatteryChanged += FlashLightController_OnFlashlightBatteryChanged;
+            FlashlightController.OnFlashlightControllerChanged += FlashLightController_OnFlashlightControllerChanged;
+            FlashlightController.OnFlashlightMaxBatteryChanged += FlashLightController_OnFlashlightMaxBatteryChanged;
+            FlashlightController.OnFlashlightBatteryChanged += FlashLightController_OnFlashlightBatteryChanged;
         }
         private void OnDisable()
         {
-            FlashLightController.OnFlashlightControllerChanged -= FlashLightController_OnFlashlightControllerChanged;
-            FlashLightController.OnFlashlightMaxBatteryChanged -= FlashLightController_OnFlashlightMaxBatteryChanged;
-            FlashLightController.OnFlashlightBatteryChanged -= FlashLightController_OnFlashlightBatteryChanged;
+            FlashlightController.OnFlashlightControllerChanged -= FlashLightController_OnFlashlightControllerChanged;
+            FlashlightController.OnFlashlightMaxBatteryChanged -= FlashLightController_OnFlashlightMaxBatteryChanged;
+            FlashlightController.OnFlashlightBatteryChanged -= FlashLightController_OnFlashlightBatteryChanged;
         }
 
 
-        private void FlashLightController_OnFlashlightControllerChanged(FlashLightController newController, float currentBattery, float maxBattery)
+        private void FlashLightController_OnFlashlightControllerChanged(FlashlightController newController, float currentBattery, float maxBattery)
         {
             if (newController == null)
             {
@@ -45,7 +45,7 @@ namespace UI
             // Set the current & maximum values of the battery progress bar.
             _flashlightBatteryBar.SetValues(current: currentBattery, min: 0.0f, max: maxBattery);
         }
-        private void FlashLightController_OnFlashlightMaxBatteryChanged(FlashLightController controller, float maxBattery)
+        private void FlashLightController_OnFlashlightMaxBatteryChanged(FlashlightController controller, float maxBattery)
         {
             if (controller != _currentFlashlightController)
             {
@@ -56,7 +56,7 @@ namespace UI
             // Update the maximum value of the battery progress bar.
             _flashlightBatteryBar.SetMaximumValue(maxBattery);
         }
-        private void FlashLightController_OnFlashlightBatteryChanged(FlashLightController controller, float currentBattery)
+        private void FlashLightController_OnFlashlightBatteryChanged(FlashlightController controller, float currentBattery)
         {
             if (controller != _currentFlashlightController)
             {

@@ -52,11 +52,13 @@ public class PlayerInput : MonoBehaviour
 
 
     public static event Action OnInteractPerformed;
-    public static event Action OnThrowFlarePerformed;
 
-    public static event Action OnToggleFlashlightPerformed;
-    public static event Action OnFocusFlashlightStarted;
-    public static event Action OnFocusFlashlightCancelled;
+
+    public static event Action OnUseItemStarted;
+    public static event Action OnUseItemCancelled;
+
+    public static event Action OnAltUseItemStarted;
+    public static event Action OnAltUseItemCancelled;
 
 
     public static event Action OnOpenInventoryPerformed;
@@ -111,25 +113,32 @@ public class PlayerInput : MonoBehaviour
         // Subscribe to events.
         _playerInput.Default.Jump.performed += Jump_performed;
 
+
         _playerInput.Default.Crouch.performed += Crouch_performed;
         _playerInput.Default.Crouch.started += Crouch_started;
         _playerInput.Default.Crouch.canceled += Crouch_cancelled;
 
+
         _playerInput.Default.Sprint.performed += Sprint_performed;
         _playerInput.Default.Sprint.started += Sprint_started;
         _playerInput.Default.Sprint.canceled += Sprint_cancelled;
+
 
         _playerInput.Default.LeanLeft.started += LeanLeft_started;
         _playerInput.Default.LeanLeft.canceled += LeanLeft_cancelled;
         _playerInput.Default.LeanRight.started += LeanRight_started;
         _playerInput.Default.LeanRight.canceled += LeanRight_cancelled;
 
-        _playerInput.Default.Interact.performed += Interact_performed;
-        _playerInput.Default.ThrowFlare.performed += ThrowFlare_performed;
 
-        _playerInput.Default.ToggleFlashlight.performed += ToggleFlashlight_performed;
-        _playerInput.Default.FocusFlashlight.started += FocusFlashlight_started;
-        _playerInput.Default.FocusFlashlight.canceled += FocusFlashlight_cancelled;
+        _playerInput.Default.Interact.performed += Interact_performed;
+
+
+        _playerInput.Default.UseItem.started += UseItem_started;
+        _playerInput.Default.UseItem.canceled += UseItem_cancelled;
+
+        _playerInput.Default.AltUseItem.started += AltUseItem_started;
+        _playerInput.Default.AltUseItem.canceled += AltUseItem_cancelled;
+
 
         _playerInput.Default.OpenInventory.performed += OpenInventory_Performed;
         _playerInput.Default.OpenInventory.started += OpenInventory_Started;
@@ -151,25 +160,32 @@ public class PlayerInput : MonoBehaviour
         // Unsubscribe from events.
         _playerInput.Default.Jump.performed -= Jump_performed;
 
+
         _playerInput.Default.Crouch.performed -= Crouch_performed;
         _playerInput.Default.Crouch.started -= Crouch_started;
         _playerInput.Default.Crouch.canceled -= Crouch_cancelled;
 
+
         _playerInput.Default.Sprint.performed -= Sprint_performed;
         _playerInput.Default.Sprint.started -= Sprint_started;
         _playerInput.Default.Sprint.canceled -= Sprint_cancelled;
+
 
         _playerInput.Default.LeanLeft.started -= LeanLeft_started;
         _playerInput.Default.LeanLeft.canceled -= LeanLeft_cancelled;
         _playerInput.Default.LeanRight.started -= LeanRight_started;
         _playerInput.Default.LeanRight.canceled -= LeanRight_cancelled;
 
-        _playerInput.Default.Interact.performed -= Interact_performed;
-        _playerInput.Default.ThrowFlare.performed -= ThrowFlare_performed;
 
-        _playerInput.Default.ToggleFlashlight.performed -= ToggleFlashlight_performed;
-        _playerInput.Default.FocusFlashlight.started -= FocusFlashlight_started;
-        _playerInput.Default.FocusFlashlight.canceled -= FocusFlashlight_cancelled;
+        _playerInput.Default.Interact.performed -= Interact_performed;
+
+
+        _playerInput.Default.UseItem.started -= UseItem_started;
+        _playerInput.Default.UseItem.canceled -= UseItem_cancelled;
+
+        _playerInput.Default.AltUseItem.started -= AltUseItem_started;
+        _playerInput.Default.AltUseItem.canceled -= AltUseItem_cancelled;
+
 
         _playerInput.Default.OpenInventory.performed -= OpenInventory_Performed;
         _playerInput.Default.OpenInventory.started -= OpenInventory_Started;
@@ -183,25 +199,32 @@ public class PlayerInput : MonoBehaviour
 
     private void Jump_performed(InputAction.CallbackContext context) => OnJumpPerformed?.Invoke();
 
+
     private void Crouch_performed(InputAction.CallbackContext context) => OnCrouchPerformed?.Invoke();
     private void Crouch_started(InputAction.CallbackContext context) => OnCrouchStarted?.Invoke();
     private void Crouch_cancelled(InputAction.CallbackContext context) => OnCrouchCancelled?.Invoke();
 
+
     private void Sprint_performed(InputAction.CallbackContext context) => OnSprintPerformed?.Invoke();
     private void Sprint_started(InputAction.CallbackContext context) => OnSprintStarted?.Invoke();
     private void Sprint_cancelled(InputAction.CallbackContext context) => OnSprintCancelled?.Invoke();
+
 
     private void LeanLeft_started(InputAction.CallbackContext context) => OnLeanLeftStarted?.Invoke();
     private void LeanLeft_cancelled(InputAction.CallbackContext context) => OnLeanLeftCancelled?.Invoke();
     private void LeanRight_started(InputAction.CallbackContext context) => OnLeanRightStarted?.Invoke();
     private void LeanRight_cancelled(InputAction.CallbackContext context) => OnLeanRightCancelled?.Invoke();
 
-    private void Interact_performed(InputAction.CallbackContext context) => OnInteractPerformed?.Invoke();
-    private void ThrowFlare_performed(InputAction.CallbackContext context) => OnThrowFlarePerformed?.Invoke();
 
-    private void ToggleFlashlight_performed(InputAction.CallbackContext context) => OnToggleFlashlightPerformed?.Invoke();
-    private void FocusFlashlight_started(InputAction.CallbackContext context) => OnFocusFlashlightStarted?.Invoke();
-    private void FocusFlashlight_cancelled(InputAction.CallbackContext context) => OnFocusFlashlightCancelled?.Invoke();
+    private void Interact_performed(InputAction.CallbackContext context) => OnInteractPerformed?.Invoke();
+
+
+    private void UseItem_started(InputAction.CallbackContext context) => OnUseItemStarted?.Invoke();
+    private void UseItem_cancelled(InputAction.CallbackContext context) => OnUseItemCancelled?.Invoke();
+
+    private void AltUseItem_started(InputAction.CallbackContext context) => OnAltUseItemStarted?.Invoke();
+    private void AltUseItem_cancelled(InputAction.CallbackContext context) => OnAltUseItemCancelled?.Invoke();
+
 
     private void OpenInventory_Performed(InputAction.CallbackContext context) => OnOpenInventoryPerformed?.Invoke();
     private void OpenInventory_Started(InputAction.CallbackContext context) => OnOpenInventoryStarted?.Invoke();

@@ -1,23 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Inventory;
 
 public class HealthPack : MonoBehaviour, IInteractable
 {
-    //Reference to PlayerHealth script
-    private PlayerHealth playerHealth;
+    [SerializeField] private InventoryHealthKit _inventoryHealthKitPrefab;
 
-    private void Start()
-    {
-        playerHealth = FindObjectOfType<PlayerHealth>();
-    }
 
     public void Interact(PlayerInteraction playerInteraction)
     {
-        if (playerHealth != null)
-        {
-            playerHealth.PickUpHeal();
-            Destroy(gameObject);
-        }
+        playerInteraction.Inventory.AddItem(_inventoryHealthKitPrefab);
+        Destroy(this.gameObject);
     }
 }

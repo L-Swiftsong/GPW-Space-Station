@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Inventory;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -68,16 +69,8 @@ public class PlayerManager : MonoBehaviour
         _player.GetComponent<PlayerController>().InitialiseMovementState(startingMovementState);
 
 
-        // Flashlight.
-        if (setupData.CurrentFlashlightPrefab != null)
-        {
-            _playerFlashlightController.AddFlashlight(setupData.CurrentFlashlightPrefab);
-            _playerFlashlightController.GetCurrentFlashlightController().SetBatteryLevel(setupData.FlashlightBatteryRemaining);
-        }
-
-
         // Set Collected Items.
-        _playerInventory.keyCards = setupData.CollectedKeycardIDs;
+        _playerInventory.SetInventoryItems(setupData.CollectedItems);
     }
     public PlayerSetupData GetCurrentPlayerData()
     {
@@ -99,13 +92,8 @@ public class PlayerManager : MonoBehaviour
         };
 
 
-        // Flashlight.
-        setupData.CurrentFlashlightPrefab = _playerFlashlightController.CurrentFlashlightPrefab;
-        setupData.FlashlightBatteryRemaining = _playerFlashlightController.HasFlashlight() ? _playerFlashlightController.GetCurrentFlashlightController().GetCurrentBattery() : 0.0f;
-
-
         // Collected Items.
-        setupData.CollectedKeycardIDs = _playerInventory.keyCards;
+        setupData.CollectedItems = _playerInventory.GetAllItems();
 
         return setupData;
     }
@@ -131,15 +119,8 @@ public class PlayerManager : MonoBehaviour
         public StandingState PlayerStandingState;
 
 
-        // Flashlight Information.
-        public GameObject CurrentFlashlightPrefab;
-        public float FlashlightBatteryRemaining;
-
-
-        // Collected Item Information.
-        public int MedkitCount;
-        public int FlareCount;
-        public List<int> CollectedKeycardIDs;
+        // Inventory Information.
+        public InventoryItem[] CollectedItems;
 
 
         public static PlayerSetupData Default => new PlayerSetupData() {
@@ -149,12 +130,7 @@ public class PlayerManager : MonoBehaviour
 
             PlayerStandingState = StandingState.Standing,
 
-            CurrentFlashlightPrefab = null,
-            FlashlightBatteryRemaining = 100.0f,
-
-            MedkitCount = 0,
-            FlareCount = 0,
-            CollectedKeycardIDs = new List<int>(),
+            CollectedItems = null,
         };
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Inventory;
 
 namespace Environment.Doors
 {
@@ -15,21 +16,11 @@ namespace Environment.Doors
 
         public int RequiredKeycardID => _requiredKeycardID;
 
-        private PlayerInventory playerInventory;
-
 
         private void Start()
         {
             // A 'RequiredKeycardID' of -1 means that this door starts unlocked.
             _isLocked = _requiredKeycardID != -1;
-
-            //References
-            playerInventory = FindObjectOfType<PlayerInventory>();
-        }
-
-        private void Update()
-        {
-            
         }
 
 
@@ -49,24 +40,11 @@ namespace Environment.Doors
 
         private void TryUnlockDoor(PlayerInventory playerInventory)
         {
-            if (playerInventory.HasKeyCard(_requiredKeycardID))
+            if (playerInventory.HasKeycardEquipped(_requiredKeycardID))
             {
-                if (_requiredKeycardID == 2 && playerInventory.blueKeyCard.activeSelf) //Checks if required keyCard is equipped
-                {
-                    _isLocked = false;
-                }
-                else if (_requiredKeycardID == 1 && playerInventory.greenKeyCard.activeSelf)
-                {
-                    _isLocked = false;
-                }
-                else if (_requiredKeycardID == 3 && playerInventory.redKeyCard.activeSelf)
-                {
-                    _isLocked = false;
-                }
-                else if (_requiredKeycardID == 0 && playerInventory.blueKeyCard2.activeSelf)
-                {
-                    _isLocked = false;
-                }
+                // The player has the required keycard equipped.
+                Debug.Log(this.gameObject.name + " was unlocked");
+                _isLocked = false;
             }
         }
     }

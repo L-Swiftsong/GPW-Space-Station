@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Environment.Doors;
 using System.Linq;
-using UnityEngine.ProBuilder.Shapes;
-using System.Xml.Linq;
 
 public class ItemSpawnManager : MonoBehaviour
 {
+    private static ItemSpawnManager s_instance;
     [SerializeField] private List<KeycardSpawnPositions> _keycardSpawnPositionsList = new List<KeycardSpawnPositions>();
 
 
@@ -21,6 +20,8 @@ public class ItemSpawnManager : MonoBehaviour
 
     private void Awake()
     {
+        s_instance = this;
+
         // Spawn & setup all keycard instances.
         for (int i = 0; i < _keycardSpawnPositionsList.Count; i++)
         {
@@ -111,6 +112,24 @@ public class ItemSpawnManager : MonoBehaviour
                 Debug.LogError("Error: No Interactable Doors or Keycard Readers are assigned to the KeycardID " + _keycardSpawnPositionsList[i].KeycardID + ", however you have spawned a Keycard with this ID.");
             }
         }
+    }
+
+    public static Material GetMaterialFromID(int keycardID)
+    {
+        if (s_instance == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < s_instance._keycardSpawnPositionsList.Count; i++)
+        {
+            if (s_instance._keycardSpawnPositionsList[i].KeycardID == keycardID)
+            {
+                return s_instance._keycardSpawnPositionsList[i].KeycardMaterial;
+            }
+        }
+
+        return null;
     }
 
 

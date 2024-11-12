@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+using Inventory;
 /*
  * CONTEXT:
  * 
@@ -16,96 +15,84 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
     [SerializeField] private float _rechargeRate = 20.0f;
 
     private Coroutine _rechargeFlashlightCoroutine;
-    private FlashLightController _currentFlashlight;
+    private FlashlightController _currentFlashlight;
     private int _cachedFlashlightLayer;
 
-    private PlayerInventory playerInventory;
-    private FlashLightController flashLightController;
+    private FlashlightController flashLightController;
 
-
-    private void Start()
-    {
-        //Refereneces
-        playerInventory = FindObjectOfType<PlayerInventory>();
-    }
 
     public void Interact(PlayerInteraction playerInteraction)
     {
         if (_currentFlashlight == null)
         {
             // The station currently doesn't have a flashlight inside it.
-            // Start recharging the flashlight.
-            HandleRecharge(playerInteraction.transform);
+
+            if (playerInteraction.Inventory.GetEquippedItem() is FlashlightController)
+            {
+                // The player is holding a flashlight.
+                // Start recharging the flashlight.
+                HandleRecharge(playerInteraction.Inventory);
+            }
         }
         else
         {
             // The station currently has a flashlight inside it.
             // Stop recharging the flashlight and return it to the player.
-            HandleFlashlightPickup(playerInteraction.transform);
+            HandleFlashlightPickup(playerInteraction.Inventory);
         }
     }
 
 
 
    // INPUT TO START THE CHARGE
-    private void HandleRecharge(Transform player)
+    private void HandleRecharge(PlayerInventory playerInventory)
     {
-        PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
-        if (flashlightController != null && !flashlightController.GetCurrentFlashlightController().IsFullyCharged())
+        if (playerInventory.TryRemoveInventoryItemByType<FlashlightController>(out FlashlightController flashlightInstance))
         {
-            flashLightController = FindObjectOfType<FlashLightController>();
-            flashLightController._hasFlashlight = false;
-
-            StartRecharge(flashlightController);
-
-            // Remove flashlight from inventory when recharge is started.
-            playerInventory.RemoveFlashLight(); 
+            // The inventory had a flashlight, which we have subsequently removed.
+            StartRecharge(flashlightInstance);
         }
     }
 
 
     // ALLOWS PICKUP AFTER CHARGE IS COMPLETE
-    private void HandleFlashlightPickup(Transform player)
+    private void HandleFlashlightPickup(PlayerInventory playerInventory)
     {
         if (_rechargeFlashlightCoroutine != null)
         {
             StopCoroutine(_rechargeFlashlightCoroutine);
         }
 
-        playerInventory.flashLightPickedUp = false;
-
-        PlayerFlashlightController flashlightController = player.GetComponent<PlayerFlashlightController>();
-        Debug.Log(flashlightController.name);
-        AttachFlashlightToHolder(flashlightController);
-
-
-        flashLightController._hasFlashlight = true;
+        AttachFlashlightToHolder(playerInventory);
     }
 
 
     // STARTS THE RECHARGE PROCESS
-    private void StartRecharge(PlayerFlashlightController playerFlashlightController)
+    private void StartRecharge(FlashlightController flashlightInstance)
     {
-        FlashLightController flashlightController = playerFlashlightController.GetCurrentFlashlightController();
-        _currentFlashlight = playerFlashlightController.DetatchFlashlight(rechargePoint);
+        _currentFlashlight = flashlightInstance;
+
+        // Re-parent the flashlight instance to this recharge station.
+        flashlightInstance.transform.SetParent(rechargePoint, worldPositionStays: false);
+        flashlightInstance.transform.localPosition = Vector3.zero;
 
         // (Temp) Prevent the flashlight from continually being drawn in front.
         _cachedFlashlightLayer = _currentFlashlight.gameObject.layer;
         SetLayerThroughChildren(_currentFlashlight.gameObject, 0);
 
-        _rechargeFlashlightCoroutine = StartCoroutine(RechargeFlashlight(flashlightController));
+        _rechargeFlashlightCoroutine = StartCoroutine(RechargeFlashlight(flashlightInstance));
     }
 
 
     /// Coroutine that recharges the flashlight battery over time.
-    private IEnumerator RechargeFlashlight(FlashLightController flashlightController)
+    private IEnumerator RechargeFlashlight(FlashlightController flashlightInstance)
     {
-        while (flashlightController.IsFullyCharged() == false)
+        while (flashlightInstance.IsFullyCharged() == false)
         {
             // Recharge the flashlight at a fixed rate over time.
-            flashlightController.SetBatteryLevel(Mathf.MoveTowards(
-                current: flashlightController.GetCurrentBattery(),
-                target: flashlightController.GetMaxBattery(),
+            flashlightInstance.SetBatteryLevel(Mathf.MoveTowards(
+                current: flashlightInstance.GetCurrentBattery(),
+                target: flashlightInstance.GetMaxBattery(),
                 maxDelta: _rechargeRate * Time.deltaTime));
 
             yield return null;
@@ -113,19 +100,17 @@ public class FlashlightRechargeStation : MonoBehaviour, IInteractable
 
         // Notify the player that we have finished charging.
         AudioSource.PlayClipAtPoint(rechargeSound, rechargePoint.position);
-
-        // Allows flashlight to be re-added to inventory after recharge is finished.
-        playerInventory.flashLightPickedUp = false; 
     }
 
 
     /// GIVES PLAYER FLASH BACK
-    private void AttachFlashlightToHolder(PlayerFlashlightController playerFlashlightController)
+    private void AttachFlashlightToHolder(PlayerInventory playerInventory)
     {
         // Revert the flashlight's layer.
         SetLayerThroughChildren(_currentFlashlight.gameObject, _cachedFlashlightLayer);
 
-        playerFlashlightController.AttachFlashlight(_currentFlashlight);
+        // Add the item back to the player's inventory.
+        playerInventory.AddInstantiatedItem(_currentFlashlight);
         _currentFlashlight = null;
     }
 

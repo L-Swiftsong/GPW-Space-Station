@@ -100,16 +100,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""ThrowFlare"",
-                    ""type"": ""Button"",
-                    ""id"": ""d92a6c65-e692-4821-bb87-573c3c2a1e87"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ToggleFlashlight"",
+                    ""name"": ""UseItem"",
                     ""type"": ""Button"",
                     ""id"": ""8f91832f-96e1-4020-9488-1e88f8b63191"",
                     ""expectedControlType"": ""Button"",
@@ -118,7 +109,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""FocusFlashlight"",
+                    ""name"": ""AltUseItem"",
                     ""type"": ""Button"",
                     ""id"": ""5c6d4115-a49a-44ac-87ee-7b22d2475c39"",
                     ""expectedControlType"": ""Button"",
@@ -249,17 +240,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f33ba85d-4208-47c1-9d77-8d57142c23d9"",
-                    ""path"": ""<Keyboard>/t"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""MnK"",
-                    ""action"": ""ThrowFlare"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""ccb6740e-fccd-4dcf-9ff6-4abb31eb8136"",
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
@@ -277,28 +257,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3dc9890b-2e32-4f6d-aebd-dda7e47b718b"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""MnK"",
-                    ""action"": ""ToggleFlashlight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4f3842c3-eafd-4b0d-8129-049c3f4999eb"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""ToggleFlashlight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -327,11 +285,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""001636e3-eb1e-4c41-bb7c-88372b3142e1"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""path"": ""<Keyboard>/f"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MnK"",
-                    ""action"": ""FocusFlashlight"",
+                    ""action"": ""AltUseItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -342,7 +300,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""FocusFlashlight"",
+                    ""action"": ""AltUseItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -433,6 +391,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""OpenInventory"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3dc9890b-2e32-4f6d-aebd-dda7e47b718b"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""UseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4f3842c3-eafd-4b0d-8129-049c3f4999eb"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""UseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -477,9 +457,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Default_LeanLeft = m_Default.FindAction("LeanLeft", throwIfNotFound: true);
         m_Default_LeanRight = m_Default.FindAction("LeanRight", throwIfNotFound: true);
         m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
-        m_Default_ThrowFlare = m_Default.FindAction("ThrowFlare", throwIfNotFound: true);
-        m_Default_ToggleFlashlight = m_Default.FindAction("ToggleFlashlight", throwIfNotFound: true);
-        m_Default_FocusFlashlight = m_Default.FindAction("FocusFlashlight", throwIfNotFound: true);
+        m_Default_UseItem = m_Default.FindAction("UseItem", throwIfNotFound: true);
+        m_Default_AltUseItem = m_Default.FindAction("AltUseItem", throwIfNotFound: true);
         m_Default_OpenInventory = m_Default.FindAction("OpenInventory", throwIfNotFound: true);
     }
 
@@ -550,9 +529,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_LeanLeft;
     private readonly InputAction m_Default_LeanRight;
     private readonly InputAction m_Default_Interact;
-    private readonly InputAction m_Default_ThrowFlare;
-    private readonly InputAction m_Default_ToggleFlashlight;
-    private readonly InputAction m_Default_FocusFlashlight;
+    private readonly InputAction m_Default_UseItem;
+    private readonly InputAction m_Default_AltUseItem;
     private readonly InputAction m_Default_OpenInventory;
     public struct DefaultActions
     {
@@ -566,9 +544,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @LeanLeft => m_Wrapper.m_Default_LeanLeft;
         public InputAction @LeanRight => m_Wrapper.m_Default_LeanRight;
         public InputAction @Interact => m_Wrapper.m_Default_Interact;
-        public InputAction @ThrowFlare => m_Wrapper.m_Default_ThrowFlare;
-        public InputAction @ToggleFlashlight => m_Wrapper.m_Default_ToggleFlashlight;
-        public InputAction @FocusFlashlight => m_Wrapper.m_Default_FocusFlashlight;
+        public InputAction @UseItem => m_Wrapper.m_Default_UseItem;
+        public InputAction @AltUseItem => m_Wrapper.m_Default_AltUseItem;
         public InputAction @OpenInventory => m_Wrapper.m_Default_OpenInventory;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
@@ -603,15 +580,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
-            @ThrowFlare.started += instance.OnThrowFlare;
-            @ThrowFlare.performed += instance.OnThrowFlare;
-            @ThrowFlare.canceled += instance.OnThrowFlare;
-            @ToggleFlashlight.started += instance.OnToggleFlashlight;
-            @ToggleFlashlight.performed += instance.OnToggleFlashlight;
-            @ToggleFlashlight.canceled += instance.OnToggleFlashlight;
-            @FocusFlashlight.started += instance.OnFocusFlashlight;
-            @FocusFlashlight.performed += instance.OnFocusFlashlight;
-            @FocusFlashlight.canceled += instance.OnFocusFlashlight;
+            @UseItem.started += instance.OnUseItem;
+            @UseItem.performed += instance.OnUseItem;
+            @UseItem.canceled += instance.OnUseItem;
+            @AltUseItem.started += instance.OnAltUseItem;
+            @AltUseItem.performed += instance.OnAltUseItem;
+            @AltUseItem.canceled += instance.OnAltUseItem;
             @OpenInventory.started += instance.OnOpenInventory;
             @OpenInventory.performed += instance.OnOpenInventory;
             @OpenInventory.canceled += instance.OnOpenInventory;
@@ -643,15 +617,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
-            @ThrowFlare.started -= instance.OnThrowFlare;
-            @ThrowFlare.performed -= instance.OnThrowFlare;
-            @ThrowFlare.canceled -= instance.OnThrowFlare;
-            @ToggleFlashlight.started -= instance.OnToggleFlashlight;
-            @ToggleFlashlight.performed -= instance.OnToggleFlashlight;
-            @ToggleFlashlight.canceled -= instance.OnToggleFlashlight;
-            @FocusFlashlight.started -= instance.OnFocusFlashlight;
-            @FocusFlashlight.performed -= instance.OnFocusFlashlight;
-            @FocusFlashlight.canceled -= instance.OnFocusFlashlight;
+            @UseItem.started -= instance.OnUseItem;
+            @UseItem.performed -= instance.OnUseItem;
+            @UseItem.canceled -= instance.OnUseItem;
+            @AltUseItem.started -= instance.OnAltUseItem;
+            @AltUseItem.performed -= instance.OnAltUseItem;
+            @AltUseItem.canceled -= instance.OnAltUseItem;
             @OpenInventory.started -= instance.OnOpenInventory;
             @OpenInventory.performed -= instance.OnOpenInventory;
             @OpenInventory.canceled -= instance.OnOpenInventory;
@@ -700,9 +671,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnLeanLeft(InputAction.CallbackContext context);
         void OnLeanRight(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
-        void OnThrowFlare(InputAction.CallbackContext context);
-        void OnToggleFlashlight(InputAction.CallbackContext context);
-        void OnFocusFlashlight(InputAction.CallbackContext context);
+        void OnUseItem(InputAction.CallbackContext context);
+        void OnAltUseItem(InputAction.CallbackContext context);
         void OnOpenInventory(InputAction.CallbackContext context);
     }
 }
