@@ -626,7 +626,7 @@ public class PlayerController : MonoBehaviour
     public void ExitLowGravityZone()
     {
         _inLowGravityZone = false;
-    }
+    }    
 
     #endregion
 
