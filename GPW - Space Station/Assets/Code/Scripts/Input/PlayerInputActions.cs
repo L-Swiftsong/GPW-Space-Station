@@ -116,15 +116,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""OpenInventory"",
-                    ""type"": ""Button"",
-                    ""id"": ""c6c6004b-bfc9-436f-bf58-9eefb1a8847a"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -372,28 +363,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""c22658ce-0fae-4e54-930d-b8c09ec19a93"",
-                    ""path"": ""<Keyboard>/tab"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""MnK"",
-                    ""action"": ""OpenInventory"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6fb0c175-dd88-427f-be9a-21697b2c7754"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""OpenInventory"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""3dc9890b-2e32-4f6d-aebd-dda7e47b718b"",
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
@@ -411,6 +380,65 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""UseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Inventory"",
+            ""id"": ""f017a0e8-99ce-4fb2-87c4-546307290074"",
+            ""actions"": [
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""51c94135-5c97-43fa-875d-b0228f2662c5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GamepadInventorySelect"",
+                    ""type"": ""Value"",
+                    ""id"": ""dc2d4365-7b31-4ac6-a914-12070caabb13"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""fc4e7cda-2175-4b1d-bf39-ae597dc80afc"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3fa956bc-9e93-4bf3-8009-1bf507c2b530"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""baf5914f-544c-4035-a949-c705a6032aa2"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""GamepadInventorySelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -459,7 +487,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
         m_Default_UseItem = m_Default.FindAction("UseItem", throwIfNotFound: true);
         m_Default_AltUseItem = m_Default.FindAction("AltUseItem", throwIfNotFound: true);
-        m_Default_OpenInventory = m_Default.FindAction("OpenInventory", throwIfNotFound: true);
+        // Inventory
+        m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
+        m_Inventory_OpenInventory = m_Inventory.FindAction("OpenInventory", throwIfNotFound: true);
+        m_Inventory_GamepadInventorySelect = m_Inventory.FindAction("GamepadInventorySelect", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -531,7 +562,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Interact;
     private readonly InputAction m_Default_UseItem;
     private readonly InputAction m_Default_AltUseItem;
-    private readonly InputAction m_Default_OpenInventory;
     public struct DefaultActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -546,7 +576,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Default_Interact;
         public InputAction @UseItem => m_Wrapper.m_Default_UseItem;
         public InputAction @AltUseItem => m_Wrapper.m_Default_AltUseItem;
-        public InputAction @OpenInventory => m_Wrapper.m_Default_OpenInventory;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -586,9 +615,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @AltUseItem.started += instance.OnAltUseItem;
             @AltUseItem.performed += instance.OnAltUseItem;
             @AltUseItem.canceled += instance.OnAltUseItem;
-            @OpenInventory.started += instance.OnOpenInventory;
-            @OpenInventory.performed += instance.OnOpenInventory;
-            @OpenInventory.canceled += instance.OnOpenInventory;
         }
 
         private void UnregisterCallbacks(IDefaultActions instance)
@@ -623,9 +649,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @AltUseItem.started -= instance.OnAltUseItem;
             @AltUseItem.performed -= instance.OnAltUseItem;
             @AltUseItem.canceled -= instance.OnAltUseItem;
-            @OpenInventory.started -= instance.OnOpenInventory;
-            @OpenInventory.performed -= instance.OnOpenInventory;
-            @OpenInventory.canceled -= instance.OnOpenInventory;
         }
 
         public void RemoveCallbacks(IDefaultActions instance)
@@ -643,6 +666,60 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public DefaultActions @Default => new DefaultActions(this);
+
+    // Inventory
+    private readonly InputActionMap m_Inventory;
+    private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
+    private readonly InputAction m_Inventory_OpenInventory;
+    private readonly InputAction m_Inventory_GamepadInventorySelect;
+    public struct InventoryActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public InventoryActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OpenInventory => m_Wrapper.m_Inventory_OpenInventory;
+        public InputAction @GamepadInventorySelect => m_Wrapper.m_Inventory_GamepadInventorySelect;
+        public InputActionMap Get() { return m_Wrapper.m_Inventory; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InventoryActions set) { return set.Get(); }
+        public void AddCallbacks(IInventoryActions instance)
+        {
+            if (instance == null || m_Wrapper.m_InventoryActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_InventoryActionsCallbackInterfaces.Add(instance);
+            @OpenInventory.started += instance.OnOpenInventory;
+            @OpenInventory.performed += instance.OnOpenInventory;
+            @OpenInventory.canceled += instance.OnOpenInventory;
+            @GamepadInventorySelect.started += instance.OnGamepadInventorySelect;
+            @GamepadInventorySelect.performed += instance.OnGamepadInventorySelect;
+            @GamepadInventorySelect.canceled += instance.OnGamepadInventorySelect;
+        }
+
+        private void UnregisterCallbacks(IInventoryActions instance)
+        {
+            @OpenInventory.started -= instance.OnOpenInventory;
+            @OpenInventory.performed -= instance.OnOpenInventory;
+            @OpenInventory.canceled -= instance.OnOpenInventory;
+            @GamepadInventorySelect.started -= instance.OnGamepadInventorySelect;
+            @GamepadInventorySelect.performed -= instance.OnGamepadInventorySelect;
+            @GamepadInventorySelect.canceled -= instance.OnGamepadInventorySelect;
+        }
+
+        public void RemoveCallbacks(IInventoryActions instance)
+        {
+            if (m_Wrapper.m_InventoryActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IInventoryActions instance)
+        {
+            foreach (var item in m_Wrapper.m_InventoryActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_InventoryActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public InventoryActions @Inventory => new InventoryActions(this);
     private int m_GamepadSchemeIndex = -1;
     public InputControlScheme GamepadScheme
     {
@@ -673,6 +750,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnUseItem(InputAction.CallbackContext context);
         void OnAltUseItem(InputAction.CallbackContext context);
+    }
+    public interface IInventoryActions
+    {
         void OnOpenInventory(InputAction.CallbackContext context);
+        void OnGamepadInventorySelect(InputAction.CallbackContext context);
     }
 }

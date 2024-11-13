@@ -72,11 +72,15 @@ public class PlayerInput : MonoBehaviour
     private static Vector2 s_movementInput;
     private static Vector2 s_lookInput;
 
+    private static Vector2 s_gamepadInventorySelect;
+
     public static Vector2 MovementInput => s_movementInput;
 
     public static Vector2 LookInput => s_lookInput;
     public static float LookX => s_lookInput.x;
     public static float LookY => s_lookInput.y;
+
+    public static Vector2 GamepadInventorySelect => s_gamepadInventorySelect;
 
     #endregion
 
@@ -140,12 +144,15 @@ public class PlayerInput : MonoBehaviour
         _playerInput.Default.AltUseItem.canceled += AltUseItem_cancelled;
 
 
-        _playerInput.Default.OpenInventory.performed += OpenInventory_Performed;
-        _playerInput.Default.OpenInventory.started += OpenInventory_Started;
-        _playerInput.Default.OpenInventory.canceled += OpenInventory_Cancelled;
+        // Subscribe to events (Inventory).
+        _playerInput.Inventory.OpenInventory.performed += OpenInventory_Performed;
+        _playerInput.Inventory.OpenInventory.started += OpenInventory_Started;
+        _playerInput.Inventory.OpenInventory.canceled += OpenInventory_Cancelled;
+
 
         // Enable maps.
         _playerInput.Default.Enable();
+        _playerInput.Inventory.Enable();
 
         _playerInput.Enable();
     }
@@ -187,9 +194,10 @@ public class PlayerInput : MonoBehaviour
         _playerInput.Default.AltUseItem.canceled -= AltUseItem_cancelled;
 
 
-        _playerInput.Default.OpenInventory.performed -= OpenInventory_Performed;
-        _playerInput.Default.OpenInventory.started -= OpenInventory_Started;
-        _playerInput.Default.OpenInventory.canceled -= OpenInventory_Cancelled;
+        // Unsubscrive from events (Inventory).
+        _playerInput.Inventory.OpenInventory.performed -= OpenInventory_Performed;
+        _playerInput.Inventory.OpenInventory.started -= OpenInventory_Started;
+        _playerInput.Inventory.OpenInventory.canceled -= OpenInventory_Cancelled;
 
 
         // Dispose of the PlayerInputAction instance.
@@ -236,5 +244,7 @@ public class PlayerInput : MonoBehaviour
         // Detect input.
         s_movementInput = _playerInput.Default.Movement.ReadValue<Vector2>();
         s_lookInput = _playerInput.Default.LookInput.ReadValue<Vector2>();
+
+        s_gamepadInventorySelect = _playerInput.Inventory.GamepadInventorySelect.ReadValue<Vector2>();
     }
 }

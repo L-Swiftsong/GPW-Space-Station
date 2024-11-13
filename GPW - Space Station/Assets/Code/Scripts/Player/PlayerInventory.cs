@@ -13,11 +13,6 @@ namespace Inventory
 
 
         [Header("References")]
-        [SerializeField] private List<Button> _inventoryButtons;
-        [SerializeField] private GameObject _inventoryMenu;
-        
-        
-        [Space(5)]
         [SerializeField] private PlayerHealth _playerHealth;
         public PlayerHealth PlayerHealth => _playerHealth;
 
@@ -36,19 +31,17 @@ namespace Inventory
         [Header("Inventory Item Prefab References")]
         [SerializeField] private InventoryKeycard _inventoryKeycardPrefab;
 
+        public event System.Action<InventoryItem[]> OnInventoryChanged;
+
 
         private void Awake()
         {
             // Start with all items unequipped.
             UnequipItems();
-
-            // Setup the UI buttons.
-            for(int i = 0; i < _inventoryButtons.Count; i++)
-            {
-                int slotIndex = i;
-                _inventoryButtons[i].onClick.AddListener(() => EquipItem(slotIndex));
-            }
         }
+
+        private void Start() => OnInventoryChanged?.Invoke(_inventoryItems);
+
 
 
         #region Input Events
@@ -59,10 +52,6 @@ namespace Inventory
             PlayerInput.OnUseItemCancelled += PlayerInput_OnUseItemCancelled;
             PlayerInput.OnAltUseItemStarted += PlayerInput_OnAltUseItemStarted;
             PlayerInput.OnAltUseItemCancelled += PlayerInput_OnAltUseItemCancelled;
-
-            PlayerInput.OnOpenInventoryPerformed += PlayerInput_OnOpenInventoryPerformed;
-            PlayerInput.OnOpenInventoryStarted += PlayerInput_OnOpenInventoryStarted;
-            PlayerInput.OnOpenInventoryCancelled += PlayerInput_OnOpenInventoryCancelled;
         }
         private void OnDisable()
         {
@@ -70,10 +59,6 @@ namespace Inventory
             PlayerInput.OnUseItemCancelled -= PlayerInput_OnUseItemCancelled;
             PlayerInput.OnAltUseItemStarted -= PlayerInput_OnAltUseItemStarted;
             PlayerInput.OnAltUseItemCancelled -= PlayerInput_OnAltUseItemCancelled;
-
-            PlayerInput.OnOpenInventoryPerformed -= PlayerInput_OnOpenInventoryPerformed;
-            PlayerInput.OnOpenInventoryStarted -= PlayerInput_OnOpenInventoryStarted;
-            PlayerInput.OnOpenInventoryCancelled -= PlayerInput_OnOpenInventoryCancelled;
         }
 
 
@@ -106,78 +91,6 @@ namespace Inventory
             }
         }
 
-
-        private void PlayerInput_OnOpenInventoryPerformed()
-        {
-            if (!_toggleInventory)
-            {
-                return;
-            }
-
-            // Toggle the inventory open state.
-            if (inventoryMenuOpen)
-            {
-                CloseInventory();
-            }
-            else
-            {
-                OpenInventory();
-            }
-        }
-        private void PlayerInput_OnOpenInventoryStarted()
-        {
-            if (!_toggleInventory)
-            {
-                OpenInventory();
-            }
-        }
-        private void PlayerInput_OnOpenInventoryCancelled()
-        {
-            if (!_toggleInventory)
-            {
-                CloseInventory();
-            }
-        }
-
-        #endregion
-
-
-        void Update()
-        {
-            // Update the UI.
-            UpdateInventoryButtonText(); 
-        }
-
-
-        #region UI
-
-        private void OpenInventory()
-        {
-            _inventoryMenu.SetActive(true);
-            inventoryMenuOpen = true; //Bool used in player controller script to prevent moving camera when menu is open
-
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        private void CloseInventory()
-        {
-            _inventoryMenu.SetActive(false);
-            inventoryMenuOpen = false;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
-        // Updates the button text based on item type.
-        private void UpdateInventoryButtonText()
-        {
-            for (int i = 0; i < _inventoryButtons.Count; i++)
-            {
-                string itemText = _inventoryItems[i] == null ? "-" : _inventoryItems[i].GetItemName();
-                _inventoryButtons[i].GetComponentInChildren<TextMeshProUGUI>().text = itemText;
-            }
-        }
-
         #endregion
 
 
@@ -202,6 +115,8 @@ namespace Inventory
 
             // Add the item to the inventory.
             _inventoryItems[firstFreeIndex] = inventoryItem;
+
+            OnInventoryChanged?.Invoke(_inventoryItems);
             return true;
         }
         public bool AddInstantiatedItem(InventoryItem inventoryItem, float[] itemValues = null)
@@ -222,6 +137,8 @@ namespace Inventory
 
             // Add the inventory item to the inventory.
             _inventoryItems[firstFreeIndex] = inventoryItem;
+
+            OnInventoryChanged?.Invoke(_inventoryItems);
             return true;
         }
         public bool AddItemToIndex(int index, InventoryItemDataSO itemData, float[] itemValues = null)
@@ -235,6 +152,8 @@ namespace Inventory
 
             // Add the item to the inventory.
             _inventoryItems[index] = inventoryItem;
+
+            OnInventoryChanged?.Invoke(_inventoryItems);
             return true;
         }
 
@@ -313,9 +232,6 @@ namespace Inventory
                     _inventoryItems[slotIndex].Equip();
                 }
             }
-
-            // Close the inventory after equipping an item.
-            CloseInventory();
         }
 
         public void UnequipItems()
