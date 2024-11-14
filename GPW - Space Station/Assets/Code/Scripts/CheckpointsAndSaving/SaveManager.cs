@@ -75,12 +75,6 @@ namespace Saving
             bool updateAutosaveTime = !SceneLoader.s_HasGameStarted;
             yield return new WaitUntil(() => SceneLoader.s_HasGameStarted == true);
 
-            if (!s_checkpointSaveData.Exists)
-            {
-                // Save the game data so that we have at least 1 available save.
-                SaveGameState(ref s_checkpointSaveData);
-            }
-
 
             if (updateAutosaveTime)
             {
