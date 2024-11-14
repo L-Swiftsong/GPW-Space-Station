@@ -262,6 +262,10 @@ namespace Inventory
         public InventoryItem[] GetAllItems() => _inventoryItems;
         public void SetInventoryItems(ItemSaveData[] itemSaveData, int equippedItemIndex)
         {
+            if (itemSaveData == null)
+            {
+                return;
+            }
             if (itemSaveData.Length > MAX_INVENTORY_SIZE)
             {
                 Debug.LogError("Error: We are trying to add too many items to the inventory when loading from a save");

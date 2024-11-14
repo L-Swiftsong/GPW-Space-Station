@@ -125,9 +125,10 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Interaction.Enable();
         s_playerInput.Inventory.Enable();
 
-        UpdateDisabledState();
-
         s_playerInput.Enable();
+
+        // Disable maps that have elements wishing them disabled.
+        UpdateDisabledState();
     }
     private void DestroyInputActions()
     {

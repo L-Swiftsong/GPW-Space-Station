@@ -221,8 +221,13 @@ namespace SceneManagement
         }
         private IEnumerator ReloadActiveScenes()
         {
+            // Foreground load.
+            OnHardLoadStarted?.Invoke();
+
+
             // Get the scenes we wish to reload.
             List<int> scenesToReload = new List<int>();
+            int activeSceneBuildIndex = SceneManager.GetActiveScene().buildIndex;
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 if (SceneManager.GetSceneAt(i).name == "PersistentScene")
@@ -251,14 +256,18 @@ namespace SceneManagement
             yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
 
-            Debug.Log("Reload Finished");
+            // Set the active scene.
+            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(activeSceneBuildIndex));
 
-            // Freeze time.
+
+            // Stop time while things load.
             _previousTimeScale = Time.timeScale;
             Time.timeScale = 0.0f;
 
+
             // Wait for script inialisation.
-            yield return null;
+            yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
+
 
 #if ENABLE_INPUT_SYSTEM
             InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishReload());
@@ -269,6 +278,10 @@ namespace SceneManagement
         }
         private IEnumerator ResetActiveAndLoadHubScene()
         {
+            // Foreground load.
+            OnHardLoadStarted?.Invoke();
+
+
             // Retrieve the 'Reload to Hub' Transition.
             ForegroundSceneTransition hubTransition = Resources.Load<ForegroundSceneTransition>(RELOAD_TO_HUB_TRANSITION_PATH);
 
@@ -312,7 +325,7 @@ namespace SceneManagement
 
 
             // Wait long enough for Awake initialisations.
-            yield return null;
+            yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
 
 
             // Alter player position & rotation.

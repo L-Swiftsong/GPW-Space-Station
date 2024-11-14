@@ -34,6 +34,7 @@ namespace UI.GameOver
 
         public void ShowGameOverUI()
         {
+            Debug.Log("Show Game Over UI");
             Cursor.lockState = CursorLockMode.Confined;
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(_firstSelectedElement);
 
@@ -63,13 +64,13 @@ namespace UI.GameOver
 
         public void RestartFromCheckpoint()
         {
-            SceneLoader.Instance.ResetActiveScenes();
             HideGameOverUI();
+            SceneLoader.Instance.ResetActiveScenes();
         }
         public void RestartFromPrototypeHub()
         {
-            SceneLoader.Instance.ReloadToHub();
             HideGameOverUI();
+            SceneLoader.Instance.ReloadToHub();
         }
         public void ExitToDesktop() => Application.Quit();
     }
