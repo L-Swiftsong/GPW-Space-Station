@@ -1,19 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Saving;
 using SceneManagement;
 
 namespace UI.GameOver
 {
     public class GameOverUI : MonoBehaviour
     {
-        [SerializeField] private GameObject _container;
         private static GameOverUI s_instance;
         public static GameOverUI Instance => s_instance;
 
 
-        private const string LOAD_PROTOTYPE_HUB_TRANSITION_PATH = "Transitions/PrototypeHub_FT";
+        [SerializeField] private GameObject _container;
+        [SerializeField] private GameObject _firstSelectedElement;
 
 
         private void Awake()
@@ -36,6 +35,7 @@ namespace UI.GameOver
         public void ShowGameOverUI()
         {
             Cursor.lockState = CursorLockMode.Confined;
+            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(_firstSelectedElement);
 
             if (_container.activeSelf)
             {
