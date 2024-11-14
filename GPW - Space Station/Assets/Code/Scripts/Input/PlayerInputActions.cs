@@ -24,22 +24,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     ""name"": ""PlayerInputActions"",
     ""maps"": [
         {
-            ""name"": ""Default"",
+            ""name"": ""Movement"",
             ""id"": ""83d98cb8-7b32-4f70-ad75-f868bd4d204f"",
             ""actions"": [
                 {
                     ""name"": ""Movement"",
                     ""type"": ""Value"",
                     ""id"": ""ec0fe6c3-d4ff-49b3-81a2-cb9b84d25ad2"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""LookInput"",
-                    ""type"": ""Value"",
-                    ""id"": ""21ad515f-b3cf-40e3-8ee3-4fb73b433a50"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -85,42 +76,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""LeanRight"",
                     ""type"": ""Button"",
                     ""id"": ""b1cf5b79-3f4a-4e68-a7f7-0422b7d0a50c"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Interact"",
-                    ""type"": ""Button"",
-                    ""id"": ""73d16fdd-77d2-4af1-9475-65b62a6c1253"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""UseItem"",
-                    ""type"": ""Button"",
-                    ""id"": ""8f91832f-96e1-4020-9488-1e88f8b63191"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""AltUseItem"",
-                    ""type"": ""Button"",
-                    ""id"": ""5c6d4115-a49a-44ac-87ee-7b22d2475c39"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""OpenInventory"",
-                    ""type"": ""Button"",
-                    ""id"": ""c6c6004b-bfc9-436f-bf58-9eefb1a8847a"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -262,72 +217,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""29e07247-1853-482f-8bc3-e621c0394059"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""MnK"",
-                    ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a3c39d0a-7ef7-4264-a96a-a622a157f4d2"",
-                    ""path"": ""<Gamepad>/buttonWest"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Interact"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""001636e3-eb1e-4c41-bb7c-88372b3142e1"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""MnK"",
-                    ""action"": ""AltUseItem"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""02e9288a-5df3-4d3b-8ec5-d0471311782a"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""AltUseItem"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b1ef2c90-b70b-4629-9635-bcfba2a4a28a"",
-                    ""path"": ""<Mouse>/delta"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""MnK"",
-                    ""action"": ""LookInput"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1867bc9f-0d72-4c5b-98f5-a53693268af3"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""LookInput"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""ee3628b5-182d-43fe-b663-19bfc2ce1479"",
                     ""path"": ""<Keyboard>/leftCtrl"",
                     ""interactions"": """",
@@ -369,32 +258,106 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
+                }
+            ]
+        },
+        {
+            ""name"": ""Camera"",
+            ""id"": ""33ee49f4-d230-4c1c-bfbc-d5ab76b62b23"",
+            ""actions"": [
+                {
+                    ""name"": ""LookInput"",
+                    ""type"": ""Value"",
+                    ""id"": ""bc516641-c2f9-4b94-b9c7-83a86e86ebb3"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""c22658ce-0fae-4e54-930d-b8c09ec19a93"",
-                    ""path"": ""<Keyboard>/tab"",
+                    ""id"": ""9f5d3fb5-fcd8-4d30-b05c-ab85978360ff"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MnK"",
-                    ""action"": ""OpenInventory"",
+                    ""action"": ""LookInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6fb0c175-dd88-427f-be9a-21697b2c7754"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""id"": ""3ba966f3-897d-4f7a-9f82-10944747ffcb"",
+                    ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""OpenInventory"",
+                    ""action"": ""LookInput"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Interaction"",
+            ""id"": ""50aac31d-0f74-4b2a-a16b-23f2b0ff0611"",
+            ""actions"": [
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""f1f6f2ef-b1ca-4ed8-b6ae-0647bccfb642"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""1247b1a0-a3b6-4826-bbd6-ea6b4537cac3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AltUseItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""6def68ce-cc72-4489-b673-20a235827f87"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""50ab5ec4-5088-467e-8007-19a837bf9966"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3dc9890b-2e32-4f6d-aebd-dda7e47b718b"",
+                    ""id"": ""e5161fac-2922-45f7-9ff0-af4c94d8010b"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce194e24-4e42-4d8e-a5e0-fe05db549d9a"",
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -405,12 +368,93 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""4f3842c3-eafd-4b0d-8129-049c3f4999eb"",
+                    ""id"": ""f7af7a23-ae94-4cc5-b3f9-c4dd97fcf9c8"",
                     ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""UseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b630344-8adc-444c-b8b9-9947bcde2296"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""AltUseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd8f0611-517d-468b-82ff-c1d1c7139bc9"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""AltUseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Inventory"",
+            ""id"": ""f017a0e8-99ce-4fb2-87c4-546307290074"",
+            ""actions"": [
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""51c94135-5c97-43fa-875d-b0228f2662c5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""GamepadInventorySelect"",
+                    ""type"": ""Value"",
+                    ""id"": ""dc2d4365-7b31-4ac6-a914-12070caabb13"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""fc4e7cda-2175-4b1d-bf39-ae597dc80afc"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3fa956bc-9e93-4bf3-8009-1bf507c2b530"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""baf5914f-544c-4035-a949-c705a6032aa2"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""GamepadInventorySelect"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -447,19 +491,26 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     ]
 }");
-        // Default
-        m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
-        m_Default_Movement = m_Default.FindAction("Movement", throwIfNotFound: true);
-        m_Default_LookInput = m_Default.FindAction("LookInput", throwIfNotFound: true);
-        m_Default_Jump = m_Default.FindAction("Jump", throwIfNotFound: true);
-        m_Default_Sprint = m_Default.FindAction("Sprint", throwIfNotFound: true);
-        m_Default_Crouch = m_Default.FindAction("Crouch", throwIfNotFound: true);
-        m_Default_LeanLeft = m_Default.FindAction("LeanLeft", throwIfNotFound: true);
-        m_Default_LeanRight = m_Default.FindAction("LeanRight", throwIfNotFound: true);
-        m_Default_Interact = m_Default.FindAction("Interact", throwIfNotFound: true);
-        m_Default_UseItem = m_Default.FindAction("UseItem", throwIfNotFound: true);
-        m_Default_AltUseItem = m_Default.FindAction("AltUseItem", throwIfNotFound: true);
-        m_Default_OpenInventory = m_Default.FindAction("OpenInventory", throwIfNotFound: true);
+        // Movement
+        m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
+        m_Movement_Movement = m_Movement.FindAction("Movement", throwIfNotFound: true);
+        m_Movement_Jump = m_Movement.FindAction("Jump", throwIfNotFound: true);
+        m_Movement_Sprint = m_Movement.FindAction("Sprint", throwIfNotFound: true);
+        m_Movement_Crouch = m_Movement.FindAction("Crouch", throwIfNotFound: true);
+        m_Movement_LeanLeft = m_Movement.FindAction("LeanLeft", throwIfNotFound: true);
+        m_Movement_LeanRight = m_Movement.FindAction("LeanRight", throwIfNotFound: true);
+        // Camera
+        m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
+        m_Camera_LookInput = m_Camera.FindAction("LookInput", throwIfNotFound: true);
+        // Interaction
+        m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
+        m_Interaction_Interact = m_Interaction.FindAction("Interact", throwIfNotFound: true);
+        m_Interaction_UseItem = m_Interaction.FindAction("UseItem", throwIfNotFound: true);
+        m_Interaction_AltUseItem = m_Interaction.FindAction("AltUseItem", throwIfNotFound: true);
+        // Inventory
+        m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
+        m_Inventory_OpenInventory = m_Inventory.FindAction("OpenInventory", throwIfNotFound: true);
+        m_Inventory_GamepadInventorySelect = m_Inventory.FindAction("GamepadInventorySelect", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -518,50 +569,37 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Default
-    private readonly InputActionMap m_Default;
-    private List<IDefaultActions> m_DefaultActionsCallbackInterfaces = new List<IDefaultActions>();
-    private readonly InputAction m_Default_Movement;
-    private readonly InputAction m_Default_LookInput;
-    private readonly InputAction m_Default_Jump;
-    private readonly InputAction m_Default_Sprint;
-    private readonly InputAction m_Default_Crouch;
-    private readonly InputAction m_Default_LeanLeft;
-    private readonly InputAction m_Default_LeanRight;
-    private readonly InputAction m_Default_Interact;
-    private readonly InputAction m_Default_UseItem;
-    private readonly InputAction m_Default_AltUseItem;
-    private readonly InputAction m_Default_OpenInventory;
-    public struct DefaultActions
+    // Movement
+    private readonly InputActionMap m_Movement;
+    private List<IMovementActions> m_MovementActionsCallbackInterfaces = new List<IMovementActions>();
+    private readonly InputAction m_Movement_Movement;
+    private readonly InputAction m_Movement_Jump;
+    private readonly InputAction m_Movement_Sprint;
+    private readonly InputAction m_Movement_Crouch;
+    private readonly InputAction m_Movement_LeanLeft;
+    private readonly InputAction m_Movement_LeanRight;
+    public struct MovementActions
     {
         private @PlayerInputActions m_Wrapper;
-        public DefaultActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Movement => m_Wrapper.m_Default_Movement;
-        public InputAction @LookInput => m_Wrapper.m_Default_LookInput;
-        public InputAction @Jump => m_Wrapper.m_Default_Jump;
-        public InputAction @Sprint => m_Wrapper.m_Default_Sprint;
-        public InputAction @Crouch => m_Wrapper.m_Default_Crouch;
-        public InputAction @LeanLeft => m_Wrapper.m_Default_LeanLeft;
-        public InputAction @LeanRight => m_Wrapper.m_Default_LeanRight;
-        public InputAction @Interact => m_Wrapper.m_Default_Interact;
-        public InputAction @UseItem => m_Wrapper.m_Default_UseItem;
-        public InputAction @AltUseItem => m_Wrapper.m_Default_AltUseItem;
-        public InputAction @OpenInventory => m_Wrapper.m_Default_OpenInventory;
-        public InputActionMap Get() { return m_Wrapper.m_Default; }
+        public MovementActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_Movement_Movement;
+        public InputAction @Jump => m_Wrapper.m_Movement_Jump;
+        public InputAction @Sprint => m_Wrapper.m_Movement_Sprint;
+        public InputAction @Crouch => m_Wrapper.m_Movement_Crouch;
+        public InputAction @LeanLeft => m_Wrapper.m_Movement_LeanLeft;
+        public InputAction @LeanRight => m_Wrapper.m_Movement_LeanRight;
+        public InputActionMap Get() { return m_Wrapper.m_Movement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(DefaultActions set) { return set.Get(); }
-        public void AddCallbacks(IDefaultActions instance)
+        public static implicit operator InputActionMap(MovementActions set) { return set.Get(); }
+        public void AddCallbacks(IMovementActions instance)
         {
-            if (instance == null || m_Wrapper.m_DefaultActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_DefaultActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_MovementActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_MovementActionsCallbackInterfaces.Add(instance);
             @Movement.started += instance.OnMovement;
             @Movement.performed += instance.OnMovement;
             @Movement.canceled += instance.OnMovement;
-            @LookInput.started += instance.OnLookInput;
-            @LookInput.performed += instance.OnLookInput;
-            @LookInput.canceled += instance.OnLookInput;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
@@ -577,28 +615,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @LeanRight.started += instance.OnLeanRight;
             @LeanRight.performed += instance.OnLeanRight;
             @LeanRight.canceled += instance.OnLeanRight;
-            @Interact.started += instance.OnInteract;
-            @Interact.performed += instance.OnInteract;
-            @Interact.canceled += instance.OnInteract;
-            @UseItem.started += instance.OnUseItem;
-            @UseItem.performed += instance.OnUseItem;
-            @UseItem.canceled += instance.OnUseItem;
-            @AltUseItem.started += instance.OnAltUseItem;
-            @AltUseItem.performed += instance.OnAltUseItem;
-            @AltUseItem.canceled += instance.OnAltUseItem;
-            @OpenInventory.started += instance.OnOpenInventory;
-            @OpenInventory.performed += instance.OnOpenInventory;
-            @OpenInventory.canceled += instance.OnOpenInventory;
         }
 
-        private void UnregisterCallbacks(IDefaultActions instance)
+        private void UnregisterCallbacks(IMovementActions instance)
         {
             @Movement.started -= instance.OnMovement;
             @Movement.performed -= instance.OnMovement;
             @Movement.canceled -= instance.OnMovement;
-            @LookInput.started -= instance.OnLookInput;
-            @LookInput.performed -= instance.OnLookInput;
-            @LookInput.canceled -= instance.OnLookInput;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
@@ -614,6 +637,105 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @LeanRight.started -= instance.OnLeanRight;
             @LeanRight.performed -= instance.OnLeanRight;
             @LeanRight.canceled -= instance.OnLeanRight;
+        }
+
+        public void RemoveCallbacks(IMovementActions instance)
+        {
+            if (m_Wrapper.m_MovementActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IMovementActions instance)
+        {
+            foreach (var item in m_Wrapper.m_MovementActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_MovementActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public MovementActions @Movement => new MovementActions(this);
+
+    // Camera
+    private readonly InputActionMap m_Camera;
+    private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
+    private readonly InputAction m_Camera_LookInput;
+    public struct CameraActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public CameraActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @LookInput => m_Wrapper.m_Camera_LookInput;
+        public InputActionMap Get() { return m_Wrapper.m_Camera; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CameraActions set) { return set.Get(); }
+        public void AddCallbacks(ICameraActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CameraActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CameraActionsCallbackInterfaces.Add(instance);
+            @LookInput.started += instance.OnLookInput;
+            @LookInput.performed += instance.OnLookInput;
+            @LookInput.canceled += instance.OnLookInput;
+        }
+
+        private void UnregisterCallbacks(ICameraActions instance)
+        {
+            @LookInput.started -= instance.OnLookInput;
+            @LookInput.performed -= instance.OnLookInput;
+            @LookInput.canceled -= instance.OnLookInput;
+        }
+
+        public void RemoveCallbacks(ICameraActions instance)
+        {
+            if (m_Wrapper.m_CameraActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICameraActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CameraActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CameraActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CameraActions @Camera => new CameraActions(this);
+
+    // Interaction
+    private readonly InputActionMap m_Interaction;
+    private List<IInteractionActions> m_InteractionActionsCallbackInterfaces = new List<IInteractionActions>();
+    private readonly InputAction m_Interaction_Interact;
+    private readonly InputAction m_Interaction_UseItem;
+    private readonly InputAction m_Interaction_AltUseItem;
+    public struct InteractionActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public InteractionActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Interact => m_Wrapper.m_Interaction_Interact;
+        public InputAction @UseItem => m_Wrapper.m_Interaction_UseItem;
+        public InputAction @AltUseItem => m_Wrapper.m_Interaction_AltUseItem;
+        public InputActionMap Get() { return m_Wrapper.m_Interaction; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InteractionActions set) { return set.Get(); }
+        public void AddCallbacks(IInteractionActions instance)
+        {
+            if (instance == null || m_Wrapper.m_InteractionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Add(instance);
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
+            @UseItem.started += instance.OnUseItem;
+            @UseItem.performed += instance.OnUseItem;
+            @UseItem.canceled += instance.OnUseItem;
+            @AltUseItem.started += instance.OnAltUseItem;
+            @AltUseItem.performed += instance.OnAltUseItem;
+            @AltUseItem.canceled += instance.OnAltUseItem;
+        }
+
+        private void UnregisterCallbacks(IInteractionActions instance)
+        {
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
@@ -623,26 +745,77 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @AltUseItem.started -= instance.OnAltUseItem;
             @AltUseItem.performed -= instance.OnAltUseItem;
             @AltUseItem.canceled -= instance.OnAltUseItem;
-            @OpenInventory.started -= instance.OnOpenInventory;
-            @OpenInventory.performed -= instance.OnOpenInventory;
-            @OpenInventory.canceled -= instance.OnOpenInventory;
         }
 
-        public void RemoveCallbacks(IDefaultActions instance)
+        public void RemoveCallbacks(IInteractionActions instance)
         {
-            if (m_Wrapper.m_DefaultActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_InteractionActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IDefaultActions instance)
+        public void SetCallbacks(IInteractionActions instance)
         {
-            foreach (var item in m_Wrapper.m_DefaultActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_InteractionActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_DefaultActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_InteractionActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public DefaultActions @Default => new DefaultActions(this);
+    public InteractionActions @Interaction => new InteractionActions(this);
+
+    // Inventory
+    private readonly InputActionMap m_Inventory;
+    private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
+    private readonly InputAction m_Inventory_OpenInventory;
+    private readonly InputAction m_Inventory_GamepadInventorySelect;
+    public struct InventoryActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public InventoryActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OpenInventory => m_Wrapper.m_Inventory_OpenInventory;
+        public InputAction @GamepadInventorySelect => m_Wrapper.m_Inventory_GamepadInventorySelect;
+        public InputActionMap Get() { return m_Wrapper.m_Inventory; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InventoryActions set) { return set.Get(); }
+        public void AddCallbacks(IInventoryActions instance)
+        {
+            if (instance == null || m_Wrapper.m_InventoryActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_InventoryActionsCallbackInterfaces.Add(instance);
+            @OpenInventory.started += instance.OnOpenInventory;
+            @OpenInventory.performed += instance.OnOpenInventory;
+            @OpenInventory.canceled += instance.OnOpenInventory;
+            @GamepadInventorySelect.started += instance.OnGamepadInventorySelect;
+            @GamepadInventorySelect.performed += instance.OnGamepadInventorySelect;
+            @GamepadInventorySelect.canceled += instance.OnGamepadInventorySelect;
+        }
+
+        private void UnregisterCallbacks(IInventoryActions instance)
+        {
+            @OpenInventory.started -= instance.OnOpenInventory;
+            @OpenInventory.performed -= instance.OnOpenInventory;
+            @OpenInventory.canceled -= instance.OnOpenInventory;
+            @GamepadInventorySelect.started -= instance.OnGamepadInventorySelect;
+            @GamepadInventorySelect.performed -= instance.OnGamepadInventorySelect;
+            @GamepadInventorySelect.canceled -= instance.OnGamepadInventorySelect;
+        }
+
+        public void RemoveCallbacks(IInventoryActions instance)
+        {
+            if (m_Wrapper.m_InventoryActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IInventoryActions instance)
+        {
+            foreach (var item in m_Wrapper.m_InventoryActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_InventoryActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public InventoryActions @Inventory => new InventoryActions(this);
     private int m_GamepadSchemeIndex = -1;
     public InputControlScheme GamepadScheme
     {
@@ -661,18 +834,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_MnKSchemeIndex];
         }
     }
-    public interface IDefaultActions
+    public interface IMovementActions
     {
         void OnMovement(InputAction.CallbackContext context);
-        void OnLookInput(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnLeanLeft(InputAction.CallbackContext context);
         void OnLeanRight(InputAction.CallbackContext context);
+    }
+    public interface ICameraActions
+    {
+        void OnLookInput(InputAction.CallbackContext context);
+    }
+    public interface IInteractionActions
+    {
         void OnInteract(InputAction.CallbackContext context);
         void OnUseItem(InputAction.CallbackContext context);
         void OnAltUseItem(InputAction.CallbackContext context);
+    }
+    public interface IInventoryActions
+    {
         void OnOpenInventory(InputAction.CallbackContext context);
+        void OnGamepadInventorySelect(InputAction.CallbackContext context);
     }
 }

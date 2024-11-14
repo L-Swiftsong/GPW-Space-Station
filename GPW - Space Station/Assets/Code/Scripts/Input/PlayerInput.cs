@@ -6,32 +6,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerInput : MonoBehaviour
 {
-    #region Singleton
-
-    private static PlayerInput _instance;
-    public static PlayerInput Instance
-    {
-        get => _instance;
-        set
-        {
-            if (_instance != null)
-            {
-                Debug.LogError("Error: A PlayerInput instance already exists within the scene: " + _instance.name + ". Destroying " + value.name);
-                Destroy(value.gameObject);
-                return;
-            }
-
-            _instance = value;
-        }
-    }
-
-    #endregion
+    private static PlayerInputActions s_playerInput;
 
 
-    private PlayerInputActions _playerInput;
-
-
-    #region Events
+    #region Input Events
 
     public static event Action OnJumpPerformed;
 
@@ -67,135 +45,138 @@ public class PlayerInput : MonoBehaviour
 
     #endregion
 
-    #region Values
+    #region Input Values
 
+    // Movement Input.
     private static Vector2 s_movementInput;
-    private static Vector2 s_lookInput;
-
     public static Vector2 MovementInput => s_movementInput;
 
+
+    // Look Input.
+    private static Vector2 s_lookInput;
     public static Vector2 LookInput => s_lookInput;
     public static float LookX => s_lookInput.x;
     public static float LookY => s_lookInput.y;
 
+
+    // Gamepad Select.
+    private static Vector2 s_gamepadInventorySelect;
+    public static Vector2 GamepadInventorySelect => s_gamepadInventorySelect;
+
     #endregion
 
 
-    private void Awake()
-    {
-        _instance = this;
-
-        CreateInputActions();
-    }
+    private void Awake() => CreateInputActions();
+    
     private void OnEnable()
     {
-        if (_playerInput == null)
+        if (s_playerInput == null)
         {
             CreateInputActions();
         }
     }
-    private void OnDisable()
-    {
-        DestroyInputActions();
-    }
-    private void OnDestroy()
-    {
-        DestroyInputActions();
-    }
+    private void OnDisable() => DestroyInputActions();
+    private void OnDestroy() => DestroyInputActions();
+    
 
 
     private void CreateInputActions()
     {
         // Create the InputActionMap.
-        _playerInput = new PlayerInputActions();
+        s_playerInput = new PlayerInputActions();
 
 
-        // Subscribe to events.
-        _playerInput.Default.Jump.performed += Jump_performed;
+        // Subscribe to events (Movement).
+        s_playerInput.Movement.Jump.performed += Jump_performed;
+
+        s_playerInput.Movement.Crouch.performed += Crouch_performed;
+        s_playerInput.Movement.Crouch.started += Crouch_started;
+        s_playerInput.Movement.Crouch.canceled += Crouch_cancelled;
+
+        s_playerInput.Movement.Sprint.performed += Sprint_performed;
+        s_playerInput.Movement.Sprint.started += Sprint_started;
+        s_playerInput.Movement.Sprint.canceled += Sprint_cancelled;
+
+        s_playerInput.Movement.LeanLeft.started += LeanLeft_started;
+        s_playerInput.Movement.LeanLeft.canceled += LeanLeft_cancelled;
+        s_playerInput.Movement.LeanRight.started += LeanRight_started;
+        s_playerInput.Movement.LeanRight.canceled += LeanRight_cancelled;
 
 
-        _playerInput.Default.Crouch.performed += Crouch_performed;
-        _playerInput.Default.Crouch.started += Crouch_started;
-        _playerInput.Default.Crouch.canceled += Crouch_cancelled;
+        // Subscribe to events (Interaction).
+        s_playerInput.Interaction.Interact.performed += Interact_performed;
+
+        s_playerInput.Interaction.UseItem.started += UseItem_started;
+        s_playerInput.Interaction.UseItem.canceled += UseItem_cancelled;
+
+        s_playerInput.Interaction.AltUseItem.started += AltUseItem_started;
+        s_playerInput.Interaction.AltUseItem.canceled += AltUseItem_cancelled;
 
 
-        _playerInput.Default.Sprint.performed += Sprint_performed;
-        _playerInput.Default.Sprint.started += Sprint_started;
-        _playerInput.Default.Sprint.canceled += Sprint_cancelled;
+        // Subscribe to events (Inventory).
+        s_playerInput.Inventory.OpenInventory.performed += OpenInventory_Performed;
+        s_playerInput.Inventory.OpenInventory.started += OpenInventory_Started;
+        s_playerInput.Inventory.OpenInventory.canceled += OpenInventory_Cancelled;
 
-
-        _playerInput.Default.LeanLeft.started += LeanLeft_started;
-        _playerInput.Default.LeanLeft.canceled += LeanLeft_cancelled;
-        _playerInput.Default.LeanRight.started += LeanRight_started;
-        _playerInput.Default.LeanRight.canceled += LeanRight_cancelled;
-
-
-        _playerInput.Default.Interact.performed += Interact_performed;
-
-
-        _playerInput.Default.UseItem.started += UseItem_started;
-        _playerInput.Default.UseItem.canceled += UseItem_cancelled;
-
-        _playerInput.Default.AltUseItem.started += AltUseItem_started;
-        _playerInput.Default.AltUseItem.canceled += AltUseItem_cancelled;
-
-
-        _playerInput.Default.OpenInventory.performed += OpenInventory_Performed;
-        _playerInput.Default.OpenInventory.started += OpenInventory_Started;
-        _playerInput.Default.OpenInventory.canceled += OpenInventory_Cancelled;
 
         // Enable maps.
-        _playerInput.Default.Enable();
+        s_playerInput.Movement.Enable();
+        s_playerInput.Camera.Enable();
+        s_playerInput.Interaction.Enable();
+        s_playerInput.Inventory.Enable();
 
-        _playerInput.Enable();
+        s_playerInput.Enable();
+
+        // Disable maps that have elements wishing them disabled.
+        UpdateDisabledState();
     }
     private void DestroyInputActions()
     {
         // Ensure that a playerInput instance exists.
-        if (_playerInput == null)
+        if (s_playerInput == null)
         {
             return;
         }
 
-        // Unsubscribe from events.
-        _playerInput.Default.Jump.performed -= Jump_performed;
+        // Subscribe to events (Movement).
+        s_playerInput.Movement.Jump.performed -= Jump_performed;
+
+        s_playerInput.Movement.Crouch.performed -= Crouch_performed;
+        s_playerInput.Movement.Crouch.started -= Crouch_started;
+        s_playerInput.Movement.Crouch.canceled -= Crouch_cancelled;
+
+        s_playerInput.Movement.Sprint.performed -= Sprint_performed;
+        s_playerInput.Movement.Sprint.started -= Sprint_started;
+        s_playerInput.Movement.Sprint.canceled -= Sprint_cancelled;
+
+        s_playerInput.Movement.LeanLeft.started -= LeanLeft_started;
+        s_playerInput.Movement.LeanLeft.canceled -= LeanLeft_cancelled;
+        s_playerInput.Movement.LeanRight.started -= LeanRight_started;
+        s_playerInput.Movement.LeanRight.canceled -= LeanRight_cancelled;
 
 
-        _playerInput.Default.Crouch.performed -= Crouch_performed;
-        _playerInput.Default.Crouch.started -= Crouch_started;
-        _playerInput.Default.Crouch.canceled -= Crouch_cancelled;
+        // Subscribe to events (Interaction).
+        s_playerInput.Interaction.Interact.performed -= Interact_performed;
+
+        s_playerInput.Interaction.UseItem.started -= UseItem_started;
+        s_playerInput.Interaction.UseItem.canceled -= UseItem_cancelled;
+
+        s_playerInput.Interaction.AltUseItem.started -= AltUseItem_started;
+        s_playerInput.Interaction.AltUseItem.canceled -= AltUseItem_cancelled;
 
 
-        _playerInput.Default.Sprint.performed -= Sprint_performed;
-        _playerInput.Default.Sprint.started -= Sprint_started;
-        _playerInput.Default.Sprint.canceled -= Sprint_cancelled;
-
-
-        _playerInput.Default.LeanLeft.started -= LeanLeft_started;
-        _playerInput.Default.LeanLeft.canceled -= LeanLeft_cancelled;
-        _playerInput.Default.LeanRight.started -= LeanRight_started;
-        _playerInput.Default.LeanRight.canceled -= LeanRight_cancelled;
-
-
-        _playerInput.Default.Interact.performed -= Interact_performed;
-
-
-        _playerInput.Default.UseItem.started -= UseItem_started;
-        _playerInput.Default.UseItem.canceled -= UseItem_cancelled;
-
-        _playerInput.Default.AltUseItem.started -= AltUseItem_started;
-        _playerInput.Default.AltUseItem.canceled -= AltUseItem_cancelled;
-
-
-        _playerInput.Default.OpenInventory.performed -= OpenInventory_Performed;
-        _playerInput.Default.OpenInventory.started -= OpenInventory_Started;
-        _playerInput.Default.OpenInventory.canceled -= OpenInventory_Cancelled;
+        // Unsubscrive from events (Inventory).
+        s_playerInput.Inventory.OpenInventory.performed -= OpenInventory_Performed;
+        s_playerInput.Inventory.OpenInventory.started -= OpenInventory_Started;
+        s_playerInput.Inventory.OpenInventory.canceled -= OpenInventory_Cancelled;
 
 
         // Dispose of the PlayerInputAction instance.
-        _playerInput.Dispose();
+        s_playerInput.Dispose();
     }
 
+
+    #region Input Functions
 
     private void Jump_performed(InputAction.CallbackContext context) => OnJumpPerformed?.Invoke();
 
@@ -230,11 +211,164 @@ public class PlayerInput : MonoBehaviour
     private void OpenInventory_Started(InputAction.CallbackContext context) => OnOpenInventoryStarted?.Invoke();
     private void OpenInventory_Cancelled(InputAction.CallbackContext context) => OnOpenInventoryCancelled?.Invoke();
 
+    #endregion
+
 
     private void Update()
     {
         // Detect input.
-        s_movementInput = _playerInput.Default.Movement.ReadValue<Vector2>();
-        s_lookInput = _playerInput.Default.LookInput.ReadValue<Vector2>();
+        s_movementInput = s_playerInput.Movement.Movement.ReadValue<Vector2>();
+        s_lookInput = s_playerInput.Camera.LookInput.ReadValue<Vector2>();
+
+        s_gamepadInventorySelect = s_playerInput.Inventory.GamepadInventorySelect.ReadValue<Vector2>();
     }
+
+
+
+#region Action Prevention
+
+    // Movement Map.
+    private static int s_movementPreventionCount = 0;
+    public static void PreventMovementActions()
+    {
+        s_movementPreventionCount++;
+
+        if (s_playerInput != null)
+        {
+            // Disable our 'Movement' map.
+            s_playerInput.Movement.Disable();
+        }
+    }
+    public static void RemoveMovementActionPrevention()
+    {
+        s_movementPreventionCount--;
+
+        if (s_movementPreventionCount == 0 && s_playerInput != null)
+        {
+            // There is no longer anything wishing to disable our movement controls.
+            // Enable the 'Movement' map.
+            s_playerInput.Movement.Enable();
+        }
+    }
+
+
+    // Camera Map.
+    private static int s_cameraPreventionCount = 0;
+    public static void PreventCameraActions()
+    {
+        s_cameraPreventionCount++;
+
+        if (s_playerInput != null)
+        {
+            // Disable our 'Camera' map.
+            s_playerInput.Camera.Disable();
+        }
+    }
+    public static void RemoveCameraActionPrevention()
+    {
+        s_cameraPreventionCount--;
+
+        if (s_cameraPreventionCount == 0 && s_playerInput != null)
+        {
+            // There is no longer anything wishing to disable our camera controls.
+            // Enable the 'Camera' map.
+            s_playerInput.Camera.Enable();
+        }
+    }
+
+
+    // Interaction Map.
+    private static int s_interactionPreventionCount = 0;
+    public static void PreventInteractionActions()
+    {
+        s_interactionPreventionCount++;
+
+        if (s_playerInput != null)
+        {
+            // Disable our 'Interaction' map.
+            s_playerInput.Interaction.Disable();
+        }
+    }
+    public static void RemoveInteractionActionPrevention()
+    {
+        s_interactionPreventionCount--;
+
+        if (s_interactionPreventionCount == 0 && s_playerInput != null)
+        {
+            // There is no longer anything wishing to disable our interaction controls.
+            // Enable the 'Interaction' map.
+            s_playerInput.Interaction.Enable();
+        }
+    }
+
+
+    // Inventory Map.
+    private static int s_inventoryPreventionCount = 0;
+    public static void PreventInventoryActions()
+    {
+        s_inventoryPreventionCount++;
+
+        if (s_playerInput != null)
+        {
+            // Disable our 'Inventory' map.
+            s_playerInput.Inventory.Disable();
+        }
+    }
+    public static void RemoveInventoryActionPrevention()
+    {
+        s_inventoryPreventionCount--;
+
+        if (s_inventoryPreventionCount == 0 && s_playerInput != null)
+        {
+            // There is no longer anything wishing to disable our inventory controls.
+            // Enable the 'Inventory' map.
+            s_playerInput.Inventory.Enable();
+        }
+    }
+
+
+    // All Maps.
+    public static void PreventAllActions()
+    {
+        PreventMovementActions();
+        PreventCameraActions();
+        PreventInteractionActions();
+        PreventInventoryActions();
+    }
+    public static void RemoveAllActionPrevention()
+    {
+        RemoveMovementActionPrevention();
+        RemoveCameraActionPrevention();
+        RemoveInteractionActionPrevention();
+        RemoveInventoryActionPrevention();
+    }
+
+    private static void UpdateDisabledState()
+    {
+        // Movement.
+        if (s_movementPreventionCount > 0)
+            s_playerInput.Movement.Disable();
+        else
+            s_playerInput.Movement.Enable();
+
+        // Camera.
+        if (s_cameraPreventionCount > 0)
+            s_playerInput.Camera.Disable();
+        else
+            s_playerInput.Camera.Enable();
+
+        // Interaction.
+        if (s_interactionPreventionCount > 0)
+            s_playerInput.Interaction.Disable();
+        else
+            s_playerInput.Interaction.Enable();
+
+        // Inventory.
+        if (s_inventoryPreventionCount > 0)
+            s_playerInput.Inventory.Disable();
+        else
+            s_playerInput.Inventory.Enable();
+    }
+
+    #endregion
 }

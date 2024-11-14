@@ -12,14 +12,23 @@ namespace Saving
         [System.Serializable]
         private struct SaveData
         {
+            public bool Exists;
             public float SaveTime;
+
             public int[] LoadedSceneIndices;
+            public int ActiveSceneIndex;
+
 
             public PlayerManager.PlayerSetupData PlayerData;
 
-            public static SaveData Default = new SaveData() {
+            
+            public static SaveData Empty = new SaveData() {
+                Exists = false,
                 SaveTime = 0.0f,
+                
                 LoadedSceneIndices = null,
+                ActiveSceneIndex = -1,
+
                 PlayerData = PlayerManager.PlayerSetupData.Default,
             };
         }
@@ -30,17 +39,17 @@ namespace Saving
             public SaveData HubSaveData;
             public SaveData CurrentSaveData;
 
-            public static SaveDataBundle Default = new SaveDataBundle() {
-                CheckpointSaveData = SaveData.Default,
-                HubSaveData = SaveData.Default,
-                CurrentSaveData = SaveData.Default,
+            public static SaveDataBundle Empty = new SaveDataBundle() {
+                CheckpointSaveData = SaveData.Empty,
+                HubSaveData = SaveData.Empty,
+                CurrentSaveData = SaveData.Empty,
             };
         }
 
         // Save Data.
-        private static SaveData s_checkpointSaveData = SaveData.Default; // The save data from when the player last entered a checkpoint.
-        private static SaveData s_hubEnterSaveData = SaveData.Default; // The save data from when the player last entered the Hub.
-        private static SaveData s_currentSaveData = SaveData.Default; // The save data from the previous performed save.
+        private static SaveData s_checkpointSaveData = SaveData.Empty; // The save data from when the player last entered a checkpoint.
+        private static SaveData s_hubEnterSaveData = SaveData.Empty; // The save data from when the player last entered the Hub.
+        private static SaveData s_currentSaveData = SaveData.Empty; // The save data from the previous performed save.
 
 
         // Autosave Parameters.
@@ -65,6 +74,7 @@ namespace Saving
             // Wait until the game has actually started (E.g. We're not in the Main Menu).
             bool updateAutosaveTime = !SceneLoader.s_HasGameStarted;
             yield return new WaitUntil(() => SceneLoader.s_HasGameStarted == true);
+
 
             if (updateAutosaveTime)
             {
@@ -113,17 +123,11 @@ namespace Saving
         {
             SceneLoader.OnLoadFinished += SceneLoader_OnLoadFinished;
             SceneLoader.OnHubLoadFinished += SceneLoader_OnHubLoadFinished;
-
-            SceneLoader.OnReloadFinished += SceneLoader_OnReloadFinished;
-            SceneLoader.OnReloadToHubFinished += SceneLoader_OnReloadToHubFinished;
         }
         private void OnDisable()
         {
             SceneLoader.OnLoadFinished -= SceneLoader_OnLoadFinished;
             SceneLoader.OnHubLoadFinished -= SceneLoader_OnHubLoadFinished;
-
-            SceneLoader.OnReloadFinished -= SceneLoader_OnReloadFinished;
-            SceneLoader.OnReloadToHubFinished -= SceneLoader_OnReloadToHubFinished;
         }
 
 
@@ -131,15 +135,19 @@ namespace Saving
         private void SceneLoader_OnLoadFinished() => SaveCheckpoint();
         private void SceneLoader_OnHubLoadFinished() => SaveHub();
 
-        private void SceneLoader_OnReloadFinished() => LoadGameState(ref s_checkpointSaveData);
-        private void SceneLoader_OnReloadToHubFinished() => LoadGameState(ref s_hubEnterSaveData);
-
 
         /// <summary> Save to the CheckpointSaveData struct.</summary>
         public static void SaveCheckpoint() => SaveGameState(ref s_checkpointSaveData);
         /// <summary> Save to the HubSaveData struct.</summary>
         public static void SaveHub() { Debug.Log("Hub Save"); SaveGameState(ref s_hubEnterSaveData); }
         
+
+        /// <summary> Load the game from the most recent Checkpoint save.</summary>
+        public static void ReloadCheckpointSave() => LoadGameState(s_checkpointSaveData);
+        /// <summary> Load the game from the most recent Hub save.</summary>
+        public static void ReloadHubSave() => LoadGameState(s_hubEnterSaveData);
+
+
         /// <summary> Save to the ManualSaveData struct and perform a manual save.</summary>
         public static void ManualSave()
         {
@@ -153,13 +161,15 @@ namespace Saving
 
         private static void SaveGameState(ref SaveData saveData)
         {
-            // Clear current save data.
+            // Replace the current save data with a new instance.
             saveData = new SaveData();
+            saveData.Exists = true;
 
             // General Save Data.
             saveData.SaveTime = Time.time;
-            saveData.LoadedSceneIndices = SceneLoader.GetActiveSceneBuildIndices(ignorePersistents: true);
-            
+            saveData.LoadedSceneIndices = SceneLoader.GetLoadedSceneBuildIndices(ignorePersistents: true);
+            saveData.ActiveSceneIndex = SceneLoader.GetActiveSceneBuildIndex();
+
 
             // Save Player Data.
             saveData.PlayerData = PlayerManager.Instance.GetCurrentPlayerData();
@@ -180,15 +190,25 @@ namespace Saving
             OverrideFromSaveDataBundle(saveDataBundle);
 
             // Load the current save data from the retrieved data.
-            StartLoadGameState(s_currentSaveData.SaveTime > s_checkpointSaveData.SaveTime ? s_currentSaveData : s_checkpointSaveData);
+            LoadGameState(s_currentSaveData.SaveTime > s_checkpointSaveData.SaveTime ? s_currentSaveData : s_checkpointSaveData);
         }
-        private static void StartLoadGameState(SaveData saveData) // Note: Cannot pass 'saveData' as a reference due to using it in a lambda expression. We need to let it be copied instead.
+        private static void LoadGameState(SaveData saveData) // Note: Cannot pass 'saveData' as a reference due to using it in a lambda expression. We need to let it be copied instead.
         {
+            if (!saveData.Exists)
+            {
+                throw new System.Exception("You are trying to load a saveData instance that hasn't been set.");
+            }
+
             // Load active scenes. Then, once complete, load the rest of the save data.
-            SceneLoader.Instance.LoadFromSave(saveData.LoadedSceneIndices, () => LoadGameState(ref saveData));
+            SceneLoader.Instance.LoadFromSave(saveData.LoadedSceneIndices, saveData.ActiveSceneIndex, () => LoadGameStateData(ref saveData));
         }
-        private static void LoadGameState(ref SaveData saveData)
+        private static void LoadGameStateData(ref SaveData saveData)
         {
+            if (!saveData.Exists)
+            {
+                throw new System.Exception("You are trying to load a saveData instance that hasn't been set.");
+            }
+            
             // Load Player Data.
             PlayerManager.Instance.LoadFromPlayerData(saveData.PlayerData);
 

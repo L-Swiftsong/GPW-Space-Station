@@ -20,13 +20,16 @@ public class LoadingScreenUI : MonoBehaviour
         _loadingProgressBar.SetValues(current: 0.0f, max: 100.0f);
         _container.SetActive(false);
     }
+
     private void OnEnable()
     {
+        // Subscribe to events.
         SceneLoader.OnHardLoadStarted += SceneLoader_OnHardLoadStarted;
         SceneLoader.OnLoadFinished += Hide;
     }
     private void OnDisable()
     {
+        // Unsubscribe from events.
         SceneLoader.OnHardLoadStarted -= SceneLoader_OnHardLoadStarted;
         SceneLoader.OnLoadFinished -= Hide;
     }
@@ -64,11 +67,27 @@ public class LoadingScreenUI : MonoBehaviour
     private void Show()
     {
         Cursor.lockState = CursorLockMode.Confined;
+
+        if (_container.activeSelf)
+        {
+            // We are already active. Don't proceed.
+            return;
+        }
+
         _container.SetActive(true);
+        PlayerInput.PreventAllActions();
     }
     private void Hide()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
+        if (!_container.activeSelf)
+        {
+            // We are already hidden. Don't proceed.
+            return;
+        }
+
         _container.SetActive(false);
+        PlayerInput.RemoveAllActionPrevention();
     }
 }

@@ -39,15 +39,12 @@ namespace SceneManagement
         private List<AsyncOperation> _scenesLoading = new List<AsyncOperation>();
 
         private const float SCRIPT_INITIALISATION_DELAY = 0.25f;
-        private string _activeScene = null;
 
         private float _previousTimeScale = 1.0f;
 
         
         [Tooltip("When performing a Foreground Transition, these are the scenes that will not be unloaded")]
             [SerializeField] private List<SceneField> _foregroundTransitionScenesToKeep = new List<SceneField>();
-
-        private const string RELOAD_TO_HUB_TRANSITION_PATH = "Transitions/PrototypeHub_Reload";
 
         #endregion
 
@@ -57,9 +54,6 @@ namespace SceneManagement
 
         public static event Action OnLoadFinished;
         public static event Action OnHubLoadFinished;
-
-        public static event Action OnReloadToHubFinished;
-        public static event Action OnReloadFinished;
 
 
         public static bool s_HasGameStarted = false;
@@ -99,9 +93,6 @@ namespace SceneManagement
                 StartCoroutine(PerformBackgroundTransition(transition as BackgroundSceneTransition));
             }
         }
-        public void ResetActiveScenes() => StartCoroutine(ReloadActiveScenes());
-        public void ReloadToHub() => StartCoroutine(ResetActiveAndLoadHubScene());
-        public void ForegroundLoadFromBuildIndices(int[] buildIndices, System.Action onCompleteCallback, bool hubTransition = false, int activeSceneIndex = -1) => StartCoroutine(PerformLoadFromSave(buildIndices, onCompleteCallback, hubTransition, activeSceneIndex));
 
         private IEnumerator PerformForegroundTransition(ForegroundSceneTransition transition)
         {
@@ -110,7 +101,7 @@ namespace SceneManagement
 
 
             // Save what scene we want to have as our active scene.
-            _activeScene = transition.ActiveScene;
+            var activeScene = transition.ActiveScene;
 
 
             // Unload all non-persistent scenes.
@@ -134,10 +125,10 @@ namespace SceneManagement
             yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
 
-            if (_activeScene != null)
+            if (activeScene != null)
             {
                 // Set the active scene.
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(activeScene));
             }
 
 
@@ -187,7 +178,7 @@ namespace SceneManagement
 
 
             // Save what scene we want to have as our active scene.
-            _activeScene = transition.ActiveScene;
+            var activeScene = transition.ActiveScene;
 
 
             // Unload desired scenes.
@@ -206,10 +197,10 @@ namespace SceneManagement
             yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
 
-            if (_activeScene != null)
+            if (activeScene != null)
             {
                 // Set the active scene.
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(activeScene));
             }
 
 
@@ -219,136 +210,22 @@ namespace SceneManagement
             // Finish loading.
             FinishLoading();
         }
-        private IEnumerator ReloadActiveScenes()
+
+
+        public void LoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback)
         {
-            // Get the scenes we wish to reload.
-            List<int> scenesToReload = new List<int>();
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                if (SceneManager.GetSceneAt(i).name == "PersistentScene")
-                {
-                    // We aren't wanting to reload the Persistent Scene.
-                    continue;
-                }
-
-                scenesToReload.Add(SceneManager.GetSceneAt(i).buildIndex);
-            }
-
-            // Unload scenes.
-            for (int i = 0; i < scenesToReload.Count; i++)
-            {
-                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(scenesToReload[i]));
-            }
-
-            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
-
-            // Load scenes.
-            for (int i = 0; i < scenesToReload.Count; i++)
-            {
-                _scenesLoading.Add(SceneManager.LoadSceneAsync(scenesToReload[i], LoadSceneMode.Additive));
-            }
-
-            yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
-
-
-            Debug.Log("Reload Finished");
-
-            // Freeze time.
-            _previousTimeScale = Time.timeScale;
-            Time.timeScale = 0.0f;
-
-            // Wait for script inialisation.
-            yield return null;
-
-#if ENABLE_INPUT_SYSTEM
-            InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishReload());
-#elif ENABLE_LEGACY_INPUT_MANAGER
-            yield return new WaitUntil(() => Input.anyKeyDown);
-            FinishReload();
-#endif
+            StartCoroutine(PerformLoadFromSave(buildIndices, activeSceneBuildIndex, onCompleteCallback, false));
         }
-        private IEnumerator ResetActiveAndLoadHubScene()
-        {
-            // Retrieve the 'Reload to Hub' Transition.
-            ForegroundSceneTransition hubTransition = Resources.Load<ForegroundSceneTransition>(RELOAD_TO_HUB_TRANSITION_PATH);
-
-
-            // Save what scene we want to have as our active scene.
-            _activeScene = hubTransition.ActiveScene;
-
-
-            // Unload all scenes except from the persistent scene.
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                if (SceneManager.GetSceneAt(i).name == "PersistentScene")
-                {
-                    // Don't unload the persistent scene.
-                    continue;
-                }
-
-                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i).buildIndex));
-            }
-            yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
-
-
-            // Load desired scenes.
-            for (int i = 0; i < hubTransition.ScenesToLoad.Length; i++)
-            {
-                _scenesLoading.Add(SceneManager.LoadSceneAsync(hubTransition.ScenesToLoad[i], LoadSceneMode.Additive));
-            }
-            yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
-
-
-            if (_activeScene != null)
-            {
-                // Set the active scene.
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
-            }
-
-
-            // Stop time while things load.
-            _previousTimeScale = Time.timeScale;
-            Time.timeScale = 0.0f;
-
-
-            // Wait long enough for Awake initialisations.
-            yield return null;
-
-
-            // Alter player position & rotation.
-            if (hubTransition.AlterPlayerLocation)
-            {
-                PlayerManager.Instance.SetPlayerPositionAndRotation(hubTransition.EntryPosition, hubTransition.EntryRotation);
-            }
-
-            // Wait for script inialisation.
-            yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
-
-            // Finish loading to the hub.
-            FinishLoadToHub();
-        }
-
-
-        public void LoadFromSave(int[] buildIndices, System.Action onCompleteCallback)
-        {
-            StartCoroutine(PerformLoadFromSave(buildIndices, onCompleteCallback, false, buildIndices[0]));
-        }
-        private IEnumerator PerformLoadFromSave(int[] buildIndices, System.Action onCompleteCallback, bool hubTransition = false, int activeSceneIndex = -1)
+        private IEnumerator PerformLoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback, bool hubTransition = false)
         {
             // Hard/Foreground load.
             OnHardLoadStarted?.Invoke();
 
 
-            if (activeSceneIndex != -1)
-            {
-                // Save what scene we want to have as our active scene.
-                _activeScene = SceneManager.GetSceneByBuildIndex(buildIndices[0]).name;
-            }
-
             // Unload all non-persistent scenes.
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
-                if (_foregroundTransitionScenesToKeep.Any(t => t == SceneManager.GetSceneAt(i).name))
+                if (SceneManager.GetSceneAt(i).name == "PersistentScene")
                 {
                     continue;
                 }
@@ -361,22 +238,12 @@ namespace SceneManagement
             // Load desired scenes.
             for (int i = 0; i < buildIndices.Length; i++)
             {
-                if (i == activeSceneIndex)
-                {
-                    // Save what scene we want to have as our active scene.
-                    _activeScene = SceneManager.GetSceneByBuildIndex(buildIndices[i]).name;
-                }
-
                 _scenesLoading.Add(SceneManager.LoadSceneAsync(buildIndices[i], LoadSceneMode.Additive));
             }
             yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
-
-            if (_activeScene != null)
-            {
-                // Set the active scene.
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(_activeScene));
-            }
+            // Set the active scene.
+            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(activeSceneBuildIndex));
 
 
             // Stop time while things load.
@@ -446,33 +313,27 @@ namespace SceneManagement
         #endregion
 
 
-        private void FinishLoading()
-        {
+        private void FinishLoading() => StartCoroutine(PerformAfterFrame(() => {
             OnLoadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
-        }
-        private void FinishHubLoading()
-        {
+        }));
+        private void FinishHubLoading() => StartCoroutine(PerformAfterFrame(() => {
             OnLoadFinished?.Invoke();
             OnHubLoadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
-        }
-        private void FinishLoadToHub()
+        }));
+
+        private IEnumerator PerformAfterFrame(Action action)
         {
-            OnReloadToHubFinished?.Invoke();
-            Time.timeScale = _previousTimeScale;
-        }
-        private void FinishReload()
-        {
-            OnReloadFinished?.Invoke();
-            Time.timeScale = _previousTimeScale;
+            yield return null;
+            action?.Invoke();
         }
 
 
 
-        /// <summary> Get an array of the build indices of the currently active scenes.</summary>
+        /// <summary> Get an array of the build indices of the currently loaded scenes.</summary>
         /// <param name="ignorePersistents"> If true, we don't include scenes such as the 'PersistentScene' and 'PlayerScene' in the array.</param>
-        public static int[] GetActiveSceneBuildIndices(bool ignorePersistents = true)
+        public static int[] GetLoadedSceneBuildIndices(bool ignorePersistents = true)
         {
             List<int> sceneIndexes = new List<int>();
             for (int i = 0; i < SceneManager.loadedSceneCount; i++)
@@ -488,5 +349,6 @@ namespace SceneManagement
 
             return sceneIndexes.ToArray();
         }
+        public static int GetActiveSceneBuildIndex() => SceneManager.GetActiveScene().buildIndex;
     }
 }
