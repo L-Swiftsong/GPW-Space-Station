@@ -35,13 +35,29 @@ namespace UI.GameOver
 
         public void ShowGameOverUI()
         {
-            _container.SetActive(true);
             Cursor.lockState = CursorLockMode.Confined;
+
+            if (_container.activeSelf)
+            {
+                // We are already active. Don't proceed.
+                return;
+            }
+
+            _container.SetActive(true);
+            PlayerInput.PreventAllActions();
         }
         public void HideGameOverUI()
         {
-            _container.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
+
+            if (!_container.activeSelf)
+            {
+                // We are already hidden. Don't proceed.
+                return;
+            }
+
+            _container.SetActive(false);
+            PlayerInput.RemoveAllActionPrevention();
         }
 
 

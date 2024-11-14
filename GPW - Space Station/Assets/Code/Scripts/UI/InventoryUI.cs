@@ -94,7 +94,7 @@ namespace Inventory.UI
             // Toggle the inventory open state.
             if (_isOpen)
             {
-                Hide();
+                HideAndEquip();
             }
             else
             {
@@ -112,7 +112,7 @@ namespace Inventory.UI
         {
             if (!_toggleInventory)
             {
-                Hide();
+                HideAndEquip();
             }
         }
 
@@ -123,7 +123,7 @@ namespace Inventory.UI
             _playerInventory.EquipItem(slotIndex);
 
             // Hide the UI after selecting an item.
-            HideFromSelect();
+            Hide();
         }
         private void UpdateInventoryButtonText(InventoryItem[] inventoryItems)
         {
@@ -138,12 +138,23 @@ namespace Inventory.UI
 
         private void Show()
         {
-            _inventoryUIContainer.SetActive(true);
-            _isOpen = true;
-
             Cursor.lockState = CursorLockMode.Confined;
+
+            if (_isOpen)
+            {
+                // We are already active. Don't proceed.
+                return;
+            }
+
+            _isOpen = true;
+            _inventoryUIContainer.SetActive(true);
+
+            // Prevent input actions.
+            PlayerInput.PreventMovementActions();
+            PlayerInput.PreventCameraActions();
+            PlayerInput.PreventInteractionActions();
         }
-        private void Hide()
+        private void HideAndEquip()
         {
             if (_selectedIndex != -1)
             {
@@ -151,17 +162,25 @@ namespace Inventory.UI
                 _playerInventory.EquipItem(_selectedIndex);
             }
 
-            _inventoryUIContainer.SetActive(false);
-            _isOpen = false;
-
-            Cursor.lockState = CursorLockMode.Locked;
+            Hide();
         }
-        private void HideFromSelect()
+        private void Hide()
         {
-            _inventoryUIContainer.SetActive(false);
-            _isOpen = false;
-
             Cursor.lockState = CursorLockMode.Locked;
+
+            if (!_isOpen)
+            {
+                // We are already hidden. Don't proceed.
+                return;
+            }
+
+            _isOpen = false;
+            _inventoryUIContainer.SetActive(false);
+
+            // Allow input actions.
+            PlayerInput.RemoveMovementActionPrevention();
+            PlayerInput.RemoveCameraActionPrevention();
+            PlayerInput.RemoveInteractionActionPrevention();
         }
     }
 }

@@ -262,10 +262,10 @@ public class PlayerController : MonoBehaviour
             HandleStateChange();
             
             HandleMovement();
-            HandleGravity();
             UpdateCameraTransform();
             HandleSprintToggleCheck();
 
+            HandleGravity();
             UpdateCharacterHeight();
         }
         

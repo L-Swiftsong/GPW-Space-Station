@@ -446,26 +446,28 @@ namespace SceneManagement
         #endregion
 
 
-        private void FinishLoading()
-        {
+        private void FinishLoading() => StartCoroutine(PerformAfterFrame(() => {
             OnLoadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
-        }
-        private void FinishHubLoading()
-        {
+        }));
+        private void FinishHubLoading() => StartCoroutine(PerformAfterFrame(() => {
             OnLoadFinished?.Invoke();
             OnHubLoadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
-        }
-        private void FinishLoadToHub()
-        {
+        }));
+        private void FinishLoadToHub() => StartCoroutine(PerformAfterFrame(() => {
             OnReloadToHubFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
-        }
-        private void FinishReload()
-        {
+        }));
+        private void FinishReload() => StartCoroutine(PerformAfterFrame(() => {
             OnReloadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
+        }));
+
+        private IEnumerator PerformAfterFrame(Action action)
+        {
+            yield return null;
+            action?.Invoke();
         }
 
 

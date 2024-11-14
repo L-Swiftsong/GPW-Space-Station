@@ -2,22 +2,13 @@
     "name": "PlayerInputActions",
     "maps": [
         {
-            "name": "Default",
+            "name": "Movement",
             "id": "83d98cb8-7b32-4f70-ad75-f868bd4d204f",
             "actions": [
                 {
                     "name": "Movement",
                     "type": "Value",
                     "id": "ec0fe6c3-d4ff-49b3-81a2-cb9b84d25ad2",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "LookInput",
-                    "type": "Value",
-                    "id": "21ad515f-b3cf-40e3-8ee3-4fb73b433a50",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -63,33 +54,6 @@
                     "name": "LeanRight",
                     "type": "Button",
                     "id": "b1cf5b79-3f4a-4e68-a7f7-0422b7d0a50c",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Interact",
-                    "type": "Button",
-                    "id": "73d16fdd-77d2-4af1-9475-65b62a6c1253",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "UseItem",
-                    "type": "Button",
-                    "id": "8f91832f-96e1-4020-9488-1e88f8b63191",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "AltUseItem",
-                    "type": "Button",
-                    "id": "5c6d4115-a49a-44ac-87ee-7b22d2475c39",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -231,72 +195,6 @@
                 },
                 {
                     "name": "",
-                    "id": "29e07247-1853-482f-8bc3-e621c0394059",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "MnK",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a3c39d0a-7ef7-4264-a96a-a622a157f4d2",
-                    "path": "<Gamepad>/buttonWest",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "001636e3-eb1e-4c41-bb7c-88372b3142e1",
-                    "path": "<Keyboard>/f",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "MnK",
-                    "action": "AltUseItem",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "02e9288a-5df3-4d3b-8ec5-d0471311782a",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "AltUseItem",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b1ef2c90-b70b-4629-9635-bcfba2a4a28a",
-                    "path": "<Mouse>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "MnK",
-                    "action": "LookInput",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1867bc9f-0d72-4c5b-98f5-a53693268af3",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "LookInput",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "ee3628b5-182d-43fe-b663-19bfc2ce1479",
                     "path": "<Keyboard>/leftCtrl",
                     "interactions": "",
@@ -338,10 +236,106 @@
                     "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Camera",
+            "id": "33ee49f4-d230-4c1c-bfbc-d5ab76b62b23",
+            "actions": [
+                {
+                    "name": "LookInput",
+                    "type": "Value",
+                    "id": "bc516641-c2f9-4b94-b9c7-83a86e86ebb3",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9f5d3fb5-fcd8-4d30-b05c-ab85978360ff",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "LookInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "3dc9890b-2e32-4f6d-aebd-dda7e47b718b",
+                    "id": "3ba966f3-897d-4f7a-9f82-10944747ffcb",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "LookInput",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Interaction",
+            "id": "50aac31d-0f74-4b2a-a16b-23f2b0ff0611",
+            "actions": [
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "f1f6f2ef-b1ca-4ed8-b6ae-0647bccfb642",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "UseItem",
+                    "type": "Button",
+                    "id": "1247b1a0-a3b6-4826-bbd6-ea6b4537cac3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "AltUseItem",
+                    "type": "Button",
+                    "id": "6def68ce-cc72-4489-b673-20a235827f87",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "50ab5ec4-5088-467e-8007-19a837bf9966",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e5161fac-2922-45f7-9ff0-af4c94d8010b",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce194e24-4e42-4d8e-a5e0-fe05db549d9a",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
@@ -352,12 +346,34 @@
                 },
                 {
                     "name": "",
-                    "id": "4f3842c3-eafd-4b0d-8129-049c3f4999eb",
+                    "id": "f7af7a23-ae94-4cc5-b3f9-c4dd97fcf9c8",
                     "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "UseItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5b630344-8adc-444c-b8b9-9947bcde2296",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "AltUseItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cd8f0611-517d-468b-82ff-c1d1c7139bc9",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "AltUseItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
