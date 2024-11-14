@@ -26,18 +26,12 @@ public class LoadingScreenUI : MonoBehaviour
         // Subscribe to events.
         SceneLoader.OnHardLoadStarted += SceneLoader_OnHardLoadStarted;
         SceneLoader.OnLoadFinished += Hide;
-        SceneLoader.OnReloadFinished += Hide;
-        SceneLoader.OnReloadToHubFinished += Hide;
     }
     private void OnDisable()
     {
         // Unsubscribe from events.
         SceneLoader.OnHardLoadStarted -= SceneLoader_OnHardLoadStarted;
         SceneLoader.OnLoadFinished -= Hide;
-        SceneLoader.OnReloadFinished -= Hide;
-        SceneLoader.OnReloadToHubFinished -= Hide;
-
-        Hide();
     }
 
 

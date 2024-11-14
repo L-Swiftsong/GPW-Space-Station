@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SceneManagement;
+using Saving;
 
 namespace UI.GameOver
 {
@@ -20,16 +21,6 @@ namespace UI.GameOver
             s_instance = this;
 
             _container.SetActive(false);
-        }
-        private void OnEnable()
-        {
-            SceneLoader.OnReloadFinished += HideGameOverUI;
-            SceneLoader.OnReloadToHubFinished += HideGameOverUI;
-        }
-        private void OnDisable()
-        {
-            SceneLoader.OnReloadFinished -= HideGameOverUI;
-            SceneLoader.OnReloadToHubFinished -= HideGameOverUI;
         }
 
         public void ShowGameOverUI()
@@ -65,12 +56,12 @@ namespace UI.GameOver
         public void RestartFromCheckpoint()
         {
             HideGameOverUI();
-            SceneLoader.Instance.ResetActiveScenes();
+            SaveManager.ReloadCheckpointSave();
         }
-        public void RestartFromPrototypeHub()
+        public void RestartFromHub()
         {
             HideGameOverUI();
-            SceneLoader.Instance.ReloadToHub();
+            SaveManager.ReloadHubSave();
         }
         public void ExitToDesktop() => Application.Quit();
     }
