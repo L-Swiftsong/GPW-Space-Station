@@ -109,7 +109,7 @@ namespace UI
             Debug.Log("Start New Game");
             SceneLoader.Instance.PerformTransition(_firstSceneTransition);
         }
-
+        
 
         public void OpenLoadSavesMenu() => EnableMenu(_loadSavesMenu);
         public void OpenSettingsMenu() => EnableMenu(_settingsMenu);

@@ -84,6 +84,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject _playerCamera;
     private float _rotationX = 0.0f;
 
+    //Invert Y-Axis set to off 
+    private bool _invertYAxis = false;
+
     [Space(5)]
     [SerializeField] private float _horizontalLookSensitivity = 100.0f;
     [SerializeField] private float _verticalLookSensitivity = 75.0f;
@@ -410,6 +413,12 @@ public class PlayerController : MonoBehaviour
         float lookX = PlayerInput.LookX * _horizontalLookSensitivity * Time.deltaTime;
         float lookY = PlayerInput.LookY * _verticalLookSensitivity * Time.deltaTime;
 
+        // Apply invert Y axis setting
+        if (_invertYAxis)
+        {
+            lookY = -lookY;
+        }
+
         _rotationX -= lookY;
         _rotationX = Mathf.Clamp(_rotationX, -90f, 90f);
 
@@ -654,4 +663,39 @@ public class PlayerController : MonoBehaviour
         UpdateCharacterHeightInstant();
         UpdateCameraTransformInstant();
     }
+
+
+    #region Settings Value Changes 
+
+
+
+    public void SetInvertYAxis(bool invert)
+    {
+        _invertYAxis = invert;
+    }
+
+    public void SetLookSensitivity(float sensitivity)
+    {
+        _baseHorizontalLookSensitivity = sensitivity;
+        _baseVerticalLookSensitivity = sensitivity;
+
+        _horizontalLookSensitivity = _baseHorizontalLookSensitivity;
+        _verticalLookSensitivity = _baseVerticalLookSensitivity;
+    }
+
+    public void SetToggleCrouch(bool toggle)
+    {
+        _toggleCrouch = toggle;
+    }
+
+    public void SetToggleSprint(bool toggle)
+    {
+        _toggleSprint = toggle;
+    }
 }
+
+
+#endregion
+
+
+
