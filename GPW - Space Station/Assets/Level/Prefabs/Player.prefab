@@ -68,7 +68,7 @@ CharacterController:
   m_Radius: 0.4
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.03
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &7807373210318132469
@@ -87,9 +87,9 @@ MonoBehaviour:
   sprintSpeed: 6
   _toggleSprint: 0
   jumpHeight: 1.2
-  jumpTimeout: 0.1
-  gravity: -15
-  lowGravity: -2
+  _jumpCooldown: 0.1
+  gravity: -19.62
+  lowGravity: -4.905
   groundCheck: {fileID: 7289571754049141677}
   groundedRadius: 0.5
   groundLayers:
@@ -195,12 +195,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ef6f62e634620429bb95016222f441, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventoryButtons: []
-  _inventoryMenu: {fileID: 0}
   _playerHealth: {fileID: 1941566597398892179}
   _inventoryItemContainer: {fileID: 7819037856233423113}
   _toggleInventory: 0
-  inventoryMenuOpen: 0
   _inventoryKeycardPrefab: {fileID: 6931346296701779283, guid: fb4736b0ef21a724db3872be4ff3bca8, type: 3}
 --- !u!114 &508089038349390175
 MonoBehaviour:
@@ -345,7 +342,7 @@ Transform:
   m_GameObject: {fileID: 2590499106139515906}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
   m_LocalScale: {x: 0.8, y: 0.9, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children: []

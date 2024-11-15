@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Inventory;
 /*
  * CONTEXT:
  * 
@@ -13,7 +12,6 @@ public class PlayerController : MonoBehaviour
 {
     private PlayerHealth playerHealth;
     private CharacterController _controller;
-    private PlayerInventory playerInventory;
 
     [System.Serializable] public enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
     private MovementState _currentMovementState = MovementState.Walking;
@@ -29,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jumping Settings")]
     [SerializeField] private float jumpHeight = 1.2f;
-    [SerializeField] private float jumpTimeout = 0.1f;
+    [SerializeField] private float _jumpCooldown = 0.1f;
     private bool _canJump = true;
 
 
@@ -108,7 +106,6 @@ public class PlayerController : MonoBehaviour
         // Get references.
         _controller = GetComponent<CharacterController>();
         playerHealth = GetComponent<PlayerHealth>();
-        playerInventory = GetComponent<PlayerInventory>();
 
         // Start walking.
         _currentMovementState = MovementState.Walking;
@@ -466,15 +463,25 @@ public class PlayerController : MonoBehaviour
     /// <summary> Handles jumping.</summary>
     private void PerformJump()
     {
-        if (!_isGrounded && _canJump && !(_currentMovementState == MovementState.Crouching || _currentMovementState == MovementState.Crawling))
+        if (!_isGrounded)
         {
-            // We cannot jump.
+            // We aren't grounded.
+            return;
+        }
+        if (!_canJump)
+        {
+            // Our jump hasn't reset.
+            return;
+        }
+        if (_currentMovementState == MovementState.Crouching || _currentMovementState == MovementState.Crawling)
+        {
+            // We are crouching or crawling, so cannot jump.
             return;
         }
 
         
-        float appliedGravity = _inLowGravityZone ? lowGravity : gravity;
-        _verticalVelocity = Mathf.Sqrt(jumpHeight * -2f * appliedGravity);
+        // Calculate the velocity required to reach our jump height, assuming our gravity is unchanged.
+        _verticalVelocity = Mathf.Sqrt(-2f * gravity * jumpHeight);
         _canJump = false;
 
         StartCoroutine(ResetJump());
@@ -483,7 +490,7 @@ public class PlayerController : MonoBehaviour
     /// <summary> Coroutine to reset the jump ability.</summary>
     private IEnumerator ResetJump()
     {
-        yield return new WaitForSeconds(jumpTimeout);
+        yield return new WaitForSeconds(_jumpCooldown);
         _canJump = true;
     }
 
@@ -580,20 +587,19 @@ public class PlayerController : MonoBehaviour
     {
         // Determine current vertical velocity using gravity.
         float appliedGravity = _inLowGravityZone ? lowGravity : gravity;
-        if (_isGrounded)
+
+        if (_isGrounded && _verticalVelocity < 0.0f)
         {
-            if (_verticalVelocity < 0.0f)
-            {
-                _verticalVelocity = -2f;
-            }
+            // We are grounded and are moving downwards.
+            // Constrain our vertical velocity so that we don't eternally build up speed.
+            _verticalVelocity = -2f;
         }
-        else
-        {
-            if (_verticalVelocity < TERMINAL_VELOCITY)
-            {
-                _verticalVelocity += appliedGravity * Time.deltaTime;
-            }
-        }
+        // Accelerate the player downwards in regards to their current gravity.
+        _verticalVelocity += appliedGravity * Time.deltaTime;
+
+        // Clamp our current velocity to within our terminal velocity.
+        _verticalVelocity = Mathf.Clamp(_verticalVelocity, -TERMINAL_VELOCITY, TERMINAL_VELOCITY);
+        
 
         // Apply current vertical velocity (Mainly gravity).
         _controller.Move(Vector3.up * _verticalVelocity * Time.deltaTime);
