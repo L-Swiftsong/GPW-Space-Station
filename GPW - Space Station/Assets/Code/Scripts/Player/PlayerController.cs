@@ -93,15 +93,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _crouchedCameraHeight = 1.0f;
 
 
+    [Space(5)]
+    [SerializeField] private bool _ToggleCrouch = false;
+    [SerializeField] private bool _invertYAxis = false;
+    
+
     private bool _wantsToSprint = false;
     private bool _wantsToCrouch = false;
     private bool _wantsToCrawl = false;
     private bool _isHiding = false;
 
+
     private float baseMoveSpeed;
     private float baseSprintSpeed;
     private float healMoveSpeed = 2f;
     private float healSprintSpeed = 3f;
+
 
     private void Start()
     {
@@ -119,6 +126,7 @@ public class PlayerController : MonoBehaviour
         // Get player speed.
         baseMoveSpeed = moveSpeed;
         baseSprintSpeed = sprintSpeed;
+
     }
     private void OnEnable()
     {
@@ -390,14 +398,18 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void HandleLook()
     {
-        float lookX = PlayerInput.LookX * _horizontalLookSensitivity * Time.deltaTime;
-        float lookY = PlayerInput.LookY * _verticalLookSensitivity * Time.deltaTime;
+        float lookX = Input.GetAxis("Mouse X") * _horizontalLookSensitivity * Time.deltaTime;
+        float lookY = Input.GetAxis("Mouse Y") * _verticalLookSensitivity * Time.deltaTime;
+
+        // Y-axis invert if enabled
+        lookY = _invertYAxis ? -lookY : lookY;
 
         _rotationX -= lookY;
         _rotationX = Mathf.Clamp(_rotationX, -90f, 90f);
 
         transform.Rotate(Vector3.up * lookX);
     }
+
 
     /// <summary>
     /// Updates the camera's current position and rotation for crouching & peeking.
@@ -637,4 +649,31 @@ public class PlayerController : MonoBehaviour
         UpdateCharacterHeightInstant();
         UpdateCameraTransformInstant();
     }
+
+
+    // <Summary> Set toggle Switches / 
+
+    public void SetToggleSprint(bool toggle)
+    {
+        _toggleSprint = toggle;
+    }
+
+    public void SetToggleCrouch(bool toggle)
+    {
+        _toggleCrouch = toggle;
+    }
+
+    public void SetInvertYAxis(bool invert)
+    {
+        _invertYAxis = invert;
+    }
+    public void SetLookSensitivity(float sensitivity)
+    {
+        _horizontalLookSensitivity = sensitivity * 10.0f; // Apply scaling multiplier  c
+        _verticalLookSensitivity = sensitivity * 10.0f;
+    }
+
+
+
+
 }
