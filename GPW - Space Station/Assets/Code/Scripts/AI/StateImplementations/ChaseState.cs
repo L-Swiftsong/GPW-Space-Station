@@ -24,6 +24,7 @@ namespace AI.States
 
         [Space(5)]
         [SerializeField] private float _playerCatchRadius = 0.5f;
+        private bool _hasCaughtPlayer = false;
 
 
         public override void OnEnter()
@@ -37,6 +38,12 @@ namespace AI.States
         }
         public override void OnLogic()
         {
+            if (_hasCaughtPlayer)
+            {
+                // We have already caught the player.
+                return;
+            }
+
             if (!_entitySenses.HasTarget)
             {
                 // The player is no longer in our LOS.
@@ -50,7 +57,8 @@ namespace AI.States
             if ((transform.position - _entitySenses.TargetPosition).sqrMagnitude <= (_playerCatchRadius * _playerCatchRadius))
             {
                 // We are close enough to catch the player.
-                UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
+                _hasCaughtPlayer = true;
+                UI.GameOver.GameOverUI.Instance.ShowGameOverUI(); // Temp.
             }
         }
         public override void OnExit()

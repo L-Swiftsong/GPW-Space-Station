@@ -106,9 +106,6 @@ public class PlayerController : MonoBehaviour
     private float healMoveSpeed = 2f;
     private float healSprintSpeed = 3f;
 
-    private float _baseHorizontalLookSensitivity;
-    private float _baseVerticalLookSensitivity;
-
     private void Start()
     {
         // Get references.
@@ -125,9 +122,6 @@ public class PlayerController : MonoBehaviour
         // Get player speed.
         baseMoveSpeed = moveSpeed;
         baseSprintSpeed = sprintSpeed;
-
-        _baseHorizontalLookSensitivity = _horizontalLookSensitivity;
-        _baseVerticalLookSensitivity = _verticalLookSensitivity;
     }
     private void OnEnable()
     {
@@ -271,10 +265,10 @@ public class PlayerController : MonoBehaviour
             HandleStateChange();
             
             HandleMovement();
-            HandleGravity();
             UpdateCameraTransform();
             HandleSprintToggleCheck();
 
+            HandleGravity();
             UpdateCharacterHeight();
         }
         
@@ -289,17 +283,6 @@ public class PlayerController : MonoBehaviour
         {
             moveSpeed = baseMoveSpeed;
             sprintSpeed = baseSprintSpeed;
-        }
-
-        if (playerInventory.inventoryMenuOpen)
-        {
-            _horizontalLookSensitivity = 0f;
-            _verticalLookSensitivity = 0f;
-        }
-        else
-        {
-            _horizontalLookSensitivity = _baseHorizontalLookSensitivity;
-            _verticalLookSensitivity = _baseVerticalLookSensitivity;
         }
     }
 

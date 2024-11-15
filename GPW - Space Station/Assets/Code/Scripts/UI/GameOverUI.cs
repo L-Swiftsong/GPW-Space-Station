@@ -1,19 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Saving;
 using SceneManagement;
+using Saving;
 
 namespace UI.GameOver
 {
     public class GameOverUI : MonoBehaviour
     {
-        [SerializeField] private GameObject _container;
         private static GameOverUI s_instance;
         public static GameOverUI Instance => s_instance;
 
 
-        private const string LOAD_PROTOTYPE_HUB_TRANSITION_PATH = "Transitions/PrototypeHub_FT";
+        [SerializeField] private GameObject _container;
+        [SerializeField] private GameObject _firstSelectedElement;
 
 
         private void Awake()
@@ -22,38 +22,46 @@ namespace UI.GameOver
 
             _container.SetActive(false);
         }
-        private void OnEnable()
-        {
-            SceneLoader.OnReloadFinished += HideGameOverUI;
-            SceneLoader.OnReloadToHubFinished += HideGameOverUI;
-        }
-        private void OnDisable()
-        {
-            SceneLoader.OnReloadFinished -= HideGameOverUI;
-            SceneLoader.OnReloadToHubFinished -= HideGameOverUI;
-        }
 
         public void ShowGameOverUI()
         {
-            _container.SetActive(true);
+            Debug.Log("Show Game Over UI");
             Cursor.lockState = CursorLockMode.Confined;
+            UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(_firstSelectedElement);
+
+            if (_container.activeSelf)
+            {
+                // We are already active. Don't proceed.
+                return;
+            }
+
+            _container.SetActive(true);
+            PlayerInput.PreventAllActions();
         }
         public void HideGameOverUI()
         {
-            _container.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
+
+            if (!_container.activeSelf)
+            {
+                // We are already hidden. Don't proceed.
+                return;
+            }
+
+            _container.SetActive(false);
+            PlayerInput.RemoveAllActionPrevention();
         }
 
 
         public void RestartFromCheckpoint()
         {
-            SceneLoader.Instance.ResetActiveScenes();
             HideGameOverUI();
+            SaveManager.ReloadCheckpointSave();
         }
-        public void RestartFromPrototypeHub()
+        public void RestartFromHub()
         {
-            SceneLoader.Instance.ReloadToHub();
             HideGameOverUI();
+            SaveManager.ReloadHubSave();
         }
         public void ExitToDesktop() => Application.Quit();
     }
