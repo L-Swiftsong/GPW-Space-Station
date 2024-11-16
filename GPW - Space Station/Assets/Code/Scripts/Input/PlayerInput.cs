@@ -11,6 +11,9 @@ public class PlayerInput : MonoBehaviour
 
     #region Input Events
 
+    public static event Action OnPauseGamePerformed;
+
+
     public static event Action OnJumpPerformed;
 
     public static event Action OnCrouchPerformed;
@@ -86,6 +89,10 @@ public class PlayerInput : MonoBehaviour
         s_playerInput = new PlayerInputActions();
 
 
+        // Subscribe to events (Global).
+        s_playerInput.Global.PauseGame.performed += PauseGame_performed;
+
+
         // Subscribe to events (Movement).
         s_playerInput.Movement.Jump.performed += Jump_performed;
 
@@ -120,6 +127,7 @@ public class PlayerInput : MonoBehaviour
 
 
         // Enable maps.
+        s_playerInput.Global.Enable();
         s_playerInput.Movement.Enable();
         s_playerInput.Camera.Enable();
         s_playerInput.Interaction.Enable();
@@ -138,7 +146,13 @@ public class PlayerInput : MonoBehaviour
             return;
         }
 
-        // Subscribe to events (Movement).
+
+        // Unsubscribe from events (Global).
+        s_playerInput.Global.PauseGame.performed -= PauseGame_performed;
+
+
+
+        // Unsubscribe from events (Movement).
         s_playerInput.Movement.Jump.performed -= Jump_performed;
 
         s_playerInput.Movement.Crouch.performed -= Crouch_performed;
@@ -155,7 +169,7 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Movement.LeanRight.canceled -= LeanRight_cancelled;
 
 
-        // Subscribe to events (Interaction).
+        // Unsubscribe from events (Interaction).
         s_playerInput.Interaction.Interact.performed -= Interact_performed;
 
         s_playerInput.Interaction.UseItem.started -= UseItem_started;
@@ -177,6 +191,9 @@ public class PlayerInput : MonoBehaviour
 
 
     #region Input Functions
+
+    private void PauseGame_performed(InputAction.CallbackContext context) => OnPauseGamePerformed?.Invoke();
+
 
     private void Jump_performed(InputAction.CallbackContext context) => OnJumpPerformed?.Invoke();
 

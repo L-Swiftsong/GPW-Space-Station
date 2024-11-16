@@ -1,10 +1,15 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class SettingsUI : MonoBehaviour
 {
+    [Header("Gamepad Support")]
+    [SerializeField] private GameObject _firstSelectedElement;
+
+
     [Header("Settings UI Elements")]
     [SerializeField] private Toggle toggleCrouchToggle;
     [SerializeField] private Toggle toggleSprintToggle;
@@ -19,13 +24,16 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private Slider lookSensitivitySlider;
 
+
     [Header("Audio")]
     [SerializeField] private AudioMixer audioMixer;
+
 
     [Header("Audio Preview")]
     [SerializeField] private AudioSource masterPreviewAudioSource;
     [SerializeField] private AudioSource musicPreviewAudioSource;
     [SerializeField] private AudioSource sfxPreviewAudioSource;
+
 
     [Header("Fps Display")]
     [SerializeField] private GameObject fpsDisplay;
@@ -49,6 +57,16 @@ public class SettingsUI : MonoBehaviour
 
     private void OnEnable()
     {
+        if (SettingsManager.Instance == null)
+        {
+            // The settings manager has not been initialised.
+            return;
+        }
+
+        // Ensure that we are selecting the first selected element.
+        EventSystem.current.SetSelectedGameObject(_firstSelectedElement);
+
+        // Update our displayed values to match what they are currently set to.
         LoadSettings();
     }
 

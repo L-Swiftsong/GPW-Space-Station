@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class SettingsManager : MonoBehaviour
 {
-    public static SettingsManager Instance;
+    public static SettingsManager Instance { get; private set; }
 
     [SerializeField] private AudioMixer audioMixer;
     private Camera _mainCamera;
@@ -18,7 +18,7 @@ public class SettingsManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
 
             // Find and store reference camera
             _mainCamera = Camera.main;
