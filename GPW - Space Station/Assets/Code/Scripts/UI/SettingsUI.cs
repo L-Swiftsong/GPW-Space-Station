@@ -1,14 +1,13 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 
 public class SettingsUI : MonoBehaviour
 {
     [Header("Gamepad Support")]
     [SerializeField] private GameObject _firstSelectedElement;
-
 
     [Header("Settings UI Elements")]
     [SerializeField] private Toggle toggleCrouchToggle;
@@ -24,16 +23,13 @@ public class SettingsUI : MonoBehaviour
     [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private Slider lookSensitivitySlider;
 
-
     [Header("Audio")]
     [SerializeField] private AudioMixer audioMixer;
-
 
     [Header("Audio Preview")]
     [SerializeField] private AudioSource masterPreviewAudioSource;
     [SerializeField] private AudioSource musicPreviewAudioSource;
     [SerializeField] private AudioSource sfxPreviewAudioSource;
-
 
     [Header("Fps Display")]
     [SerializeField] private GameObject fpsDisplay;
@@ -96,7 +92,8 @@ public class SettingsUI : MonoBehaviour
 
         // Lead FOV setting and set the dropdown value
         int savedFOV = PlayerPrefs.GetInt("FOV", 60);
-        FOVSetting.value = savedFOV == 60 ? 0 : 1;
+        FOVSetting.value = savedFOV == 60 ? 0 : (savedFOV == 75 ? 1 : 2);  // 0 = 60, 1 = 75, 2 = 90
+        FOVSetting.RefreshShownValue();
 
         // FPS display 
         if (fpsDisplay != null)
@@ -154,9 +151,10 @@ public class SettingsUI : MonoBehaviour
         resolutionDropdown.RefreshShownValue();
     }
 
+    // Updated OnFOVChanged method to handle 75 FOV option
     public void OnFOVChanged(int index)
     {
-        int selectedFOV = index == 0 ? 60 : 90;
+        int selectedFOV = index == 0 ? 60 : (index == 1 ? 75 : 90);
         SettingsManager.Instance.SetFOV(selectedFOV);
     }
 
