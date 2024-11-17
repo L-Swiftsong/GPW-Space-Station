@@ -6,50 +6,88 @@ using TMPro;
 
 public class SettingsUI : MonoBehaviour
 {
-    [Header("Gamepad Support")]
-    [SerializeField] private GameObject _firstSelectedElement;
+    [Header("Back Button")]
+    [SerializeField] private Button _backButton;
+    [SerializeField] private UnityEngine.Events.UnityEvent _onBackButtonPressed;
 
-    [Header("Settings UI Elements")]
-    [SerializeField] private Toggle toggleCrouchToggle;
-    [SerializeField] private Toggle toggleSprintToggle;
-    [SerializeField] private Toggle invertYAxisToggle;
-    [SerializeField] private TMP_Dropdown displayModeDropdown;
-    [SerializeField] private TMP_Dropdown resolutionDropdown;
-    [SerializeField] private TMP_Dropdown FOVSetting;
-    [SerializeField] private Toggle vSyncToggle;
-    [SerializeField] private Toggle showFPSToggle;
-    [SerializeField] private Slider masterVolumeSlider;
-    [SerializeField] private Slider musicVolumeSlider;
-    [SerializeField] private Slider sfxVolumeSlider;
-    [SerializeField] private Slider lookSensitivitySlider;
 
-    [Header("Audio")]
-    [SerializeField] private AudioMixer audioMixer;
+    [Header("Controls Settings")]
+    [SerializeField] private GameObject _controlsContainer;
+
+    [Space(10)]
+    [SerializeField] private Toggle _toggleCrouchToggle;
+    [SerializeField] private Toggle _toggleSprintToggle;
+
+    [Space(5)]
+    [SerializeField] private Toggle _invertYAxisToggle;
+    [SerializeField] private Slider _lookSensitivitySlider;
+
+
+    [Header("Display Settings")]
+    [SerializeField] private GameObject _displayContainer;
+
+    [Space(10)]
+    [SerializeField] private TMP_Dropdown _displayModeDropdown;
+    [SerializeField] private TMP_Dropdown _resolutionDropdown;
+    [SerializeField] private TMP_Dropdown _fovDropdown;
+    
+    [Space(5)]
+    [SerializeField] private Toggle _vSyncToggle;
+    [SerializeField] private Toggle _showFPSToggle;
+    
+    
+    [Header("Audio Settings")]
+    [SerializeField] private GameObject _audioContainer;
+
+    [Space(5)]
+    [SerializeField] private AudioMixer _audioMixer;
+
+    [Space(10)]
+    [SerializeField] private Slider _masterVolumeSlider;
+    [SerializeField] private Slider _musicVolumeSlider;
+    [SerializeField] private Slider _sfxVolumeSlider;
+    
 
     [Header("Audio Preview")]
-    [SerializeField] private AudioSource masterPreviewAudioSource;
-    [SerializeField] private AudioSource musicPreviewAudioSource;
-    [SerializeField] private AudioSource sfxPreviewAudioSource;
+    [SerializeField] private AudioSource _masterPreviewAudioSource;
+    [SerializeField] private AudioSource _musicPreviewAudioSource;
+    [SerializeField] private AudioSource _sfxPreviewAudioSource;
+
 
     [Header("Fps Display")]
-    [SerializeField] private GameObject fpsDisplay;
+    [SerializeField] private GameObject _fpsDisplay;
+
 
     private void Awake()
     {
-        // Set up listeners for settings UI
-        toggleCrouchToggle.onValueChanged.AddListener(OnToggleCrouchChanged);
-        toggleSprintToggle.onValueChanged.AddListener(OnToggleSprintChanged);
-        invertYAxisToggle.onValueChanged.AddListener(OnInvertYAxisChanged);
-        displayModeDropdown.onValueChanged.AddListener(OnDisplayModeChanged);
-        resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
-        vSyncToggle.onValueChanged.AddListener(OnVSyncChanged);
-        showFPSToggle.onValueChanged.AddListener(OnShowFPSChanged);
-        masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
-        musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
-        sfxVolumeSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
-        lookSensitivitySlider.onValueChanged.AddListener(OnLookSensitivityChanged);
-        FOVSetting.onValueChanged.AddListener(OnFOVChanged);
+        SetupUIEvents();
     }
+
+    /// <summary> Set up listeners for settings UI.</summary>
+    private void SetupUIEvents()
+    {
+        // Back Button.
+        _backButton.onClick.AddListener(OnBackButtonPressed);
+
+        // Controls Settings.
+        _toggleCrouchToggle.onValueChanged.AddListener(OnToggleCrouchChanged);
+        _toggleSprintToggle.onValueChanged.AddListener(OnToggleSprintChanged);
+        _invertYAxisToggle.onValueChanged.AddListener(OnInvertYAxisChanged);
+        _lookSensitivitySlider.onValueChanged.AddListener(OnLookSensitivityChanged);
+
+        // Display Settings.
+        _displayModeDropdown.onValueChanged.AddListener(OnDisplayModeChanged);
+        _resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
+        _vSyncToggle.onValueChanged.AddListener(OnVSyncChanged);
+        _showFPSToggle.onValueChanged.AddListener(OnShowFPSChanged);
+        _fovDropdown.onValueChanged.AddListener(OnFOVChanged);
+
+        // Audio Settings.
+        _masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
+        _musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+        _sfxVolumeSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+    }
+
 
     private void OnEnable()
     {
@@ -60,7 +98,7 @@ public class SettingsUI : MonoBehaviour
         }
 
         // Ensure that we are selecting the first selected element.
-        EventSystem.current.SetSelectedGameObject(_firstSelectedElement);
+        EventSystem.current.SetSelectedGameObject(_backButton.gameObject);
 
         // Update our displayed values to match what they are currently set to.
         LoadSettings();
@@ -69,45 +107,45 @@ public class SettingsUI : MonoBehaviour
     private void LoadSettings()
     {
         // Load settings from PlayerPrefs
-        toggleCrouchToggle.isOn = PlayerPrefs.GetInt("ToggleCrouch", 0) == 1;
-        toggleSprintToggle.isOn = PlayerPrefs.GetInt("ToggleSprint", 0) == 1;
-        invertYAxisToggle.isOn = PlayerPrefs.GetInt("InvertYAxis", 0) == 1;
-        vSyncToggle.isOn = PlayerPrefs.GetInt("VSync", 0) == 1;
-        showFPSToggle.isOn = PlayerPrefs.GetInt("ShowFPS", 0) == 1;
+        _toggleCrouchToggle.isOn = PlayerPrefs.GetInt("ToggleCrouch", 0) == 1;
+        _toggleSprintToggle.isOn = PlayerPrefs.GetInt("ToggleSprint", 0) == 1;
+        _invertYAxisToggle.isOn = PlayerPrefs.GetInt("InvertYAxis", 0) == 1;
+        _vSyncToggle.isOn = PlayerPrefs.GetInt("VSync", 0) == 1;
+        _showFPSToggle.isOn = PlayerPrefs.GetInt("ShowFPS", 0) == 1;
 
         float savedSensitivity = PlayerPrefs.GetFloat("LookSensitivity", 50.0f); // Default to 50 if not saved
-        lookSensitivitySlider.value = savedSensitivity;
+        _lookSensitivitySlider.value = savedSensitivity;
 
         float masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1.0f);
-        masterVolumeSlider.value = masterVolume;
+        _masterVolumeSlider.value = masterVolume;
 
         float musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1.0f);
-        musicVolumeSlider.value = musicVolume;
+        _musicVolumeSlider.value = musicVolume;
 
         float sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1.0f);
-        sfxVolumeSlider.value = sfxVolume;
+        _sfxVolumeSlider.value = sfxVolume;
 
         InitializeDisplayModeOptions();
         InitializeResolutionOptions();
 
         // Lead FOV setting and set the dropdown value
         int savedFOV = PlayerPrefs.GetInt("FOV", 60);
-        FOVSetting.value = savedFOV == 60 ? 0 : (savedFOV == 75 ? 1 : 2);  // 0 = 60, 1 = 75, 2 = 90
-        FOVSetting.RefreshShownValue();
+        _fovDropdown.value = savedFOV == 60 ? 0 : (savedFOV == 75 ? 1 : 2);  // 0 = 60, 1 = 75, 2 = 90
+        _fovDropdown.RefreshShownValue();
 
         // FPS display 
-        if (fpsDisplay != null)
+        if (_fpsDisplay != null)
         {
-            fpsDisplay.SetActive(showFPSToggle.isOn);
+            _fpsDisplay.SetActive(_showFPSToggle.isOn);
         }
     }
 
     private void InitializeDisplayModeOptions()
     {
-        displayModeDropdown.options.Clear();
-        displayModeDropdown.options.Add(new TMP_Dropdown.OptionData("Fullscreen"));
-        displayModeDropdown.options.Add(new TMP_Dropdown.OptionData("Windowed"));
-        displayModeDropdown.options.Add(new TMP_Dropdown.OptionData("Borderless Window"));
+        _displayModeDropdown.options.Clear();
+        _displayModeDropdown.options.Add(new TMP_Dropdown.OptionData("Fullscreen"));
+        _displayModeDropdown.options.Add(new TMP_Dropdown.OptionData("Windowed"));
+        _displayModeDropdown.options.Add(new TMP_Dropdown.OptionData("Borderless Window"));
 
         FullScreenMode currentMode = Screen.fullScreenMode;
         int index = 0;
@@ -123,17 +161,17 @@ public class SettingsUI : MonoBehaviour
                 index = 2;
                 break;
         }
-        displayModeDropdown.value = index;
-        displayModeDropdown.RefreshShownValue();
+        _displayModeDropdown.value = index;
+        _displayModeDropdown.RefreshShownValue();
     }
 
     private void InitializeResolutionOptions()
     {
-        resolutionDropdown.options.Clear();
-        resolutionDropdown.options.Add(new TMP_Dropdown.OptionData("2560 x 1440"));
-        resolutionDropdown.options.Add(new TMP_Dropdown.OptionData("1920 x 1080"));
-        resolutionDropdown.options.Add(new TMP_Dropdown.OptionData("1600 x 900"));
-        resolutionDropdown.options.Add(new TMP_Dropdown.OptionData("1280 x 720"));
+        _resolutionDropdown.options.Clear();
+        _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData("2560 x 1440"));
+        _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData("1920 x 1080"));
+        _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData("1600 x 900"));
+        _resolutionDropdown.options.Add(new TMP_Dropdown.OptionData("1280 x 720"));
 
         int index = 0;
         if (Screen.width == 2560 && Screen.height == 1440)
@@ -147,75 +185,47 @@ public class SettingsUI : MonoBehaviour
         else
             index = 1; // default to 1920x1080
 
-        resolutionDropdown.value = index;
-        resolutionDropdown.RefreshShownValue();
+        _resolutionDropdown.value = index;
+        _resolutionDropdown.RefreshShownValue();
     }
 
-    // Updated OnFOVChanged method to handle 75 FOV option
+
+    #region UI Element Functions
+
+    // Event handlers for settings
+    private void OnToggleCrouchChanged(bool value) => SettingsManager.Instance.SetToggleCrouch(value);
+    private void OnToggleSprintChanged(bool value) => SettingsManager.Instance.SetToggleSprint(value);
+    private void OnInvertYAxisChanged(bool value) => SettingsManager.Instance.SetInvertYAxis(value);
+    private void OnLookSensitivityChanged(float value) => SettingsManager.Instance.SetLookSensitivity(value);
+
+
+    private void OnDisplayModeChanged(int index) => SettingsManager.Instance.SetDisplayMode(index);
+    private void OnResolutionChanged(int index) => SettingsManager.Instance.SetResolution(index);
+    private void OnVSyncChanged(bool value) => SettingsManager.Instance.SetVSync(value);
+
+    // Updated OnFOVChanged method to handle 75 FOV option.
     public void OnFOVChanged(int index)
     {
         int selectedFOV = index == 0 ? 60 : (index == 1 ? 75 : 90);
         SettingsManager.Instance.SetFOV(selectedFOV);
     }
-
-    // Event handlers for settings
-    private void OnToggleCrouchChanged(bool value)
-    {
-        SettingsManager.Instance.SetToggleCrouch(value);
-    }
-
-    private void OnToggleSprintChanged(bool value)
-    {
-        SettingsManager.Instance.SetToggleSprint(value);
-    }
-
-    private void OnInvertYAxisChanged(bool value)
-    {
-        SettingsManager.Instance.SetInvertYAxis(value);
-    }
-
-    private void OnVSyncChanged(bool value)
-    {
-        SettingsManager.Instance.SetVSync(value);
-    }
-
     private void OnShowFPSChanged(bool value)
     {
         SettingsManager.Instance.SetShowFPS(value);
 
-        if (fpsDisplay != null)
+        if (_fpsDisplay != null)
         {
-            fpsDisplay.SetActive(value);
+            _fpsDisplay.SetActive(value);
         }
     }
 
-    private void OnDisplayModeChanged(int index)
-    {
-        SettingsManager.Instance.SetDisplayMode(index);
-    }
 
-    private void OnResolutionChanged(int index)
-    {
-        SettingsManager.Instance.SetResolution(index);
-    }
+    private void OnMasterVolumeChanged(float value) => SettingsManager.Instance.SetMasterVolume(value);
+    private void OnMusicVolumeChanged(float value) => SettingsManager.Instance.SetMusicVolume(value);
+    private void OnSFXVolumeChanged(float value) => SettingsManager.Instance.SetSFXVolume(value);
 
-    private void OnLookSensitivityChanged(float value)
-    {
-        SettingsManager.Instance.SetLookSensitivity(value);
-    }
 
-    private void OnMasterVolumeChanged(float value)
-    {
-        SettingsManager.Instance.SetMasterVolume(value);
-    }
+    private void OnBackButtonPressed() => _onBackButtonPressed?.Invoke();
 
-    private void OnMusicVolumeChanged(float value)
-    {
-        SettingsManager.Instance.SetMusicVolume(value);
-    }
-
-    private void OnSFXVolumeChanged(float value)
-    {
-        SettingsManager.Instance.SetSFXVolume(value);
-    }
+    #endregion
 }

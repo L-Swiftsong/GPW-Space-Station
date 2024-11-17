@@ -117,33 +117,20 @@ namespace UI
                 if (i == 0)
                 {
                     // This is the first button.
-                    SetupNavigation(loadSaveButtons[i], selectOnUp: _loadSavesBackButton, selectOnDown: loadSaveButtons[i + 1]);
+                    loadSaveButtons[i].SetupNavigation(selectOnUp: _loadSavesBackButton, selectOnDown: loadSaveButtons[i + 1]);
                 }
                 else if (i == loadSaveButtons.Count - 1)
                 {
                     // This is the last button.
-                    SetupNavigation(loadSaveButtons[i], selectOnUp: loadSaveButtons[i - 1], selectOnDown: _loadSavesBackButton);
-                    SetupNavigation(_loadSavesBackButton, selectOnUp: loadSaveButtons[i], selectOnDown: loadSaveButtons[0]);
+                    loadSaveButtons[i].SetupNavigation(selectOnUp: loadSaveButtons[i - 1], selectOnDown: _loadSavesBackButton);
+                    _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[i], selectOnDown: loadSaveButtons[0]);
                 }
                 else
                 {
                     // This is a middle button.
-                    SetupNavigation(loadSaveButtons[i], selectOnUp: loadSaveButtons[i - 1], selectOnDown: loadSaveButtons[i + 1]);
+                    loadSaveButtons[i].SetupNavigation(selectOnUp: loadSaveButtons[i - 1], selectOnDown: loadSaveButtons[i + 1]);
                 }
             }
-        }
-        private void SetupNavigation(Selectable targetSelectable, Selectable selectOnUp = null, Selectable selectOnDown = null)
-        {
-            // Create the custom navigation.
-            Navigation customNavigation = new Navigation();
-            customNavigation.mode = Navigation.Mode.Explicit;
-
-            // Set the selection targets.
-            customNavigation.selectOnUp = selectOnUp;
-            customNavigation.selectOnDown = selectOnDown;
-
-            // Assign the custom navigation.
-            targetSelectable.navigation = customNavigation;
         }
 
 
