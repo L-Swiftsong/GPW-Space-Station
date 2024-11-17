@@ -29,7 +29,6 @@ namespace UI
 
         [Header("Settings Menu")]
         [SerializeField] private GameObject _settingsMenu;
-        [SerializeField] private GameObject _settingsMenuFirst;
 
 
         [Header("Load Saves Menu")]
@@ -183,9 +182,6 @@ namespace UI
 
             // Enable the settings menu.
             _settingsMenu.SetActive(true);
-
-            // Set the selected button.
-            EventSystem.current.SetSelectedGameObject(_settingsMenuFirst);
         }
         public void CloseSettingsMenu()
         {

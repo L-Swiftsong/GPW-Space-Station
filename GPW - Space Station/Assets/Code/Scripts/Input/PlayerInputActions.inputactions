@@ -41,6 +41,76 @@
             ]
         },
         {
+            "name": "Menu",
+            "id": "5a33a178-aabc-4eb9-b20d-85352729298a",
+            "actions": [
+                {
+                    "name": "SelectNextTab",
+                    "type": "Button",
+                    "id": "d7a901de-2d10-4173-b068-0785fd5c0cbd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectPreviousTab",
+                    "type": "Button",
+                    "id": "afc2f3cd-6bc4-4978-a05e-71e445cf111f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "00d4ee8b-d112-4b9e-be1a-ec42afe26310",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "SelectNextTab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "04b48eb8-37cd-41ef-8b53-de1242cafb7e",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SelectNextTab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "96be981f-8869-4de2-b8ef-62f9545e7b1a",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "SelectPreviousTab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0733c934-e14d-4ea1-9007-ba51102115ba",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SelectPreviousTab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Movement",
             "id": "83d98cb8-7b32-4f70-ad75-f868bd4d204f",
             "actions": [

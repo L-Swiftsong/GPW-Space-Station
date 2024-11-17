@@ -63,6 +63,76 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""Menu"",
+            ""id"": ""5a33a178-aabc-4eb9-b20d-85352729298a"",
+            ""actions"": [
+                {
+                    ""name"": ""SelectNextTab"",
+                    ""type"": ""Button"",
+                    ""id"": ""d7a901de-2d10-4173-b068-0785fd5c0cbd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectPreviousTab"",
+                    ""type"": ""Button"",
+                    ""id"": ""afc2f3cd-6bc4-4978-a05e-71e445cf111f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""00d4ee8b-d112-4b9e-be1a-ec42afe26310"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""SelectNextTab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""04b48eb8-37cd-41ef-8b53-de1242cafb7e"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SelectNextTab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""96be981f-8869-4de2-b8ef-62f9545e7b1a"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""SelectPreviousTab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0733c934-e14d-4ea1-9007-ba51102115ba"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SelectPreviousTab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""Movement"",
             ""id"": ""83d98cb8-7b32-4f70-ad75-f868bd4d204f"",
             ""actions"": [
@@ -533,6 +603,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Global
         m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
         m_Global_PauseGame = m_Global.FindAction("PauseGame", throwIfNotFound: true);
+        // Menu
+        m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
+        m_Menu_SelectNextTab = m_Menu.FindAction("SelectNextTab", throwIfNotFound: true);
+        m_Menu_SelectPreviousTab = m_Menu.FindAction("SelectPreviousTab", throwIfNotFound: true);
         // Movement
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Movement = m_Movement.FindAction("Movement", throwIfNotFound: true);
@@ -656,6 +730,60 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public GlobalActions @Global => new GlobalActions(this);
+
+    // Menu
+    private readonly InputActionMap m_Menu;
+    private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
+    private readonly InputAction m_Menu_SelectNextTab;
+    private readonly InputAction m_Menu_SelectPreviousTab;
+    public struct MenuActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public MenuActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @SelectNextTab => m_Wrapper.m_Menu_SelectNextTab;
+        public InputAction @SelectPreviousTab => m_Wrapper.m_Menu_SelectPreviousTab;
+        public InputActionMap Get() { return m_Wrapper.m_Menu; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
+        public void AddCallbacks(IMenuActions instance)
+        {
+            if (instance == null || m_Wrapper.m_MenuActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_MenuActionsCallbackInterfaces.Add(instance);
+            @SelectNextTab.started += instance.OnSelectNextTab;
+            @SelectNextTab.performed += instance.OnSelectNextTab;
+            @SelectNextTab.canceled += instance.OnSelectNextTab;
+            @SelectPreviousTab.started += instance.OnSelectPreviousTab;
+            @SelectPreviousTab.performed += instance.OnSelectPreviousTab;
+            @SelectPreviousTab.canceled += instance.OnSelectPreviousTab;
+        }
+
+        private void UnregisterCallbacks(IMenuActions instance)
+        {
+            @SelectNextTab.started -= instance.OnSelectNextTab;
+            @SelectNextTab.performed -= instance.OnSelectNextTab;
+            @SelectNextTab.canceled -= instance.OnSelectNextTab;
+            @SelectPreviousTab.started -= instance.OnSelectPreviousTab;
+            @SelectPreviousTab.performed -= instance.OnSelectPreviousTab;
+            @SelectPreviousTab.canceled -= instance.OnSelectPreviousTab;
+        }
+
+        public void RemoveCallbacks(IMenuActions instance)
+        {
+            if (m_Wrapper.m_MenuActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IMenuActions instance)
+        {
+            foreach (var item in m_Wrapper.m_MenuActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_MenuActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public MenuActions @Menu => new MenuActions(this);
 
     // Movement
     private readonly InputActionMap m_Movement;
@@ -925,6 +1053,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IGlobalActions
     {
         void OnPauseGame(InputAction.CallbackContext context);
+    }
+    public interface IMenuActions
+    {
+        void OnSelectNextTab(InputAction.CallbackContext context);
+        void OnSelectPreviousTab(InputAction.CallbackContext context);
     }
     public interface IMovementActions
     {

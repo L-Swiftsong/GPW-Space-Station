@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
@@ -12,9 +13,6 @@ public class SettingsUI : MonoBehaviour
 
 
     [Header("Controls Settings")]
-    [SerializeField] private GameObject _controlsContainer;
-
-    [Space(10)]
     [SerializeField] private Toggle _toggleCrouchToggle;
     [SerializeField] private Toggle _toggleSprintToggle;
 
@@ -24,9 +22,6 @@ public class SettingsUI : MonoBehaviour
 
 
     [Header("Display Settings")]
-    [SerializeField] private GameObject _displayContainer;
-
-    [Space(10)]
     [SerializeField] private TMP_Dropdown _displayModeDropdown;
     [SerializeField] private TMP_Dropdown _resolutionDropdown;
     [SerializeField] private TMP_Dropdown _fovDropdown;
@@ -37,9 +32,6 @@ public class SettingsUI : MonoBehaviour
     
     
     [Header("Audio Settings")]
-    [SerializeField] private GameObject _audioContainer;
-
-    [Space(5)]
     [SerializeField] private AudioMixer _audioMixer;
 
     [Space(10)]
@@ -96,9 +88,6 @@ public class SettingsUI : MonoBehaviour
             // The settings manager has not been initialised.
             return;
         }
-
-        // Ensure that we are selecting the first selected element.
-        EventSystem.current.SetSelectedGameObject(_backButton.gameObject);
 
         // Update our displayed values to match what they are currently set to.
         LoadSettings();
@@ -192,13 +181,14 @@ public class SettingsUI : MonoBehaviour
 
     #region UI Element Functions
 
-    // Event handlers for settings
+    // Control Settings.
     private void OnToggleCrouchChanged(bool value) => SettingsManager.Instance.SetToggleCrouch(value);
     private void OnToggleSprintChanged(bool value) => SettingsManager.Instance.SetToggleSprint(value);
     private void OnInvertYAxisChanged(bool value) => SettingsManager.Instance.SetInvertYAxis(value);
     private void OnLookSensitivityChanged(float value) => SettingsManager.Instance.SetLookSensitivity(value);
 
 
+    // Display Settings.
     private void OnDisplayModeChanged(int index) => SettingsManager.Instance.SetDisplayMode(index);
     private void OnResolutionChanged(int index) => SettingsManager.Instance.SetResolution(index);
     private void OnVSyncChanged(bool value) => SettingsManager.Instance.SetVSync(value);
@@ -220,12 +210,18 @@ public class SettingsUI : MonoBehaviour
     }
 
 
+    // Volume Settings.
     private void OnMasterVolumeChanged(float value) => SettingsManager.Instance.SetMasterVolume(value);
     private void OnMusicVolumeChanged(float value) => SettingsManager.Instance.SetMusicVolume(value);
     private void OnSFXVolumeChanged(float value) => SettingsManager.Instance.SetSFXVolume(value);
 
 
+    // Other.
     private void OnBackButtonPressed() => _onBackButtonPressed?.Invoke();
 
     #endregion
+
+
+    /// <summary> Overrides the navigation of the Back Button for the new 'selectOnUp' and 'selectOnDown' selectables.</summary>
+    public void SetupBackButton(Selectable selectOnUp, Selectable selectOnDown) => _backButton.SetupNavigation(selectOnUp: selectOnUp, selectOnDown: selectOnDown);
 }

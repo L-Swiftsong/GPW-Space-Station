@@ -14,6 +14,10 @@ public class PlayerInput : MonoBehaviour
     public static event Action OnPauseGamePerformed;
 
 
+    public static event Action OnSelectNextTabPerformed;
+    public static event Action OnSelectPreviousTabPerformed;
+
+
     public static event Action OnJumpPerformed;
 
     public static event Action OnCrouchPerformed;
@@ -93,6 +97,11 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Global.PauseGame.performed += PauseGame_performed;
 
 
+        // Subscribe to events (Menu).
+        s_playerInput.Menu.SelectNextTab.performed += SelectNextTab_performed;
+        s_playerInput.Menu.SelectPreviousTab.performed += SelectPreviousTab_performed;
+
+
         // Subscribe to events (Movement).
         s_playerInput.Movement.Jump.performed += Jump_performed;
 
@@ -128,6 +137,7 @@ public class PlayerInput : MonoBehaviour
 
         // Enable maps.
         s_playerInput.Global.Enable();
+        s_playerInput.Menu.Enable();
         s_playerInput.Movement.Enable();
         s_playerInput.Camera.Enable();
         s_playerInput.Interaction.Enable();
@@ -150,6 +160,10 @@ public class PlayerInput : MonoBehaviour
         // Unsubscribe from events (Global).
         s_playerInput.Global.PauseGame.performed -= PauseGame_performed;
 
+
+        // Unsubscribe from events (Menu).
+        s_playerInput.Menu.SelectNextTab.performed += SelectNextTab_performed;
+        s_playerInput.Menu.SelectPreviousTab.performed += SelectPreviousTab_performed;
 
 
         // Unsubscribe from events (Movement).
@@ -193,6 +207,10 @@ public class PlayerInput : MonoBehaviour
     #region Input Functions
 
     private void PauseGame_performed(InputAction.CallbackContext context) => OnPauseGamePerformed?.Invoke();
+
+
+    private void SelectNextTab_performed(InputAction.CallbackContext context) => OnSelectNextTabPerformed?.Invoke();
+    private void SelectPreviousTab_performed(InputAction.CallbackContext context) => OnSelectPreviousTabPerformed?.Invoke();
 
 
     private void Jump_performed(InputAction.CallbackContext context) => OnJumpPerformed?.Invoke();
