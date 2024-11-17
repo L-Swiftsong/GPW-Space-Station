@@ -10,7 +10,6 @@ public class SettingsManager : MonoBehaviour
 
     [SerializeField] private AudioMixer audioMixer;
     private Camera _mainCamera;
-    private PlayerController playerController;
 
     private void Awake()
     {
@@ -18,7 +17,6 @@ public class SettingsManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
 
             // Find and store reference camera
             _mainCamera = Camera.main;
@@ -42,7 +40,6 @@ public class SettingsManager : MonoBehaviour
     {
         // Locates the main camera and player controller after each scene has loaded
         _mainCamera = Camera.main;
-        playerController = FindObjectOfType<PlayerController>();
         ApplySettings();
     }
 
@@ -56,42 +53,9 @@ public class SettingsManager : MonoBehaviour
         SetVolume("MusicVolume", PlayerPrefs.GetFloat("MusicVolume", 1f));
         SetVolume("SFXVolume", PlayerPrefs.GetFloat("SFXVolume", 1f));
 
-        // Apply settings to player controller
-        ApplySettingsToPlayerController();
-
         // Apply FOV setting to camera
         int savedFOV = PlayerPrefs.GetInt("FOV", 60);
         SetFOV(savedFOV);
-
-        float sensitivity = PlayerPrefs.GetFloat("LookSensitivity", 50.0f); //default Sensitivity at 50 / 100
-        if (playerController != null)
-        {
-            playerController.SetLookSensitivity(sensitivity);
-        }
-    }
-
-    private void ApplySettingsToPlayerController()
-    {
-        if (playerController != null)
-        {
-            // Apply toggle crouch setting
-            bool toggleCrouch = PlayerPrefs.GetInt("ToggleCrouch", 0) == 1;
-            playerController.SetToggleCrouch(toggleCrouch);
-
-            // Apply invert Y-axis setting
-            bool invertYAxis = PlayerPrefs.GetInt("InvertYAxis", 0) == 1;
-            playerController.SetInvertYAxis(invertYAxis);
-
-
-            // Apply other settings (e.g., sprint toggle, sensitivity)
-            bool toggleSprint = PlayerPrefs.GetInt("ToggleSprint", 0) == 1;
-            playerController.SetToggleSprint(toggleSprint);
-
-            float lookSensitivity = PlayerPrefs.GetFloat("LookSensitivity", 50.0f); // set Default speed to 50
-            playerController.SetLookSensitivity(lookSensitivity);
-
-
-        }
     }
 
     private void SetVolume(string parameter, float value)
@@ -160,60 +124,4 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetInt("ResolutionIndex", index);
         PlayerPrefs.Save();
     }
-
-    public void SetInvertYAxis(bool value)
-    {
-        // Save the preference
-        PlayerPrefs.SetInt("InvertYAxis", value ? 1 : 0);
-        PlayerPrefs.Save();
-
-        // Apply to the PlayerController
-        if (playerController != null)
-        {
-            playerController.SetInvertYAxis(value);
-        }
-    }
-
-    public void SetToggleCrouch(bool value)
-    {
-        // Save preference
-        PlayerPrefs.SetInt("ToggleCrouch", value ? 1 : 0);
-        PlayerPrefs.Save();
-
-        // Apply preference to the PlayerController
-        if (playerController != null)
-        {
-            playerController.SetToggleCrouch(value);
-        }
-    }
-
-    public void SetToggleSprint(bool value)
-    {
-        // Save preference
-        PlayerPrefs.SetInt("ToggleSprint", value ? 1 : 0);
-        PlayerPrefs.Save();
-
-        // Apply preference to the PlayerController
-        if (playerController != null)
-        {
-            playerController.SetToggleSprint(value);
-        }
-    }
-
-    public void SetLookSensitivity(float value)
-    {
-        // Save preference
-        PlayerPrefs.SetFloat("LookSensitivity", value);
-        PlayerPrefs.Save();
-
-        // Apply sensitivity to the PlayerController
-        if (playerController != null)
-        {
-            float normalizedSensitivity = value / 10f;
-            playerController.SetLookSensitivity(normalizedSensitivity);
-        }
-    }
-
-
-
 }

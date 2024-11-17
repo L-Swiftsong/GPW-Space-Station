@@ -375,9 +375,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ""id"": ""33ee49f4-d230-4c1c-bfbc-d5ab76b62b23"",
             ""actions"": [
                 {
-                    ""name"": ""LookInput"",
+                    ""name"": ""MouseLookInput"",
                     ""type"": ""Value"",
                     ""id"": ""bc516641-c2f9-4b94-b9c7-83a86e86ebb3"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""GamepadLookInput"",
+                    ""type"": ""Value"",
+                    ""id"": ""c8584859-ec45-4088-8856-705113cc1eb3"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -392,18 +401,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MnK"",
-                    ""action"": ""LookInput"",
+                    ""action"": ""MouseLookInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3ba966f3-897d-4f7a-9f82-10944747ffcb"",
+                    ""id"": ""97581b86-fdfd-411c-b56c-8bff19f75cfb"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""LookInput"",
+                    ""action"": ""GamepadLookInput"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -617,7 +626,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Movement_LeanRight = m_Movement.FindAction("LeanRight", throwIfNotFound: true);
         // Camera
         m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
-        m_Camera_LookInput = m_Camera.FindAction("LookInput", throwIfNotFound: true);
+        m_Camera_MouseLookInput = m_Camera.FindAction("MouseLookInput", throwIfNotFound: true);
+        m_Camera_GamepadLookInput = m_Camera.FindAction("GamepadLookInput", throwIfNotFound: true);
         // Interaction
         m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
         m_Interaction_Interact = m_Interaction.FindAction("Interact", throwIfNotFound: true);
@@ -874,12 +884,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     // Camera
     private readonly InputActionMap m_Camera;
     private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
-    private readonly InputAction m_Camera_LookInput;
+    private readonly InputAction m_Camera_MouseLookInput;
+    private readonly InputAction m_Camera_GamepadLookInput;
     public struct CameraActions
     {
         private @PlayerInputActions m_Wrapper;
         public CameraActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @LookInput => m_Wrapper.m_Camera_LookInput;
+        public InputAction @MouseLookInput => m_Wrapper.m_Camera_MouseLookInput;
+        public InputAction @GamepadLookInput => m_Wrapper.m_Camera_GamepadLookInput;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -889,16 +901,22 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_CameraActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_CameraActionsCallbackInterfaces.Add(instance);
-            @LookInput.started += instance.OnLookInput;
-            @LookInput.performed += instance.OnLookInput;
-            @LookInput.canceled += instance.OnLookInput;
+            @MouseLookInput.started += instance.OnMouseLookInput;
+            @MouseLookInput.performed += instance.OnMouseLookInput;
+            @MouseLookInput.canceled += instance.OnMouseLookInput;
+            @GamepadLookInput.started += instance.OnGamepadLookInput;
+            @GamepadLookInput.performed += instance.OnGamepadLookInput;
+            @GamepadLookInput.canceled += instance.OnGamepadLookInput;
         }
 
         private void UnregisterCallbacks(ICameraActions instance)
         {
-            @LookInput.started -= instance.OnLookInput;
-            @LookInput.performed -= instance.OnLookInput;
-            @LookInput.canceled -= instance.OnLookInput;
+            @MouseLookInput.started -= instance.OnMouseLookInput;
+            @MouseLookInput.performed -= instance.OnMouseLookInput;
+            @MouseLookInput.canceled -= instance.OnMouseLookInput;
+            @GamepadLookInput.started -= instance.OnGamepadLookInput;
+            @GamepadLookInput.performed -= instance.OnGamepadLookInput;
+            @GamepadLookInput.canceled -= instance.OnGamepadLookInput;
         }
 
         public void RemoveCallbacks(ICameraActions instance)
@@ -1070,7 +1088,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     }
     public interface ICameraActions
     {
-        void OnLookInput(InputAction.CallbackContext context);
+        void OnMouseLookInput(InputAction.CallbackContext context);
+        void OnGamepadLookInput(InputAction.CallbackContext context);
     }
     public interface IInteractionActions
     {

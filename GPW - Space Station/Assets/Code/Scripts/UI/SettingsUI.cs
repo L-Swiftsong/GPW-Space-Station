@@ -15,10 +15,17 @@ public class SettingsUI : MonoBehaviour
     [Header("Controls Settings")]
     [SerializeField] private Toggle _toggleCrouchToggle;
     [SerializeField] private Toggle _toggleSprintToggle;
+    [SerializeField] private Toggle _toggleInventoryToggle;
 
     [Space(5)]
-    [SerializeField] private Toggle _invertYAxisToggle;
-    [SerializeField] private Slider _lookSensitivitySlider;
+    [SerializeField] private Toggle _mouseInvertYAxisToggle;
+    [SerializeField] private Slider _mouseHorizontalSensitivitySlider;
+    [SerializeField] private Slider _mouseVerticalSensitivitySlider;
+
+    [Space(5)]
+    [SerializeField] private Toggle _gamepadInvertYAxisToggle;
+    [SerializeField] private Slider _gamepadHorizontalSensitivitySlider;
+    [SerializeField] private Slider _gamepadVerticalSensitivitySlider;
 
 
     [Header("Display Settings")]
@@ -52,9 +59,29 @@ public class SettingsUI : MonoBehaviour
 
     private void Awake()
     {
+        SetupUISliders();
         SetupUIEvents();
     }
 
+    /// <summary> Setup the minimum & maximum values of the UI sliders we have the data for.</summary>
+    private void SetupUISliders()
+    {
+        // Mouse.
+        _mouseHorizontalSensitivitySlider.minValue = PlayerSettings.MouseSensitivityRange.Min.x;
+        _mouseHorizontalSensitivitySlider.maxValue = PlayerSettings.MouseSensitivityRange.Max.x;
+
+        _mouseVerticalSensitivitySlider.minValue = PlayerSettings.MouseSensitivityRange.Min.y;
+        _mouseVerticalSensitivitySlider.maxValue = PlayerSettings.MouseSensitivityRange.Max.y;
+
+
+        // Gamepad.
+        _gamepadHorizontalSensitivitySlider.minValue = PlayerSettings.GamepadSensitivityRange.Min.x;
+        _gamepadHorizontalSensitivitySlider.maxValue = PlayerSettings.GamepadSensitivityRange.Max.x;
+
+        _gamepadVerticalSensitivitySlider.minValue = PlayerSettings.GamepadSensitivityRange.Min.y;
+        _gamepadVerticalSensitivitySlider.maxValue = PlayerSettings.GamepadSensitivityRange.Max.y;
+
+    }
     /// <summary> Set up listeners for settings UI.</summary>
     private void SetupUIEvents()
     {
@@ -64,8 +91,16 @@ public class SettingsUI : MonoBehaviour
         // Controls Settings.
         _toggleCrouchToggle.onValueChanged.AddListener(OnToggleCrouchChanged);
         _toggleSprintToggle.onValueChanged.AddListener(OnToggleSprintChanged);
-        _invertYAxisToggle.onValueChanged.AddListener(OnInvertYAxisChanged);
-        _lookSensitivitySlider.onValueChanged.AddListener(OnLookSensitivityChanged);
+        _toggleInventoryToggle.onValueChanged.AddListener(OnToggleInventoryChanged);
+
+        _mouseInvertYAxisToggle.onValueChanged.AddListener(OnMouseInvertYAxisChanged);
+        _mouseHorizontalSensitivitySlider.onValueChanged.AddListener(OnMouseHorizontalSensitivityChanged);
+        _mouseVerticalSensitivitySlider.onValueChanged.AddListener(OnMouseVerticalSensitivityChanged);
+
+        _gamepadInvertYAxisToggle.onValueChanged.AddListener(OnGamepadInvertYAxisChanged);
+        _gamepadHorizontalSensitivitySlider.onValueChanged.AddListener(OnGamepadHorizontalSensitivityChanged);
+        _gamepadVerticalSensitivitySlider.onValueChanged.AddListener(OnGamepadVerticalSensitivityChanged);
+
 
         // Display Settings.
         _displayModeDropdown.onValueChanged.AddListener(OnDisplayModeChanged);
@@ -73,6 +108,7 @@ public class SettingsUI : MonoBehaviour
         _vSyncToggle.onValueChanged.AddListener(OnVSyncChanged);
         _showFPSToggle.onValueChanged.AddListener(OnShowFPSChanged);
         _fovDropdown.onValueChanged.AddListener(OnFOVChanged);
+
 
         // Audio Settings.
         _masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
@@ -90,32 +126,41 @@ public class SettingsUI : MonoBehaviour
         }
 
         // Update our displayed values to match what they are currently set to.
-        LoadSettings();
+        UpdateSettings();
+    }
+    private void OnDisable()
+    {
+        // Save Player Settings on close.
+        PlayerSettings.SaveSettingsToPlayerPrefs();
     }
 
-    private void LoadSettings()
+
+    /// <summary> Load settings from PlayerPrefs.</summary>
+    private void UpdateSettings()
     {
-        // Load settings from PlayerPrefs
-        _toggleCrouchToggle.isOn = PlayerPrefs.GetInt("ToggleCrouch", 0) == 1;
-        _toggleSprintToggle.isOn = PlayerPrefs.GetInt("ToggleSprint", 0) == 1;
-        _invertYAxisToggle.isOn = PlayerPrefs.GetInt("InvertYAxis", 0) == 1;
-        _vSyncToggle.isOn = PlayerPrefs.GetInt("VSync", 0) == 1;
-        _showFPSToggle.isOn = PlayerPrefs.GetInt("ShowFPS", 0) == 1;
+        // Update the Player Settings.
+        PlayerSettings.UpdateSettingsFromPlayerPrefs();
 
-        float savedSensitivity = PlayerPrefs.GetFloat("LookSensitivity", 50.0f); // Default to 50 if not saved
-        _lookSensitivitySlider.value = savedSensitivity;
+        // Update Sliders (Controls).
+        _toggleCrouchToggle.isOn = PlayerSettings.ToggleCrouch;
+        _toggleSprintToggle.isOn = PlayerSettings.ToggleSprint;
+        _toggleInventoryToggle.isOn = PlayerSettings.ToggleInventory;
 
-        float masterVolume = PlayerPrefs.GetFloat("MasterVolume", 1.0f);
-        _masterVolumeSlider.value = masterVolume;
+        _mouseInvertYAxisToggle.isOn = PlayerSettings.MouseInvertY;
+        _mouseHorizontalSensitivitySlider.value = PlayerSettings.MouseHorizontalSensititvity;
+        _mouseVerticalSensitivitySlider.value = PlayerSettings.MouseVerticalSensititvity;
 
-        float musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1.0f);
-        _musicVolumeSlider.value = musicVolume;
+        _gamepadInvertYAxisToggle.isOn = PlayerSettings.GamepadInvertY;
+        _gamepadHorizontalSensitivitySlider.value = PlayerSettings.GamepadHorizontalSensititvity;
+        _gamepadVerticalSensitivitySlider.value = PlayerSettings.GamepadVerticalSensititvity;
 
-        float sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1.0f);
-        _sfxVolumeSlider.value = sfxVolume;
 
+        // Update Sliders (Display).
         InitializeDisplayModeOptions();
         InitializeResolutionOptions();
+
+        _vSyncToggle.isOn = PlayerPrefs.GetInt("VSync", 0) == 1;
+        _showFPSToggle.isOn = PlayerPrefs.GetInt("ShowFPS", 0) == 1;
 
         // Lead FOV setting and set the dropdown value
         int savedFOV = PlayerPrefs.GetInt("FOV", 60);
@@ -127,6 +172,12 @@ public class SettingsUI : MonoBehaviour
         {
             _fpsDisplay.SetActive(_showFPSToggle.isOn);
         }
+
+
+        // Update Sliders (Audio).
+        _masterVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume", 1.0f);
+        _musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1.0f);
+        _sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1.0f);
     }
 
     private void InitializeDisplayModeOptions()
@@ -182,10 +233,17 @@ public class SettingsUI : MonoBehaviour
     #region UI Element Functions
 
     // Control Settings.
-    private void OnToggleCrouchChanged(bool value) => SettingsManager.Instance.SetToggleCrouch(value);
-    private void OnToggleSprintChanged(bool value) => SettingsManager.Instance.SetToggleSprint(value);
-    private void OnInvertYAxisChanged(bool value) => SettingsManager.Instance.SetInvertYAxis(value);
-    private void OnLookSensitivityChanged(float value) => SettingsManager.Instance.SetLookSensitivity(value);
+    private void OnToggleCrouchChanged(bool value) => PlayerSettings.ToggleCrouch = value;
+    private void OnToggleSprintChanged(bool value) => PlayerSettings.ToggleSprint = value;
+    private void OnToggleInventoryChanged(bool value) => PlayerSettings.ToggleInventory = value;
+
+    private void OnMouseInvertYAxisChanged(bool value) => PlayerSettings.MouseInvertY = value;
+    private void OnMouseHorizontalSensitivityChanged(float value) => PlayerSettings.MouseHorizontalSensititvity = value;
+    private void OnMouseVerticalSensitivityChanged(float value) => PlayerSettings.MouseVerticalSensititvity = value;
+
+    private void OnGamepadInvertYAxisChanged(bool value) => PlayerSettings.GamepadInvertY = value;
+    private void OnGamepadHorizontalSensitivityChanged(float value) => PlayerSettings.GamepadHorizontalSensititvity = value;
+    private void OnGamepadVerticalSensitivityChanged(float value) => PlayerSettings.GamepadVerticalSensititvity = value;
 
 
     // Display Settings.

@@ -21,9 +21,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 4.0f;
     [SerializeField] private float sprintSpeed = 6.0f;
 
-    [Space(5)]
-    [SerializeField] private bool _toggleSprint = false;
-
 
     [Header("Jumping Settings")]
     [SerializeField] private float jumpHeight = 1.2f;
@@ -47,7 +44,6 @@ public class PlayerController : MonoBehaviour
 
 
     [Header("Crouch Settings")]
-    [SerializeField] private bool _toggleCrouch = false;
     [SerializeField] private float _crouchSpeed = 2.0f;
 
     [Space(5)]
@@ -83,17 +79,8 @@ public class PlayerController : MonoBehaviour
     private float _rotationX = 0.0f;
 
     [Space(5)]
-    [SerializeField] private float _horizontalLookSensitivity = 100.0f;
-    [SerializeField] private float _verticalLookSensitivity = 75.0f;
-
-    [Space(5)]
     [SerializeField] private float _defaultCameraHeight = 1.6f;
     [SerializeField] private float _crouchedCameraHeight = 1.0f;
-
-
-    [Space(5)]
-    [SerializeField] private bool _ToggleCrouch = false;
-    [SerializeField] private bool _invertYAxis = false;
     
 
     private bool _wantsToSprint = false;
@@ -169,7 +156,7 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerInput_OnCrouchPerformed()
     {
-        if (!_toggleCrouch)
+        if (!PlayerSettings.ToggleCrouch)
         {
             // We aren't using toggle crouch.
             return;
@@ -188,7 +175,7 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerInput_OnCrouchStarted()
     {
-        if (!_toggleCrouch)
+        if (!PlayerSettings.ToggleCrouch)
         {
             // Toggle Crouch is disabled.
             // Start crouching now the button is pressed.
@@ -197,7 +184,7 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerInput_OnCrouchCancelled()
     {
-        if (!_toggleCrouch)
+        if (!PlayerSettings.ToggleCrouch)
         {
             // Toggle Crouch is disabled.
             // Stop crouching now the button is released.
@@ -207,7 +194,7 @@ public class PlayerController : MonoBehaviour
 
     private void PlayerInput_OnSprintPerformed()
     {
-        if (_toggleSprint)
+        if (PlayerSettings.ToggleSprint)
         {
             if (_wantsToSprint)
             {
@@ -221,14 +208,14 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerInput_OnSprintStarted()
     {
-        if (!_toggleSprint)
+        if (!PlayerSettings.ToggleSprint)
         {
             StartSprinting();
         }
     }
     private void PlayerInput_OnSprintCancelled()
     {
-        if (!_toggleSprint)
+        if (!PlayerSettings.ToggleSprint)
         {
             StopSprinting();
         }
@@ -395,16 +382,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void HandleLook()
     {
-        float lookX = Input.GetAxis("Mouse X") * _horizontalLookSensitivity * Time.deltaTime;
-        float lookY = Input.GetAxis("Mouse Y") * _verticalLookSensitivity * Time.deltaTime;
+        // Get the current look input (Already has sensitivity & inversion applied).
+        Vector2 lookInput = PlayerInput.GetLookInputWithSensitivity * Time.deltaTime;
 
-        // Y-axis invert if enabled
-        lookY = _invertYAxis ? -lookY : lookY;
-
-        _rotationX -= lookY;
+        _rotationX -= lookInput.y;
         _rotationX = Mathf.Clamp(_rotationX, -90f, 90f);
 
-        transform.Rotate(Vector3.up * lookX);
+        transform.Rotate(Vector3.up * lookInput.x);
     }
 
 
@@ -445,7 +429,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleSprintToggleCheck()
     {
-        if (!_toggleSprint || !_wantsToSprint)
+        if (!PlayerSettings.ToggleSprint || !_wantsToSprint)
         {
             // We aren't using Toggle Sprint (Or don't want to sprint), so this function shouldn't be run.
             return;
@@ -460,7 +444,7 @@ public class PlayerController : MonoBehaviour
 
     private void StartSprinting()
     {
-        if (_toggleCrouch)
+        if (PlayerSettings.ToggleCrouch)
             _wantsToCrouch = false;
 
         _wantsToSprint = true;
@@ -514,7 +498,7 @@ public class PlayerController : MonoBehaviour
     /// <summary> Notify the controller that we want to start crouching.</summary>
     private void StartCrouching()
     {
-        if (_toggleSprint)
+        if (PlayerSettings.ToggleSprint)
             StopSprinting();
 
         _wantsToCrouch = true;
@@ -655,31 +639,4 @@ public class PlayerController : MonoBehaviour
         UpdateCharacterHeightInstant();
         UpdateCameraTransformInstant();
     }
-
-
-    // <Summary> Set toggle Switches / 
-
-    public void SetToggleSprint(bool toggle)
-    {
-        _toggleSprint = toggle;
-    }
-
-    public void SetToggleCrouch(bool toggle)
-    {
-        _toggleCrouch = toggle;
-    }
-
-    public void SetInvertYAxis(bool invert)
-    {
-        _invertYAxis = invert;
-    }
-    public void SetLookSensitivity(float sensitivity)
-    {
-        _horizontalLookSensitivity = sensitivity * 10.0f; // Apply scaling multiplier  c
-        _verticalLookSensitivity = sensitivity * 10.0f;
-    }
-
-
-
-
 }

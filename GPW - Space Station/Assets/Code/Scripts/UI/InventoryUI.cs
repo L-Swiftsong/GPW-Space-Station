@@ -9,17 +9,15 @@ namespace Inventory.UI
 {
     public class InventoryUI : MonoBehaviour
     {
+        private bool _isOpen = false;
+
+
         [Header("References")]
         [SerializeField] private GameObject _inventoryUIContainer;
         [SerializeField] private List<Button> _inventoryButtons;
 
         [SerializeField] private PlayerInventory _playerInventory;
         private int _selectedIndex = -1;
-
-
-        [Header("Inventory Settings")]
-        [SerializeField] private bool _toggleInventory = false;
-        private bool _isOpen = false;
 
 
         private void Awake()
@@ -86,7 +84,7 @@ namespace Inventory.UI
 
         private void PlayerInput_OnOpenInventoryPerformed()
         {
-            if (!_toggleInventory)
+            if (!PlayerSettings.ToggleInventory)
             {
                 return;
             }
@@ -103,14 +101,14 @@ namespace Inventory.UI
         }
         private void PlayerInput_OnOpenInventoryStarted()
         {
-            if (!_toggleInventory)
+            if (!PlayerSettings.ToggleInventory)
             {
                 Show();
             }
         }
         private void PlayerInput_OnOpenInventoryCancelled()
         {
-            if (!_toggleInventory)
+            if (!PlayerSettings.ToggleInventory)
             {
                 HideAndEquip();
             }

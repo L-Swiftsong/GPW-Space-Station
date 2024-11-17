@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
 
 public class PlayerInput : MonoBehaviour
 {
@@ -54,16 +56,43 @@ public class PlayerInput : MonoBehaviour
 
     #region Input Values
 
+    private const string MOUSE_AND_KEYBOARD_CONTROL_SCHEME_NAME = "MnK";
+    private const string GAMEPAD_CONTROL_SCHEME_NAME = "Gamepad";
+
+    private static InputControlScheme s_currentControlScheme = default;
+
+    enum DeviceType { MnK, Gamepad }
+    private static DeviceType s_lastUsedDevice => s_currentControlScheme.name == MOUSE_AND_KEYBOARD_CONTROL_SCHEME_NAME ? DeviceType.MnK : DeviceType.Gamepad;
+
+
     // Movement Input.
     private static Vector2 s_movementInput;
     public static Vector2 MovementInput => s_movementInput;
 
 
-    // Look Input.
-    private static Vector2 s_lookInput;
-    public static Vector2 LookInput => s_lookInput;
-    public static float LookX => s_lookInput.x;
-    public static float LookY => s_lookInput.y;
+    // Look Input (Mouse).
+    private static Vector2 s_mouseLookInput;
+    public static Vector2 MouseLookInput => s_mouseLookInput;
+    public static float MouseLookX => s_mouseLookInput.x;
+    public static float MouseLookY => s_mouseLookInput.y;
+
+
+    // Look Input (Gamepad).
+    private static Vector2 s_gamepadLookInput;
+    public static Vector2 GamepadLookInput => s_gamepadLookInput;
+    public static float GamepadLookX => s_gamepadLookInput.x;
+    public static float GamepadLookY => s_gamepadLookInput.y;
+
+    public static Vector2 GetLookInputWithSensitivity =>s_lastUsedDevice switch {
+        // Device is Mouse & Keyboard.
+        DeviceType.MnK => new Vector2(
+            x: MouseLookX * PlayerSettings.MouseHorizontalSensititvity,
+            y: (PlayerSettings.MouseInvertY ? -1 : 1) * MouseLookY * PlayerSettings.MouseVerticalSensititvity),
+        // Device is not Mouse & Keyboard (Assume Gamepad).
+        _ => new Vector2(
+            x: GamepadLookX * PlayerSettings.GamepadHorizontalSensititvity,
+            y: (PlayerSettings.GamepadInvertY ? -1 : 1) * GamepadLookY * PlayerSettings.GamepadVerticalSensititvity)
+    };
 
 
     // Gamepad Select.
@@ -73,8 +102,14 @@ public class PlayerInput : MonoBehaviour
     #endregion
 
 
-    private void Awake() => CreateInputActions();
-    
+    private void Awake()
+    {
+        CreateInputActions();
+
+        InputSystem.onDeviceChange += InputSystem_onDeviceChange;
+        InputUser.onUnpairedDeviceUsed += InputUser_onUnpairedDeviceUsed;
+        InputUser.listenForUnpairedDeviceActivity = 1;
+    }
     private void OnEnable()
     {
         if (s_playerInput == null)
@@ -83,8 +118,14 @@ public class PlayerInput : MonoBehaviour
         }
     }
     private void OnDisable() => DestroyInputActions();
-    private void OnDestroy() => DestroyInputActions();
-    
+    private void OnDestroy()
+    {
+        DestroyInputActions();
+
+        InputSystem.onDeviceChange -= InputSystem_onDeviceChange;
+        InputUser.onUnpairedDeviceUsed -= InputUser_onUnpairedDeviceUsed;
+    }
+
 
 
     private void CreateInputActions()
@@ -249,11 +290,38 @@ public class PlayerInput : MonoBehaviour
     #endregion
 
 
+    #region Active Device Detection
+
+    private void InputUser_onUnpairedDeviceUsed(InputControl inputControl, UnityEngine.InputSystem.LowLevel.InputEventPtr inputEventPtr)
+    {
+        // Get the control scheme associated with the used device.
+        InputControlScheme deviceControlScheme = s_playerInput.controlSchemes.Where(t => t.SupportsDevice(inputControl.device)).FirstOrDefault();
+
+        if (deviceControlScheme != default && deviceControlScheme != s_currentControlScheme)
+        {
+            // A input device belonging to a different control scheme has been used.
+            s_currentControlScheme = deviceControlScheme;
+            Debug.Log("New Used. Scheme Name: " + deviceControlScheme.name);
+        }
+    }
+    private void InputSystem_onDeviceChange(InputDevice inputDevice, InputDeviceChange inputDeviceChange)
+    {
+        if (inputDeviceChange == InputDeviceChange.Disconnected)
+        {
+            Debug.Log("User's device was disconnected");
+        }
+    }
+
+    #endregion
+
+
+
     private void Update()
     {
         // Detect input.
         s_movementInput = s_playerInput.Movement.Movement.ReadValue<Vector2>();
-        s_lookInput = s_playerInput.Camera.LookInput.ReadValue<Vector2>();
+        s_mouseLookInput = s_playerInput.Camera.MouseLookInput.ReadValue<Vector2>();
+        s_gamepadLookInput = s_playerInput.Camera.GamepadLookInput.ReadValue<Vector2>();
 
         s_gamepadInventorySelect = s_playerInput.Inventory.GamepadInventorySelect.ReadValue<Vector2>();
     }

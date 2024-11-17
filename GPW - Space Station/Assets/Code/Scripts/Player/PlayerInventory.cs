@@ -19,7 +19,6 @@ namespace Inventory
         
         [Header("Inventory")]
         [SerializeField] private Transform _inventoryItemContainer;
-        [SerializeField] private bool _toggleInventory = false;
 
 
         private InventoryItem[] _inventoryItems = new InventoryItem[MAX_INVENTORY_SIZE];
