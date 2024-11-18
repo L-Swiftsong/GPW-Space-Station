@@ -13,9 +13,15 @@ public class PlayerInteraction : MonoBehaviour
     public PlayerInventory Inventory => playerInventory;
     public PlayerHide PlayerHide => playerHide;
 
+    private IInteractable _currentInteractable = null;
+
 
     [Header("Layers")]
     public LayerMask interactableLayer;
+
+
+    public static System.Action OnHighlightedInteractableObject;
+
 
     private void Start()
     {
@@ -31,9 +37,47 @@ public class PlayerInteraction : MonoBehaviour
         PlayerInput.OnInteractPerformed -= PlayerInput_OnInteractPerformed;
     }
 
+    private void Update()
+    {
+        UpdateCurrentInteractable();
+    }
+
     private void PlayerInput_OnInteractPerformed() => AttemptInteraction();
 
 
+    private void UpdateCurrentInteractable()
+    {
+        if (playerHide.isHiding && !playerHide.isTransitioning)
+        {
+            // We are currently hiding, so cannot interact.
+            return;
+        }
+        
+        
+        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, 3f, interactableLayer))
+        {
+            // We found a potential interactable.
+
+            if (hit.collider.TryGetComponentThroughParents<IInteractable>(out IInteractable interactableScript))
+            {
+                // This is an interactable.
+                if (_currentInteractable != interactableScript)
+                {
+                    OnHighlightedInteractableObject?.Invoke();
+                }
+
+                _currentInteractable = interactableScript;
+            }
+            else
+            {
+                _currentInteractable = null;
+            }
+        }
+        else
+        {
+            _currentInteractable = null;
+        }
+    }
     private void AttemptInteraction()
     {
         if (playerHide.isHiding && !playerHide.isTransitioning)
@@ -43,16 +87,10 @@ public class PlayerInteraction : MonoBehaviour
             return;
         }
 
-
-        if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, 3f, interactableLayer))
+        if (_currentInteractable != null)
         {
-            // We found a potential interactable.
-
-            if (hit.collider.TryGetComponentThroughParents<IInteractable>(out IInteractable interactableScript))
-            {
-                // We are interacting with an interactable.
-                interactableScript.Interact(this);
-            }
+            // Interact with our currently highlighted interactable.
+            _currentInteractable.Interact(this);
         }
     }
 }

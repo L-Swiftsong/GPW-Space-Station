@@ -30,6 +30,7 @@ namespace Inventory
         [SerializeField] private InventoryKeycard _inventoryKeycardPrefab;
 
         public event System.Action<InventoryItem[]> OnInventoryChanged;
+        public static event System.Action OnAnyInventoryGainedItem;
 
 
         private void Awake()
@@ -114,7 +115,11 @@ namespace Inventory
             // Add the item to the inventory.
             _inventoryItems[firstFreeIndex] = inventoryItem;
 
+
+            // Trigger events.
             OnInventoryChanged?.Invoke(_inventoryItems);
+            OnAnyInventoryGainedItem?.Invoke();
+
             return true;
         }
         public bool AddInstantiatedItem(InventoryItem inventoryItem, float[] itemValues = null)
@@ -136,7 +141,11 @@ namespace Inventory
             // Add the inventory item to the inventory.
             _inventoryItems[firstFreeIndex] = inventoryItem;
 
+
+            // Trigger events.
             OnInventoryChanged?.Invoke(_inventoryItems);
+            OnAnyInventoryGainedItem?.Invoke();
+
             return true;
         }
         public bool AddItemToIndex(int index, InventoryItemDataSO itemData, float[] itemValues = null)
