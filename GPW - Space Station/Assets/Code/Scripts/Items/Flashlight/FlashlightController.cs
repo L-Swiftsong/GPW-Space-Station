@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using AI;
 
 namespace Items.Flashlight
 {
@@ -150,10 +151,10 @@ namespace Items.Flashlight
 
             for (int i = 0; i < coneHits.Count; i++)
             {
-                /*if (coneHits[i].collider.TryGetComponent<FlashlightStunnable>(out FlashlightStunnable stunnableScript))
+                if (coneHits[i].collider.TryGetComponent<FlashlightStunnable>(out FlashlightStunnable stunnableScript))
                 {
                     stunnableScript.ApplyStun(_focusStunRate * Time.deltaTime);
-                }*/
+                }
             }
         }
 

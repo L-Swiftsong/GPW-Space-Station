@@ -25,11 +25,16 @@ public class KeycardReader : MonoBehaviour, IInteractable
     [SerializeField] private AudioClip _failedInteractionClip;
 
 
+    public static event System.Action OnAnyKeycardReaderHighlighted;
+    public static event System.Action OnAnyKeycardReaderStopHighlighted;
+
+
     public void Interact(PlayerInteraction interactingScript)
     {
         if (!interactingScript.Inventory.HasKeycardDecoder())
         {
             // The player doesn't have a keycard decoder.
+            Debug.Log("No Decoder");
             return;
         }
         if (_securityLevel > interactingScript.Inventory.GetDecoderSecurityLevel())
@@ -42,10 +47,14 @@ public class KeycardReader : MonoBehaviour, IInteractable
         // The player has a keycard reader of a valid security level.
         SuccessfulInteraction();
     }
+    public void Highlight() => OnAnyKeycardReaderHighlighted?.Invoke();
+    public void StopHighlighting() => OnAnyKeycardReaderStopHighlighted?.Invoke();
 
 
     private void FailedInteraction()
     {
+        Debug.Log("Failed Interaction");
+
         if (_failedInteractionClip != null)
         {
             // Play the 'Interaction Failed' audio.
@@ -53,6 +62,19 @@ public class KeycardReader : MonoBehaviour, IInteractable
         }
     }
     private void SuccessfulInteraction()
+    {
+        Debug.Log("Successful Interaction");
+
+        OpenDoor();
+
+        if (_successfulInteractionClip != null)
+        {
+            // Play the 'Interaction Successful' audio.
+            _audioSource.PlayOneShot(_successfulInteractionClip);
+        }
+    }
+
+    private void OpenDoor()
     {
         if (_canCloseDoor)
         {
@@ -71,18 +93,10 @@ public class KeycardReader : MonoBehaviour, IInteractable
             {
                 StopCoroutine(_closeDoorCoroutine);
             }
-            
+
             _closeDoorCoroutine = StartCoroutine(CloseAfterDelay());
         }
-
-
-        if (_successfulInteractionClip != null)
-        {
-            // Play the 'Interaction Successful' audio.
-            _audioSource.PlayOneShot(_successfulInteractionClip);
-        }
     }
-
     private IEnumerator CloseAfterDelay()
     {
         yield return new WaitForSeconds(_duration);

@@ -6,7 +6,30 @@ namespace Items.Keycards
 {
     public class KeycardDecoder : MonoBehaviour
     {
-        [SerializeField] private int _securityLevel = 0;
+        [SerializeField] [ReadOnly] private int _securityLevel = 0;
+
+
+        [Header("Equipping Animation")]
+        private Animator _animator;
+        private const string ANIMATOR_EQUIPPED_IDENTIFIER = "IsEquipped";
+
+
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+
+            KeycardReader.OnAnyKeycardReaderHighlighted += KeycardReader_OnAnyKeycardReaderHighlighted;
+            KeycardReader.OnAnyKeycardReaderStopHighlighted += KeycardReader_OnAnyKeycardReaderStopHighlighted;
+        }
+        private void OnDestroy()
+        {
+            KeycardReader.OnAnyKeycardReaderHighlighted -= KeycardReader_OnAnyKeycardReaderHighlighted;
+            KeycardReader.OnAnyKeycardReaderStopHighlighted -= KeycardReader_OnAnyKeycardReaderStopHighlighted;
+        }
+
+
+        private void KeycardReader_OnAnyKeycardReaderHighlighted() => Equip();
+        private void KeycardReader_OnAnyKeycardReaderStopHighlighted() => Unequip();
 
 
         public void SetSecurityLevel(int newAccessibleLevel, bool allowReduction = false)
@@ -17,5 +40,16 @@ namespace Items.Keycards
             }
         }
         public int GetSecurityLevel() => _securityLevel;
+
+
+        private void Equip()
+        {
+            Debug.Log("Equip");
+            _animator.SetBool(ANIMATOR_EQUIPPED_IDENTIFIER, true);
+        }
+        private void Unequip()
+        {
+            _animator.SetBool(ANIMATOR_EQUIPPED_IDENTIFIER, false);
+        }
     }
 }

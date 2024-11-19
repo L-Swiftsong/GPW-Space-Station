@@ -22,7 +22,8 @@ namespace Items
         {
             // Start without any items.
             RemoveFlashlight();
-            RemoveKeycardDecoder();
+            //RemoveKeycardDecoder();
+            AddKeycardDecoder(0);
         }
         public void SetHasObtainedFlashlight(bool hasFlashlight, float flashlightBattery)
         {
@@ -78,12 +79,12 @@ namespace Items
         {
             _keycardDecoder.SetSecurityLevel(securityLevel, allowReduction: true);
 
-            _hasFlashlight = true;
+            _hasKeycardDecoder = true;
             _keycardDecoder.gameObject.SetActive(true);
         }
         public void RemoveKeycardDecoder()
         {
-            _hasFlashlight = false;
+            _hasKeycardDecoder = false;
             _keycardDecoder.gameObject.SetActive(false);
         }
 
