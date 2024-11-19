@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Inventory;
+using Items;
 
 public class PlayerInteraction : MonoBehaviour
 {

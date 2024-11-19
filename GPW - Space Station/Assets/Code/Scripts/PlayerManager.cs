@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Inventory;
-using Inventory.Data;
+using Items;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -36,7 +35,6 @@ public class PlayerManager : MonoBehaviour
 
     [Space(5)]
     [SerializeField] private PlayerInventory _playerInventory;
-    [SerializeField] private PlayerFlashlightController _playerFlashlightController;
 
 
     private void Awake()
@@ -71,7 +69,8 @@ public class PlayerManager : MonoBehaviour
 
 
         // Setup the Player's Inventory.
-        _playerInventory.SetInventoryItems(setupData.ItemSaveData, setupData.EquippedItemIndex);
+        _playerInventory.SetHasObtainedFlashlight(setupData.HasFlashlight, setupData.FlashlightBattery);
+        _playerInventory.SetHasObtainedKeycardDecoder(setupData.HasDecoder, setupData.DecoderLevel);
     }
     public PlayerSetupData GetCurrentPlayerData()
     {
@@ -94,14 +93,11 @@ public class PlayerManager : MonoBehaviour
 
 
         // Save Player Inventory.
-        setupData.EquippedItemIndex = _playerInventory.GetEquippedItemIndex();
+        setupData.HasFlashlight = _playerInventory.HasFlashlight();
+        setupData.FlashlightBattery = _playerInventory.GetFlashlightBattery();
 
-        InventoryItem[] inventoryItems = _playerInventory.GetAllItems();
-        setupData.ItemSaveData = new ItemSaveData[inventoryItems.Length];
-        for(int i = 0; i < inventoryItems.Length; i++)
-        {
-            setupData.ItemSaveData[i] = ItemSaveData.CreateFromItemInstance(inventoryItems[i]);
-        }
+        setupData.HasDecoder = _playerInventory.HasKeycardDecoder();
+        setupData.DecoderLevel = _playerInventory.GetDecoderSecurityLevel();
 
 
         // Return the filled PlayerSetupData.
@@ -130,8 +126,10 @@ public class PlayerManager : MonoBehaviour
 
 
         // Inventory Information.
-        public int EquippedItemIndex;
-        public ItemSaveData[] ItemSaveData;
+        public bool HasFlashlight;
+        public float FlashlightBattery;
+        public bool HasDecoder;
+        public int DecoderLevel;
 
 
         public static PlayerSetupData Default => new PlayerSetupData() {
@@ -141,8 +139,10 @@ public class PlayerManager : MonoBehaviour
 
             PlayerStandingState = StandingState.Standing,
 
-            EquippedItemIndex = -1,
-            ItemSaveData = null,
+            HasFlashlight = false,
+            FlashlightBattery = 0.0f,
+            HasDecoder = false,
+            DecoderLevel = 0,
         };
     }
 }
