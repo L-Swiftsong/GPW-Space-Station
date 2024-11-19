@@ -25,8 +25,8 @@ public class KeycardReader : MonoBehaviour, IInteractable
     [SerializeField] private AudioClip _failedInteractionClip;
 
 
-    public static event System.Action OnAnyKeycardReaderHighlighted;
-    public static event System.Action OnAnyKeycardReaderStopHighlighted;
+    public static event System.EventHandler OnAnyKeycardReaderHighlighted;
+    public static event System.EventHandler OnAnyKeycardReaderStopHighlighted;
 
 
     public void Interact(PlayerInteraction interactingScript)
@@ -47,8 +47,8 @@ public class KeycardReader : MonoBehaviour, IInteractable
         // The player has a keycard reader of a valid security level.
         SuccessfulInteraction();
     }
-    public void Highlight() => OnAnyKeycardReaderHighlighted?.Invoke();
-    public void StopHighlighting() => OnAnyKeycardReaderStopHighlighted?.Invoke();
+    public void Highlight() => OnAnyKeycardReaderHighlighted?.Invoke(this, System.EventArgs.Empty);
+    public void StopHighlighting() => OnAnyKeycardReaderStopHighlighted?.Invoke(this, System.EventArgs.Empty);
 
 
     private void FailedInteraction()
@@ -102,4 +102,7 @@ public class KeycardReader : MonoBehaviour, IInteractable
         yield return new WaitForSeconds(_duration);
         _connectedDoor.Close();
     }
+
+
+    public int GetSecurityLevel() => _securityLevel;
 }

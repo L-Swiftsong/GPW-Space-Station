@@ -28,8 +28,8 @@ namespace Items.Keycards
         }
 
 
-        private void KeycardReader_OnAnyKeycardReaderHighlighted() => Equip();
-        private void KeycardReader_OnAnyKeycardReaderStopHighlighted() => Unequip();
+        private void KeycardReader_OnAnyKeycardReaderHighlighted(object sender, System.EventArgs e) => Equip();
+        private void KeycardReader_OnAnyKeycardReaderStopHighlighted(object sender, System.EventArgs e) => Unequip();
 
 
         public void SetSecurityLevel(int newAccessibleLevel, bool allowReduction = false)

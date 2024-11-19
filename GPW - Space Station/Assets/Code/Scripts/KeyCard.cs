@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class KeyCard : MonoBehaviour, IInteractable
 {
-    [SerializeField] private int m_keyCardID;
+    [SerializeField] private int m_securityLevel;
 
-    public void SetupKeycard(int id) => m_keyCardID = id;
+    public void SetupKeycard(int securityLevel) => m_securityLevel = securityLevel;
 
     public void Interact(PlayerInteraction playerInteraction)
     {
-        playerInteraction.Inventory.GetKeycardDecoder().SetSecurityLevel(m_keyCardID);
-        Debug.Log($"Picked up {m_keyCardID}");
+        playerInteraction.Inventory.GetKeycardDecoder().SetSecurityLevel(m_securityLevel);
+        Debug.Log($"Picked up {m_securityLevel}");
 
         Destroy(this.gameObject);
     }
