@@ -432,7 +432,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""UseItem"",
+                    ""name"": ""FocusFlashlight"",
                     ""type"": ""Button"",
                     ""id"": ""1247b1a0-a3b6-4826-bbd6-ea6b4537cac3"",
                     ""expectedControlType"": ""Button"",
@@ -441,9 +441,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""AltUseItem"",
+                    ""name"": ""ToggleFlashlight"",
                     ""type"": ""Button"",
                     ""id"": ""6def68ce-cc72-4489-b673-20a235827f87"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseHealingItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""0bfa2ae3-b44e-475f-a7e1-99887635eee3"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -480,18 +489,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MnK"",
-                    ""action"": ""UseItem"",
+                    ""action"": ""FocusFlashlight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""f7af7a23-ae94-4cc5-b3f9-c4dd97fcf9c8"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""UseItem"",
+                    ""action"": ""FocusFlashlight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -502,77 +511,29 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MnK"",
-                    ""action"": ""AltUseItem"",
+                    ""action"": ""ToggleFlashlight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
                     ""id"": ""cd8f0611-517d-468b-82ff-c1d1c7139bc9"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""AltUseItem"",
+                    ""action"": ""ToggleFlashlight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Inventory"",
-            ""id"": ""f017a0e8-99ce-4fb2-87c4-546307290074"",
-            ""actions"": [
-                {
-                    ""name"": ""OpenInventory"",
-                    ""type"": ""Button"",
-                    ""id"": ""51c94135-5c97-43fa-875d-b0228f2662c5"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""GamepadInventorySelect"",
-                    ""type"": ""Value"",
-                    ""id"": ""dc2d4365-7b31-4ac6-a914-12070caabb13"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                }
-            ],
-            ""bindings"": [
-                {
                     ""name"": """",
-                    ""id"": ""fc4e7cda-2175-4b1d-bf39-ae597dc80afc"",
-                    ""path"": ""<Keyboard>/tab"",
+                    ""id"": ""ae6b4cf9-2e87-44d4-b29c-6232fb1a6e3b"",
+                    ""path"": ""<Keyboard>/v"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""MnK"",
-                    ""action"": ""OpenInventory"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3fa956bc-9e93-4bf3-8009-1bf507c2b530"",
-                    ""path"": ""<Gamepad>/buttonNorth"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""OpenInventory"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""baf5914f-544c-4035-a949-c705a6032aa2"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""GamepadInventorySelect"",
+                    ""action"": ""UseHealingItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -631,12 +592,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Interaction
         m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
         m_Interaction_Interact = m_Interaction.FindAction("Interact", throwIfNotFound: true);
-        m_Interaction_UseItem = m_Interaction.FindAction("UseItem", throwIfNotFound: true);
-        m_Interaction_AltUseItem = m_Interaction.FindAction("AltUseItem", throwIfNotFound: true);
-        // Inventory
-        m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
-        m_Inventory_OpenInventory = m_Inventory.FindAction("OpenInventory", throwIfNotFound: true);
-        m_Inventory_GamepadInventorySelect = m_Inventory.FindAction("GamepadInventorySelect", throwIfNotFound: true);
+        m_Interaction_FocusFlashlight = m_Interaction.FindAction("FocusFlashlight", throwIfNotFound: true);
+        m_Interaction_ToggleFlashlight = m_Interaction.FindAction("ToggleFlashlight", throwIfNotFound: true);
+        m_Interaction_UseHealingItem = m_Interaction.FindAction("UseHealingItem", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -939,15 +897,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Interaction;
     private List<IInteractionActions> m_InteractionActionsCallbackInterfaces = new List<IInteractionActions>();
     private readonly InputAction m_Interaction_Interact;
-    private readonly InputAction m_Interaction_UseItem;
-    private readonly InputAction m_Interaction_AltUseItem;
+    private readonly InputAction m_Interaction_FocusFlashlight;
+    private readonly InputAction m_Interaction_ToggleFlashlight;
+    private readonly InputAction m_Interaction_UseHealingItem;
     public struct InteractionActions
     {
         private @PlayerInputActions m_Wrapper;
         public InteractionActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Interact => m_Wrapper.m_Interaction_Interact;
-        public InputAction @UseItem => m_Wrapper.m_Interaction_UseItem;
-        public InputAction @AltUseItem => m_Wrapper.m_Interaction_AltUseItem;
+        public InputAction @FocusFlashlight => m_Wrapper.m_Interaction_FocusFlashlight;
+        public InputAction @ToggleFlashlight => m_Wrapper.m_Interaction_ToggleFlashlight;
+        public InputAction @UseHealingItem => m_Wrapper.m_Interaction_UseHealingItem;
         public InputActionMap Get() { return m_Wrapper.m_Interaction; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -960,12 +920,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
-            @UseItem.started += instance.OnUseItem;
-            @UseItem.performed += instance.OnUseItem;
-            @UseItem.canceled += instance.OnUseItem;
-            @AltUseItem.started += instance.OnAltUseItem;
-            @AltUseItem.performed += instance.OnAltUseItem;
-            @AltUseItem.canceled += instance.OnAltUseItem;
+            @FocusFlashlight.started += instance.OnFocusFlashlight;
+            @FocusFlashlight.performed += instance.OnFocusFlashlight;
+            @FocusFlashlight.canceled += instance.OnFocusFlashlight;
+            @ToggleFlashlight.started += instance.OnToggleFlashlight;
+            @ToggleFlashlight.performed += instance.OnToggleFlashlight;
+            @ToggleFlashlight.canceled += instance.OnToggleFlashlight;
+            @UseHealingItem.started += instance.OnUseHealingItem;
+            @UseHealingItem.performed += instance.OnUseHealingItem;
+            @UseHealingItem.canceled += instance.OnUseHealingItem;
         }
 
         private void UnregisterCallbacks(IInteractionActions instance)
@@ -973,12 +936,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
-            @UseItem.started -= instance.OnUseItem;
-            @UseItem.performed -= instance.OnUseItem;
-            @UseItem.canceled -= instance.OnUseItem;
-            @AltUseItem.started -= instance.OnAltUseItem;
-            @AltUseItem.performed -= instance.OnAltUseItem;
-            @AltUseItem.canceled -= instance.OnAltUseItem;
+            @FocusFlashlight.started -= instance.OnFocusFlashlight;
+            @FocusFlashlight.performed -= instance.OnFocusFlashlight;
+            @FocusFlashlight.canceled -= instance.OnFocusFlashlight;
+            @ToggleFlashlight.started -= instance.OnToggleFlashlight;
+            @ToggleFlashlight.performed -= instance.OnToggleFlashlight;
+            @ToggleFlashlight.canceled -= instance.OnToggleFlashlight;
+            @UseHealingItem.started -= instance.OnUseHealingItem;
+            @UseHealingItem.performed -= instance.OnUseHealingItem;
+            @UseHealingItem.canceled -= instance.OnUseHealingItem;
         }
 
         public void RemoveCallbacks(IInteractionActions instance)
@@ -996,60 +962,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public InteractionActions @Interaction => new InteractionActions(this);
-
-    // Inventory
-    private readonly InputActionMap m_Inventory;
-    private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
-    private readonly InputAction m_Inventory_OpenInventory;
-    private readonly InputAction m_Inventory_GamepadInventorySelect;
-    public struct InventoryActions
-    {
-        private @PlayerInputActions m_Wrapper;
-        public InventoryActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @OpenInventory => m_Wrapper.m_Inventory_OpenInventory;
-        public InputAction @GamepadInventorySelect => m_Wrapper.m_Inventory_GamepadInventorySelect;
-        public InputActionMap Get() { return m_Wrapper.m_Inventory; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(InventoryActions set) { return set.Get(); }
-        public void AddCallbacks(IInventoryActions instance)
-        {
-            if (instance == null || m_Wrapper.m_InventoryActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_InventoryActionsCallbackInterfaces.Add(instance);
-            @OpenInventory.started += instance.OnOpenInventory;
-            @OpenInventory.performed += instance.OnOpenInventory;
-            @OpenInventory.canceled += instance.OnOpenInventory;
-            @GamepadInventorySelect.started += instance.OnGamepadInventorySelect;
-            @GamepadInventorySelect.performed += instance.OnGamepadInventorySelect;
-            @GamepadInventorySelect.canceled += instance.OnGamepadInventorySelect;
-        }
-
-        private void UnregisterCallbacks(IInventoryActions instance)
-        {
-            @OpenInventory.started -= instance.OnOpenInventory;
-            @OpenInventory.performed -= instance.OnOpenInventory;
-            @OpenInventory.canceled -= instance.OnOpenInventory;
-            @GamepadInventorySelect.started -= instance.OnGamepadInventorySelect;
-            @GamepadInventorySelect.performed -= instance.OnGamepadInventorySelect;
-            @GamepadInventorySelect.canceled -= instance.OnGamepadInventorySelect;
-        }
-
-        public void RemoveCallbacks(IInventoryActions instance)
-        {
-            if (m_Wrapper.m_InventoryActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        public void SetCallbacks(IInventoryActions instance)
-        {
-            foreach (var item in m_Wrapper.m_InventoryActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_InventoryActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    public InventoryActions @Inventory => new InventoryActions(this);
     private int m_GamepadSchemeIndex = -1;
     public InputControlScheme GamepadScheme
     {
@@ -1094,12 +1006,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IInteractionActions
     {
         void OnInteract(InputAction.CallbackContext context);
-        void OnUseItem(InputAction.CallbackContext context);
-        void OnAltUseItem(InputAction.CallbackContext context);
-    }
-    public interface IInventoryActions
-    {
-        void OnOpenInventory(InputAction.CallbackContext context);
-        void OnGamepadInventorySelect(InputAction.CallbackContext context);
+        void OnFocusFlashlight(InputAction.CallbackContext context);
+        void OnToggleFlashlight(InputAction.CallbackContext context);
+        void OnUseHealingItem(InputAction.CallbackContext context);
     }
 }

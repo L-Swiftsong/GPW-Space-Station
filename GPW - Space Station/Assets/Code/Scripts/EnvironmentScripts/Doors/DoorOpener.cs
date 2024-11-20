@@ -27,6 +27,7 @@ namespace Environment.Doors
 
             // Subscribe to Door Events.
             _door.OnOpenStateChanged += Door_OnOpenStateChanged;
+            _door.OnOpenStateInstantChange += Door_OnOpenStateInstantChanged;
 
 
             // Get NavMeshObstacle instance.
@@ -37,8 +38,12 @@ namespace Environment.Doors
                 _navMeshObstacle.enabled = false;
             }
         }
-        private void OnDestroy() => _door.OnOpenStateChanged -= Door_OnOpenStateChanged;
-        
+        private void OnDestroy()
+        {
+            _door.OnOpenStateChanged -= Door_OnOpenStateChanged;
+            _door.OnOpenStateInstantChange -= Door_OnOpenStateInstantChanged;
+        }
+
 
 
         private void Door_OnOpenStateChanged(bool isOpen)
@@ -50,6 +55,16 @@ namespace Environment.Doors
 
             _handleOpenStateChangeCoroutine = StartCoroutine(HandleOpenStateChange(isOpen));
         }
+        private void Door_OnOpenStateInstantChanged(bool isOpen)
+        {
+            if (_handleOpenStateChangeCoroutine != null)
+            {
+                StopCoroutine(_handleOpenStateChangeCoroutine);
+            }
+
+            HandleInstantOpenStateChange(isOpen);
+        }
+
 
         private IEnumerator HandleOpenStateChange(bool isOpen)
         {
@@ -79,6 +94,14 @@ namespace Environment.Doors
                 }
 
                 yield return null;
+            }
+        }
+        private void HandleInstantOpenStateChange(bool isOpen)
+        {
+            bool openedFromFacingDirection = isOpen ? (_door is InteractableDoor) && (_door as InteractableDoor).WasOpenedFromFacingDirection : _wasPreviouslyOpenedFromFacingDirection;
+            for (int i = 0; i < _doorFrames.Length; i++)
+            {
+                _doorFrames[i].InstantOpen(isOpen, openedFromFacingDirection);
             }
         }
 
@@ -166,6 +189,12 @@ namespace Environment.Doors
                 HandleRotationTick(lerpTime, openedFromFacingDirection);
 
                 return false;
+            }
+            public void InstantOpen(bool isOpening, bool openedFromFacingDirection)
+            {
+                HandlePositionTick(isOpening ? 1.0f : 0.0f);
+                HandleRotationTick(isOpening ? 1.0f : 0.0f, openedFromFacingDirection);
+                _elapsedTime = isOpening ? _openingDuration : 0.0f;
             }
 
             private void HandlePositionTick(float lerpTime)

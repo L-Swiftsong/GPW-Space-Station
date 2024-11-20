@@ -36,7 +36,6 @@ public class TutorialManager : MonoBehaviour
     private static bool s_hasTriggeredMovementTutorial = false;
     private static bool s_hasTriggeredCameraTutorial = false;
     private static bool s_hasTriggeredInteractionTutorial = false;
-    private static bool s_hasTriggeredInventoryTutorial = false;
 
 
     private void Awake()
@@ -67,11 +66,6 @@ public class TutorialManager : MonoBehaviour
         {
             PlayerInteraction.OnHighlightedInteractableObject += PlayerInteraction_OnHighlightedInteractableObject;
         }
-        // Setup inventory tutorial.
-        if (!s_hasTriggeredInventoryTutorial)
-        {
-            Inventory.PlayerInventory.OnAnyInventoryGainedItem += PlayerInventory_OnAnyInventoryGainedItem;
-        }
     }
     private void PlayerInteraction_OnHighlightedInteractableObject()
     {
@@ -84,20 +78,6 @@ public class TutorialManager : MonoBehaviour
         // Unsubscribe from the event.
         PlayerInteraction.OnHighlightedInteractableObject -= PlayerInteraction_OnHighlightedInteractableObject;
     }
-    private void PlayerInventory_OnAnyInventoryGainedItem()
-    {
-        // Display the tutorial message.
-        EnqueueTutorialMessage(new TutorialContents("Use [Tab] or [Button North] to open your inventory", null));
-
-        // Cache the fact that we have triggered this tutorial.
-        s_hasTriggeredInventoryTutorial = true;
-
-        // Unsubscribe from the event.
-        Inventory.PlayerInventory.OnAnyInventoryGainedItem -= PlayerInventory_OnAnyInventoryGainedItem;
-    }
-
-
-    
 
 
     private void EnqueueTutorialMessage(TutorialContents contents, bool includeInitialDelay = false)
