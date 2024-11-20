@@ -6,7 +6,9 @@ namespace Environment.Doors
 {
     public abstract class Door : MonoBehaviour
     {
+        [SerializeField] private bool _startOpen = false;
         private bool _canOpen = true;
+
         [SerializeField] private float _minToggleDelay = 0.0f;
 
 
@@ -22,9 +24,14 @@ namespace Environment.Doors
         }
 
         public event System.Action<bool> OnOpenStateChanged;
+        public event System.Action<bool> OnOpenStateInstantChange;
 
 
-        private const string DOOR_OPEN_STATE_ANIMATOR_BOOL_IDENTIFIER = "IsOpen";
+        private void Awake()
+        {
+            m_isOpen = _startOpen;
+            OnOpenStateInstantChange?.Invoke(m_isOpen);
+        }
 
 
         protected virtual void ToggleOpen()
@@ -66,19 +73,5 @@ namespace Environment.Doors
         }
 
         private void ResetCanOpen() => _canOpen = true;
-
-
-
-        public void OverrideMaterial(Material overrideMaterial)
-        {
-            // The transform with the DoorOpener script will hold the GFX of the actual door.
-            Transform gfxContainer = transform.GetComponentInChildren<DoorOpener>().transform;
-
-            // Override the material list of all child renderers under the gfxContainer.
-            foreach (Renderer renderer in gfxContainer.GetComponentsInChildren<Renderer>())
-            {
-                renderer.material = overrideMaterial;
-            }
-        }
     }
 }
