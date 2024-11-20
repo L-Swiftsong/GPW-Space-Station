@@ -426,6 +426,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "UseHealingItem",
+                    "type": "Button",
+                    "id": "0bfa2ae3-b44e-475f-a7e1-99887635eee3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -492,6 +501,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "ToggleFlashlight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae6b4cf9-2e87-44d4-b29c-6232fb1a6e3b",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "UseHealingItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

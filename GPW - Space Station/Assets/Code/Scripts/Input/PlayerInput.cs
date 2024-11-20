@@ -46,6 +46,10 @@ public class PlayerInput : MonoBehaviour
     public static event Action OnFocusFlashlightStarted;
     public static event Action OnFocusFlashlightCancelled;
 
+
+    public static event Action OnUseHealingItemStarted;
+    public static event Action OnUseHealingItemCancelled;
+
     #endregion
 
     #region Input Values
@@ -162,6 +166,9 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Interaction.FocusFlashlight.started += FocusFlashlight_started;
         s_playerInput.Interaction.FocusFlashlight.canceled += FocusFlashlight_cancelled;
 
+        s_playerInput.Interaction.UseHealingItem.started += UseHealingItem_started;
+        s_playerInput.Interaction.UseHealingItem.canceled += UseHealingItem_cancelled;
+
 
         // Enable maps.
         s_playerInput.Global.Enable();
@@ -218,6 +225,9 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Interaction.FocusFlashlight.started -= FocusFlashlight_started;
         s_playerInput.Interaction.FocusFlashlight.canceled -= FocusFlashlight_cancelled;
 
+        s_playerInput.Interaction.UseHealingItem.started -= UseHealingItem_started;
+        s_playerInput.Interaction.UseHealingItem.canceled -= UseHealingItem_cancelled;
+
 
         // Dispose of the PlayerInputAction instance.
         s_playerInput.Dispose();
@@ -259,6 +269,9 @@ public class PlayerInput : MonoBehaviour
 
     private void FocusFlashlight_started(InputAction.CallbackContext context) => OnFocusFlashlightStarted?.Invoke();
     private void FocusFlashlight_cancelled(InputAction.CallbackContext context) => OnFocusFlashlightCancelled?.Invoke();
+
+    private void UseHealingItem_started(InputAction.CallbackContext context) => OnUseHealingItemStarted?.Invoke();
+    private void UseHealingItem_cancelled(InputAction.CallbackContext context) => OnUseHealingItemCancelled?.Invoke();
 
 
     #endregion

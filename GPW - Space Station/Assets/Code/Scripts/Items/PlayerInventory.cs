@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items.Flashlight;
 using Items.Keycards;
+using Items.Healing;
 
 namespace Items
 {
@@ -16,6 +17,10 @@ namespace Items
         [Header("Keycards")]
         [SerializeField] private KeycardDecoder _keycardDecoder;
         private bool _hasKeycardDecoder = false;
+
+
+        [Header("Medkits")]
+        [SerializeField] private Medkit _medkit;
 
 
         private void Awake()
@@ -91,6 +96,15 @@ namespace Items
         public KeycardDecoder GetKeycardDecoder() => _keycardDecoder;
         public int GetDecoderSecurityLevel() => _keycardDecoder.GetSecurityLevel();
         public bool HasKeycardDecoder() => _hasKeycardDecoder;
+
+        #endregion
+
+
+        #region Medkits
+
+        public int AddMedkits(int numberToAdd) => _medkit.AddMedkits(numberToAdd);
+        public void SetMedkits(int newCount) => _medkit.SetMedkits(newCount);
+        public void RemoveMedkits(int numberToRemove) => _medkit.RemoveMedkits(numberToRemove);
 
         #endregion
     }

@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Saving;
 
-public class PlayerHealthController : MonoBehaviour
+public class TempPlayerDeath : MonoBehaviour
 {
     private void OnCollisionEnter(Collision collision)
     {
-       
         if (collision.gameObject.CompareTag("Enemy"))
         {
             RestartScene();
@@ -25,7 +24,6 @@ public class PlayerHealthController : MonoBehaviour
 
     private void RestartScene()
     {
-      
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SaveManager.ReloadCheckpointSave();
     }
 }

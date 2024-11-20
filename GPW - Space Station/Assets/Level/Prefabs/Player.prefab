@@ -178,6 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _flashlightController: {fileID: 3861963846080195044}
   _keycardDecoder: {fileID: 5259610297136769897}
+  _medkit: {fileID: 6221585909754026831}
 --- !u!114 &508089038349390175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -634,6 +635,7 @@ Transform:
   - {fileID: 5315623660274877257}
   - {fileID: 5068534419807951062}
   - {fileID: 3306796446124629436}
+  - {fileID: 7815967061111789935}
   m_Father: {fileID: 5472899290436885377}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &6197061550710832611
@@ -740,6 +742,55 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &7629004463045140051
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7815967061111789935}
+  - component: {fileID: 6221585909754026831}
+  m_Layer: 3
+  m_Name: Medkit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7815967061111789935
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7629004463045140051}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3112507552405676298}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6221585909754026831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7629004463045140051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 946971d722ab38543b8e8dd17b1649e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerHealth: {fileID: 1941566597398892179}
+  _healingAmount: 25
+  _healingDelay: 1.5
+  _currentMedkitCount: 0
+  _maxMedkitCount: 5
 --- !u!1 &8136413486597654385
 GameObject:
   m_ObjectHideFlags: 0

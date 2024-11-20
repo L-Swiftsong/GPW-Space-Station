@@ -448,6 +448,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""UseHealingItem"",
+                    ""type"": ""Button"",
+                    ""id"": ""0bfa2ae3-b44e-475f-a7e1-99887635eee3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -516,6 +525,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleFlashlight"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ae6b4cf9-2e87-44d4-b29c-6232fb1a6e3b"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""UseHealingItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -574,6 +594,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Interaction_Interact = m_Interaction.FindAction("Interact", throwIfNotFound: true);
         m_Interaction_FocusFlashlight = m_Interaction.FindAction("FocusFlashlight", throwIfNotFound: true);
         m_Interaction_ToggleFlashlight = m_Interaction.FindAction("ToggleFlashlight", throwIfNotFound: true);
+        m_Interaction_UseHealingItem = m_Interaction.FindAction("UseHealingItem", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -878,6 +899,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Interaction_Interact;
     private readonly InputAction m_Interaction_FocusFlashlight;
     private readonly InputAction m_Interaction_ToggleFlashlight;
+    private readonly InputAction m_Interaction_UseHealingItem;
     public struct InteractionActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -885,6 +907,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Interaction_Interact;
         public InputAction @FocusFlashlight => m_Wrapper.m_Interaction_FocusFlashlight;
         public InputAction @ToggleFlashlight => m_Wrapper.m_Interaction_ToggleFlashlight;
+        public InputAction @UseHealingItem => m_Wrapper.m_Interaction_UseHealingItem;
         public InputActionMap Get() { return m_Wrapper.m_Interaction; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -903,6 +926,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ToggleFlashlight.started += instance.OnToggleFlashlight;
             @ToggleFlashlight.performed += instance.OnToggleFlashlight;
             @ToggleFlashlight.canceled += instance.OnToggleFlashlight;
+            @UseHealingItem.started += instance.OnUseHealingItem;
+            @UseHealingItem.performed += instance.OnUseHealingItem;
+            @UseHealingItem.canceled += instance.OnUseHealingItem;
         }
 
         private void UnregisterCallbacks(IInteractionActions instance)
@@ -916,6 +942,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @ToggleFlashlight.started -= instance.OnToggleFlashlight;
             @ToggleFlashlight.performed -= instance.OnToggleFlashlight;
             @ToggleFlashlight.canceled -= instance.OnToggleFlashlight;
+            @UseHealingItem.started -= instance.OnUseHealingItem;
+            @UseHealingItem.performed -= instance.OnUseHealingItem;
+            @UseHealingItem.canceled -= instance.OnUseHealingItem;
         }
 
         public void RemoveCallbacks(IInteractionActions instance)
@@ -979,5 +1008,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnFocusFlashlight(InputAction.CallbackContext context);
         void OnToggleFlashlight(InputAction.CallbackContext context);
+        void OnUseHealingItem(InputAction.CallbackContext context);
     }
 }
