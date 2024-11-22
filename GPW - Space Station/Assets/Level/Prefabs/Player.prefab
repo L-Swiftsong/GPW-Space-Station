@@ -85,7 +85,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   sprintSpeed: 6
-  _toggleSprint: 0
   jumpHeight: 1.2
   _jumpCooldown: 0.1
   gravity: -19.62
@@ -95,7 +94,6 @@ MonoBehaviour:
   groundLayers:
     serializedVersion: 2
     m_Bits: 64
-  _toggleCrouch: 0
   _crouchSpeed: 2
   crouchHeight: 1.35
   normalHeight: 1.8
@@ -110,8 +108,6 @@ MonoBehaviour:
   tiltAngle: 15
   peekOffset: 0.3
   _playerCamera: {fileID: 6298730244541538129}
-  _horizontalLookSensitivity: 10
-  _verticalLookSensitivity: 7.5
   _defaultCameraHeight: 1.6
   _crouchedCameraHeight: 1.15
 --- !u!114 &411927885907842514
@@ -197,7 +193,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerHealth: {fileID: 1941566597398892179}
   _inventoryItemContainer: {fileID: 7819037856233423113}
-  _toggleInventory: 0
   _inventoryKeycardPrefab: {fileID: 6931346296701779283, guid: fb4736b0ef21a724db3872be4ff3bca8, type: 3}
 --- !u!114 &508089038349390175
 MonoBehaviour:
