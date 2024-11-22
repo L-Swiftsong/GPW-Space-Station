@@ -41,16 +41,14 @@ public class PlayerInput : MonoBehaviour
     public static event Action OnInteractPerformed;
 
 
-    public static event Action OnUseItemStarted;
-    public static event Action OnUseItemCancelled;
+    public static event Action OnToggleFlashlightPerformed;
 
-    public static event Action OnAltUseItemStarted;
-    public static event Action OnAltUseItemCancelled;
+    public static event Action OnFocusFlashlightStarted;
+    public static event Action OnFocusFlashlightCancelled;
 
 
-    public static event Action OnOpenInventoryPerformed;
-    public static event Action OnOpenInventoryStarted;
-    public static event Action OnOpenInventoryCancelled;
+    public static event Action OnUseHealingItemStarted;
+    public static event Action OnUseHealingItemCancelled;
 
     #endregion
 
@@ -163,17 +161,13 @@ public class PlayerInput : MonoBehaviour
         // Subscribe to events (Interaction).
         s_playerInput.Interaction.Interact.performed += Interact_performed;
 
-        s_playerInput.Interaction.UseItem.started += UseItem_started;
-        s_playerInput.Interaction.UseItem.canceled += UseItem_cancelled;
+        s_playerInput.Interaction.ToggleFlashlight.performed += ToggleFlashlight_performed;
 
-        s_playerInput.Interaction.AltUseItem.started += AltUseItem_started;
-        s_playerInput.Interaction.AltUseItem.canceled += AltUseItem_cancelled;
+        s_playerInput.Interaction.FocusFlashlight.started += FocusFlashlight_started;
+        s_playerInput.Interaction.FocusFlashlight.canceled += FocusFlashlight_cancelled;
 
-
-        // Subscribe to events (Inventory).
-        s_playerInput.Inventory.OpenInventory.performed += OpenInventory_Performed;
-        s_playerInput.Inventory.OpenInventory.started += OpenInventory_Started;
-        s_playerInput.Inventory.OpenInventory.canceled += OpenInventory_Cancelled;
+        s_playerInput.Interaction.UseHealingItem.started += UseHealingItem_started;
+        s_playerInput.Interaction.UseHealingItem.canceled += UseHealingItem_cancelled;
 
 
         // Enable maps.
@@ -182,7 +176,6 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Movement.Enable();
         s_playerInput.Camera.Enable();
         s_playerInput.Interaction.Enable();
-        s_playerInput.Inventory.Enable();
 
         s_playerInput.Enable();
 
@@ -227,17 +220,13 @@ public class PlayerInput : MonoBehaviour
         // Unsubscribe from events (Interaction).
         s_playerInput.Interaction.Interact.performed -= Interact_performed;
 
-        s_playerInput.Interaction.UseItem.started -= UseItem_started;
-        s_playerInput.Interaction.UseItem.canceled -= UseItem_cancelled;
+        s_playerInput.Interaction.ToggleFlashlight.performed -= ToggleFlashlight_performed;
 
-        s_playerInput.Interaction.AltUseItem.started -= AltUseItem_started;
-        s_playerInput.Interaction.AltUseItem.canceled -= AltUseItem_cancelled;
+        s_playerInput.Interaction.FocusFlashlight.started -= FocusFlashlight_started;
+        s_playerInput.Interaction.FocusFlashlight.canceled -= FocusFlashlight_cancelled;
 
-
-        // Unsubscrive from events (Inventory).
-        s_playerInput.Inventory.OpenInventory.performed -= OpenInventory_Performed;
-        s_playerInput.Inventory.OpenInventory.started -= OpenInventory_Started;
-        s_playerInput.Inventory.OpenInventory.canceled -= OpenInventory_Cancelled;
+        s_playerInput.Interaction.UseHealingItem.started -= UseHealingItem_started;
+        s_playerInput.Interaction.UseHealingItem.canceled -= UseHealingItem_cancelled;
 
 
         // Dispose of the PlayerInputAction instance.
@@ -276,16 +265,14 @@ public class PlayerInput : MonoBehaviour
     private void Interact_performed(InputAction.CallbackContext context) => OnInteractPerformed?.Invoke();
 
 
-    private void UseItem_started(InputAction.CallbackContext context) => OnUseItemStarted?.Invoke();
-    private void UseItem_cancelled(InputAction.CallbackContext context) => OnUseItemCancelled?.Invoke();
+    private void ToggleFlashlight_performed(InputAction.CallbackContext context) => OnToggleFlashlightPerformed?.Invoke();
 
-    private void AltUseItem_started(InputAction.CallbackContext context) => OnAltUseItemStarted?.Invoke();
-    private void AltUseItem_cancelled(InputAction.CallbackContext context) => OnAltUseItemCancelled?.Invoke();
+    private void FocusFlashlight_started(InputAction.CallbackContext context) => OnFocusFlashlightStarted?.Invoke();
+    private void FocusFlashlight_cancelled(InputAction.CallbackContext context) => OnFocusFlashlightCancelled?.Invoke();
 
+    private void UseHealingItem_started(InputAction.CallbackContext context) => OnUseHealingItemStarted?.Invoke();
+    private void UseHealingItem_cancelled(InputAction.CallbackContext context) => OnUseHealingItemCancelled?.Invoke();
 
-    private void OpenInventory_Performed(InputAction.CallbackContext context) => OnOpenInventoryPerformed?.Invoke();
-    private void OpenInventory_Started(InputAction.CallbackContext context) => OnOpenInventoryStarted?.Invoke();
-    private void OpenInventory_Cancelled(InputAction.CallbackContext context) => OnOpenInventoryCancelled?.Invoke();
 
     #endregion
 
@@ -322,13 +309,11 @@ public class PlayerInput : MonoBehaviour
         s_movementInput = s_playerInput.Movement.Movement.ReadValue<Vector2>();
         s_mouseLookInput = s_playerInput.Camera.MouseLookInput.ReadValue<Vector2>();
         s_gamepadLookInput = s_playerInput.Camera.GamepadLookInput.ReadValue<Vector2>();
-
-        s_gamepadInventorySelect = s_playerInput.Inventory.GamepadInventorySelect.ReadValue<Vector2>();
     }
 
 
 
-#region Action Prevention
+    #region Action Prevention
 
     // Movement Map.
     private static int s_movementPreventionCount = 0;
@@ -405,45 +390,18 @@ public class PlayerInput : MonoBehaviour
     }
 
 
-    // Inventory Map.
-    private static int s_inventoryPreventionCount = 0;
-    public static void PreventInventoryActions()
-    {
-        s_inventoryPreventionCount++;
-
-        if (s_playerInput != null)
-        {
-            // Disable our 'Inventory' map.
-            s_playerInput.Inventory.Disable();
-        }
-    }
-    public static void RemoveInventoryActionPrevention()
-    {
-        s_inventoryPreventionCount--;
-
-        if (s_inventoryPreventionCount == 0 && s_playerInput != null)
-        {
-            // There is no longer anything wishing to disable our inventory controls.
-            // Enable the 'Inventory' map.
-            s_playerInput.Inventory.Enable();
-        }
-    }
-
-
     // All Maps.
     public static void PreventAllActions()
     {
         PreventMovementActions();
         PreventCameraActions();
         PreventInteractionActions();
-        PreventInventoryActions();
     }
     public static void RemoveAllActionPrevention()
     {
         RemoveMovementActionPrevention();
         RemoveCameraActionPrevention();
         RemoveInteractionActionPrevention();
-        RemoveInventoryActionPrevention();
     }
 
     private static void UpdateDisabledState()
@@ -465,12 +423,6 @@ public class PlayerInput : MonoBehaviour
             s_playerInput.Interaction.Disable();
         else
             s_playerInput.Interaction.Enable();
-
-        // Inventory.
-        if (s_inventoryPreventionCount > 0)
-            s_playerInput.Inventory.Disable();
-        else
-            s_playerInput.Inventory.Enable();
     }
 
     #endregion

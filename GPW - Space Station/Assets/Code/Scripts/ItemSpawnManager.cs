@@ -10,14 +10,6 @@ public class ItemSpawnManager : MonoBehaviour
     [SerializeField] private List<KeycardSpawnPositions> _keycardSpawnPositionsList = new List<KeycardSpawnPositions>();
 
 
-    [Header("Testing")]
-    [SerializeField] private bool _runTestingChecks = true;
-
-    [Space(5)]
-    [SerializeField] private bool _overrideDoorMaterials = true;
-    [SerializeField] private bool _overrideKeycardReaderMateirals = true;
-
-
     private void Awake()
     {
         s_instance = this;
@@ -33,103 +25,8 @@ public class ItemSpawnManager : MonoBehaviour
                 Debug.LogError("Error: KeycardSpawnPosition at index " + i + "'s Keycard Prefab does not contain the 'Keycard' class");
             }
 
-            keycard.SetupKeycard(_keycardSpawnPositionsList[i].KeycardID, _keycardSpawnPositionsList[i].KeycardMaterial);
+            keycard.SetupKeycard(_keycardSpawnPositionsList[i].SecurityLevel);
         }
-
-
-        if (_runTestingChecks)
-        {
-            PerformTestingChecks();
-        }
-    }
-
-
-    private void PerformTestingChecks()
-    {
-        HashSet<int> foundIDs = new HashSet<int>();
-
-        // Override Interactable Door Materials.
-        foreach (InteractableDoor door in FindObjectsOfType<InteractableDoor>())
-        {
-            // Doors with a Required Keycard ID of -1 are unlocked.
-            if (door.RequiredKeycardID == -1)
-                continue;
-
-            foundIDs.Add(door.RequiredKeycardID);
-
-            if (_overrideDoorMaterials)
-            {
-                Material overrideMaterial = null;
-
-                try
-                {
-                    overrideMaterial = _keycardSpawnPositionsList.Where(ksp => ksp.KeycardID == door.RequiredKeycardID).First().KeycardMaterial;
-                }
-                catch
-                {
-                    Debug.LogError("Error: No spawned Keycards are assigned to the KeycardID " + door.RequiredKeycardID + ", however the Interactable Door " + door.name + " requires it.");
-                    return;
-                }
-
-                door.OverrideMaterial(overrideMaterial);
-            }
-        }
-
-        // Override DoorButton Materials.
-        foreach (DoorButton doorButton in FindObjectsOfType<DoorButton>())
-        {
-            if (doorButton.RequiredKeycardID == -1)
-            {
-                // This button doesn't require a keycard to use.
-                continue;
-            }
-
-            foundIDs.Add(doorButton.RequiredKeycardID);
-
-            if (_overrideKeycardReaderMateirals)
-            {
-                Material overrideMaterial = null;
-                try
-                {
-                    overrideMaterial = _keycardSpawnPositionsList.Where(ksp => ksp.KeycardID == doorButton.RequiredKeycardID).First().KeycardMaterial;
-                }
-                catch
-                {
-                    Debug.LogError("Error: No spawned Keycards are assigned to the KeycardID " + doorButton.RequiredKeycardID + ", however the Keycard Reader " + doorButton.name + " requires it.");
-                    return;
-                }
-
-                doorButton.OverrideMaterial(overrideMaterial);
-            }
-        }
-
-
-        // Ensure that we aren't spawning in keycards which don't link to any doors.
-        for (int i = 0; i < _keycardSpawnPositionsList.Count; i++)
-        {
-            if (!foundIDs.Contains(_keycardSpawnPositionsList[i].KeycardID))
-            {
-                Debug.LogError("Error: No Interactable Doors or Keycard Readers are assigned to the KeycardID " + _keycardSpawnPositionsList[i].KeycardID + ", however you have spawned a Keycard with this ID.");
-            }
-        }
-    }
-
-    public static Material GetMaterialFromID(int keycardID)
-    {
-        if (s_instance == null)
-        {
-            return null;
-        }
-
-        for (int i = 0; i < s_instance._keycardSpawnPositionsList.Count; i++)
-        {
-            if (s_instance._keycardSpawnPositionsList[i].KeycardID == keycardID)
-            {
-                return s_instance._keycardSpawnPositionsList[i].KeycardMaterial;
-            }
-        }
-
-        return null;
     }
 
 
@@ -145,11 +42,10 @@ public class ItemSpawnManager : MonoBehaviour
     [System.Serializable]
     private struct KeycardSpawnPositions
     {
-        [SerializeField] private Transform _keycardPrefab;
+        [SerializeField] private int _securityLevel;
         
-        [SerializeField] private int _keycardID;
-        [SerializeField] private Material _keycardMaterial;
 
+        [SerializeField] private Transform _keycardPrefab;
         [SerializeField] private SpawnPosition[] _spawnPositions;
 
 
@@ -160,8 +56,7 @@ public class ItemSpawnManager : MonoBehaviour
 
         public Transform KeycardPrefab => _keycardPrefab;
 
-        public int KeycardID => _keycardID;
-        public Material KeycardMaterial => _keycardMaterial;
+        public int SecurityLevel => _securityLevel;
 
         public SpawnPosition[] SpawnPositions => _spawnPositions;
 
