@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Inventory;
+using Items;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -13,7 +13,40 @@ public class PlayerInteraction : MonoBehaviour
     public PlayerInventory Inventory => playerInventory;
     public PlayerHide PlayerHide => playerHide;
 
-    private IInteractable _currentInteractable = null;
+    private IInteractable m_currentInteractable = null;
+    private IInteractable _currentInteractable
+    {
+        get => m_currentInteractable;
+        set
+        {
+            if (value != m_currentInteractable)
+            {
+                // Our current interactable has changed.
+                if (value == null)
+                {
+                    // We have stopped looking at an interactable.
+                    if (m_currentInteractable is KeycardReader)
+                    {
+                        // We were looking at a keycard reader.
+                        (m_currentInteractable as KeycardReader).StopHighlighting();
+                    }
+                }
+                else
+                {
+                    // We are looking at a new interactable object
+                    OnHighlightedInteractableObject?.Invoke();
+
+                    if (value is KeycardReader)
+                    {
+                        // We are looking at a keycard reader.
+                        (value as KeycardReader).Highlight();
+                    }
+                }
+            }
+
+            m_currentInteractable = value;
+        }
+    }
 
 
     [Header("Layers")]
@@ -61,11 +94,6 @@ public class PlayerInteraction : MonoBehaviour
             if (hit.collider.TryGetComponentThroughParents<IInteractable>(out IInteractable interactableScript))
             {
                 // This is an interactable.
-                if (_currentInteractable != interactableScript)
-                {
-                    OnHighlightedInteractableObject?.Invoke();
-                }
-
                 _currentInteractable = interactableScript;
             }
             else

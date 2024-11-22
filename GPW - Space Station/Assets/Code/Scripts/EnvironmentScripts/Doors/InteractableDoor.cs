@@ -1,51 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Inventory;
 
 namespace Environment.Doors
 {
     public class InteractableDoor : Door, IInteractable
     {
-        [SerializeField] private int _requiredKeycardID = -1;
-        private bool _isLocked = true;
-
-
         private bool _wasOpenedFromFacingDirection = true;
         public bool WasOpenedFromFacingDirection => _wasOpenedFromFacingDirection;
-
-        public int RequiredKeycardID => _requiredKeycardID;
-
-
-        private void Start()
-        {
-            // A 'RequiredKeycardID' of -1 means that this door starts unlocked.
-            _isLocked = _requiredKeycardID != -1;
-        }
 
 
         public void Interact(PlayerInteraction interactingScript)
         {
-            if (_isLocked)
-            {
-                TryUnlockDoor(interactingScript.Inventory);
-            }
-            else
-            {
-                Vector3 directionToInteractor = (interactingScript.transform.position - transform.position).normalized;
-                _wasOpenedFromFacingDirection = Vector3.Dot(directionToInteractor, transform.forward) > 0.0f;
-                ToggleOpen();
-            }
-        }
-
-        private void TryUnlockDoor(PlayerInventory playerInventory)
-        {
-            if (playerInventory.HasKeycardEquipped(_requiredKeycardID))
-            {
-                // The player has the required keycard equipped.
-                Debug.Log(this.gameObject.name + " was unlocked");
-                _isLocked = false;
-            }
+            Vector3 directionToInteractor = (interactingScript.transform.position - transform.position).normalized;
+            _wasOpenedFromFacingDirection = Vector3.Dot(directionToInteractor, transform.forward) > 0.0f;
+            ToggleOpen();
         }
     }
 }
