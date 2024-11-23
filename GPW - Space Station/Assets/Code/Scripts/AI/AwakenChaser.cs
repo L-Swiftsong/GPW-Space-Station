@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AwakenChaser : MonoBehaviour
+namespace Chase
 {
+    public class AwakenChaser : MonoBehaviour
+    {
         private void OnDestroy()
         {
             ActivateChasers();
@@ -26,3 +28,4 @@ public class AwakenChaser : MonoBehaviour
             Debug.Log("Chase activated by KeycardChaseActivator!");
         }
     }
+}
