@@ -4,125 +4,111 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
-public class EnemyChaser : MonoBehaviour
+namespace Chase
 {
-    [Header("Movement Settings")]
-    [SerializeField]
-    private float chaseSpeed = 5f;
-
-    [Header("Audio Settings")]
-    [SerializeField]
-    private AudioClip chaseSFX;
-    [SerializeField]
-    private AudioClip breakDoorSFX;
-    [SerializeField]
-    private AudioClip finalDoorSFX;
-
-    private AudioSource audioSource;
-    private bool isChasing = false;
-    private NavMeshAgent navMeshAgent;
-
-    private void Start()
+    public class EnemyChaser : MonoBehaviour
     {
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.playOnAwake = false;
+        [Header("Movement Settings")]
+        [SerializeField] private float _chaseSpeed = 5f;
 
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        if (navMeshAgent != null)
-        {
-            navMeshAgent.speed = chaseSpeed;
-            navMeshAgent.updateRotation = true;
-        }
-        else
-        {
-            Debug.LogError("NavMeshAgent component is missing on EnemyChaser.");
-        }
-    }
+        [Header("Audio Settings")]
+        [SerializeField] private AudioClip _chaseSFX;
+        [SerializeField] private AudioClip _breakDoorClip;
+        [SerializeField] private AudioClip _chaseEndClip;
 
-    private void Update()
-    {
-        if (isChasing && PlayerManager.Instance.Player != null)
-        {
-            navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
-        }
-    }
+        private AudioSource audioSource;
+        private bool isChasing = false;
+        private NavMeshAgent navMeshAgent;
 
-    public void ActivateChase()
-    {
-        if (!isChasing)
+        private void Start()
         {
-            isChasing = true;
-            Debug.Log("Chase activated!");
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
 
-            if (chaseSFX != null && audioSource != null)
+            navMeshAgent = GetComponent<NavMeshAgent>();
+            if (navMeshAgent != null)
             {
-                audioSource.clip = chaseSFX;
-                audioSource.Play();
+                navMeshAgent.speed = _chaseSpeed;
+                navMeshAgent.updateRotation = true;
+            }
+            else
+            {
+                Debug.LogError("NavMeshAgent component is missing on EnemyChaser.");
             }
         }
-    }
+        private void OnEnable() => ChaseEndTrigger.OnChaseEndTriggerPassed += EndChase;
+        private void OnDisable() => ChaseEndTrigger.OnChaseEndTriggerPassed -= EndChase;
+        
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("BreakDoor"))
+        private void Update()
         {
-            Destroy(collision.gameObject);
-            Debug.Log("BreakDoor destroyed!");
-
-            if (breakDoorSFX != null && audioSource != null)
+            if (isChasing && PlayerManager.Instance.Player != null)
             {
-                audioSource.PlayOneShot(breakDoorSFX);
+                navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
             }
         }
-        else if (collision.gameObject.CompareTag("FinalDoor"))
+
+        public void ActivateChase()
         {
-            if (finalDoorSFX != null && audioSource != null)
+            if (!isChasing)
             {
-                audioSource.PlayOneShot(finalDoorSFX);
+                isChasing = true;
+                Debug.Log("Chase activated!");
+
+                if (_chaseSFX != null && audioSource != null)
+                {
+                    audioSource.clip = _chaseSFX;
+                    audioSource.Play();
+                }
+            }
+        }
+        private void EndChase()
+        {
+            if (_chaseEndClip != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(_chaseEndClip);
             }
 
+            Debug.Log("Chase Ended");
             Destroy(gameObject);
-            Debug.Log("Enemy destroyed at FinalDoor!");
         }
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        private void OnCollisionEnter(Collision collision)
         {
-            // Restart the scene
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            Debug.Log("Enemy triggered with the player. Scene restarted.");
-        }
-        else if (other.CompareTag("BreakDoor"))
-        {
-            Destroy(other.gameObject);
-            Debug.Log("Trigger BreakDoor destroyed!");
-
-            if (breakDoorSFX != null && audioSource != null)
+            if (collision.gameObject.CompareTag("BreakDoor"))
             {
-                audioSource.PlayOneShot(breakDoorSFX);
+                Destroy(collision.gameObject);
+                Debug.Log("BreakDoor destroyed!");
+
+                if (_breakDoorClip != null && audioSource != null)
+                {
+                    audioSource.PlayOneShot(_breakDoorClip);
+                }
             }
         }
-        else if (other.CompareTag("FinalDoor"))
+
+        private void OnTriggerEnter(Collider other)
         {
-            if (finalDoorSFX != null && audioSource != null)
+            if (other.CompareTag("BreakDoor"))
             {
-                audioSource.PlayOneShot(finalDoorSFX);
+                Destroy(other.gameObject);
+                Debug.Log("Trigger BreakDoor destroyed!");
+
+                if (_breakDoorClip != null && audioSource != null)
+                {
+                    audioSource.PlayOneShot(_breakDoorClip);
+                }
             }
-
-            Destroy(gameObject);
-            Debug.Log("Enemy destroyed at FinalDoor via trigger!");
         }
-    }
 
 
-    private void OnDrawGizmosSelected()
-    {
-        if (PlayerManager.Exists && PlayerManager.Instance.Player != null)
+        private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, PlayerManager.Instance.Player.position);
+            if (PlayerManager.Exists && PlayerManager.Instance.Player != null)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(transform.position, PlayerManager.Instance.Player.position);
+            }
         }
     }
 }
