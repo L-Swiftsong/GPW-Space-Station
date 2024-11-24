@@ -3,28 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
 
-public class KeypadButton : MonoBehaviour, IInteractable
+namespace Environment.Buttons
 {
-    [System.Serializable] private enum ButtonType { Number, Enter, Delete }
-    [SerializeField] private ButtonType _buttonType;
-    [SerializeField] private int _number;
-    [SerializeField] private Keypad _keypad;
-
-    public void Interact(PlayerInteraction player)
+    public class KeypadButton : MonoBehaviour, IInteractable
     {
-        if (_keypad != null)
+        [System.Serializable] private enum ButtonType { Number, Enter, Delete }
+        [SerializeField] private ButtonType _buttonType;
+        [SerializeField] private int _number;
+        [SerializeField] private Keypad _keypad;
+
+        public void Interact(PlayerInteraction player)
         {
-            if (_buttonType == ButtonType.Number)
+            switch (_buttonType)
             {
-                _keypad.ButtonPressed(_number.ToString());
-            }
-            else if (_buttonType == ButtonType.Enter)
-            {
-                _keypad.EnterCode();
-            }
-            else if (_buttonType == ButtonType.Delete)
-            {
-                _keypad.DeleteLastCharacter();
+                case ButtonType.Number:
+                    _keypad.ButtonPressed(_number.ToString());
+                    break;
+                case ButtonType.Enter:
+                    _keypad.EnterCode();
+                    break;
+                case ButtonType.Delete:
+                    _keypad.DeleteLastCharacter();
+                    break;
             }
         }
     }

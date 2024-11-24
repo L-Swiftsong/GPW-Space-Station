@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrapPoint : MonoBehaviour
+namespace Environment.Traps
 {
-    private void OnEnable() => TrapManager.AddTrapPoint(this);
-    private void OnDisable() => TrapManager.RemoveTrapPoint(this);
+    public class TrapPoint : MonoBehaviour
+    {
+        private void OnEnable() => TrapManager.AddTrapPoint(this);
+        private void OnDisable() => TrapManager.RemoveTrapPoint(this);
+    }
 }

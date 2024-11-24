@@ -4,7 +4,7 @@ using UnityEngine;
 using Entities.Player;
 using SceneManagement;
 
-namespace Teleporters
+namespace Environment.Teleporters
 {
     /// <summary> A teleporter which acts between multiple scenes. These teleporters will only ever affect the player.</summary>
     public class InterSceneTeleporter : BaseTeleporter

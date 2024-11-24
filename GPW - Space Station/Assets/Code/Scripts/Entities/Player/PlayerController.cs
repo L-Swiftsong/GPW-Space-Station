@@ -11,6 +11,8 @@ namespace Entities.Player
 {
     public class PlayerController : MonoBehaviour
     {
+        [Header("References")]
+        [SerializeField] private Transform _rotationPivot;
         private PlayerHealth playerHealth;
         private CharacterController _controller;
 
@@ -342,11 +344,14 @@ namespace Entities.Player
 
             // Calculate our desired movement direction.
             Vector2 movementInput = PlayerInput.MovementInput;
-            Vector3 inputDirection = transform.right * movementInput.x + transform.forward * movementInput.y;
+            Vector3 inputDirection = _rotationPivot.right * movementInput.x + _rotationPivot.forward * movementInput.y;
         
             // Apply movement.
             _controller.Move(inputDirection * targetSpeed * Time.deltaTime);
         }
+
+
+        #region Character Height
 
         private void UpdateCharacterHeight()
         {
@@ -375,6 +380,11 @@ namespace Entities.Player
             transform.position += Vector3.up * heightOffset;
         }
 
+        public float GetDefaultHeight() => normalHeight;
+        public float GetDefaultCameraHeight() => _defaultCameraHeight;
+
+#endregion
+
 
         #region Camera
 
@@ -389,26 +399,21 @@ namespace Entities.Player
             _rotationX -= lookInput.y;
             _rotationX = Mathf.Clamp(_rotationX, -90f, 90f);
 
-            transform.Rotate(Vector3.up * lookInput.x);
+            _playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
+            _rotationPivot.Rotate(Vector3.up * lookInput.x);
         }
 
 
         /// <summary>
-        /// Updates the camera's current position and rotation for crouching & peeking.
+        /// Updates the camera's current height for crouching & peeking.
         /// </summary>
         private void UpdateCameraTransform()
         {
-            // Apply the tilt and peek to camera
-            _playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
-
             float cameraHeight = Mathf.MoveTowards(_playerCamera.transform.localPosition.y, GetDesiredCameraHeight(), _heightSpeedChange * Time.deltaTime);
             _playerCamera.transform.localPosition = new Vector3(_currentPeekOffset, cameraHeight, 0.0f);
         }
         private void UpdateCameraTransformInstant()
         {
-            // Apply the tilt and peek to camera
-            _playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
-
             float cameraHeight = GetDesiredCameraHeight();
             _playerCamera.transform.localPosition = new Vector3(_currentPeekOffset, cameraHeight, 0.0f);
         }

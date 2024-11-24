@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Environment.Vents;
 
 namespace Entities.Mimic.States
 {
@@ -133,7 +134,7 @@ namespace Entities.Mimic.States
             _isInVent = true;
 
             // Choose a random vent entrance (Which is not our current entrance, unless said entrance is Omnidirectional).
-            int maxIndex = _targetVent.VentEntrances.Count - (_targetEntrance.IsOmnidirectional ? 0 : 1);
+            int maxIndex = _targetVent.VentEntrances.Length - (_targetEntrance.IsOmnidirectional ? 0 : 1);
             int randomIndex = Random.Range(0, maxIndex);
 
             VentEntrance newTarget = _targetVent.VentEntrances[randomIndex];

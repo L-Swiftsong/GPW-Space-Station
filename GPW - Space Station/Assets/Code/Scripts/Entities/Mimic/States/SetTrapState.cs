@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using Environment.Traps;
 
 namespace Entities.Mimic.States
 {

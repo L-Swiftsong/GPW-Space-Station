@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Teleporters
+namespace Environment.Teleporters
 {
     /// <summary> A teleporter which acts within a single scene.</summary>
     public class IntraSceneTeleporter : BaseTeleporter

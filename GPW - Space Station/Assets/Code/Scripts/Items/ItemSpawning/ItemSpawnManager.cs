@@ -3,87 +3,90 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items.Keycards;
 
-public class ItemSpawnManager : MonoBehaviour
+namespace Items.Spawning
 {
-    private static ItemSpawnManager s_instance;
-    [SerializeField] private List<KeycardSpawnPositions> _keycardSpawnPositionsList = new List<KeycardSpawnPositions>();
-
-
-    private void Awake()
+    public class ItemSpawnManager : MonoBehaviour
     {
-        s_instance = this;
+        private static ItemSpawnManager s_instance;
+        [SerializeField] private List<KeycardSpawnPositions> _keycardSpawnPositionsList = new List<KeycardSpawnPositions>();
 
-        // Spawn & setup all keycard instances.
-        for (int i = 0; i < _keycardSpawnPositionsList.Count; i++)
+
+        private void Awake()
         {
-            SpawnPosition spawnPosition = _keycardSpawnPositionsList[i].SpawnPositions[Random.Range(0, _keycardSpawnPositionsList[i].SpawnPositions.Length)];
-            Transform keycardInstance = Instantiate(_keycardSpawnPositionsList[i].KeycardPrefab, spawnPosition.Position, Quaternion.Euler(spawnPosition.Rotation));
+            s_instance = this;
 
-            if (!keycardInstance.TryGetComponent(out KeycardPickup keycard))
+            // Spawn & setup all keycard instances.
+            for (int i = 0; i < _keycardSpawnPositionsList.Count; i++)
             {
-                Debug.LogError("Error: KeycardSpawnPosition at index " + i + "'s Keycard Prefab does not contain the 'Keycard' class");
+                SpawnPosition spawnPosition = _keycardSpawnPositionsList[i].SpawnPositions[Random.Range(0, _keycardSpawnPositionsList[i].SpawnPositions.Length)];
+                Transform keycardInstance = Instantiate(_keycardSpawnPositionsList[i].KeycardPrefab, spawnPosition.Position, Quaternion.Euler(spawnPosition.Rotation));
+
+                if (!keycardInstance.TryGetComponent(out KeycardPickup keycard))
+                {
+                    Debug.LogError("Error: KeycardSpawnPosition at index " + i + "'s Keycard Prefab does not contain the 'Keycard' class");
+                }
+
+                keycard.SetupKeycard(_keycardSpawnPositionsList[i].SecurityLevel);
             }
-
-            keycard.SetupKeycard(_keycardSpawnPositionsList[i].SecurityLevel);
         }
-    }
 
 
 
-    private void OnDrawGizmosSelected()
-    {
-        for (int i = 0; i < _keycardSpawnPositionsList.Count; i++)
+        private void OnDrawGizmosSelected()
         {
-            _keycardSpawnPositionsList[i].DrawGizmos();
+            for (int i = 0; i < _keycardSpawnPositionsList.Count; i++)
+            {
+                _keycardSpawnPositionsList[i].DrawGizmos();
+            }
         }
-    }
 
-    [System.Serializable]
-    private struct KeycardSpawnPositions
-    {
-        [SerializeField] private int _securityLevel;
+        [System.Serializable]
+        private struct KeycardSpawnPositions
+        {
+            [SerializeField] private int _securityLevel;
         
 
-        [SerializeField] private Transform _keycardPrefab;
-        [SerializeField] private SpawnPosition[] _spawnPositions;
+            [SerializeField] private Transform _keycardPrefab;
+            [SerializeField] private SpawnPosition[] _spawnPositions;
 
 
-        [SerializeField] private Color _debugColour;
+            [SerializeField] private Color _debugColour;
 
 
-        #region Properties
+            #region Properties
 
-        public Transform KeycardPrefab => _keycardPrefab;
+            public Transform KeycardPrefab => _keycardPrefab;
 
-        public int SecurityLevel => _securityLevel;
+            public int SecurityLevel => _securityLevel;
 
-        public SpawnPosition[] SpawnPositions => _spawnPositions;
+            public SpawnPosition[] SpawnPositions => _spawnPositions;
 
-        #endregion
+            #endregion
 
 
-        public void DrawGizmos()
-        {
-            for(int i = 0; i < _spawnPositions.Length; i++)
+            public void DrawGizmos()
             {
-                Matrix4x4 oldMatrix = Gizmos.matrix;
-                Gizmos.matrix = Matrix4x4.Rotate(Quaternion.Euler(_spawnPositions[i].Rotation));
+                for(int i = 0; i < _spawnPositions.Length; i++)
+                {
+                    Matrix4x4 oldMatrix = Gizmos.matrix;
+                    Gizmos.matrix = Matrix4x4.Rotate(Quaternion.Euler(_spawnPositions[i].Rotation));
 
-                Gizmos.color = _debugColour;
-                Gizmos.DrawCube(_spawnPositions[i].Position, new Vector3(1f, 1f, 2f) * 0.1f);
+                    Gizmos.color = _debugColour;
+                    Gizmos.DrawCube(_spawnPositions[i].Position, new Vector3(1f, 1f, 2f) * 0.1f);
 
-                Gizmos.matrix = oldMatrix;
+                    Gizmos.matrix = oldMatrix;
+                }
             }
         }
-    }
 
-    [System.Serializable]
-    private struct SpawnPosition
-    {
-        [SerializeField] private Vector3 _position;
-        [SerializeField] private Vector3 _rotation;
+        [System.Serializable]
+        private struct SpawnPosition
+        {
+            [SerializeField] private Vector3 _position;
+            [SerializeField] private Vector3 _rotation;
 
-        public Vector3 Position => _position;
-        public Vector3 Rotation => _rotation;
+            public Vector3 Position => _position;
+            public Vector3 Rotation => _rotation;
+        }
     }
 }

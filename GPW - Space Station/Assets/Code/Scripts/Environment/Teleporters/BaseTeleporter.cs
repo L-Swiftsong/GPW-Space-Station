@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Teleporters
+namespace Environment.Teleporters
 {
     public abstract class BaseTeleporter : MonoBehaviour
     {
