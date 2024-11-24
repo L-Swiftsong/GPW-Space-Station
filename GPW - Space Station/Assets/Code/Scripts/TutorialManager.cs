@@ -4,6 +4,7 @@ using UnityEngine;
 using UI.Modals;
 using UnityEngine.Pool;
 using UI.Animations;
+using Interaction;
 
 public class TutorialManager : MonoBehaviour
 {

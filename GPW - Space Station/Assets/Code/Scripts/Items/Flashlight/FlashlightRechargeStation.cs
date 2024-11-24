@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Items;
+using Interaction;
 
 /// <summary> An environmental item which recharges the player flashlight when interacted with.</summary>
 public class FlashlightRechargeStation : MonoBehaviour, IInteractable

@@ -1,19 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Interaction;
 
-public class HidingSpot : MonoBehaviour, IInteractable
+namespace HidingSpots
 {
-    [SerializeField] private Vector3 _hidingPosition;
-
-    public void Interact(PlayerInteraction interactingScript)
+    public class HidingSpot : MonoBehaviour, IInteractable
     {
-        interactingScript.PlayerHide.StartHiding(transform.TransformPoint(_hidingPosition));
-    }
+        [SerializeField] private Vector3 _hidingPosition;
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireCube(transform.TransformPoint(_hidingPosition), Vector3.one * 0.5f);
+        public void Interact(PlayerInteraction interactingScript)
+        {
+            interactingScript.PlayerHide.StartHiding(transform.TransformPoint(_hidingPosition));
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireCube(transform.TransformPoint(_hidingPosition), Vector3.one * 0.5f);
+        }
     }
 }
