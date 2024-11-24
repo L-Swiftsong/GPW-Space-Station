@@ -10,19 +10,11 @@ public class PipeJumpScare : MonoBehaviour
 
     private bool isActive = false;
 
-    [SerializeField] private AudioClip steamAudio;
-    [SerializeField] private float maxVolume = 0.035f;
-    [SerializeField] private float fadeOutVolumeDuration = 2f;
-
     private AudioSource audioSource;
 
     private void Start()
     {
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.clip = steamAudio;
-        audioSource.loop = true;
-        audioSource.playOnAwake = false;
-        audioSource.volume = maxVolume;
+        audioSource = GetComponentInChildren<AudioSource>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -62,8 +54,6 @@ public class PipeJumpScare : MonoBehaviour
             float progress = elapsedTime / fadeDuration;
 
             mainModule.startLifetime = Mathf.Lerp(startLifetime, 0f, progress);
-
-            audioSource.volume = Mathf.Lerp(maxVolume, 0f, progress);
 
             yield return null;
         }
