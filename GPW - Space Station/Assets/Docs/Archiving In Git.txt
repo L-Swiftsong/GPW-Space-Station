@@ -1,0 +1,49 @@
+Important Preamble:
+- To archive branches, you will need to know how to open the Git Bash console. In order to know how to download and access this, see with GitBash Documentation.
+- Ensure that Github Desktop is closed when you are doing this.
+- Whenever any console command has text between a pair of angle brackets ('<' and '>'), the text and angle brackets are to be replaced with a value determined by the text inside.
+- - E.g. git tag -l "archive/<Branch Name>" becomes git tag -l "archive/Branch-Archive-Test"
+- - Note: Do NOT include spaces within the text that you enter between angle brackets UNLESS said angle brackets are surrounded by quotation marks ("").
+
+
+Archiving in Git:
+- Open Git Bash
+- Enter the following:
+> git checkout <Branch Name>
+> git tag -a archive/<Branch Name> -m "<Branch Description>"
+> git checkout main
+> git branch -D <Branch Name>
+> git branch -d -r origin/<Branch Name>
+> git push origin --tags
+> git push -d origin <Branch Name>
+
+
+Pushing New Tags to the Cloud:
+- Open Git Bash
+- Enter the following:
+> git push origin --tags
+
+
+Deleting a Tag:
+- Open Git Bash
+- Enter the following:
+> git push -d origin archive/<Branch Name>
+> git tag -d archive/<Branch Name>
+
+
+Getting a list of all Archived Branches:
+- Open Git Bash
+- Enter the following:
+> git tag
+
+Read the description of an archived branch:
+- Open Git Bash (See GitBash Doc)
+- git show archive/<Branch Name>
+
+
+Restoring an Archived Branch:
+- Open Git Bash (See GitBash Doc)
+- Enter the following:
+> git fetch --all
+> git fetch -t
+> git checkout -b <Branch Name> archive/<Branch Name>
