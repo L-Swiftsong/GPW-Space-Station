@@ -41,9 +41,11 @@ public class EnemyChaser : MonoBehaviour
 
     private void Update()
     {
-        if (isChasing && PlayerManager.Instance.Player != null)
+        Vector3 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+
+        if (isChasing)
         {
-            navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
+            navMeshAgent.SetDestination(playerPosition);
         }
     }
 
