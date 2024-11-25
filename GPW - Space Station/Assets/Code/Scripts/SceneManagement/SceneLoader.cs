@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.SceneManagement;
+using Entities.Player;
+
 
 namespace SceneManagement
 {

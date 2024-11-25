@@ -1,4 +1,5 @@
 using UnityEngine;
+using Interaction;
 
 namespace Items.Flashlight
 {

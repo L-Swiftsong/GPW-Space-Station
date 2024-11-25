@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Interaction;
 
-public class MedkitPickup : MonoBehaviour, IInteractable
+namespace Items.Healing
 {
-    [Header("Settings")]
-    [SerializeField] private int _medkitsContained = 1;
-
-
-    public void Interact(PlayerInteraction interactingScript)
+    public class MedkitPickup : MonoBehaviour, IInteractable
     {
-        interactingScript.Inventory.AddMedkits(_medkitsContained);
-        Destroy(this.gameObject);
+        [Header("Settings")]
+        [SerializeField] private int _medkitsContained = 1;
+
+
+        public void Interact(PlayerInteraction interactingScript)
+        {
+            interactingScript.Inventory.AddMedkits(_medkitsContained);
+            Destroy(this.gameObject);
+        }
     }
 }

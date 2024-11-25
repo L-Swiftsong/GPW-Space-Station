@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using AI;
+using Entities;
 
 namespace Items.Flashlight
 {
@@ -55,6 +55,9 @@ namespace Items.Flashlight
         {
             SubscribeToInput();
             OnObtainedFlashlight?.Invoke(_currentBattery);
+
+            // The flashlight will only be enabled when we obtain it, and we set its active state to false here so that it always starts with the light off.
+            SetActiveState(false);
         }
         private void OnDisable()
         {
