@@ -22,6 +22,10 @@ namespace Hiding
         [Header("Exiting")]
         [SerializeField] private List<Vector3> _exitSpots = new List<Vector3>() { new Vector3(0.0f, 0.0f, 1.0f) };
 
+        [Space(5)]
+        [SerializeField] private bool _automaticallyRemoveObstructedSpots = false;
+        [SerializeField] private LayerMask _exitSpotObstructionLayers = 1 << 0 | 1 << 7;
+
 
         #region Properties
 
@@ -49,6 +53,27 @@ namespace Hiding
             }
         }
 #endif
+
+        private void Awake()
+        {
+            if (_automaticallyRemoveObstructedSpots)
+            {
+                RemoveObstructedSpots();
+            }
+        }
+        private void RemoveObstructedSpots()
+        {
+            for(int i = 0; i < _exitSpots.Count; ++i)
+            {
+                if (Physics.Linecast(transform.position, GetExitSpot(i)))
+                {
+                    // There is an obstruction leading to this spot.
+                    Debug.Log($"Exit Spot {i} {_exitSpots[i]} was obstructed. Removing");
+                    _exitSpots.RemoveAt(i);
+                    --i;
+                }
+            }
+        }
 
 
         public void Interact(PlayerInteraction interactingScript)
@@ -88,9 +113,14 @@ namespace Hiding
             Gizmos.color = Color.white;
             Gizmos.DrawSphere(HidingPosition + Vector3.up * _cameraHeight, 0.1f);
 
-            Gizmos.color = Color.red;
             for(int i = 0; i < _exitSpots.Count; ++i)
             {
+                // Make the gizmo red if we are removing spots and the spot is obstructed so that we can see what spots will be removed. Otherwise, make it green.
+                RaycastHit hitInfo = new RaycastHit();
+                Gizmos.color = _automaticallyRemoveObstructedSpots && Physics.Linecast(transform.position, GetExitSpot(i), _exitSpotObstructionLayers, QueryTriggerInteraction.Ignore) ? Color.red : Color.green;
+                if (_automaticallyRemoveObstructedSpots && hitInfo.transform != null)
+                    Debug.Log(hitInfo.transform.name);
+                Gizmos.DrawLine(transform.position, GetExitSpot(i));
                 Gizmos.DrawWireCube(GetExitSpot(i), Vector3.one * 0.5f);
             }
         }

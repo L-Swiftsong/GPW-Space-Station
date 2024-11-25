@@ -19,8 +19,8 @@ namespace Entities.Mimic
 
         
         [Header("States")]
-        [SerializeField] private State _currentState;
-        [SerializeField] private string _currentStatePath;
+        [SerializeField] [ReadOnly] private State _currentState;
+        [SerializeField] [ReadOnly] private string _currentStatePath;
 
         private WanderState _wanderState;
         private ChaseState _chaseState;
