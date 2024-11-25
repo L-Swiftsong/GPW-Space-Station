@@ -20,7 +20,7 @@ namespace Hiding
 
 
         [Header("Exiting")]
-        [SerializeField] private List<Vector3> _exitSpots;
+        [SerializeField] private List<Vector3> _exitSpots = new List<Vector3>() { new Vector3(0.0f, 0.0f, 1.0f) };
 
 
         #region Properties
@@ -38,6 +38,17 @@ namespace Hiding
 
 
         public static event System.Action<HidingSpot> OnAnyHidingSpotInteracted;
+
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_exitSpots == null || _exitSpots.Count == 0)
+            {
+                Debug.LogError($"Error: The HidingSpot instance '{this.name}' has an invalid number of exit spots (Valid Minimum Count = 1)");
+            }
+        }
+#endif
 
 
         public void Interact(PlayerInteraction interactingScript)
