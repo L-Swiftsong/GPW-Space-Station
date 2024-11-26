@@ -18,6 +18,12 @@ namespace Environment.Buttons
         private string _playerInput = "";
 
 
+        private void Awake()
+        {
+            _connectedTriggerable = _connectedObject.GetComponent<ITriggerable>();
+        }
+
+
         public void ButtonPressed(string number)
         {
             if (_playerInput.Length < _correctCode.Length)

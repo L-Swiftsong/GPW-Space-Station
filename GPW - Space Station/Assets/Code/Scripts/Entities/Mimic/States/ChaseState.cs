@@ -23,7 +23,7 @@ namespace Entities.Mimic.States
         private (float Speed, float Acceleration) _previousMovementValues;
 
         [Space(5)]
-        [SerializeField] private float _playerCatchRadius = 0.5f;
+        [SerializeField] private float _playerCatchRadius = 0.75f;
         private bool _hasCaughtPlayer = false;
 
 

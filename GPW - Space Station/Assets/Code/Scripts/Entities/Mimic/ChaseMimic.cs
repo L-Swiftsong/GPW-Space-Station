@@ -12,6 +12,9 @@ namespace Entities.Mimic
     {
         [Header("Movement Settings")]
         [SerializeField] private float _chaseSpeed = 5f;
+        [SerializeField] private float _playerCatchRadius = 1.0f;
+        private bool _hasCaughtPlayer = false;
+
 
         [Header("Audio Settings")]
         [SerializeField] private AudioClip _chaseSFX;
@@ -56,9 +59,22 @@ namespace Entities.Mimic
 
         private void Update()
         {
+            if (_hasCaughtPlayer)
+            {
+                // We have already caught the player.
+                return;
+            }
+            
             if (isChasing && PlayerManager.Instance.Player != null)
             {
                 navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
+
+                if ((transform.position - PlayerManager.Instance.Player.position).sqrMagnitude <= (_playerCatchRadius * _playerCatchRadius))
+                {
+                    // We are close enough to catch the player.
+                    _hasCaughtPlayer = true;
+                    UI.GameOver.GameOverUI.Instance.ShowGameOverUI(); // Temp.
+                }
             }
         }
 

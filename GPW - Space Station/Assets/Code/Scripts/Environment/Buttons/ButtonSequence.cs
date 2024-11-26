@@ -41,6 +41,8 @@ namespace Environment.Buttons
             {
                 _correctButtonSequence[i].OnButtonPressed += ButtonPressed;
             }
+
+            _connectedTriggerable = _connectedObject.GetComponent<ITriggerable>();
         }
         private void OnDisable()
         {

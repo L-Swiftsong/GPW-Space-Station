@@ -33,6 +33,12 @@ namespace Environment.Buttons
         public static event System.EventHandler OnAnyKeycardReaderStopHighlighted;
 
 
+        private void Awake()
+        {
+            _connectedTriggerable = _connectedObject.GetComponent<ITriggerable>();
+        }
+
+
         public void Interact(PlayerInteraction interactingScript)
         {
             if (!interactingScript.Inventory.HasKeycardDecoder())
