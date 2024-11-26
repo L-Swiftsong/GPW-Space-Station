@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 931041222728491149}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.872, y: 2.948, z: -26.774}
-  m_LocalScale: {x: 66.26778, y: 66.267784, z: 44.528812}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8854213796654472177}
@@ -52,6 +52,9 @@ MonoBehaviour:
   SteamParticleSystem: {fileID: 9175135555600541219}
   steamDuration: 10
   fadeDuration: 2
+  steamAudio: {fileID: 0}
+  maxVolume: 0.035
+  fadeOutVolumeDuration: 2
 --- !u!65 &4206643940570123779
 BoxCollider:
   m_ObjectHideFlags: 0
