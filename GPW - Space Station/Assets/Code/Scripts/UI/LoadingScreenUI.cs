@@ -2,6 +2,7 @@ using SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UI.GameOver;
 using UnityEngine;
 
 public class LoadingScreenUI : MonoBehaviour
@@ -26,12 +27,14 @@ public class LoadingScreenUI : MonoBehaviour
         // Subscribe to events.
         SceneLoader.OnHardLoadStarted += SceneLoader_OnHardLoadStarted;
         SceneLoader.OnLoadFinished += Hide;
+        SceneLoader.OnMainMenuReloadFinished += HideWithoutCursorLock;
     }
     private void OnDisable()
     {
         // Unsubscribe from events.
         SceneLoader.OnHardLoadStarted -= SceneLoader_OnHardLoadStarted;
         SceneLoader.OnLoadFinished -= Hide;
+        SceneLoader.OnMainMenuReloadFinished -= HideWithoutCursorLock;
     }
 
 
@@ -75,19 +78,16 @@ public class LoadingScreenUI : MonoBehaviour
         }
 
         _container.SetActive(true);
-        PlayerInput.PreventAllActions();
+        PlayerInput.PreventAllActions(typeof(LoadingScreenUI));
     }
     private void Hide()
     {
         Cursor.lockState = CursorLockMode.Locked;
-
-        if (!_container.activeSelf)
-        {
-            // We are already hidden. Don't proceed.
-            return;
-        }
-
+        HideWithoutCursorLock();
+    }
+    private void HideWithoutCursorLock()
+    {
         _container.SetActive(false);
-        PlayerInput.RemoveAllActionPrevention();
+        PlayerInput.RemoveAllActionPrevention(typeof(LoadingScreenUI));
     }
 }

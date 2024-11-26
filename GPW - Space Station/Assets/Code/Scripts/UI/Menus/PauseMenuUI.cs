@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Saving;
+using SceneManagement;
 
 namespace UI.Menus
 {
@@ -38,6 +39,7 @@ namespace UI.Menus
         {
             // Unsubscribe from input events.
             PlayerInput.OnPauseGamePerformed -= PlayerInput_OnPauseGamePerformed;
+            HideWithoutCursorLocking();
         }
 
 
@@ -75,18 +77,16 @@ namespace UI.Menus
             Time.timeScale = 0.0f;
 
             // Prevent player input.
-            PlayerInput.PreventAllActions();
+            PlayerInput.PreventAllActions(typeof(PauseMenuUI));
         }
         private void Hide()
         {
             Cursor.lockState = CursorLockMode.Locked;
+            HideWithoutCursorLocking();
+        }
 
-            if (!_isActive)
-            {
-                // We are already inactive.
-                return;
-            }
-
+        private void HideWithoutCursorLocking()
+        {
             // Hide the UI.
             _isActive = false;
             _container.SetActive(false);
@@ -95,7 +95,7 @@ namespace UI.Menus
             Time.timeScale = 1.0f;
 
             // Allow player input.
-            PlayerInput.RemoveAllActionPrevention();
+            PlayerInput.RemoveAllActionPrevention(typeof(PauseMenuUI));
         }
 
 
@@ -136,11 +136,7 @@ namespace UI.Menus
 
         public void ResumeGame() => Hide();
         public void ReloadLastCheckpoint() => SaveManager.ReloadCheckpointSave();
-        public void ExitToMainMenu()
-        {
-            Debug.Log("Exit to Main Menu");
-            throw new System.NotImplementedException();
-        }
+        public void ExitToMainMenu() => SceneLoader.Instance.ReloadToMainMenu();
         public void ExitToDesktop() => Application.Quit();
 
         #endregion

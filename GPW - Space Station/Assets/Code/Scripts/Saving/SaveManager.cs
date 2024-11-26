@@ -125,17 +125,27 @@ namespace Saving
         {
             SceneLoader.OnLoadFinished += SceneLoader_OnLoadFinished;
             SceneLoader.OnHubLoadFinished += SceneLoader_OnHubLoadFinished;
+            SceneLoader.OnMainMenuReloadFinished += SceneLoader_OnMainMenuReloadFinished;
         }
         private void OnDisable()
         {
             SceneLoader.OnLoadFinished -= SceneLoader_OnLoadFinished;
             SceneLoader.OnHubLoadFinished -= SceneLoader_OnHubLoadFinished;
+            SceneLoader.OnMainMenuReloadFinished -= SceneLoader_OnMainMenuReloadFinished;
         }
 
 
 
         private void SceneLoader_OnLoadFinished() => SaveCheckpoint();
         private void SceneLoader_OnHubLoadFinished() => SaveHub();
+        private void SceneLoader_OnMainMenuReloadFinished()
+        {
+            if (s_autosaveCoroutine != null)
+            {
+                // Don't continue autosaving if we've reloaded to the hub.
+                StopCoroutine(s_autosaveCoroutine);
+            }
+        }
 
 
         /// <summary> Save to the CheckpointSaveData struct.</summary>
@@ -265,5 +275,8 @@ namespace Saving
             // Return the most recently saved file.
             return fileInfoArray[0];
         }
+
+        public static bool HasCheckpointSave() => s_checkpointSaveData.Exists;
+        public static bool HasHubSave() => s_hubEnterSaveData.Exists;
     }
 }

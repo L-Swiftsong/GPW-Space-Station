@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SceneManagement;
 using Saving;
+using UnityEngine.UI;
 
 namespace UI.GameOver
 {
@@ -14,6 +15,11 @@ namespace UI.GameOver
 
         [SerializeField] private GameObject _container;
         [SerializeField] private GameObject _firstSelectedElement;
+
+
+        [Header("Buttons")]
+        [SerializeField] private Button _checkpointSaveButton;
+        [SerializeField] private Button _hubSaveButton;
 
 
         private void Awake()
@@ -29,27 +35,24 @@ namespace UI.GameOver
             Cursor.lockState = CursorLockMode.Confined;
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(_firstSelectedElement);
 
-            if (_container.activeSelf)
-            {
-                // We are already active. Don't proceed.
-                return;
-            }
+            UpdateGameOverButtons();
 
             _container.SetActive(true);
-            PlayerInput.PreventAllActions();
+            PlayerInput.PreventAllActions(typeof(GameOverUI));
         }
         public void HideGameOverUI()
         {
             Cursor.lockState = CursorLockMode.Locked;
 
-            if (!_container.activeSelf)
-            {
-                // We are already hidden. Don't proceed.
-                return;
-            }
-
             _container.SetActive(false);
-            PlayerInput.RemoveAllActionPrevention();
+            PlayerInput.RemoveAllActionPrevention(typeof(GameOverUI));
+        }
+
+
+        private void UpdateGameOverButtons()
+        {
+            _checkpointSaveButton.interactable = SaveManager.HasCheckpointSave();
+            _hubSaveButton.interactable = SaveManager.HasHubSave();
         }
 
 
@@ -62,6 +65,11 @@ namespace UI.GameOver
         {
             HideGameOverUI();
             SaveManager.ReloadHubSave();
+        }
+        public void ExitToMainMenu()
+        {
+            HideGameOverUI();
+            SceneLoader.Instance.ReloadToMainMenu();
         }
         public void ExitToDesktop() => Application.Quit();
     }

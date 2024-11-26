@@ -48,12 +48,15 @@ namespace SceneManagement
         [Tooltip("When performing a Foreground Transition, these are the scenes that will not be unloaded")]
             [SerializeField] private List<SceneField> _foregroundTransitionScenesToKeep = new List<SceneField>();
 
+        [SerializeField] private SceneField _mainMenuScene;
+
         #endregion
 
 
         public static event Action OnHardLoadStarted; // Hard Load -> Loading Screen.
         public static event Action OnSoftLoadStarted; // Soft Load -> Load in Background.
 
+        public static event Action OnMainMenuReloadFinished;
         public static event Action OnLoadFinished;
         public static event Action OnHubLoadFinished;
 
@@ -95,7 +98,7 @@ namespace SceneManagement
                 StartCoroutine(PerformBackgroundTransition(transition as BackgroundSceneTransition));
             }
         }
-
+        
         private IEnumerator PerformForegroundTransition(ForegroundSceneTransition transition)
         {
             // Hard/Foreground load.
@@ -214,13 +217,13 @@ namespace SceneManagement
         }
 
 
-        public void LoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback)
+        public void ReloadToMainMenu() => StartCoroutine(PerformLoadFromBuildIndices(new int[1] { _mainMenuScene.BuildIndex }, 0, transitionType: TransitionType.Menu));
+        public void LoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback) => StartCoroutine(PerformLoadFromBuildIndices(buildIndices, activeSceneBuildIndex, onCompleteCallback));
+        
+        private enum TransitionType { Default, Hub, Menu };
+        private IEnumerator PerformLoadFromBuildIndices(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback = null, TransitionType transitionType = TransitionType.Default)
         {
-            StartCoroutine(PerformLoadFromSave(buildIndices, activeSceneBuildIndex, onCompleteCallback, false));
-        }
-        private IEnumerator PerformLoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback, bool hubTransition = false)
-        {
-            // Hard/Foreground load.
+            // Notify listeners that a foreground load has started.
             OnHardLoadStarted?.Invoke();
 
 
@@ -260,26 +263,34 @@ namespace SceneManagement
             onCompleteCallback?.Invoke();
 
 
-            // Once we recieve player input, continue.
+            // Once we recieve player input, continue and perform our 'Finish Loading' function based on the type of transition this is.
 #if ENABLE_INPUT_SYSTEM
-            if (hubTransition)
+            switch (transitionType)
             {
-                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishHubLoading());
-            }
-            else
-            {
-                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+                case TransitionType.Menu:
+                    InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishMenuReload());
+                    break;
+                case TransitionType.Hub:
+                    InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishHubLoading());
+                    break;
+                default:
+                    InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+                    break;
             }
 #elif ENABLE_LEGACY_INPUT_MANAGER
             yield return new WaitUntil(() => Input.anyKeyDown);
 
-            if (hubTransition)
+            switch (transitionType)
             {
-                FinishHubLoading();
-            }
-            else
-            {
-                FinishLoading();
+                case TransitionType.Menu:
+                    FinishMenuReload();
+                    break;
+                case TransitionType.Hub:
+                    ctrl => FinishHubLoading();
+                    break;
+                default:
+                    ctrl => FinishLoading();
+                    break;
             }
 #endif
         }
@@ -322,6 +333,10 @@ namespace SceneManagement
         private void FinishHubLoading() => StartCoroutine(PerformAfterFrame(() => {
             OnLoadFinished?.Invoke();
             OnHubLoadFinished?.Invoke();
+            Time.timeScale = _previousTimeScale;
+        }));
+        private void FinishMenuReload() => StartCoroutine(PerformAfterFrame(() => {
+            OnMainMenuReloadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
         }));
 

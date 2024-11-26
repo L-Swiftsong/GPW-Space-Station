@@ -125,6 +125,13 @@ public class PlayerInput : MonoBehaviour
     }
 
 
+    [ContextMenu(itemName: "Display Locks")]
+    private void DisplayLocks()
+    {
+        Debug.Log(s_typeToMovementPreventionCountDictionary.Count);
+        Debug.Log(s_typeToCameraPreventionCountDictionary.Count);
+        Debug.Log(s_typeToInteractionPreventionCountDictionary.Count);
+    }
 
     private void CreateInputActions()
     {
@@ -316,10 +323,14 @@ public class PlayerInput : MonoBehaviour
     #region Action Prevention
 
     // Movement Map.
-    private static int s_movementPreventionCount = 0;
-    public static void PreventMovementActions()
+    private static Dictionary<Type, int> s_typeToMovementPreventionCountDictionary = new Dictionary<Type, int>();
+    public static void PreventMovementActions(Type lockingType)
     {
-        s_movementPreventionCount++;
+        if (!s_typeToMovementPreventionCountDictionary.TryAdd(lockingType, 1))
+        {
+            // We already have a kvp with key 'lockingType', so increment it instead.
+            s_typeToMovementPreventionCountDictionary[lockingType]++;
+        }
 
         if (s_playerInput != null)
         {
@@ -327,11 +338,19 @@ public class PlayerInput : MonoBehaviour
             s_playerInput.Movement.Disable();
         }
     }
-    public static void RemoveMovementActionPrevention()
+    public static void RemoveMovementActionPrevention(Type lockingType)
     {
-        s_movementPreventionCount--;
+        if (s_typeToMovementPreventionCountDictionary.ContainsKey(lockingType))
+        {
+            s_typeToMovementPreventionCountDictionary[lockingType]--;
 
-        if (s_movementPreventionCount == 0 && s_playerInput != null)
+            if (s_typeToMovementPreventionCountDictionary[lockingType] <= 0)
+            {
+                s_typeToMovementPreventionCountDictionary.Remove(lockingType);
+            }
+        }
+
+        if (s_typeToMovementPreventionCountDictionary.Count == 0 && s_playerInput != null)
         {
             // There is no longer anything wishing to disable our movement controls.
             // Enable the 'Movement' map.
@@ -341,10 +360,14 @@ public class PlayerInput : MonoBehaviour
 
 
     // Camera Map.
-    private static int s_cameraPreventionCount = 0;
-    public static void PreventCameraActions()
+    private static Dictionary<Type, int> s_typeToCameraPreventionCountDictionary = new Dictionary<Type, int>();
+    public static void PreventCameraActions(Type lockingType)
     {
-        s_cameraPreventionCount++;
+        if (!s_typeToCameraPreventionCountDictionary.TryAdd(lockingType, 1))
+        {
+            // We already have a kvp with key 'lockingType', so increment it instead.
+            s_typeToCameraPreventionCountDictionary[lockingType]++;
+        }
 
         if (s_playerInput != null)
         {
@@ -352,11 +375,19 @@ public class PlayerInput : MonoBehaviour
             s_playerInput.Camera.Disable();
         }
     }
-    public static void RemoveCameraActionPrevention()
+    public static void RemoveCameraActionPrevention(Type lockingType)
     {
-        s_cameraPreventionCount--;
+        if (s_typeToCameraPreventionCountDictionary.ContainsKey(lockingType))
+        {
+            s_typeToCameraPreventionCountDictionary[lockingType]--;
 
-        if (s_cameraPreventionCount == 0 && s_playerInput != null)
+            if (s_typeToCameraPreventionCountDictionary[lockingType] <= 0)
+            {
+                s_typeToCameraPreventionCountDictionary.Remove(lockingType);
+            }
+        }
+
+        if (s_typeToCameraPreventionCountDictionary.Count == 0 && s_playerInput != null)
         {
             // There is no longer anything wishing to disable our camera controls.
             // Enable the 'Camera' map.
@@ -366,10 +397,14 @@ public class PlayerInput : MonoBehaviour
 
 
     // Interaction Map.
-    private static int s_interactionPreventionCount = 0;
-    public static void PreventInteractionActions()
+    private static Dictionary<Type, int> s_typeToInteractionPreventionCountDictionary = new Dictionary<Type, int>();
+    public static void PreventInteractionActions(Type lockingType)
     {
-        s_interactionPreventionCount++;
+        if (!s_typeToInteractionPreventionCountDictionary.TryAdd(lockingType, 1))
+        {
+            // We already have a kvp with key 'lockingType', so increment it instead.
+            s_typeToInteractionPreventionCountDictionary[lockingType]++;
+        }
 
         if (s_playerInput != null)
         {
@@ -377,11 +412,19 @@ public class PlayerInput : MonoBehaviour
             s_playerInput.Interaction.Disable();
         }
     }
-    public static void RemoveInteractionActionPrevention()
+    public static void RemoveInteractionActionPrevention(Type lockingType)
     {
-        s_interactionPreventionCount--;
+        if (s_typeToInteractionPreventionCountDictionary.ContainsKey(lockingType))
+        {
+            s_typeToInteractionPreventionCountDictionary[lockingType]--;
 
-        if (s_interactionPreventionCount == 0 && s_playerInput != null)
+            if (s_typeToInteractionPreventionCountDictionary[lockingType] <= 0)
+            {
+                s_typeToInteractionPreventionCountDictionary.Remove(lockingType);
+            }
+        }
+
+        if (s_typeToInteractionPreventionCountDictionary.Count == 0 && s_playerInput != null)
         {
             // There is no longer anything wishing to disable our interaction controls.
             // Enable the 'Interaction' map.
@@ -391,35 +434,35 @@ public class PlayerInput : MonoBehaviour
 
 
     // All Maps.
-    public static void PreventAllActions()
+    public static void PreventAllActions(Type lockingType)
     {
-        PreventMovementActions();
-        PreventCameraActions();
-        PreventInteractionActions();
+        PreventMovementActions(lockingType);
+        PreventCameraActions(lockingType);
+        PreventInteractionActions(lockingType);
     }
-    public static void RemoveAllActionPrevention()
+    public static void RemoveAllActionPrevention(Type lockingType)
     {
-        RemoveMovementActionPrevention();
-        RemoveCameraActionPrevention();
-        RemoveInteractionActionPrevention();
+        RemoveMovementActionPrevention(lockingType);
+        RemoveCameraActionPrevention(lockingType);
+        RemoveInteractionActionPrevention(lockingType);
     }
 
     private static void UpdateDisabledState()
     {
         // Movement.
-        if (s_movementPreventionCount > 0)
+        if (s_typeToMovementPreventionCountDictionary.Count > 0)
             s_playerInput.Movement.Disable();
         else
             s_playerInput.Movement.Enable();
 
         // Camera.
-        if (s_cameraPreventionCount > 0)
+        if (s_typeToCameraPreventionCountDictionary.Count > 0)
             s_playerInput.Camera.Disable();
         else
             s_playerInput.Camera.Enable();
 
         // Interaction.
-        if (s_interactionPreventionCount > 0)
+        if (s_typeToInteractionPreventionCountDictionary.Count > 0)
             s_playerInput.Interaction.Disable();
         else
             s_playerInput.Interaction.Enable();

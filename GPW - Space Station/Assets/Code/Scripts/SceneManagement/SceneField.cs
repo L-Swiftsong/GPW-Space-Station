@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -13,8 +14,12 @@ namespace SceneManagement
     {
         [SerializeField] private Object _sceneAsset;
 
+
         [SerializeField] private string _sceneName = "";
+        [SerializeField] private int _buildIndex = -1;
         public string SceneName => _sceneName;
+        public int BuildIndex => _buildIndex;
+
 
         // This function makes the SceneField work with existing Unity methods (Such as LoadLevel/LoadScene).
         public static implicit operator string(SceneField sceneField) => sceneField.SceneName;
@@ -33,6 +38,7 @@ namespace SceneManagement
             // Find the properties of the SceneField.
             SerializedProperty sceneAsset = property.FindPropertyRelative("_sceneAsset");
             SerializedProperty sceneName = property.FindPropertyRelative("_sceneName");
+            SerializedProperty buildIndex = property.FindPropertyRelative("_buildIndex");
 
             // Create and store the position of a label to display the property within.
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
@@ -44,8 +50,34 @@ namespace SceneManagement
 
                 if (sceneAsset.objectReferenceValue != null)
                 {
+                    // Get the scene name of the sceneAsset object and check that we haven't already setup this SceneField with the correct values.
+                    string sceneNameValue = (sceneAsset.objectReferenceValue as SceneAsset).name;
+                    if (sceneName.stringValue == sceneNameValue && buildIndex.intValue != -1)
+                    {
+                        // We've already got a correct reference for the set scene.
+                        return;
+                    }
+
                     // Set the value of sceneName to the name of the sceneAsset.
-                    sceneName.stringValue = (sceneAsset.objectReferenceValue as SceneAsset).name;
+                    sceneName.stringValue = sceneNameValue;
+
+                    // Get the value of the scene's build index by looping through and comparing the name of the desired scenes with all scenes in the build order.
+                    for (int i = 0; i < SceneManager.sceneCountInBuildSettings; ++i)
+                    {
+                        string builtScenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                        string builtSceneName = System.IO.Path.GetFileNameWithoutExtension(builtScenePath);
+                        if (builtSceneName == sceneNameValue)
+                        {
+                            buildIndex.intValue = i;
+                            break;
+                        }
+                    }
+
+                    if (buildIndex.intValue == -1)
+                    {
+                        // We didn't find our scene in the build list, likely due to us not having added the scene to the build list.
+                        throw new System.ArgumentException($"The scene with name {sceneNameValue} is not included in the build, and thus cannot be referenced via a SceneField instance.");
+                    }
                 }
             }
 

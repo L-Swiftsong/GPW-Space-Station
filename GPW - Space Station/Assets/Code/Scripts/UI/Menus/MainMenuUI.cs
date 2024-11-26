@@ -13,6 +13,7 @@ namespace UI.Menus
     public class MainMenuUI : MonoBehaviour
     {
         [SerializeField] private SceneField _persistentScene;
+        private static bool s_shouldLoadPersistentScene = true;
         [SerializeField] private ForegroundSceneTransition _firstSceneTransition;
 
 
@@ -41,9 +42,17 @@ namespace UI.Menus
         private System.IO.FileInfo[] _saveGameFiles = null;
 
 
-        private void Awake() => SceneManager.LoadSceneAsync(_persistentScene, LoadSceneMode.Additive);
+        private void Awake()
+        {
+            if (s_shouldLoadPersistentScene)
+            {
+                SceneManager.LoadSceneAsync(_persistentScene, LoadSceneMode.Additive);
+                s_shouldLoadPersistentScene = false;
+            }
+        }
         private void Start()
         {
+            Debug.Log("Set Lock State");
             Cursor.lockState = CursorLockMode.None;
 
             // Update and populate the saved games list & UI.
