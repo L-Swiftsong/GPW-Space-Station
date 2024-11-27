@@ -63,7 +63,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""Menu"",
+            ""name"": ""UI"",
             ""id"": ""5a33a178-aabc-4eb9-b20d-85352729298a"",
             ""actions"": [
                 {
@@ -83,6 +83,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SliderHorizontal"",
+                    ""type"": ""Value"",
+                    ""id"": ""e0cceaa2-8fea-44fe-97f4-47cb73f88bcf"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -129,6 +138,50 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""SelectPreviousTab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9af9a664-7ff1-48bf-a62e-6f2d73680226"",
+                    ""path"": ""<Gamepad>/leftStick/x"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""SliderHorizontal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""A/D"",
+                    ""id"": ""d57aae69-a268-417d-a470-5a9aabc56aad"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SliderHorizontal"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""66804f3a-e4fc-4ccf-8baa-c0b8f43a90a3"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""SliderHorizontal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""9a2af7a1-44fb-402a-bb41-7daf4ebe464d"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""SliderHorizontal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -573,10 +626,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Global
         m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
         m_Global_PauseGame = m_Global.FindAction("PauseGame", throwIfNotFound: true);
-        // Menu
-        m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
-        m_Menu_SelectNextTab = m_Menu.FindAction("SelectNextTab", throwIfNotFound: true);
-        m_Menu_SelectPreviousTab = m_Menu.FindAction("SelectPreviousTab", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_SelectNextTab = m_UI.FindAction("SelectNextTab", throwIfNotFound: true);
+        m_UI_SelectPreviousTab = m_UI.FindAction("SelectPreviousTab", throwIfNotFound: true);
+        m_UI_SliderHorizontal = m_UI.FindAction("SliderHorizontal", throwIfNotFound: true);
         // Movement
         m_Movement = asset.FindActionMap("Movement", throwIfNotFound: true);
         m_Movement_Movement = m_Movement.FindAction("Movement", throwIfNotFound: true);
@@ -699,35 +753,40 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     }
     public GlobalActions @Global => new GlobalActions(this);
 
-    // Menu
-    private readonly InputActionMap m_Menu;
-    private List<IMenuActions> m_MenuActionsCallbackInterfaces = new List<IMenuActions>();
-    private readonly InputAction m_Menu_SelectNextTab;
-    private readonly InputAction m_Menu_SelectPreviousTab;
-    public struct MenuActions
+    // UI
+    private readonly InputActionMap m_UI;
+    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
+    private readonly InputAction m_UI_SelectNextTab;
+    private readonly InputAction m_UI_SelectPreviousTab;
+    private readonly InputAction m_UI_SliderHorizontal;
+    public struct UIActions
     {
         private @PlayerInputActions m_Wrapper;
-        public MenuActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @SelectNextTab => m_Wrapper.m_Menu_SelectNextTab;
-        public InputAction @SelectPreviousTab => m_Wrapper.m_Menu_SelectPreviousTab;
-        public InputActionMap Get() { return m_Wrapper.m_Menu; }
+        public UIActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @SelectNextTab => m_Wrapper.m_UI_SelectNextTab;
+        public InputAction @SelectPreviousTab => m_Wrapper.m_UI_SelectPreviousTab;
+        public InputAction @SliderHorizontal => m_Wrapper.m_UI_SliderHorizontal;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(MenuActions set) { return set.Get(); }
-        public void AddCallbacks(IMenuActions instance)
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActions instance)
         {
-            if (instance == null || m_Wrapper.m_MenuActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_MenuActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
             @SelectNextTab.started += instance.OnSelectNextTab;
             @SelectNextTab.performed += instance.OnSelectNextTab;
             @SelectNextTab.canceled += instance.OnSelectNextTab;
             @SelectPreviousTab.started += instance.OnSelectPreviousTab;
             @SelectPreviousTab.performed += instance.OnSelectPreviousTab;
             @SelectPreviousTab.canceled += instance.OnSelectPreviousTab;
+            @SliderHorizontal.started += instance.OnSliderHorizontal;
+            @SliderHorizontal.performed += instance.OnSliderHorizontal;
+            @SliderHorizontal.canceled += instance.OnSliderHorizontal;
         }
 
-        private void UnregisterCallbacks(IMenuActions instance)
+        private void UnregisterCallbacks(IUIActions instance)
         {
             @SelectNextTab.started -= instance.OnSelectNextTab;
             @SelectNextTab.performed -= instance.OnSelectNextTab;
@@ -735,23 +794,26 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @SelectPreviousTab.started -= instance.OnSelectPreviousTab;
             @SelectPreviousTab.performed -= instance.OnSelectPreviousTab;
             @SelectPreviousTab.canceled -= instance.OnSelectPreviousTab;
+            @SliderHorizontal.started -= instance.OnSliderHorizontal;
+            @SliderHorizontal.performed -= instance.OnSliderHorizontal;
+            @SliderHorizontal.canceled -= instance.OnSliderHorizontal;
         }
 
-        public void RemoveCallbacks(IMenuActions instance)
+        public void RemoveCallbacks(IUIActions instance)
         {
-            if (m_Wrapper.m_MenuActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IMenuActions instance)
+        public void SetCallbacks(IUIActions instance)
         {
-            foreach (var item in m_Wrapper.m_MenuActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_MenuActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public MenuActions @Menu => new MenuActions(this);
+    public UIActions @UI => new UIActions(this);
 
     // Movement
     private readonly InputActionMap m_Movement;
@@ -984,10 +1046,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnPauseGame(InputAction.CallbackContext context);
     }
-    public interface IMenuActions
+    public interface IUIActions
     {
         void OnSelectNextTab(InputAction.CallbackContext context);
         void OnSelectPreviousTab(InputAction.CallbackContext context);
+        void OnSliderHorizontal(InputAction.CallbackContext context);
     }
     public interface IMovementActions
     {

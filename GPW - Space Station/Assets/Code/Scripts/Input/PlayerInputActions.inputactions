@@ -41,7 +41,7 @@
             ]
         },
         {
-            "name": "Menu",
+            "name": "UI",
             "id": "5a33a178-aabc-4eb9-b20d-85352729298a",
             "actions": [
                 {
@@ -61,6 +61,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "SliderHorizontal",
+                    "type": "Value",
+                    "id": "e0cceaa2-8fea-44fe-97f4-47cb73f88bcf",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -107,6 +116,50 @@
                     "action": "SelectPreviousTab",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9af9a664-7ff1-48bf-a62e-6f2d73680226",
+                    "path": "<Gamepad>/leftStick/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "SliderHorizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "A/D",
+                    "id": "d57aae69-a268-417d-a470-5a9aabc56aad",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SliderHorizontal",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "66804f3a-e4fc-4ccf-8baa-c0b8f43a90a3",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "SliderHorizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "9a2af7a1-44fb-402a-bb41-7daf4ebe464d",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "SliderHorizontal",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },

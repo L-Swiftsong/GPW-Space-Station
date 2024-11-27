@@ -17,7 +17,6 @@ namespace UI.Menus
         [Header("Controls Settings")]
         [SerializeField] private Toggle _toggleCrouchToggle;
         [SerializeField] private Toggle _toggleSprintToggle;
-        [SerializeField] private Toggle _toggleInventoryToggle;
 
         [Space(5)]
         [SerializeField] private Toggle _mouseInvertYAxisToggle;
@@ -93,7 +92,6 @@ namespace UI.Menus
             // Controls Settings.
             _toggleCrouchToggle.onValueChanged.AddListener(OnToggleCrouchChanged);
             _toggleSprintToggle.onValueChanged.AddListener(OnToggleSprintChanged);
-            _toggleInventoryToggle.onValueChanged.AddListener(OnToggleInventoryChanged);
 
             _mouseInvertYAxisToggle.onValueChanged.AddListener(OnMouseInvertYAxisChanged);
             _mouseHorizontalSensitivitySlider.onValueChanged.AddListener(OnMouseHorizontalSensitivityChanged);
@@ -146,7 +144,6 @@ namespace UI.Menus
             // Update Sliders (Controls).
             _toggleCrouchToggle.isOn = PlayerSettings.ToggleCrouch;
             _toggleSprintToggle.isOn = PlayerSettings.ToggleSprint;
-            _toggleInventoryToggle.isOn = PlayerSettings.ToggleInventory;
 
             _mouseInvertYAxisToggle.isOn = PlayerSettings.MouseInvertY;
             _mouseHorizontalSensitivitySlider.value = PlayerSettings.MouseHorizontalSensititvity;
@@ -237,15 +234,14 @@ namespace UI.Menus
         // Control Settings.
         private void OnToggleCrouchChanged(bool value) => PlayerSettings.ToggleCrouch = value;
         private void OnToggleSprintChanged(bool value) => PlayerSettings.ToggleSprint = value;
-        private void OnToggleInventoryChanged(bool value) => PlayerSettings.ToggleInventory = value;
 
         private void OnMouseInvertYAxisChanged(bool value) => PlayerSettings.MouseInvertY = value;
-        private void OnMouseHorizontalSensitivityChanged(float value) => PlayerSettings.MouseHorizontalSensititvity = value;
-        private void OnMouseVerticalSensitivityChanged(float value) => PlayerSettings.MouseVerticalSensititvity = value;
+        private void OnMouseHorizontalSensitivityChanged(float value) => PlayerSettings.MouseHorizontalSensititvity = Mathf.RoundToInt(value);
+        private void OnMouseVerticalSensitivityChanged(float value) => PlayerSettings.MouseVerticalSensititvity = Mathf.RoundToInt(value);
 
         private void OnGamepadInvertYAxisChanged(bool value) => PlayerSettings.GamepadInvertY = value;
-        private void OnGamepadHorizontalSensitivityChanged(float value) => PlayerSettings.GamepadHorizontalSensititvity = value;
-        private void OnGamepadVerticalSensitivityChanged(float value) => PlayerSettings.GamepadVerticalSensititvity = value;
+        private void OnGamepadHorizontalSensitivityChanged(float value) => PlayerSettings.GamepadHorizontalSensititvity = Mathf.RoundToInt(value);
+        private void OnGamepadVerticalSensitivityChanged(float value) => PlayerSettings.GamepadVerticalSensititvity = Mathf.RoundToInt(value);
 
 
         // Display Settings.

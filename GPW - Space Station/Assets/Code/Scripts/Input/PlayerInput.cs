@@ -97,6 +97,11 @@ public class PlayerInput : MonoBehaviour
     private static Vector2 s_gamepadInventorySelect;
     public static Vector2 GamepadInventorySelect => s_gamepadInventorySelect;
 
+
+    // UI Elements.
+    private static float s_sliderHorizontal;
+    public static float SliderHorizontal => s_sliderHorizontal;
+
     #endregion
 
 
@@ -144,8 +149,8 @@ public class PlayerInput : MonoBehaviour
 
 
         // Subscribe to events (Menu).
-        s_playerInput.Menu.SelectNextTab.performed += SelectNextTab_performed;
-        s_playerInput.Menu.SelectPreviousTab.performed += SelectPreviousTab_performed;
+        s_playerInput.UI.SelectNextTab.performed += SelectNextTab_performed;
+        s_playerInput.UI.SelectPreviousTab.performed += SelectPreviousTab_performed;
 
 
         // Subscribe to events (Movement).
@@ -179,7 +184,7 @@ public class PlayerInput : MonoBehaviour
 
         // Enable maps.
         s_playerInput.Global.Enable();
-        s_playerInput.Menu.Enable();
+        s_playerInput.UI.Enable();
         s_playerInput.Movement.Enable();
         s_playerInput.Camera.Enable();
         s_playerInput.Interaction.Enable();
@@ -203,8 +208,8 @@ public class PlayerInput : MonoBehaviour
 
 
         // Unsubscribe from events (Menu).
-        s_playerInput.Menu.SelectNextTab.performed += SelectNextTab_performed;
-        s_playerInput.Menu.SelectPreviousTab.performed += SelectPreviousTab_performed;
+        s_playerInput.UI.SelectNextTab.performed += SelectNextTab_performed;
+        s_playerInput.UI.SelectPreviousTab.performed += SelectPreviousTab_performed;
 
 
         // Unsubscribe from events (Movement).
@@ -316,6 +321,8 @@ public class PlayerInput : MonoBehaviour
         s_movementInput = s_playerInput.Movement.Movement.ReadValue<Vector2>();
         s_mouseLookInput = s_playerInput.Camera.MouseLookInput.ReadValue<Vector2>();
         s_gamepadLookInput = s_playerInput.Camera.GamepadLookInput.ReadValue<Vector2>();
+
+        s_sliderHorizontal = s_playerInput.UI.SliderHorizontal.ReadValue<float>();
     }
 
 

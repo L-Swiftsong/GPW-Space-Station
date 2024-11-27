@@ -23,7 +23,6 @@ public static class PlayerSettings
         // General.
         ToggleCrouch = PlayerPrefs.GetInt("ToggleCrouch", 0) == 1;
         ToggleSprint = PlayerPrefs.GetInt("ToggleSprint", 0) == 1;
-        ToggleInventory = PlayerPrefs.GetInt("ToggleInventory", 0) == 1;
     }
     /// <summary> Save our current settings to PlayerPrefs.</summary>
     public static void SaveSettingsToPlayerPrefs()
@@ -41,7 +40,6 @@ public static class PlayerSettings
         // General.
         PlayerPrefs.SetInt("ToggleCrouch", ToggleCrouch ? 1 : 0);
         PlayerPrefs.SetInt("ToggleSprint", ToggleSprint ? 1 : 0);
-        PlayerPrefs.SetInt("ToggleInventory", ToggleInventory ? 1 : 0);
 
 
         // Perform a PlayerPrefs save.
@@ -69,5 +67,4 @@ public static class PlayerSettings
     // Assorted.
     public static bool ToggleCrouch { get; set; }
     public static bool ToggleSprint { get; set; }
-    public static bool ToggleInventory { get; set; }
 }
