@@ -67,11 +67,8 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    //Reload Scene when player dies
-    void Die()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+    // (Temp Implementation) Show the game over UI once the player dies.
+    void Die() => UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
 
     void UpdateHealthUI()
     {
