@@ -1,5 +1,89 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-1542762710764868513
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f335fb1ffd8684294ad653bf1c7564, type: 3}
+  m_Name: ColorAdjustments
+  m_EditorClassIdentifier: 
+  active: 1
+  postExposure:
+    m_OverrideState: 1
+    m_Value: 0.2
+  contrast:
+    m_OverrideState: 1
+    m_Value: 7
+  colorFilter:
+    m_OverrideState: 0
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  hueShift:
+    m_OverrideState: 0
+    m_Value: 0
+  saturation:
+    m_OverrideState: 1
+    m_Value: 4
+--- !u!114 &-263941478327850730
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 558a8e2b6826cf840aae193990ba9f2e, type: 3}
+  m_Name: ShadowsMidtonesHighlights
+  m_EditorClassIdentifier: 
+  active: 1
+  shadows:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0.77192914, z: 0.8579114, w: 0}
+  midtones:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0}
+  highlights:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0.8161654, z: 0.8567332, w: 0}
+  shadowsStart:
+    m_OverrideState: 1
+    m_Value: 0
+  shadowsEnd:
+    m_OverrideState: 1
+    m_Value: 0.3
+  highlightsStart:
+    m_OverrideState: 0
+    m_Value: 0.55
+  highlightsEnd:
+    m_OverrideState: 0
+    m_Value: 1
+--- !u!114 &-140574575230452221
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5485954d14dfb9a4c8ead8edb0ded5b1, type: 3}
+  m_Name: LiftGammaGain
+  m_EditorClassIdentifier: 
+  active: 1
+  lift:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 0.9717113, z: 0.9750704, w: 0}
+  gamma:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0.90558827, z: 0.98113775, w: 0}
+  gain:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 0.901692, z: 0.9587507, w: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13,9 +97,13 @@ MonoBehaviour:
   m_Name: StealthDemo_PostProcessVolumeProfile
   m_EditorClassIdentifier: 
   components:
-  - {fileID: 1258029169703146879}
-  - {fileID: 6499541361378358109}
---- !u!114 &1258029169703146879
+  - {fileID: -1542762710764868513}
+  - {fileID: -140574575230452221}
+  - {fileID: -263941478327850730}
+  - {fileID: 5616411660027135087}
+  - {fileID: 4574355627038338139}
+  - {fileID: 2401464722043320128}
+--- !u!114 &2401464722043320128
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -24,45 +112,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
-  m_Name: Bloom
+  m_Script: {fileID: 11500000, guid: 5ea62842ddb6960488930897ba9ce398, type: 3}
+  m_Name: Dithering
   m_EditorClassIdentifier: 
   active: 1
-  skipIterations:
+  patternIndex:
+    m_OverrideState: 0
+    m_Value: 0
+  ditherThreshold:
+    m_OverrideState: 0
+    m_Value: 512
+  ditherStrength:
     m_OverrideState: 0
     m_Value: 1
-  threshold:
+  ditherScale:
     m_OverrideState: 0
-    m_Value: 0.9
-  intensity:
-    m_OverrideState: 1
-    m_Value: 1
-  scatter:
-    m_OverrideState: 0
-    m_Value: 0.7
-  clamp:
-    m_OverrideState: 0
-    m_Value: 65472
-  tint:
-    m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
-  highQualityFiltering:
-    m_OverrideState: 0
-    m_Value: 0
-  downscale:
-    m_OverrideState: 0
-    m_Value: 0
-  maxIterations:
-    m_OverrideState: 0
-    m_Value: 6
-  dirtTexture:
-    m_OverrideState: 0
-    m_Value: {fileID: 0}
-    dimension: 1
-  dirtIntensity:
-    m_OverrideState: 0
-    m_Value: 0
---- !u!114 &6499541361378358109
+    m_Value: 2
+--- !u!114 &4574355627038338139
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -71,34 +137,95 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97c23e3b12dc18c42a140437e53d3951, type: 3}
-  m_Name: Tonemapping
+  m_Script: {fileID: 11500000, guid: 4265a041954897941afec871c608473b, type: 3}
+  m_Name: Crt
   m_EditorClassIdentifier: 
   active: 1
-  mode:
+  scanlinesWeight:
     m_OverrideState: 1
-    m_Value: 2
-  neutralHDRRangeReductionMode:
-    m_OverrideState: 0
-    m_Value: 2
-  acesPreset:
-    m_OverrideState: 0
-    m_Value: 3
-  hueShiftAmount:
-    m_OverrideState: 0
-    m_Value: 0
-  detectPaperWhite:
-    m_OverrideState: 0
-    m_Value: 0
-  paperWhite:
-    m_OverrideState: 0
-    m_Value: 300
-  detectBrightnessLimits:
-    m_OverrideState: 0
+    m_Value: 0.5
+  noiseWeight:
+    m_OverrideState: 1
     m_Value: 1
-  minNits:
-    m_OverrideState: 0
-    m_Value: 0.005
-  maxNits:
+  screenBendX:
     m_OverrideState: 0
     m_Value: 1000
+  screenBendY:
+    m_OverrideState: 0
+    m_Value: 1000
+  vignetteAmount:
+    m_OverrideState: 1
+    m_Value: 0.2
+  vignetteSize:
+    m_OverrideState: 0
+    m_Value: 2
+  vignetteRounding:
+    m_OverrideState: 0
+    m_Value: 2
+  vignetteSmoothing:
+    m_OverrideState: 0
+    m_Value: 1
+  scanlinesDensity:
+    m_OverrideState: 1
+    m_Value: 200
+  scanlinesSpeed:
+    m_OverrideState: 1
+    m_Value: -8
+  noiseAmount:
+    m_OverrideState: 1
+    m_Value: 250
+  chromaticRed:
+    m_OverrideState: 1
+    m_Value: {x: 0.002, y: 0.002}
+  chromaticGreen:
+    m_OverrideState: 1
+    m_Value: {x: 0.002, y: 0.002}
+  chromaticBlue:
+    m_OverrideState: 1
+    m_Value: {x: 0.002, y: 0.002}
+  grilleOpacity:
+    m_OverrideState: 0
+    m_Value: 0.4
+  grilleCounterOpacity:
+    m_OverrideState: 0
+    m_Value: 0.2
+  grilleResolution:
+    m_OverrideState: 0
+    m_Value: 360
+  grilleCounterResolution:
+    m_OverrideState: 0
+    m_Value: 540
+  grilleUvRotation:
+    m_OverrideState: 0
+    m_Value: 90
+  grilleBrightness:
+    m_OverrideState: 0
+    m_Value: 15
+  grilleUvMidPoint:
+    m_OverrideState: 0
+    m_Value: 0.5
+  grilleShift:
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1}
+--- !u!114 &5616411660027135087
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35a1bd58dd7548198609eabd8ae2bb7d, type: 3}
+  m_Name: Pixelation
+  m_EditorClassIdentifier: 
+  active: 1
+  widthPixelation:
+    m_OverrideState: 1
+    m_Value: 256
+  heightPixelation:
+    m_OverrideState: 1
+    m_Value: 256
+  colorPrecision:
+    m_OverrideState: 1
+    m_Value: 256
