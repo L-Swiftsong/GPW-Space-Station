@@ -9,11 +9,7 @@ namespace Environment.Doors
         [SerializeField] private bool _startOpen = false;
         private bool _canOpen = true;
 
-        [SerializeField] private float _minToggleDelay = 0.0f;
-
-        [SerializeField] private AudioSource _audioSource;
-
-        [SerializeField] private AudioClip _doorOpenClip;
+        [SerializeField] private float _minToggleDelay = 0.2f;
 
         private bool m_isOpen = false;
         protected bool IsOpen
@@ -34,9 +30,6 @@ namespace Environment.Doors
         {
             m_isOpen = _startOpen;
             OnOpenStateInstantChange?.Invoke(m_isOpen);
-
-			_audioSource = gameObject.AddComponent<AudioSource>();
-			_audioSource.playOnAwake = false;
 		}
 
 
@@ -55,8 +48,6 @@ namespace Environment.Doors
 
             IsOpen = true;
 
-            PlaySound();
-
             // Handle minimum toggle time (If we want to prevent rapid toggling).
             if (_minToggleDelay > 0.0f)
             {
@@ -66,7 +57,7 @@ namespace Environment.Doors
         }
         protected virtual void Close()
         {
-            if (!_canOpen)
+            if (!_canOpen || !IsOpen)
                 return;
 
 
@@ -81,14 +72,5 @@ namespace Environment.Doors
         }
 
         private void ResetCanOpen() => _canOpen = true;
-
-        private void PlaySound()
-        {
-            if (_audioSource != null && _doorOpenClip != null)
-            {
-                _audioSource.clip = _doorOpenClip;
-                _audioSource.Play();
-            }
-        }
     }
 }
