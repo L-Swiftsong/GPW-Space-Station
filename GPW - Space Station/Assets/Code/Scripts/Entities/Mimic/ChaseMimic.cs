@@ -8,10 +8,13 @@ using Entities.Player;
 
 namespace Entities.Mimic
 {
+    [RequireComponent(typeof(NavMeshAgent))]
     public class ChaseMimic : MonoBehaviour
     {
         [Header("Movement Settings")]
-        [SerializeField] private float _chaseSpeed = 5f;
+        [SerializeField] private AnimationCurve _chaseSpeedCurve = AnimationCurve.Linear(5.0f, 5.0f, 10.0f, 7.0f);
+
+        [Space(5)]        
         [SerializeField] private float _playerCatchRadius = 1.0f;
         private bool _hasCaughtPlayer = false;
 
@@ -23,7 +26,7 @@ namespace Entities.Mimic
 
         private AudioSource audioSource;
         private bool isChasing = false;
-        private NavMeshAgent navMeshAgent;
+        private NavMeshAgent _navMeshAgent;
 
 
         private static System.Action OnChaseStart;
@@ -35,16 +38,9 @@ namespace Entities.Mimic
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
 
-            navMeshAgent = GetComponent<NavMeshAgent>();
-            if (navMeshAgent != null)
-            {
-                navMeshAgent.speed = _chaseSpeed;
-                navMeshAgent.updateRotation = true;
-            }
-            else
-            {
-                Debug.LogError("NavMeshAgent component is missing on EnemyChaser.");
-            }
+            _navMeshAgent = GetComponent<NavMeshAgent>();
+            _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(0.0f);
+            _navMeshAgent.updateRotation = true;
         }
         private void OnEnable()
         {
@@ -67,9 +63,12 @@ namespace Entities.Mimic
             
             if (isChasing && PlayerManager.Instance.Player != null)
             {
-                navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
+                _navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
+                
+                float distanceToPlayer = Vector3.Distance(transform.position, PlayerManager.Instance.Player.position);
+                _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(distanceToPlayer);
 
-                if ((transform.position - PlayerManager.Instance.Player.position).sqrMagnitude <= (_playerCatchRadius * _playerCatchRadius))
+                if (distanceToPlayer <= _playerCatchRadius)
                 {
                     // We are close enough to catch the player.
                     _hasCaughtPlayer = true;
@@ -141,6 +140,12 @@ namespace Entities.Mimic
             {
                 Gizmos.color = Color.green;
                 Gizmos.DrawLine(transform.position, PlayerManager.Instance.Player.position);
+            }
+
+            Gizmos.color = Color.red;
+            foreach (Keyframe key in _chaseSpeedCurve.keys)
+            {
+                Gizmos.DrawWireSphere(transform.position, key.time);
             }
         }
     }

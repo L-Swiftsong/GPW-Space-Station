@@ -129,9 +129,9 @@ NavMeshAgent:
   m_AgentTypeID: -1372625422
   m_Radius: 0.4
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 24
   avoidancePriority: 50
-  m_AngularSpeed: 360
+  m_AngularSpeed: 1440
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -152,7 +152,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5c4867873dd3b4087fb6d7b1ef23f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _chaseSpeed: 5
+  _chaseSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 3
+      value: 4
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 5
+      value: 6
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 7
+      value: 6
+      inSlope: -0
+      outSlope: 0.6666667
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 10
+      value: 8
+      inSlope: 0.6666667
+      outSlope: 0.2
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 20
+      value: 10
+      inSlope: 0.2
+      outSlope: 1
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 25
+      value: 15
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _playerCatchRadius: 1
   _chaseSFX: {fileID: 0}
   _breakDoorClip: {fileID: 0}
