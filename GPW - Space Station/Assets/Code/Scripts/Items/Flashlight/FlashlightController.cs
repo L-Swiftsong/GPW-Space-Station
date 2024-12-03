@@ -26,8 +26,10 @@ namespace Items.Flashlight
 
 
         [Header("Battery Settings")]
-        [SerializeField] private float _defaultBatteryDrainRate = 5.0f; // Percent/second.
-        [SerializeField] private float _focusedBatteryDrainRate = 15.0f; // Percent/second.
+        [Tooltip("How long the flashlight's battery lasts if continuously left on")]
+            [SerializeField] private float _defaultBatteryLifetime = 120.0f;
+        [Tooltip("How long the flashlight's battery lasts if continuously focused")]
+            [SerializeField] private float _focusedBatteryLifetime = 10.0f;
 
         private float m_currentBattery;
         private float _currentBattery
@@ -195,7 +197,7 @@ namespace Items.Flashlight
             }
 
             // Decrease our remaining battery with a rate determined by if we are focused or not.
-            float drainRate = _isFocused ? _focusedBatteryDrainRate : _defaultBatteryDrainRate;
+            float drainRate = 100.0f / (_isFocused ? _focusedBatteryLifetime : _defaultBatteryLifetime);
             _currentBattery -= drainRate * Time.deltaTime;
 
             if (_currentBattery <= 0.0f)

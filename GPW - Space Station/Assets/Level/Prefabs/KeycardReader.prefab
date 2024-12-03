@@ -47,9 +47,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d08efbf07a63004598d1aaad0083cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _connectedDoor: {fileID: 0}
+  _connectedObject: {fileID: 0}
   _securityLevel: 0
-  _canCloseDoor: 0
+  _canOnlyActivate: 0
   _limitedDuration: 0
   _duration: 3
   _audioSource: {fileID: 4657113257095379803}
@@ -190,7 +190,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5302627385356253215
 Transform:
