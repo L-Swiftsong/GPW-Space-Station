@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1.5000001, y: 1.5000001, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8854213796654472177}
@@ -49,11 +49,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2b867814c12e6c408a1a6a5d84fa815, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SteamParticleSystem: {fileID: 0}
+  SteamParticleSystem: {fileID: 2239074095562891865}
   steamDuration: 10
   fadeDuration: 2
-  steamAudio: {fileID: 0}
-  maxVolume: 0.035
+  steamAudio: {fileID: 8300000, guid: 32b1f15e40bcb5f4e87c5a86bbee33b3, type: 3}
+  maxVolume: 0.5
   fadeOutVolumeDuration: 2
 --- !u!65 &4206643940570123779
 BoxCollider:
@@ -74,8 +74,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.5293794, y: 2.0276902, z: 7.1192656}
-  m_Center: {x: 20.07684, y: -1.6408378, z: 16.265165}
+  m_Size: {x: 4.09265, y: 2.0276902, z: 5.6919622}
+  m_Center: {x: -0.21836613, y: 0, z: 0.6383724}
 --- !u!1 &2409001414544941863
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,7 +1432,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 8338
+  m_VersionIndex: 8347
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2890,7 +2890,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 8338
+  m_VersionIndex: 8347
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -3018,7 +3018,7 @@ Transform:
   m_GameObject: {fileID: 7145282145804309921}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 18.488, y: -1.635, z: 15.595}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3128,6 +3128,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4219827762705607607}
     m_Modifications:
+    - target: {fileID: 3079072008894023171, guid: 0c306c5070adacb42af8e28120f91b35, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3079072008894023171, guid: 0c306c5070adacb42af8e28120f91b35, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3079072008894023171, guid: 0c306c5070adacb42af8e28120f91b35, type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3079072008894023171, guid: 0c306c5070adacb42af8e28120f91b35, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 150
+      objectReference: {fileID: 0}
+    - target: {fileID: 3079072008894023171, guid: 0c306c5070adacb42af8e28120f91b35, type: 3}
+      propertyPath: InitialModule.startSpeed.minScalar
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 3473583696524127042, guid: 0c306c5070adacb42af8e28120f91b35, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.3
@@ -3192,5 +3212,10 @@ PrefabInstance:
 --- !u!4 &404585492686606104 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3473583696524127042, guid: 0c306c5070adacb42af8e28120f91b35, type: 3}
+  m_PrefabInstance: {fileID: 3866839095253935194}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &2239074095562891865 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 3079072008894023171, guid: 0c306c5070adacb42af8e28120f91b35, type: 3}
   m_PrefabInstance: {fileID: 3866839095253935194}
   m_PrefabAsset: {fileID: 0}
