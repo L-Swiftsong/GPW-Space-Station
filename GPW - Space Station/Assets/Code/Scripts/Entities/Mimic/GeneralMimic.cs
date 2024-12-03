@@ -17,7 +17,13 @@ namespace Entities.Mimic
         private FlashlightStunnable _flashlightStunnableScript;
         private PassiveMimicryController _passiveMimicryController;
 
-        
+        [Header("Sounds")]
+        [SerializeField] private AudioClip _footstepSound;
+        [SerializeField] private float _footstepInterval = 0.5f;
+        [SerializeField] private AudioSource _audioSource;
+        private float _footstepTimer = 0.0f;
+
+
         [Header("States")]
         [SerializeField] [ReadOnly] private State _currentState;
         [SerializeField] [ReadOnly] private string _currentStatePath;
@@ -51,6 +57,10 @@ namespace Entities.Mimic
             _stunnedState = GetComponent<StunnedState>();
 
 
+            _audioSource = gameObject.AddComponent<AudioSource>();
+            _audioSource.clip = _footstepSound;
+            _audioSource.playOnAwake = false;
+
             // Start in the wander state.
             SetActiveState(_wanderState);
         }
@@ -62,6 +72,8 @@ namespace Entities.Mimic
             _currentState.OnLogic();
 
             _currentStatePath = _currentState.Name;
+
+            HandleFootsteps();
         }
 
 
@@ -205,5 +217,21 @@ namespace Entities.Mimic
             _currentState = newState;
             _currentState.OnEnter();
         }
+
+        private void HandleFootsteps()
+        {
+            if (_agent.velocity.magnitude > 0.1f)
+            {
+                _footstepTimer -= Time.deltaTime;
+
+                if (_footstepTimer >= _footstepInterval)
+                {
+					_footstepTimer = 0f;
+
+					_audioSource.PlayOneShot(_footstepSound);
+				}
+            }
+        }
     }
+
 }
