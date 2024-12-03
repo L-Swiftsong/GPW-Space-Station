@@ -46,8 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b92c671f25774841b176a21d6fb3abe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _startOpen: 0
   _minToggleDelay: 0
-  _requiredKeycardID: -1
+  _audioSource: {fileID: 0}
+  _doorOpenClip: {fileID: 8300000, guid: 48d7ca2d3f07f6b4198138422fe816b2, type: 3}
 --- !u!65 &7191652546010382674
 BoxCollider:
   m_ObjectHideFlags: 0
