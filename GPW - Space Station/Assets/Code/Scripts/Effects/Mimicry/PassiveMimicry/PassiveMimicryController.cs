@@ -18,8 +18,14 @@ namespace Effects.Mimicry.PassiveMimicry
 
         [Header("Rendering Camera")]
         [SerializeField] private Camera _mimicryCamera;
-        private Camera _playerCamera;
+        private Camera m_playerCamera;
         private float _clipPlaneThreshold = 1.5f; // A default value of 1.5f seems to do the trick when we don't have a collider.
+
+        private Camera _playerCamera => _playerCameraOverride != null ? _playerCameraOverride : m_playerCamera;
+
+
+        [Header("Testing")]
+        [SerializeField] private Camera _playerCameraOverride;
 
 
         private const string PASSIVE_MIMICRY_STRENGTH_IDENTIFIER = "_PassiveMimicryStrength";
@@ -32,7 +38,7 @@ namespace Effects.Mimicry.PassiveMimicry
 
 
             // Cache values for our mimicry render camera.
-            _playerCamera = Camera.main;
+            m_playerCamera = Camera.main;
             if (this.TryGetComponent<Collider>(out Collider collider))
             {
                 _clipPlaneThreshold = collider.bounds.extents.magnitude;

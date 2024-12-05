@@ -25,6 +25,7 @@ public class EditorInitialiser
         "MimicryTestScene",
         "TempStartScene",
         "MainMenuScene",
+        "HallwayTest",
     };
     // The names of the scenes which we wish to load in addition to the first scene. Loaded in the order they appear in the List.
     private static List<string> _extraScenesToLoad = new List<string>
