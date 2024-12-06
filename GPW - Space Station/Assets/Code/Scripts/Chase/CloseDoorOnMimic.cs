@@ -19,7 +19,7 @@ public class CloseDoorOnMimic : MonoBehaviour
         // Script References
         externalInputDoor = _door.GetComponent<ExternalInputDoor>();
 
-        _mimic = GameObject.FindWithTag("Mimic");
+        _mimic = GameObject.Find("ChaseMimic");
     }
 
     void Update()

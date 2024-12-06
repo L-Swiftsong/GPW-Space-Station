@@ -16,7 +16,7 @@ namespace Entities.Mimic
 
         [Space(5)]        
         [SerializeField] private float _playerCatchRadius = 1.0f;
-        private bool _hasCaughtPlayer = false;
+        [HideInInspector] public bool _hasCaughtPlayer = false;
 
 
         [Header("Audio Settings")]
@@ -54,13 +54,7 @@ namespace Entities.Mimic
         }
 
         private void Update()
-        {
-            if (_hasCaughtPlayer)
-            {
-                // We have already caught the player.
-                return;
-            }
-            
+        {       
             if (isChasing && PlayerManager.Instance.Player != null)
             {
                 _navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
@@ -72,7 +66,6 @@ namespace Entities.Mimic
                 {
                     // We are close enough to catch the player.
                     _hasCaughtPlayer = true;
-                    UI.GameOver.GameOverUI.Instance.ShowGameOverUI(); // Temp.
                 }
             }
         }

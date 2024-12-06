@@ -24,7 +24,7 @@ namespace Entities.Mimic.States
 
         [Space(5)]
         [SerializeField] private float _playerCatchRadius = 0.75f;
-        private bool _hasCaughtPlayer = false;
+        public bool _hasCaughtPlayer = false;
 
 
         public override void OnEnter()
@@ -38,12 +38,6 @@ namespace Entities.Mimic.States
         }
         public override void OnLogic()
         {
-            if (_hasCaughtPlayer)
-            {
-                // We have already caught the player.
-                return;
-            }
-
             if (!_entitySenses.HasTarget)
             {
                 // The player is no longer in our LOS.
@@ -58,7 +52,6 @@ namespace Entities.Mimic.States
             {
                 // We are close enough to catch the player.
                 _hasCaughtPlayer = true;
-                UI.GameOver.GameOverUI.Instance.ShowGameOverUI(); // Temp.
             }
         }
         public override void OnExit()

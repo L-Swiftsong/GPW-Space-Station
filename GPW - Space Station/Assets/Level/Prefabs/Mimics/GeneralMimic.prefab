@@ -54,6 +54,7 @@ GameObject:
   - component: {fileID: 6891961267791488188}
   - component: {fileID: 6914234632448979516}
   - component: {fileID: 3374010165802448572}
+  - component: {fileID: 5578119179722969696}
   m_Layer: 0
   m_Name: GeneralMimic
   m_TagString: Untagged
@@ -166,6 +167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _footstepSound: {fileID: 8300000, guid: 6649f739eaedf7a4989a159e74a1f3cd, type: 3}
   _footstepInterval: 0.5
+  _audioSource: {fileID: 0}
   _currentState: {fileID: 0}
   _currentStatePath: 
 --- !u!114 &4856519383059337709
@@ -297,6 +299,7 @@ MonoBehaviour:
   _chaseMovementSpeed: 4.5
   _chaseAcceleration: 8
   _playerCatchRadius: 1
+  _hasCaughtPlayer: 0
 --- !u!114 &3543574826053687875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,6 +359,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _agent: {fileID: 3181101255938940964}
   _passiveMimicryController: {fileID: 5011720308764694068}
+--- !u!114 &5578119179722969696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5612615081326836176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62c9fda9427f0e241bec1013931648c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 3181101255938940964}
+  _attackCooldown: 2
+  _mimicSpeedAfterAttack: 2
+  _isAttacking: 0
 --- !u!1 &6692561947466169341
 GameObject:
   m_ObjectHideFlags: 0
