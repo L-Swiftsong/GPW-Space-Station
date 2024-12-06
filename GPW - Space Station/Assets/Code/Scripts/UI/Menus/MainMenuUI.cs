@@ -120,24 +120,32 @@ namespace UI.Menus
             }
 
             // Setup navigation.
-            for(int i = 0; i < loadSaveButtons.Count; i++)
+            if (loadSaveButtons.Count > 1)
             {
-                if (i == 0)
+                for (int i = 0; i < loadSaveButtons.Count; i++)
                 {
-                    // This is the first button.
-                    loadSaveButtons[i].SetupNavigation(selectOnUp: _loadSavesBackButton, selectOnDown: loadSaveButtons[i + 1]);
+                    if (i == 0)
+                    {
+                        // This is the first button.
+                        loadSaveButtons[i].SetupNavigation(selectOnUp: _loadSavesBackButton, selectOnDown: loadSaveButtons[i + 1]);
+                    }
+                    else if (i == loadSaveButtons.Count - 1)
+                    {
+                        // This is the last button.
+                        loadSaveButtons[i].SetupNavigation(selectOnUp: loadSaveButtons[i - 1], selectOnDown: _loadSavesBackButton);
+                        _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[i], selectOnDown: loadSaveButtons[0]);
+                    }
+                    else
+                    {
+                        // This is a middle button.
+                        loadSaveButtons[i].SetupNavigation(selectOnUp: loadSaveButtons[i - 1], selectOnDown: loadSaveButtons[i + 1]);
+                    }
                 }
-                else if (i == loadSaveButtons.Count - 1)
-                {
-                    // This is the last button.
-                    loadSaveButtons[i].SetupNavigation(selectOnUp: loadSaveButtons[i - 1], selectOnDown: _loadSavesBackButton);
-                    _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[i], selectOnDown: loadSaveButtons[0]);
-                }
-                else
-                {
-                    // This is a middle button.
-                    loadSaveButtons[i].SetupNavigation(selectOnUp: loadSaveButtons[i - 1], selectOnDown: loadSaveButtons[i + 1]);
-                }
+            }
+            else if (loadSaveButtons.Count == 1)
+            {
+                loadSaveButtons[0].SetupNavigation(selectOnUp: _loadSavesBackButton, selectOnDown: _loadSavesBackButton);
+                _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[0], selectOnDown: loadSaveButtons[0]);
             }
         }
 
