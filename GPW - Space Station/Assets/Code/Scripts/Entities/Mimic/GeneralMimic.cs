@@ -16,6 +16,7 @@ namespace Entities.Mimic
         private EntitySenses _entitySenses;
         private FlashlightStunnable _flashlightStunnableScript;
         private PassiveMimicryController _passiveMimicryController;
+        private MimicAttack _mimicAttack;
 
         [Header("Sounds")]
         [SerializeField] private AudioClip _footstepSound;
@@ -45,6 +46,7 @@ namespace Entities.Mimic
             _entitySenses = GetComponent<EntitySenses>();
             _flashlightStunnableScript = GetComponent<FlashlightStunnable>();
             _passiveMimicryController = GetComponent<PassiveMimicryController>();
+            _mimicAttack = GetComponent<MimicAttack>();
 
 
             // Get State References.
@@ -123,7 +125,7 @@ namespace Entities.Mimic
             }
             else if (_currentState == _chaseState) // Transitions FROM ChaseState.
             {
-                if (!_entitySenses.HasTarget && _agent.remainingDistance <= 0.5f)
+                if (!_entitySenses.HasTarget && _agent.remainingDistance <= 0.5f && _mimicAttack._isAttacking == false)
                 {
                     // We can no longer see the player and have reached their last spotted position.
                     SetActiveState(_wanderState);
