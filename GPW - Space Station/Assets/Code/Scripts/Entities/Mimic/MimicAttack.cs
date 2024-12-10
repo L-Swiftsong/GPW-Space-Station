@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Entities.Mimic;
 using Entities.Mimic.States;
+using Entities.Player;
 
 public class MimicAttack : MonoBehaviour
 {
@@ -12,8 +13,6 @@ public class MimicAttack : MonoBehaviour
     private ChaseState _chaseState;
     private ChaseMimic _chaseMimic;
     private PlayerHealth _playerHealth;
-
-    private GameObject _player;
 
     [Header("Settings")]
     [SerializeField] private float _attackCooldown = 2f;
@@ -24,10 +23,6 @@ public class MimicAttack : MonoBehaviour
 
     void Start()
     {
-        // Get PlayerHealth script from "Player" game object
-        _player = GameObject.FindGameObjectWithTag("Player");
-        _playerHealth = _player.GetComponent<PlayerHealth>();
-
         // Check if script is attached to general or chase mimic
         if (gameObject.name == "GeneralMimic")
         {
@@ -57,6 +52,10 @@ public class MimicAttack : MonoBehaviour
         _isAttacking = true;
 
         // Damage Player
+        if (_playerHealth == null)
+        {
+            _playerHealth = PlayerManager.Instance.Player.GetComponent<PlayerHealth>();
+        }
         if (_playerHealth != null)
         {
             _playerHealth.PlayerTakeDamage(25);

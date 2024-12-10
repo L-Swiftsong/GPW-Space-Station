@@ -16,15 +16,14 @@ namespace Effects.Jumpscares
         [SerializeField] private float maxVolume = 0.035f;
         [SerializeField] private float fadeOutVolumeDuration = 2f;
 
-        private AudioSource audioSource;
+        [SerializeField] private AudioSource _audioSource;
 
         private void Start()
         {
-            audioSource = gameObject.AddComponent<AudioSource>();
-            audioSource.clip = steamAudio;
-            audioSource.loop = true;
-            audioSource.playOnAwake = false;
-            audioSource.volume = maxVolume;
+            _audioSource.clip = steamAudio;
+            _audioSource.loop = true;
+            _audioSource.playOnAwake = false;
+            _audioSource.volume = maxVolume;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -46,7 +45,7 @@ namespace Effects.Jumpscares
 
         IEnumerator EnableSteam()
         {
-            audioSource.Play();
+            _audioSource.Play();
 
             yield return new WaitForSeconds(0.5f); // This is just to sync better with audio
 
@@ -65,15 +64,15 @@ namespace Effects.Jumpscares
 
                 mainModule.startLifetime = Mathf.Lerp(startLifetime, 0f, progress);
 
-                audioSource.volume = Mathf.Lerp(maxVolume, 0f, progress);
+                _audioSource.volume = Mathf.Lerp(maxVolume, 0f, progress);
 
                 yield return null;
             }
 
             SteamParticleSystem.Stop();
 
-            audioSource.loop = false;
-            audioSource.Stop();
+            _audioSource.loop = false;
+            _audioSource.Stop();
         }
     }
 }
