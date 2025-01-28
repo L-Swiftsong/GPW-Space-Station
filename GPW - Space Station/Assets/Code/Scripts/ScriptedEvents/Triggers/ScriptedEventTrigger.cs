@@ -9,7 +9,7 @@ namespace ScriptedEvents.Triggers
     {
         [Header("Trigger Settings")]
         [SerializeField] private bool _onlyTriggerOnce = true;
-        [SerializeField] private bool _destroyObjectOnTrigger = true;
+        [SerializeField] private bool _destroyObjectOnTrigger = false;
 
         [Space(10)]
         public UltEvent OnTriggerActivated;
