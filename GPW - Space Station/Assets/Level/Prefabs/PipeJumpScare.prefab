@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4219827762705607607}
   - component: {fileID: 8818305612830470152}
   - component: {fileID: 4206643940570123779}
+  - component: {fileID: 2777577557115616166}
   m_Layer: 0
   m_Name: PipeJumpScare
   m_TagString: Untagged
@@ -74,8 +75,34 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.09265, y: 2.0276902, z: 5.6919622}
-  m_Center: {x: -0.21836613, y: 0, z: 0.6383724}
+  m_Size: {x: 4, y: 2, z: 5.75}
+  m_Center: {x: -0.2, y: 0, z: 0.64}
+--- !u!114 &2777577557115616166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931041222728491149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 8818305612830470152}
+      _MemberName: StartJumpScare
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!1 &7145282145804309921
 GameObject:
   m_ObjectHideFlags: 0

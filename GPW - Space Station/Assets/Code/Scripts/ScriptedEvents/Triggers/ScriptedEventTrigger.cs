@@ -9,6 +9,7 @@ namespace ScriptedEvents.Triggers
     {
         [Header("Trigger Settings")]
         [SerializeField] private bool _onlyTriggerOnce = true;
+        [SerializeField] private bool _destroyObjectOnTrigger = true;
 
         [Space(10)]
         public UltEvent OnTriggerActivated;
@@ -56,7 +57,10 @@ namespace ScriptedEvents.Triggers
             }
             else if (_onlyTriggerOnce)
             {
-                Destroy(this.gameObject);
+                if (_destroyObjectOnTrigger)
+                    Destroy(this.gameObject);
+                else
+                    Destroy(this);
             }
         }
         private IEnumerator ActivateTriggerAfterDelay()
@@ -66,7 +70,10 @@ namespace ScriptedEvents.Triggers
 
             if (_onlyTriggerOnce)
             {
-                Destroy(this.gameObject);
+                if (_destroyObjectOnTrigger)
+                    Destroy(this.gameObject);
+                else
+                    Destroy(this);
             }
         }
 
