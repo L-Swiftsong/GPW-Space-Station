@@ -5,16 +5,16 @@ using Interaction;
 
 namespace Items.Healing
 {
-    public class MedkitPickup : MonoBehaviour, IInteractable
+    public class MedkitPickup : ItemPickup
     {
         [Header("Settings")]
         [SerializeField] private int _medkitsContained = 1;
 
 
-        public void Interact(PlayerInteraction interactingScript)
+        protected override bool PerformInteraction(PlayerInteraction interactingScript)
         {
             interactingScript.Inventory.AddMedkits(_medkitsContained);
-            Destroy(this.gameObject);
+            return true;
         }
     }
 }

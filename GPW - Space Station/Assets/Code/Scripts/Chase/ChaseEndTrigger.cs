@@ -2,66 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Entities.Mimic;
-using Entities.Player;
+using ScriptedEvents.Triggers;
 
 
 namespace Chase
 {
-    [RequireComponent(typeof(Collider))]
-    public class ChaseEndTrigger : MonoBehaviour
+    public class ChaseEndTrigger : VolumeTrigger
     {
-        [System.Serializable] private enum EndType { PlayerEnter, MimicEnter, AnyEnter }
-        [SerializeField] private EndType _chaseEndType;
-
-        
-#if UNITY_EDITOR
-        private void OnValidate()
+        protected override void OnTriggerEnter(Collider other)
         {
-            // Set this object's colliders to be trigger colliders.
-            foreach (Collider collider in GetComponentsInChildren<Collider>())
+            if (IsValidCollider(other))
             {
-                collider.isTrigger = true;
+                // The collider is valid.
+                // Activate our trigger.
+                ActivateTrigger();
+
+                // Stop the active chase.
+                ChaseMimic.EndChase();
             }
         }
-#endif
-
-
-        private void OnTriggerEnter(Collider other)
-        {
-            TryEndChase(other.gameObject);
-        }
-
-        private void TryEndChase(GameObject objectToTest)
-        {
-            if (_chaseEndType == EndType.AnyEnter)
-            {
-                if (!(TestIsPlayer(objectToTest) || TestIsMimic(objectToTest)))
-                {
-                    // The entered entity was neither the player nor were they the mimic.
-                    return;
-                }
-            }
-            if (_chaseEndType == EndType.PlayerEnter)
-            {
-                if (!TestIsPlayer(objectToTest))
-                {
-                    // We are expecting a player to enter and what entered wasn't a player.
-                    return;
-                }
-            }
-            else if (_chaseEndType == EndType.MimicEnter)
-            {
-                if (!TestIsMimic(objectToTest))
-                {
-                    // We are expecting the mimic to enter and what entered wasn't the mimic.
-                    return;
-                }
-            }
-
-            // What entered our trigger was our desired entity.
-            ChaseMimic.EndChase();
-        }
-        private bool TestIsPlayer(GameObject objectToTest) => objectToTest.GetComponent<PlayerController>() != null;
-        private bool TestIsMimic(GameObject objectToTest) => objectToTest.GetComponent<GeneralMimic>() != null || objectToTest.GetComponent<ChaseMimic>() != null;
     }
 }
