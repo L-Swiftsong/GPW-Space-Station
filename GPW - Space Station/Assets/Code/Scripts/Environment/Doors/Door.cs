@@ -26,7 +26,7 @@ namespace Environment.Doors
         public event System.Action<bool> OnOpenStateInstantChange;
 
 
-        private void Awake()
+        private void Start()
         {
             m_isOpen = _startOpen;
             OnOpenStateInstantChange?.Invoke(m_isOpen);

@@ -43,6 +43,7 @@ namespace ScriptedEvents.Triggers
                 return;
             }
 
+            Debug.Log("Activate Trigger");
             OnTriggerActivated?.Invoke();
 
 
@@ -68,5 +69,17 @@ namespace ScriptedEvents.Triggers
                 Destroy(this.gameObject);
             }
         }
+
+
+
+#region Call Presets
+#if UNITY_EDITOR
+        [ContextMenu("Presets/Immediate/Add Chase End")]
+        private void ImmediatePreset_TriggerChaseEnd() => OnTriggerActivated.AddPersistentCall((System.Action)Entities.Mimic.ChaseMimic.EndChase);
+        
+        [ContextMenu("Presets/Delayed/Add Chase End")]
+        private void DelayedPreset_TriggerChaseEnd() => OnDelayedTriggerActivated.AddPersistentCall((System.Action)Entities.Mimic.ChaseMimic.EndChase);
+#endif
+#endregion
     }
 }

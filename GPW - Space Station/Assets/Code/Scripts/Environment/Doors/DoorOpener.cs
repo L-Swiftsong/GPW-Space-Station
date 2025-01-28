@@ -48,6 +48,8 @@ namespace Environment.Doors
 
         private void Door_OnOpenStateChanged(bool isOpen)
         {
+            Debug.Log("Open State Changed");
+
             if (_handleOpenStateChangeCoroutine != null)
             {
                 StopCoroutine(_handleOpenStateChangeCoroutine);
@@ -195,6 +197,7 @@ namespace Environment.Doors
                 HandlePositionTick(isOpening ? 1.0f : 0.0f);
                 HandleRotationTick(isOpening ? 1.0f : 0.0f, openedFromFacingDirection);
                 _elapsedTime = isOpening ? _openingDuration : 0.0f;
+                Debug.Log(_frameTransform.parent.name + " " + _elapsedTime);
             }
 
             private void HandlePositionTick(float lerpTime)
