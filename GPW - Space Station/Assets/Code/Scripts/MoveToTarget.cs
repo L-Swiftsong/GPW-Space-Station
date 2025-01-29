@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -17,7 +18,14 @@ public class MoveToTarget : MonoBehaviour
     [SerializeField] private bool _navigateToTarget;
 
 
+    [Header("NavMeshLink Traversal")]
     [SerializeField] private AnimationCurve _ventEnterCurve;
+    private float _ventEnterDuration => _ventEnterCurve.keys[_ventEnterCurve.length - 1].time;
+    
+    [SerializeField] private AnimationCurve _ventExitCurve;
+    private float _ventExitDuration => _ventExitCurve.keys[_ventExitCurve.length - 1].time;
+    
+    private bool _onNavMeshLink;
 
 
     [Header("GFX")]
@@ -31,10 +39,15 @@ public class MoveToTarget : MonoBehaviour
     private Vector3 _crouchScale;
     private Vector3 _crouchPos;
 
+    [Space(5)]
+    [SerializeField] private AnimationCurve _crouchHeightChangeCurve;
+
 
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _agent.autoTraverseOffMeshLink = false;
+        _onNavMeshLink = false;
 
         _currentTargetIndex = 0;
         
@@ -52,11 +65,97 @@ public class MoveToTarget : MonoBehaviour
             _agent.SetDestination(_targets[_currentTargetIndex].position);
         }
 
+        if (_agent.isOnOffMeshLink && !_onNavMeshLink)
+        {
+            // We've just entered a NavMeshLink.
+            StartNavMeshLinkMovement();
+        }
+
         DetermineCurrentLayers();
 
         UpdateSpeed();
         UpdateGFX();
     }
+
+
+    #region NavMeshLink Movement
+    // Ref: 'https://github.com/SunnyValleyStudio/Diablo-Like-Movement-in-Unity-using-AI-Navigation-package/blob/main/AgentMover.cs'.
+
+    private void StartNavMeshLinkMovement()
+    {
+        _onNavMeshLink = true;
+
+        NavMeshLink link = (NavMeshLink)_agent.navMeshOwner;
+        PerformLinkMovement(link);
+    }
+
+    private void PerformLinkMovement(NavMeshLink link)
+    {
+        bool reverseDirection = CheckIfExitingVent(link);
+        Vector3 targetPos = reverseDirection ? link.gameObject.transform.TransformPoint(link.startPoint) : link.gameObject.transform.TransformPoint(link.endPoint);
+
+        Debug.Log("Exiting?: " + reverseDirection);
+        StartCoroutine(MoveOnOffMeshLink(targetPos, reverseDirection));
+    }
+    /// <summary>
+    ///     Determine whether the agent is closer to the start or end of a NavMeshLink, and therefore whether we are travelling from the Start to End or vice versa.
+    /// </summary>
+    /// <param name="link">The NavMeshLink that we are testing against.</param>
+    /// <returns> True if we are moving from the End to the Start of the NavMeshLink. False if otherwise.</returns>
+    private bool CheckIfExitingVent(NavMeshLink link)
+    {
+        Vector3 startPos = link.gameObject.transform.TransformPoint(link.startPoint);
+        Vector3 endPos = link.gameObject.transform.TransformPoint(link.endPoint);
+
+        float distanceAgentToStart = Vector3.Distance(_agent.transform.position, startPos);
+        float distanceAgentToEnd = Vector3.Distance(_agent.transform.position, endPos);
+
+        return distanceAgentToStart > distanceAgentToEnd;
+    }
+
+    private IEnumerator MoveOnOffMeshLink(Vector3 targetPos, bool reverseDirection)
+    {
+        float currentTime = 0.0f;
+        float duration = reverseDirection ? _ventExitDuration : _ventEnterDuration;
+
+        Vector3 agentStartPosition = _agent.transform.position;
+
+        while (currentTime < duration)
+        {
+            // Calculate our lerpTime.
+            currentTime += Time.deltaTime;
+            float lerpTime = Mathf.Clamp01(currentTime / _ventEnterDuration);
+
+            // Handle our position change.
+            float positionLerpValue = reverseDirection ? _ventExitCurve.Evaluate(lerpTime) : _ventEnterCurve.Evaluate(lerpTime);
+            _agent.transform.position = Vector3.Lerp(agentStartPosition, targetPos, positionLerpValue);
+
+            // Ensure that our Y-position is always at the desired level.
+            //_agent.transform.position = new Vector3(_agent.transform.position.x, targetPos.y, _agent.transform.position.z);
+
+
+            // Handle our GFX Changes (Would be in our animation for the Mimic proper).
+            float gfxLerpValue = _crouchHeightChangeCurve.Evaluate(reverseDirection ? 1.0f - lerpTime : lerpTime);
+            _gfx.localScale = Vector3.Lerp(_defaultScale, _crouchScale, gfxLerpValue);
+            _gfx.localPosition = Vector3.Lerp(_defaultPos, _crouchPos, gfxLerpValue);
+
+            yield return null;
+        }
+
+        // Finish our movement.
+        _agent.CompleteOffMeshLink();
+
+        // Ensure that our scale successfully reached our desired values.
+        _gfx.localScale = reverseDirection ? _defaultScale : _crouchScale;
+        _gfx.localPosition = reverseDirection ? _defaultPos : _crouchPos;
+
+        // Allow ourself to enter a new NavMeshLink after a short delay.
+        yield return new WaitForSeconds(0.1f);
+        _onNavMeshLink = false;
+    }
+
+    #endregion
+
 
     private void DetermineCurrentLayers()
     {
@@ -88,14 +187,14 @@ public class MoveToTarget : MonoBehaviour
         if (_currentLayers.HasFlag(NavMeshLayers.Crawlable))
         {
             // We are crouching.
-            _gfx.localScale = _crouchScale;
-            _gfx.localPosition = _crouchPos;
+            //_gfx.localScale = _crouchHeight;
+            //_gfx.localPosition = _crouchPos;
             return;
         }
 
         // We are not crouching.
-        _gfx.localScale = _defaultScale;
-        _gfx.localPosition = _defaultPos;
+        //_gfx.localScale = _defaultScale;
+        //_gfx.localPosition = _defaultPos;
     }
 
 
