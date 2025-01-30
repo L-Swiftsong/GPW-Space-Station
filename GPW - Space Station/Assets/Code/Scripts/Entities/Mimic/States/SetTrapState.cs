@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using Environment.Traps;
 
 namespace Entities.Mimic.States
@@ -12,12 +11,11 @@ namespace Entities.Mimic.States
 
 
         [Header("References")]
-        [SerializeField] private NavMeshAgent _agent;
+        [SerializeField] private EntityMovement _entityMovement;
 
 
         [Header("Trap Detection Settings")]
         [SerializeField] private float _trapDetectionRadius = 10.0f; // How close the agent must be to a potential trap spot to consider laying a trap.
-        private const float REACHED_TRAP_POINT_SQR_DISTANCE = 0.25f;
 
 
         [Space(5)]
@@ -65,7 +63,7 @@ namespace Entities.Mimic.States
         }
         public override void OnExit()
         {
-            _agent.isStopped = false;
+            _entityMovement.SetIsStopped(false);
             _setTrapReadyTime = Time.time + _minTimeBetweenEntries;
         }
 
@@ -87,13 +85,13 @@ namespace Entities.Mimic.States
 
             // Choose a random trapPoint for our target.
             _targetTrapPoint = nearbyTrapPoints[Random.Range(0, nearbyTrapPoints.Count)];
-            _agent.SetDestination(_targetTrapPoint.transform.position);
+            _entityMovement.SetDestination(_targetTrapPoint.transform.position);
             Debug.Log("Trap State Success");
         }
 
         private void MoveToTrapPoint()
         {
-            if ((_agent.transform.position - _targetTrapPoint.transform.position).sqrMagnitude > REACHED_TRAP_POINT_SQR_DISTANCE)
+            if (!_entityMovement.HasReachedDestination())
             {
                 // We haven't reached the trap point yet.
                 return;
@@ -101,7 +99,7 @@ namespace Entities.Mimic.States
 
             // We have reached the target trap point.
             // Ensure we are at the trap's position.
-            _agent.isStopped = true;
+            _entityMovement.SetIsStopped(true);
             transform.position = _targetTrapPoint.transform.position;
             _hasReachedTargetTrapPoint = true;
         }
@@ -109,7 +107,7 @@ namespace Entities.Mimic.States
         private void WaitInTrapPoint()
         {
             // Rotate to face the trap's forward.
-            transform.rotation = Quaternion.RotateTowards(_agent.transform.rotation, Quaternion.LookRotation(_targetTrapPoint.transform.forward, transform.up), _agent.angularSpeed * Time.deltaTime);
+            _entityMovement.RotateToDirection(_targetTrapPoint.transform.forward);
 
             // Increase the time that we have spent waiting.
             _currentTrapTime += Time.deltaTime;

@@ -33,7 +33,7 @@ namespace Entities.Mimic
         private ChaseState _chaseState;
         private PreparingToChaseState _preparingToChaseState;
         private SearchState _searchState;
-        private VentState _ventState;
+        //private VentState _ventState;
         private SetTrapState _setTrapState;
         private StunnedState _stunnedState;
 
@@ -47,14 +47,16 @@ namespace Entities.Mimic
             _flashlightStunnableScript = GetComponent<FlashlightStunnable>();
             _passiveMimicryController = GetComponent<PassiveMimicryController>();
             _mimicAttack = GetComponent<MimicAttack>();
+        }
 
-
+        private void Start()
+        {
             // Get State References.
             _wanderState = GetComponent<WanderState>();
             _chaseState = GetComponent<ChaseState>();
             _preparingToChaseState = GetComponent<PreparingToChaseState>();
             _searchState = GetComponent<SearchState>();
-            _ventState = GetComponent<VentState>();
+            //_ventState = GetComponent<VentState>();
             _setTrapState = GetComponent<SetTrapState>();
             _stunnedState = GetComponent<StunnedState>();
 
@@ -111,12 +113,12 @@ namespace Entities.Mimic
                     // We should attempt to exit the Wander State.
                     float _rndBehaviourDecision = Random.Range(0.0f, 1.0f);
 
-                    if (_rndBehaviourDecision <= _wanderState.VentChance && _ventState.CanEnter())
+                    /*if (_rndBehaviourDecision <= _wanderState.VentChance && _ventState.CanEnter())
                     {
                         SetActiveState(_ventState);
                         return;
                     }
-                    else if (_rndBehaviourDecision <= (_wanderState.VentChance + _wanderState.SetTrapChance) && _setTrapState.CanEnter())
+                    else */if (_rndBehaviourDecision <= (_wanderState.VentChance + _wanderState.SetTrapChance) && _setTrapState.CanEnter())
                     {
                         SetActiveState(_setTrapState);
                         return;
@@ -157,7 +159,7 @@ namespace Entities.Mimic
                     return;
                 }
             }
-            else if (_currentState == _ventState) // Transitions FROM VentState.
+            /*else if (_currentState == _ventState) // Transitions FROM VentState.
             {
                 if (_entitySenses.HasTarget)
                 {
@@ -177,7 +179,7 @@ namespace Entities.Mimic
                     SetActiveState(_wanderState);
                     return;
                 }
-            }
+            }*/
             else if (_currentState == _setTrapState) // Transitions FROM SetTrapState.
             {
                 if (_entitySenses.HasTarget)

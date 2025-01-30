@@ -157,6 +157,19 @@ public class MoveToTarget : MonoBehaviour
     #endregion
 
 
+    private Vector3 DetermineClosestPointOnNavMesh(Transform target, int areas = NavMesh.AllAreas)
+    {
+        if (NavMesh.SamplePosition(target.position, out NavMeshHit hit, 10.0f, areas))
+        {
+            return hit.position;
+        }
+        else
+        {
+            return target.position;
+        }
+    }
+
+
     private void DetermineCurrentLayers()
     {
         if (!_agent.SamplePathPosition(_agent.areaMask, 1.0f, out NavMeshHit hit))
@@ -208,5 +221,18 @@ public class MoveToTarget : MonoBehaviour
         {
             _currentTargetIndex = 0;
         }
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawSphere(DetermineClosestPointOnNavMesh(_targets[0], (int)NavMeshLayers.Walkable), 0.2f);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(DetermineClosestPointOnNavMesh(_targets[0], (int)NavMeshLayers.Crawlable), 0.2f);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(DetermineClosestPointOnNavMesh(_targets[0], (int)(NavMeshLayers.Walkable | NavMeshLayers.Crawlable)), 0.15f);
     }
 }

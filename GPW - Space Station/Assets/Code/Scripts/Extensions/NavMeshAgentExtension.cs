@@ -8,18 +8,28 @@ public static class NavMeshAgentExtension
     #region Random Points
 
     /// <summary> Attempt to find a random point on the Navmesh that this agent can occupy within a box.</summary>
-    public static bool TryFindRandomPoint(this NavMeshAgent agent, Vector3 centre, Vector3 extents, out Vector3 result, int maxAttempts = 5)
+    public static bool TryFindRandomPoint(this NavMeshAgent agent, Vector3 centre, Vector3 extents, out Vector3 result, int areaMask = -1, int maxAttempts = 5)
     {
+        // Default value for areaMask.
+        if (areaMask == -1)
+        {
+            Debug.Log("Area Mask Unset: " + areaMask);
+            areaMask = agent.areaMask;
+        }
+
+
         Vector3 randomPoint;
         NavMeshHit hit;
         for (int i = 0; i < maxAttempts; i++)
         {
+            // Get a random point within our specified box.
             randomPoint = centre + new Vector3(
                 x: Random.Range(-extents.x, extents.x),
                 y: Random.Range(-extents.y, extents.y),
                 z: Random.Range(-extents.z, extents.z));
 
-            if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, agent.areaMask))
+            // Check that this point is valid.
+            if (NavMesh.SamplePosition(randomPoint, out hit, 1.0f, areaMask))
             {
                 // We found a suitable point on the navmesh.
                 result = hit.position;

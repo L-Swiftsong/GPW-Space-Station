@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using Effects.Mimicry.PassiveMimicry;
 
 namespace Entities.Mimic.States
@@ -12,18 +11,18 @@ namespace Entities.Mimic.States
 
 
         [Header("Referenecs")]
-        [SerializeField] private NavMeshAgent _agent;
+        [SerializeField] private EntityMovement _entityMovement;
         [SerializeField] private PassiveMimicryController _passiveMimicryController;
 
 
         public override void OnEnter()
         {
-            _agent.isStopped = true;
+            _entityMovement.SetIsStopped(true);
             _passiveMimicryController.SetMimicryStrengthTarget(0.0f);
         }
         public override void OnExit()
         {
-            _agent.isStopped = false;
+            _entityMovement.SetIsStopped(false);
             _passiveMimicryController.SetMimicryStrengthTarget(1.0f);
         }
     }

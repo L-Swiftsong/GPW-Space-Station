@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using Effects.Mimicry.PassiveMimicry;
 
 namespace Entities.Mimic.States
@@ -12,7 +11,7 @@ namespace Entities.Mimic.States
 
 
         [Header("References")]
-        [SerializeField] private NavMeshAgent _agent;
+        [SerializeField] private EntityMovement _entityMovement;
         [SerializeField] private EntitySenses _entitySenses;
         [SerializeField] private PassiveMimicryController _passiveMimicryController;
 
@@ -20,7 +19,6 @@ namespace Entities.Mimic.States
         [Header("Settings")]
         [SerializeField] private float _chaseMovementSpeed;
         [SerializeField] private float _chaseAcceleration;
-        private (float Speed, float Acceleration) _previousMovementValues;
 
         [Space(5)]
         [SerializeField] private float _playerCatchRadius = 0.75f;
@@ -29,12 +27,9 @@ namespace Entities.Mimic.States
 
         public override void OnEnter()
         {
-            // Cache current movement values.
-            _previousMovementValues = (_agent.speed, _agent.acceleration);
-
-            // Override agent movement values with chase-specific values.
-            _agent.speed = _chaseMovementSpeed;
-            _agent.acceleration = _chaseAcceleration;
+            // Override movement values with chase-specific values.
+            _entityMovement.SetSpeedOverride(_chaseMovementSpeed);
+            _entityMovement.SetAccelerationOverride(_chaseMovementSpeed);
         }
         public override void OnLogic()
         {
@@ -46,7 +41,7 @@ namespace Entities.Mimic.States
             // The player is still in our LOS.
 
             // Move towards the player.
-            _agent.SetDestination(_entitySenses.TargetPosition);
+            _entityMovement.SetDestination(_entitySenses.TargetPosition);
 
             if ((transform.position - _entitySenses.TargetPosition).sqrMagnitude <= (_playerCatchRadius * _playerCatchRadius))
             {
@@ -57,8 +52,7 @@ namespace Entities.Mimic.States
         public override void OnExit()
         {
             // Reset agent movement values.
-            _agent.speed = _previousMovementValues.Speed;
-            _agent.acceleration = _previousMovementValues.Acceleration;
+            _entityMovement.ResetAllOverrides();
 
 
             // Reset mimicry strength.

@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 7306464660901189940}
   - component: {fileID: 3181101255938940964}
   - component: {fileID: 4130788727672127505}
+  - component: {fileID: 9116854351678556578}
   - component: {fileID: 4856519383059337709}
   - component: {fileID: 5037416545564764748}
   - component: {fileID: 5011720308764694068}
@@ -170,6 +171,116 @@ MonoBehaviour:
   _audioSource: {fileID: 0}
   _currentState: {fileID: 0}
   _currentStatePath: 
+--- !u!114 &9116854351678556578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5612615081326836176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7793cff1934c0449b75bc3cf639085c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _reachedDestinationDistance: 0.5
+  _defaultSpeed: 2
+  _defaultAcceleration: 120
+  _speedOverride: -1
+  _accelerationOverride: -1
+  _crouchingLayers: 0
+  _crouchingSpeedMultiplier: 0.8
+  _crawlingLayers: 8
+  _crawlingSpeedMultiplier: 0.5
+  _ventEnterCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.4
+      value: 0
+      inSlope: 0
+      outSlope: 1.6666666
+      tangentMode: 69
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.24500175
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1.6666666
+      outSlope: 4.150187
+      tangentMode: 5
+      weightedMode: 0
+      inWeight: 0.0489519
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _ventExitCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _head: {fileID: 2177283424635744006}
+  _defaultHeadHeight: 1.6
+  _crouchedHeadHeight: 0.8
+  _gfxContainers:
+  - {fileID: 2065921386697782897}
+  - {fileID: 4566030846766552248}
+  _defaultGFXYScale: 1
+  _crouchedGFXYScale: 0.5
+  _crouchHeightChangeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.4
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &4856519383059337709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,10 +369,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1537313ddecf6b4f825858ebdd943f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
-  _reachedDestinationDistance: 0.5
-  _mapCentre: {x: 2.5, y: 0, z: 17.5}
-  _mapExtents: {x: 29, y: 1, z: 41}
+  _entityMovement: {fileID: 9116854351678556578}
+  _mapCentre: {x: 0, y: 0, z: 0}
+  _mapExtents: {x: 0, y: 0, z: 0}
+  _validWanderTargetLayers: 1
   _minWanderDecisionTime: 1
   _maxWanderDecisionTime: 15
   _enterVentChance: 0.2
@@ -278,7 +389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f062615ee35b77a45a185d1476a32784, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
+  _entityMovement: {fileID: 9116854351678556578}
   _passiveMimicryController: {fileID: 5011720308764694068}
   _chaseStartTime: 0.75
 --- !u!114 &5900700402820769111
@@ -293,7 +404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a445bf55d0c84a42aa3316b6374ab2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
+  _entityMovement: {fileID: 9116854351678556578}
   _entitySenses: {fileID: 4856519383059337709}
   _passiveMimicryController: {fileID: 5011720308764694068}
   _chaseMovementSpeed: 4.5
@@ -312,7 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8d7f56c7081804297e0f2104a1ebdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
+  _entityMovement: {fileID: 9116854351678556578}
   _entitySenses: {fileID: 4856519383059337709}
 --- !u!114 &6891961267791488188
 MonoBehaviour:
@@ -341,7 +452,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa9ccfe852b3c7146b3a579bdb5143cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
+  _entityMovement: {fileID: 9116854351678556578}
   _trapDetectionRadius: 10
   _maxTrapTime: 10
   _minTimeBetweenEntries: 10
@@ -357,7 +468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c69624e27d92247858e0ec5ec2c66c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
+  _entityMovement: {fileID: 9116854351678556578}
   _passiveMimicryController: {fileID: 5011720308764694068}
 --- !u!114 &5634940376478433513
 MonoBehaviour:
