@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Audio.Footsteps;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 /*
@@ -11,12 +12,11 @@ namespace Entities.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [Header("References")]
+        [Header("General References")]
         [SerializeField] private Transform _rotationPivot;
         private PlayerHealth playerHealth;
         private CharacterController _controller;
 
-        [System.Serializable] public enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
         private MovementState _currentMovementState = MovementState.Walking;
 
 
@@ -84,7 +84,20 @@ namespace Entities.Player
         [Space(5)]
         [SerializeField] private float _defaultCameraHeight = 1.6f;
         [SerializeField] private float _crouchedCameraHeight = 1.0f;
-    
+
+
+        [Header("Footstep Settings")]
+        [SerializeField] private AudioSource _footstepsSource;
+        [SerializeField] private EntityFootstepClips _footstepClips;
+        private float _timeTillNextFootstep;
+
+        [Space(5)]
+        [SerializeField] private float _defaultStepRate = 0.5f;
+        [SerializeField] private float _sprintingStepDelayMultiplier = 0.6f;
+        [SerializeField] private float _crouchedStepDelayMultiplier = 1.5f;
+        [SerializeField] private float _crawlingStepDelayMultiplier = 1.5f;
+
+
 
         private bool _wantsToSprint = false;
         private bool _wantsToCrouch = false;
@@ -259,6 +272,7 @@ namespace Entities.Player
                 HandleMovement();
                 UpdateCameraTransform();
                 HandleSprintToggleCheck();
+                TickFootstepTime();
 
                 HandleGravity();
                 UpdateCharacterHeight();
@@ -617,7 +631,62 @@ namespace Entities.Player
         public void ExitLowGravityZone()
         {
             _inLowGravityZone = false;
-        }    
+        }
+
+        #endregion
+
+
+        #region
+
+        private void TickFootstepTime()
+        {
+            // To-do: Change to be intention-based rather than input based
+            if (PlayerInput.MovementInput == Vector2.zero)
+            {
+                // We aren't moving.
+                return;
+            }
+            /*if (_currentMovementState == MovementState.Hiding)
+            {
+                // We are hiding.
+                return;
+            }*/
+
+            _timeTillNextFootstep -= Time.deltaTime * GetCurrentFootstepRate();
+
+            if (_timeTillNextFootstep <= 0.0f)
+            {
+                PlayFootstep();
+                _timeTillNextFootstep = 1.0f;
+            }
+        }
+        private void PlayFootstep()
+        {
+            float previousPitch = _footstepsSource.pitch;
+
+            // Retrieve the values for our footstep clip based on our current material & movement state..
+            (AudioClip FootstepClip, float PitchMultiplier) footstepClipValues = _footstepClips.GetAudioSettings(_currentMovementState);
+            Debug.Log(footstepClipValues.ToString());
+
+            // Alter our pitch and play the footstep clip.
+            _footstepsSource.pitch *= footstepClipValues.PitchMultiplier;
+            _footstepsSource.PlayOneShot(footstepClipValues.FootstepClip);
+
+            // Revert our pitch.
+            _footstepsSource.pitch = previousPitch;
+        }
+
+        private float GetCurrentFootstepRate()
+        {
+            return _defaultStepRate * (_currentMovementState switch
+            {
+                MovementState.Hiding => 0.0f,
+                MovementState.Sprinting => _sprintingStepDelayMultiplier,
+                MovementState.Crouching => _crouchedStepDelayMultiplier,
+                MovementState.Crawling => _crawlingStepDelayMultiplier,
+                _ => 1.0f
+            });
+        }
 
         #endregion
 

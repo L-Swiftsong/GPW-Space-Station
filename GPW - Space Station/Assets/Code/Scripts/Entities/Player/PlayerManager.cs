@@ -62,10 +62,10 @@ namespace Entities.Player
 
 
             // Standing State.
-            PlayerController.MovementState startingMovementState = setupData.PlayerStandingState switch {
-                PlayerSetupData.StandingState.Crouching => PlayerController.MovementState.Crouching,
-                PlayerSetupData.StandingState.Crawling => PlayerController.MovementState.Crawling,
-                _ => PlayerController.MovementState.Walking,
+            MovementState startingMovementState = setupData.PlayerStandingState switch {
+                PlayerSetupData.StandingState.Crouching => MovementState.Crouching,
+                PlayerSetupData.StandingState.Crawling => MovementState.Crawling,
+                _ => MovementState.Walking,
             };
             _player.GetComponent<PlayerController>().InitialiseMovementState(startingMovementState);
 
@@ -88,8 +88,8 @@ namespace Entities.Player
 
             // Standing State.
             setupData.PlayerStandingState = _player.GetComponent<PlayerController>().GetCurrentMovementState() switch {
-                PlayerController.MovementState.Crouching => PlayerSetupData.StandingState.Crouching,
-                PlayerController.MovementState.Crawling => PlayerSetupData.StandingState.Crawling,
+                MovementState.Crouching => PlayerSetupData.StandingState.Crouching,
+                MovementState.Crawling => PlayerSetupData.StandingState.Crawling,
                 _ => PlayerSetupData.StandingState.Standing,
             };
 
