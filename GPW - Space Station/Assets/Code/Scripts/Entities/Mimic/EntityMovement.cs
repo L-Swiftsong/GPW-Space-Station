@@ -24,13 +24,16 @@ namespace Entities
         [Header("Movement Settings")]
         [SerializeField] private float _defaultSpeed = 2.0f;
         [SerializeField] private float _defaultAcceleration = 120.0f;
+        [SerializeField] private float _defaultSpeedMomentum = 120.0f;
 
         [SerializeField, ReadOnly] private float _speedOverride = -1.0f;
         [SerializeField, ReadOnly] private float _accelerationOverride = -1.0f;
+        [SerializeField, ReadOnly] private float _angularSpeedOverride = -1.0f;
 
 
         private float _baseSpeed => _speedOverride >= 0.0f ? _speedOverride : _defaultSpeed;
         private float _baseAcceleration => _speedOverride >= 0.0f ? _accelerationOverride : _defaultAcceleration;
+        private float _baseAngularSpeed => _angularSpeedOverride >= 0.0f ? _angularSpeedOverride : _defaultSpeedMomentum;
 
 
         [Header("Crouching")]
@@ -108,6 +111,7 @@ namespace Entities
             // Reset Speed.
             _agent.speed = _baseSpeed;
             _agent.acceleration = _baseAcceleration;
+            _agent.angularSpeed = _baseAngularSpeed;
 
             // Apply MovementState Speed Multipliers.
             _agent.speed *= _movementState switch
@@ -240,11 +244,13 @@ namespace Entities
 
         public void SetSpeed(float newValue) => _defaultSpeed = newValue;
         public void SetAcceleration(float newValue) => _defaultAcceleration = newValue;
+        public void SetAngularSpeed(float newValue) => _defaultSpeedMomentum = newValue;
 
 
         // Overrides.
         public void SetSpeedOverride(float overrideValue) => _speedOverride = overrideValue;
         public void SetAccelerationOverride(float overrideValue) => _accelerationOverride = overrideValue;
+        public void SetAngularSpeedOverride(float overrideValue) => _angularSpeedOverride = overrideValue;
 
         public void ResetSpeedOverride() => _speedOverride = -1.0f;
         public void ResetAccelerationOverride() => _accelerationOverride = -1.0f;

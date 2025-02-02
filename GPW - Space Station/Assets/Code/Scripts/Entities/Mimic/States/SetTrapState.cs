@@ -14,6 +14,10 @@ namespace Entities.Mimic.States
         [SerializeField] private EntityMovement _entityMovement;
 
 
+        [Header("State Enter Settings")]
+        [SerializeField] private float _maxPlayerDistance = 10.0f; // How close the player must be for the agent to consider activating this state.
+
+
         [Header("Trap Detection Settings")]
         [SerializeField] private float _trapDetectionRadius = 10.0f; // How close the agent must be to a potential trap spot to consider laying a trap.
 
@@ -32,7 +36,7 @@ namespace Entities.Mimic.States
 
         private bool _stateEntryFailed;
         public bool ShouldExitState() => _stateEntryFailed || _currentTrapTime >= _maxTrapTime;
-        public bool CanEnter() => _setTrapReadyTime <= Time.time;
+        public bool CanEnter() => _setTrapReadyTime <= Time.time && Vector3.Distance(transform.position, Entities.Player.PlayerManager.Instance.Player.position) <= _maxPlayerDistance;
 
 
         public override void OnEnter()

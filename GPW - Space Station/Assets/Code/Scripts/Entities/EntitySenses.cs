@@ -27,6 +27,14 @@ namespace Entities
         [SerializeField] private LayerMask _obstructionLayers;
 
 
+        [Header("Sight Retention")]
+        [SerializeField] private float _sightRetentionTime = 0.1f; // How long after losing sight of the player till the EntitySenses registers the player as out of view.
+        private float _previousVisibleTime;
+
+        [Space(5)]
+        [SerializeField] private bool _ignoreViewAngleForSightLoss = true; // Should we ignore the viewing angle for when we're forgetting a target.
+
+
         [Header("Hearing")]
         [SerializeField] private float _hearingSensitivityMultiplier;
         private NavMeshAgent _agent;
@@ -46,12 +54,17 @@ namespace Entities
 
 
 
+        private void Awake()
+        {
+            _agent = GetComponent<NavMeshAgent>();
+
+            // Ensure that we don't accidentally start being able to see the player.
+            _previousVisibleTime = -(_sightRetentionTime + 0.1f);
+        }
         private void Start()
         {
             _player = PlayerManager.Exists ? PlayerManager.Instance.Player : FindObjectOfType<PlayerController>().transform;
             _playerTargetableObject = _player.GetComponent<TargetableObject>();
-
-            _agent = GetComponent<NavMeshAgent>();
         }
         private void OnEnable() => OnSoundTriggered += EntitySenses_OnSoundTriggered;
         private void OnDisable() => OnSoundTriggered -= EntitySenses_OnSoundTriggered;
@@ -67,7 +80,18 @@ namespace Entities
                     return;
             }
             
-            _canSeePlayer = (TryFindTarget() != null);
+
+            if (TryFindTarget() != null)
+            {
+                // The player is within our sight.
+                _canSeePlayer = true;
+                _previousVisibleTime = Time.time;
+            }
+            else if (_canSeePlayer && (Time.time - _previousVisibleTime) > _sightRetentionTime)
+            {
+                // We can no longer see the player, and our sight retention time has elapsed.
+                _canSeePlayer = false;
+            }
         }
 
 
@@ -102,11 +126,15 @@ namespace Entities
                     continue;
                 }
 
-                if (Vector3.Angle(_headTransform.forward, directionToTargetableObject) > (_viewAngle / 2.0f))
+                if (!_ignoreViewAngleForSightLoss || !_canSeePlayer)
                 {
-                    // Point outwith viewcone.
-                    Debug.DrawRay(_headTransform.position, directionToTargetableObject, Color.yellow);
-                    continue;
+                    // We can't currently see the player OR we aren't ignoring angles when determining sight loss.
+                    if (Vector3.Angle(_headTransform.forward, directionToTargetableObject) > (_viewAngle / 2.0f))
+                    {
+                        // Point outwith viewcone.
+                        Debug.DrawRay(_headTransform.position, directionToTargetableObject, Color.yellow);
+                        continue;
+                    }
                 }
 
 

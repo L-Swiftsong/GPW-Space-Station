@@ -185,9 +185,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _reachedDestinationDistance: 0.5
   _defaultSpeed: 2
-  _defaultAcceleration: 120
+  _defaultAcceleration: 8
+  _defaultSpeedMomentum: 120
   _speedOverride: -1
   _accelerationOverride: -1
+  _angularSpeedOverride: -1
   _crouchingLayers: 0
   _crouchingSpeedMultiplier: 0.8
   _crawlingLayers: 8
@@ -326,6 +328,8 @@ MonoBehaviour:
   _obstructionLayers:
     serializedVersion: 2
     m_Bits: 704
+  _sightRetentionTime: 0.1
+  _ignoreViewAngleForSightLoss: 1
   _hearingSensitivityMultiplier: 1
 --- !u!114 &5037416545564764748
 MonoBehaviour:
@@ -409,6 +413,7 @@ MonoBehaviour:
   _passiveMimicryController: {fileID: 5011720308764694068}
   _chaseMovementSpeed: 4.5
   _chaseAcceleration: 8
+  _chaseAngularSpeed: 720
   _playerCatchRadius: 1
   _hasCaughtPlayer: 0
 --- !u!114 &3543574826053687875
@@ -453,6 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityMovement: {fileID: 9116854351678556578}
+  _maxPlayerDistance: 10
   _trapDetectionRadius: 10
   _maxTrapTime: 10
   _minTimeBetweenEntries: 10

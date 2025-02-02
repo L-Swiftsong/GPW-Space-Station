@@ -17,8 +17,9 @@ namespace Entities.Mimic.States
 
 
         [Header("Settings")]
-        [SerializeField] private float _chaseMovementSpeed;
-        [SerializeField] private float _chaseAcceleration;
+        [SerializeField] private float _chaseMovementSpeed = 4.0f;
+        [SerializeField] private float _chaseAcceleration = 8.0f;
+        [SerializeField] private float _chaseAngularSpeed = 720.0f;
 
         [Space(5)]
         [SerializeField] private float _playerCatchRadius = 0.75f;
@@ -30,6 +31,7 @@ namespace Entities.Mimic.States
             // Override movement values with chase-specific values.
             _entityMovement.SetSpeedOverride(_chaseMovementSpeed);
             _entityMovement.SetAccelerationOverride(_chaseMovementSpeed);
+            _entityMovement.SetAngularSpeedOverride(_chaseAngularSpeed);
         }
         public override void OnLogic()
         {

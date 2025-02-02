@@ -14,6 +14,7 @@ namespace Entities.Mimic
         // References.
         private NavMeshAgent _agent;
         private EntitySenses _entitySenses;
+        private EntityMovement _entityMovement;
         private FlashlightStunnable _flashlightStunnableScript;
         private PassiveMimicryController _passiveMimicryController;
         private MimicAttack _mimicAttack;
@@ -44,6 +45,7 @@ namespace Entities.Mimic
             // Get Component References.
             _agent = GetComponent<NavMeshAgent>();
             _entitySenses = GetComponent<EntitySenses>();
+            _entityMovement = GetComponent<EntityMovement>();
             _flashlightStunnableScript = GetComponent<FlashlightStunnable>();
             _passiveMimicryController = GetComponent<PassiveMimicryController>();
             _mimicAttack = GetComponent<MimicAttack>();
@@ -127,7 +129,7 @@ namespace Entities.Mimic
             }
             else if (_currentState == _chaseState) // Transitions FROM ChaseState.
             {
-                if (!_entitySenses.HasTarget && _agent.remainingDistance <= 0.5f && _mimicAttack._isAttacking == false)
+                if (!_entitySenses.HasTarget && _entityMovement.HasReachedDestination() && _mimicAttack._isAttacking == false)
                 {
                     // We can no longer see the player and have reached their last spotted position.
                     SetActiveState(_wanderState);
