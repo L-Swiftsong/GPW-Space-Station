@@ -92,11 +92,20 @@ namespace Entities.Player
         private float _timeTillNextFootstep;
 
         [Space(5)]
-        [SerializeField] private float _defaultStepRate = 0.5f;
-        [SerializeField] private float _sprintingStepDelayMultiplier = 0.6f;
-        [SerializeField] private float _crouchedStepDelayMultiplier = 1.5f;
-        [SerializeField] private float _crawlingStepDelayMultiplier = 1.5f;
+        [SerializeField] private float _defaultStepRate = 2.0f;
+        [SerializeField] private float _sprintingStepRate = 3.5f;
+        [SerializeField] private float _crouchedStepRate = 0.75f;
+        [SerializeField] private float _crawlingStepRate = 0.75f;
 
+        [Space(5)]
+        [SerializeField] private float _walkingFootstepDetectionRadius = 3.0f;
+        [SerializeField] private float _sprintingFootstepDetectionRadius = 10.0f;
+        [SerializeField] private float _crouchingFootstepDetectionRadius = 1.0f;
+        [SerializeField] private float _crawlingFootstepDetectionRadius = 0.0f;
+
+        [Space(5)]
+        [SerializeField] private bool _drawDetectionRadiusGizmos = false;
+        [SerializeField] private MovementState _detectionRadiusDebugState;
 
 
         private bool _wantsToSprint = false;
@@ -662,18 +671,23 @@ namespace Entities.Player
         }
         private void PlayFootstep()
         {
-            float previousPitch = _footstepsSource.pitch;
-
             // Retrieve the values for our footstep clip based on our current material & movement state..
             (AudioClip FootstepClip, float PitchMultiplier) footstepClipValues = _footstepClips.GetAudioSettings(_currentMovementState);
-            Debug.Log(footstepClipValues.ToString());
 
-            // Alter our pitch and play the footstep clip.
-            _footstepsSource.pitch *= footstepClipValues.PitchMultiplier;
-            _footstepsSource.PlayOneShot(footstepClipValues.FootstepClip);
+            // Determine our detectable radius based on our movement state.
+            float detectionRadius = _currentMovementState switch {
+                MovementState.Sprinting => _sprintingFootstepDetectionRadius,
+                MovementState.Walking => _walkingFootstepDetectionRadius,
+                MovementState.Crouching => _crouchingFootstepDetectionRadius,
+                MovementState.Crawling => _crawlingFootstepDetectionRadius,
+                _ => 0.0f,
+            };
 
-            // Revert our pitch.
-            _footstepsSource.pitch = previousPitch;
+            // Assemble our AudioSettings.
+            Audio.SFXManager.AudioValues audioSettings = new Audio.SFXManager.AudioValues(pitch: footstepClipValues.PitchMultiplier);
+
+            // Play our FootstepClip via the SFX manager.
+            Audio.SFXManager.PlayDetectableClipAtPosition(footstepClipValues.FootstepClip, transform.position, audioSettings, detectionRadius);
         }
 
         private float GetCurrentFootstepRate()
@@ -681,9 +695,9 @@ namespace Entities.Player
             return _defaultStepRate * (_currentMovementState switch
             {
                 MovementState.Hiding => 0.0f,
-                MovementState.Sprinting => _sprintingStepDelayMultiplier,
-                MovementState.Crouching => _crouchedStepDelayMultiplier,
-                MovementState.Crawling => _crawlingStepDelayMultiplier,
+                MovementState.Sprinting => _sprintingStepRate,
+                MovementState.Crouching => _crouchedStepRate,
+                MovementState.Crawling => _crawlingStepRate,
                 _ => 1.0f
             });
         }
@@ -713,6 +727,25 @@ namespace Entities.Player
             // Update the controller & camera heights.
             UpdateCharacterHeightInstant();
             UpdateCameraTransformInstant();
+        }
+
+
+        private void OnDrawGizmosSelected()
+        {
+            if (_drawDetectionRadiusGizmos)
+            {
+                Gizmos.color = Color.yellow;
+                float detectionRadius = _detectionRadiusDebugState switch
+                {
+                    MovementState.Sprinting => _sprintingFootstepDetectionRadius,
+                    MovementState.Walking => _walkingFootstepDetectionRadius,
+                    MovementState.Crouching => _crouchingFootstepDetectionRadius,
+                    MovementState.Crawling => _crawlingFootstepDetectionRadius,
+                    _ => 0.0f
+                };
+
+                Gizmos.DrawWireSphere(transform.position, detectionRadius);
+            }
         }
     }
 }

@@ -111,9 +111,15 @@ MonoBehaviour:
   _footstepsSource: {fileID: 136675619693889061}
   _footstepClips: {fileID: 11400000, guid: 687d68697a9df654dbf9935c015fb9af, type: 2}
   _defaultStepRate: 2
-  _sprintingStepDelayMultiplier: 1.75
-  _crouchedStepDelayMultiplier: 0.75
-  _crawlingStepDelayMultiplier: 0.75
+  _sprintingStepRate: 2
+  _crouchedStepRate: 0.75
+  _crawlingStepRate: 0.75
+  _walkingFootstepDetectionRadius: 3
+  _sprintingFootstepDetectionRadius: 10
+  _crouchingFootstepDetectionRadius: 1
+  _crawlingFootstepDetectionRadius: 0
+  _drawDetectionRadiusGizmos: 1
+  _detectionRadiusDebugState: 4
 --- !u!114 &8693319973723978382
 MonoBehaviour:
   m_ObjectHideFlags: 0
