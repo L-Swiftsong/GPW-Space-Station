@@ -15,9 +15,18 @@ namespace Environment.Doors
         [SerializeField] private AudioClip _doorOpenClip;
         [SerializeField] private AudioClip _doorCloseClip;
 
+        [Header("Sound Settings")]
+        [SerializeField] private float _volume = 1.0f;
+        [SerializeField] private float _minPitch = 0.95f;
+        [SerializeField] private float _maxPitch = 1.05f;
+
+        [Space(10)]
+        [SerializeField] private float _minDistance = 3.0f;
+        [SerializeField] private float _maxDistance = 40.0f;
+
         [Space(5)]
-        [SerializeField] private SFXManager.AudioValues _audioValues = new SFXManager.AudioValues(minDistance: 3.0f, maxDistance: 40.0f);
-        [SerializeField] private float _pitchVariance = 0.05f;
+        [SerializeField] private bool _useCustomCurve;
+        [SerializeField] private AnimationCurve _falloffCurve;
 
 
         private void Awake() => _door = GetComponent<Door>();
@@ -27,10 +36,7 @@ namespace Environment.Doors
 
         private void Door_OnOpenStateChanged(bool isNowOpen)
         {
-            SFXManager.AudioValues audioValues = _audioValues;
-            audioValues.Pitch += Random.Range(-_pitchVariance, _pitchVariance);
-
-            SFXManager.PlayClipAtPosition(isNowOpen ? _doorOpenClip : _doorCloseClip, transform.position, audioValues);
+            SFXManager.Instance.PlayClipAtPosition(isNowOpen ? _doorOpenClip : _doorCloseClip, transform.position, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume, minDistance: _minDistance, maxDistance: _maxDistance, falloffCurve: _useCustomCurve ? _falloffCurve : null);
         }
     }
 }

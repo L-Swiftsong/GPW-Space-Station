@@ -153,11 +153,11 @@ namespace Entities
 
         #region Sound Detection
 
-        private void SFXManager_OnDetectableSoundTriggered(SFXManager.DetectableClipParameters detectableClipParameters)
+        private void SFXManager_OnDetectableSoundTriggered(Vector3 origin, float radius)
         {
-            if (TryDetectSound(detectableClipParameters.Origin, detectableClipParameters.DetectableRadius))
+            if (TryDetectSound(origin, radius))
             {
-                _pointOfInterest = detectableClipParameters.Origin;
+                _pointOfInterest = origin;
             }
         }
         private bool TryDetectSound(Vector3 soundOrigin, float detectionRadius)
