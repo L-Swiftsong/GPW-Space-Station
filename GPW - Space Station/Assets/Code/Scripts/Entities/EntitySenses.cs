@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Entities.Player;
-
+using Audio;
 
 namespace Entities
 {
@@ -27,12 +27,23 @@ namespace Entities
         [SerializeField] private LayerMask _obstructionLayers;
 
 
+        [Header("Sight Retention")]
+        [SerializeField] private float _sightRetentionTime = 0.1f; // How long after losing sight of the player till the EntitySenses registers the player as out of view.
+        private float _previousVisibleTime;
+
+        [Space(5)]
+        [SerializeField] private bool _ignoreViewAngleForSightLoss = true; // Should we ignore the viewing angle for when we're forgetting a target.
+
+
         [Header("Hearing")]
         [SerializeField] private float _hearingSensitivityMultiplier;
         private NavMeshAgent _agent;
         private Vector3? _pointOfInterest = null;
 
-        private static event System.Action<Vector3, float> OnSoundTriggered;
+
+        [Header("Debug")]
+        [SerializeField] private bool _drawViewconeGizmos = false;
+        [SerializeField] private bool _displayHearingDebug = false;
 
 
         #region Properties
@@ -46,15 +57,20 @@ namespace Entities
 
 
 
+        private void Awake()
+        {
+            _agent = GetComponent<NavMeshAgent>();
+
+            // Ensure that we don't accidentally start being able to see the player.
+            _previousVisibleTime = -(_sightRetentionTime + 0.1f);
+        }
         private void Start()
         {
             _player = PlayerManager.Exists ? PlayerManager.Instance.Player : FindObjectOfType<PlayerController>().transform;
             _playerTargetableObject = _player.GetComponent<TargetableObject>();
-
-            _agent = GetComponent<NavMeshAgent>();
         }
-        private void OnEnable() => OnSoundTriggered += EntitySenses_OnSoundTriggered;
-        private void OnDisable() => OnSoundTriggered -= EntitySenses_OnSoundTriggered;
+        private void OnEnable() => SFXManager.OnDetectableSoundTriggered += SFXManager_OnDetectableSoundTriggered;
+        private void OnDisable() => SFXManager.OnDetectableSoundTriggered -= SFXManager_OnDetectableSoundTriggered;
 
 
         private void Update()
@@ -67,7 +83,18 @@ namespace Entities
                     return;
             }
             
-            _canSeePlayer = (TryFindTarget() != null);
+
+            if (TryFindTarget() != null)
+            {
+                // The player is within our sight.
+                _canSeePlayer = true;
+                _previousVisibleTime = Time.time;
+            }
+            else if (_canSeePlayer && (Time.time - _previousVisibleTime) > _sightRetentionTime)
+            {
+                // We can no longer see the player, and our sight retention time has elapsed.
+                _canSeePlayer = false;
+            }
         }
 
 
@@ -102,11 +129,15 @@ namespace Entities
                     continue;
                 }
 
-                if (Vector3.Angle(_headTransform.forward, directionToTargetableObject) > (_viewAngle / 2.0f))
+                if (!_ignoreViewAngleForSightLoss || !_canSeePlayer)
                 {
-                    // Point outwith viewcone.
-                    Debug.DrawRay(_headTransform.position, directionToTargetableObject, Color.yellow);
-                    continue;
+                    // We can't currently see the player OR we aren't ignoring angles when determining sight loss.
+                    if (Vector3.Angle(_headTransform.forward, directionToTargetableObject) > (_viewAngle / 2.0f))
+                    {
+                        // Point outwith viewcone.
+                        Debug.DrawRay(_headTransform.position, directionToTargetableObject, Color.yellow);
+                        continue;
+                    }
                 }
 
 
@@ -122,34 +153,47 @@ namespace Entities
 
         #region Sound Detection
 
-        private void EntitySenses_OnSoundTriggered(Vector3 soundOrigin, float soundVolume)
+        private void SFXManager_OnDetectableSoundTriggered(Vector3 origin, float radius)
         {
-            if (TryDetectSound(soundOrigin, soundVolume))
+            if (TryDetectSound(origin, radius))
             {
-                _pointOfInterest = soundOrigin;
+                _pointOfInterest = origin;
             }
         }
-        private bool TryDetectSound(Vector3 soundOrigin, float volume)
+        private bool TryDetectSound(Vector3 soundOrigin, float detectionRadius)
         {
-            NavMeshPath path = new NavMeshPath();
-            if (!NavMesh.CalculatePath(soundOrigin, _agent.transform.position, _agent.areaMask, path))
+            detectionRadius *= _hearingSensitivityMultiplier;
+            float sqrDetectionRadius = detectionRadius * detectionRadius;
+            if ((transform.position - soundOrigin).sqrMagnitude > sqrDetectionRadius)
             {
-                // No possible path to this object.
-                Debug.Log("No path to sound originating at position " + soundOrigin);
+                // Too far away.
+                if (_displayHearingDebug)
+                    Debug.Log($"The sound originating at position {soundOrigin} was too far away to be heard (Distance: {(transform.position - soundOrigin).magnitude})");
                 return false;
             }
 
-            volume *= _hearingSensitivityMultiplier;
-            float sqrMaxHearingDistance = volume * volume;
-            if (CalculatePathSqrLength(path) > sqrMaxHearingDistance)
+
+            NavMeshPath path = new NavMeshPath();
+            if (!NavMesh.CalculatePath(soundOrigin, _agent.transform.position, NavMesh.AllAreas, path))
+            {
+                // No possible path to this object.
+                if (_displayHearingDebug)
+                    Debug.Log("No path to sound originating at position " + soundOrigin);
+                return false;
+            }
+
+            float sqrPathLength = CalculatePathSqrLength(path);
+            if (sqrPathLength > sqrDetectionRadius)
             {
                 // Sound is too far away.
-                Debug.Log("The sound originating at position " + soundOrigin + " was too far away to be heard");
+                if (_displayHearingDebug)
+                    Debug.Log($"The sound originating at position {soundOrigin} was too far away to be heard (Path Distance: {Mathf.Sqrt(sqrPathLength)})");
                 return false;
             }
 
             // Sound is within detection range.
-            Debug.Log("A sound originating at position " + soundOrigin + " was detected");
+            if (_displayHearingDebug)
+                Debug.Log("A sound originating at position " + soundOrigin + " was detected");
             return true;
         }
 
@@ -173,9 +217,6 @@ namespace Entities
         }
         private float CalculatePathLength(NavMeshPath path) => Mathf.Sqrt(CalculatePathSqrLength(path));
 
-
-        public static void SoundTriggered(Vector3 origin, float volume) => OnSoundTriggered?.Invoke(origin, volume);
-
         #endregion
 
 
@@ -184,13 +225,16 @@ namespace Entities
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(_headTransform.position, _maxSightRange);
+            if (_drawViewconeGizmos)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(_headTransform.position, _maxSightRange);
 
-            Vector3 leftAngle = Quaternion.AngleAxis(_viewAngle / 2.0f, Vector3.up) * _headTransform.forward;
-            Vector3 rightAngle = Quaternion.AngleAxis(-_viewAngle / 2.0f, Vector3.up) * _headTransform.forward;
-            Gizmos.DrawRay(_headTransform.position, leftAngle * _maxSightRange);
-            Gizmos.DrawRay(_headTransform.position, rightAngle * _maxSightRange);
+                Vector3 leftAngle = Quaternion.AngleAxis(_viewAngle / 2.0f, Vector3.up) * _headTransform.forward;
+                Vector3 rightAngle = Quaternion.AngleAxis(-_viewAngle / 2.0f, Vector3.up) * _headTransform.forward;
+                Gizmos.DrawRay(_headTransform.position, leftAngle * _maxSightRange);
+                Gizmos.DrawRay(_headTransform.position, rightAngle * _maxSightRange);
+            }
         }
     }
 }

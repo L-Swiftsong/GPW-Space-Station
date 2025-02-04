@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Audio.Footsteps;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 /*
@@ -11,12 +12,11 @@ namespace Entities.Player
 {
     public class PlayerController : MonoBehaviour
     {
-        [Header("References")]
+        [Header("General References")]
         [SerializeField] private Transform _rotationPivot;
         private PlayerHealth playerHealth;
         private CharacterController _controller;
 
-        [System.Serializable] public enum MovementState { Walking, Sprinting, Crouching, Crawling, Hiding };
         private MovementState _currentMovementState = MovementState.Walking;
 
 
@@ -84,7 +84,29 @@ namespace Entities.Player
         [Space(5)]
         [SerializeField] private float _defaultCameraHeight = 1.6f;
         [SerializeField] private float _crouchedCameraHeight = 1.0f;
-    
+
+
+        [Header("Footstep Settings")]
+        [SerializeField] private AudioSource _footstepsSource;
+        [SerializeField] private EntityFootstepClips _footstepClips;
+        private float _timeTillNextFootstep;
+
+        [Space(5)]
+        [SerializeField] private float _defaultStepRate = 2.0f;
+        [SerializeField] private float _sprintingStepRate = 3.5f;
+        [SerializeField] private float _crouchedStepRate = 0.75f;
+        [SerializeField] private float _crawlingStepRate = 0.75f;
+
+        [Space(5)]
+        [SerializeField] private float _walkingFootstepDetectionRadius = 3.0f;
+        [SerializeField] private float _sprintingFootstepDetectionRadius = 10.0f;
+        [SerializeField] private float _crouchingFootstepDetectionRadius = 1.0f;
+        [SerializeField] private float _crawlingFootstepDetectionRadius = 0.0f;
+
+        [Space(5)]
+        [SerializeField] private bool _drawDetectionRadiusGizmos = false;
+        [SerializeField] private MovementState _detectionRadiusDebugState;
+
 
         private bool _wantsToSprint = false;
         private bool _wantsToCrouch = false;
@@ -259,6 +281,7 @@ namespace Entities.Player
                 HandleMovement();
                 UpdateCameraTransform();
                 HandleSprintToggleCheck();
+                TickFootstepTime();
 
                 HandleGravity();
                 UpdateCharacterHeight();
@@ -617,7 +640,64 @@ namespace Entities.Player
         public void ExitLowGravityZone()
         {
             _inLowGravityZone = false;
-        }    
+        }
+
+        #endregion
+
+
+        #region
+
+        private void TickFootstepTime()
+        {
+            // To-do: Change to be intention-based rather than input based
+            if (PlayerInput.MovementInput == Vector2.zero)
+            {
+                // We aren't moving.
+                return;
+            }
+            /*if (_currentMovementState == MovementState.Hiding)
+            {
+                // We are hiding.
+                return;
+            }*/
+
+            _timeTillNextFootstep -= Time.deltaTime * GetCurrentFootstepRate();
+
+            if (_timeTillNextFootstep <= 0.0f)
+            {
+                PlayFootstep();
+                _timeTillNextFootstep = 1.0f;
+            }
+        }
+        private void PlayFootstep()
+        {
+            // Retrieve the values for our footstep clip based on our current material & movement state..
+            (AudioClip FootstepClip, Vector2 PitchRange) footstepClipValues = _footstepClips.GetAudioSettings(_currentMovementState);
+
+            // Determine our detectable radius based on our movement state.
+            float detectionRadius = _currentMovementState switch {
+                MovementState.Sprinting => _sprintingFootstepDetectionRadius,
+                MovementState.Walking => _walkingFootstepDetectionRadius,
+                MovementState.Crouching => _crouchingFootstepDetectionRadius,
+                MovementState.Crawling => _crawlingFootstepDetectionRadius,
+                _ => 0.0f,
+            };
+
+            // Play our FootstepClip via the SFXManager.
+            Audio.SFXManager.Instance.PlayDetectableClipAtPosition(footstepClipValues.FootstepClip, transform.position, detectionRadius, minPitch: footstepClipValues.PitchRange.x, maxPitch: footstepClipValues.PitchRange.y);
+        }
+
+        private float GetCurrentFootstepRate()
+        {
+            return _defaultStepRate * (_currentMovementState switch
+            {
+                MovementState.Hiding => 0.0f,
+                MovementState.Sprinting => _sprintingStepRate,
+                MovementState.Crouching => _crouchedStepRate,
+                MovementState.Crawling => _crawlingStepRate,
+                _ => 1.0f
+            });
+        }
 
         #endregion
 
@@ -644,6 +724,25 @@ namespace Entities.Player
             // Update the controller & camera heights.
             UpdateCharacterHeightInstant();
             UpdateCameraTransformInstant();
+        }
+
+
+        private void OnDrawGizmosSelected()
+        {
+            if (_drawDetectionRadiusGizmos)
+            {
+                Gizmos.color = Color.yellow;
+                float detectionRadius = _detectionRadiusDebugState switch
+                {
+                    MovementState.Sprinting => _sprintingFootstepDetectionRadius,
+                    MovementState.Walking => _walkingFootstepDetectionRadius,
+                    MovementState.Crouching => _crouchingFootstepDetectionRadius,
+                    MovementState.Crawling => _crawlingFootstepDetectionRadius,
+                    _ => 0.0f
+                };
+
+                Gizmos.DrawWireSphere(transform.position, detectionRadius);
+            }
         }
     }
 }

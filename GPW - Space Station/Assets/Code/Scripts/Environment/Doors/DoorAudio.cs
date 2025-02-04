@@ -1,80 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Audio;
 
 namespace Environment.Doors
 {
-    [RequireComponent(typeof(Door), typeof(AudioSource))]
+    [RequireComponent(typeof(Door))]
     public class DoorAudio : MonoBehaviour
     {
         private Door _door;
-        private AudioSource _audioSource;
 
 
         [Header("Sound Clips")]
         [SerializeField] private AudioClip _doorOpenClip;
         [SerializeField] private AudioClip _doorCloseClip;
 
-        
-#if UNITY_EDITOR
-        private void Reset()
-        {
-            // Create or get access to this door's AudioSource.
-            if (!TryGetComponent<AudioSource>(out _audioSource))
-            {
-                _audioSource = gameObject.AddComponent<AudioSource>();
-            }
+        [Header("Sound Settings")]
+        [SerializeField] private float _volume = 1.0f;
+        [SerializeField] private float _minPitch = 0.95f;
+        [SerializeField] private float _maxPitch = 1.05f;
 
-            // Setup this door's audioSource.
-            _audioSource.playOnAwake = false;
-            _audioSource.loop = false;
-            _audioSource.spatialBlend = 1.0f;
-            _audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
-            _audioSource.minDistance = 3.0f;
-            _audioSource.maxDistance = 40.0f;
-        }
-#endif
+        [Space(10)]
+        [SerializeField] private float _minDistance = 3.0f;
+        [SerializeField] private float _maxDistance = 40.0f;
+
+        [Space(5)]
+        [SerializeField] private bool _useCustomCurve;
+        [SerializeField] private AnimationCurve _falloffCurve;
 
 
-        private void Awake()
-        {
-            _door = GetComponent<Door>();
-            _audioSource = GetComponent<AudioSource>();
-        }
+        private void Awake() => _door = GetComponent<Door>();
         private void OnEnable() => _door.OnOpenStateChanged += Door_OnOpenStateChanged;
         private void OnDisable() => _door.OnOpenStateChanged -= Door_OnOpenStateChanged;
 
 
-        private void Door_OnOpenStateChanged(bool newValue)
+        private void Door_OnOpenStateChanged(bool isNowOpen)
         {
-            if (newValue)
-            {
-                PlayClip(_doorOpenClip);
-            }
-            else
-            {
-                PlayClip(_doorCloseClip);
-            }
-        }
-
-        private void PlayClip(AudioClip clip, bool overridePrevious = true)
-        {
-            if (clip == null)
-            {
-                // Invalid clip.
-                return;
-            }
-
-            if (overridePrevious)
-            {   
-                // Stop the previous opening/closing audio.
-                _audioSource.Stop();
-            }
-
-            // Play the opening/closing audio (With a pitch variation to increase variability and reduce audio fatigue).
-            _audioSource.clip = clip;
-            _audioSource.pitch = Random.Range(0.95f, 1.05f);
-            _audioSource.Play();
+            SFXManager.Instance.PlayClipAtPosition(isNowOpen ? _doorOpenClip : _doorCloseClip, transform.position, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume, minDistance: _minDistance, maxDistance: _maxDistance, falloffCurve: _useCustomCurve ? _falloffCurve : null);
         }
     }
 }

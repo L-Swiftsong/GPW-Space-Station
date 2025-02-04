@@ -14,6 +14,7 @@ namespace Entities.Mimic
         // References.
         private NavMeshAgent _agent;
         private EntitySenses _entitySenses;
+        private EntityMovement _entityMovement;
         private FlashlightStunnable _flashlightStunnableScript;
         private PassiveMimicryController _passiveMimicryController;
         private MimicAttack _mimicAttack;
@@ -33,6 +34,7 @@ namespace Entities.Mimic
         private ChaseState _chaseState;
         private PreparingToChaseState _preparingToChaseState;
         private SearchState _searchState;
+        //private VentState _ventState;
         private SetTrapState _setTrapState;
         private StunnedState _stunnedState;
 
@@ -43,16 +45,20 @@ namespace Entities.Mimic
             // Get Component References.
             _agent = GetComponent<NavMeshAgent>();
             _entitySenses = GetComponent<EntitySenses>();
+            _entityMovement = GetComponent<EntityMovement>();
             _flashlightStunnableScript = GetComponent<FlashlightStunnable>();
             _passiveMimicryController = GetComponent<PassiveMimicryController>();
             _mimicAttack = GetComponent<MimicAttack>();
+        }
 
-
+        private void Start()
+        {
             // Get State References.
             _wanderState = GetComponent<WanderState>();
             _chaseState = GetComponent<ChaseState>();
             _preparingToChaseState = GetComponent<PreparingToChaseState>();
             _searchState = GetComponent<SearchState>();
+            //_ventState = GetComponent<VentState>();
             _setTrapState = GetComponent<SetTrapState>();
             _stunnedState = GetComponent<StunnedState>();
 
@@ -109,7 +115,12 @@ namespace Entities.Mimic
                     // We should attempt to exit the Wander State.
                     float _rndBehaviourDecision = Random.Range(0.0f, 1.0f);
 
-                    if (_rndBehaviourDecision <= (_wanderState.VentChance + _wanderState.SetTrapChance) && _setTrapState.CanEnter())
+                    /*if (_rndBehaviourDecision <= _wanderState.VentChance && _ventState.CanEnter())
+                    {
+                        SetActiveState(_ventState);
+                        return;
+                    }
+                    else */if (_rndBehaviourDecision <= (_wanderState.VentChance + _wanderState.SetTrapChance) && _setTrapState.CanEnter())
                     {
                         SetActiveState(_setTrapState);
                         return;
@@ -118,7 +129,7 @@ namespace Entities.Mimic
             }
             else if (_currentState == _chaseState) // Transitions FROM ChaseState.
             {
-                if (!_entitySenses.HasTarget && _agent.remainingDistance <= 0.5f && _mimicAttack._isAttacking == false)
+                if (!_entitySenses.HasTarget && _entityMovement.HasReachedDestination() && _mimicAttack._isAttacking == false)
                 {
                     // We can no longer see the player and have reached their last spotted position.
                     SetActiveState(_wanderState);
@@ -150,7 +161,28 @@ namespace Entities.Mimic
                     return;
                 }
             }
-            if (_currentState == _setTrapState) // Transitions FROM SetTrapState.
+            /*else if (_currentState == _ventState) // Transitions FROM VentState.
+            {
+                if (_entitySenses.HasTarget)
+                {
+                    // We can see the player.
+                    SetActiveState(_preparingToChaseState);
+                    return;
+                }
+                if (_entitySenses.CurrentPointOfInterest.HasValue)
+                {
+                    // We have an active Point of Interest.
+                    SetActiveState(_searchState);
+                    return;
+                }
+                if (_ventState.ShouldExitState())
+                {
+                    // We should exit this state (Either because we failed to enter it or we exited the vent).
+                    SetActiveState(_wanderState);
+                    return;
+                }
+            }*/
+            else if (_currentState == _setTrapState) // Transitions FROM SetTrapState.
             {
                 if (_entitySenses.HasTarget)
                 {

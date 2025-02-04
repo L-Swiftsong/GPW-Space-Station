@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Entities.Mimic.States
 {
@@ -11,15 +10,16 @@ namespace Entities.Mimic.States
 
 
         [Header("References")]
-        [SerializeField] private NavMeshAgent _agent;
+        [SerializeField] private EntityMovement _entityMovement;
 
 
         [Header("Wander Settings")]
-        [SerializeField] private float _reachedDestinationDistance = 0.5f;
-
-        [Space(5)]
         [SerializeField] private Vector3 _mapCentre;
         [SerializeField] private Vector3 _mapExtents;
+
+        [Space(5)]
+        [SerializeField] private NavMeshLayers _validWanderTargetLayers = NavMeshLayers.Walkable;
+
 
         [Header("Wander Decision Settings")]
         [SerializeField] private float _minWanderDecisionTime = 1.0f;
@@ -40,20 +40,26 @@ namespace Entities.Mimic.States
         public override void OnEnter()
         {
             _wanderDecisionTimeRemaining = Random.Range(_minWanderDecisionTime, _maxWanderDecisionTime);
+            ChooseNewDestination();
         }
         public override void OnLogic()
         {
-            if (_agent.remainingDistance <= _reachedDestinationDistance)
+            if (_entityMovement.HasReachedDestination())
             {
                 // We've reached our desired wander destination.
-                // Pick a new destination.
-                if (_agent.TryFindRandomPoint(_mapCentre, _mapExtents, out Vector3 result))
-                {
-                    _agent.SetDestination(result);
-                }
+                ChooseNewDestination();
             }
 
             _wanderDecisionTimeRemaining -= Time.deltaTime;
+        }
+
+
+        private void ChooseNewDestination()
+        {
+            if (_entityMovement.TryFindRandomPointInBounds(_mapCentre, _mapExtents, out Vector3 result, (int)_validWanderTargetLayers))
+            {
+                _entityMovement.SetDestination(result);
+            }
         }
 
 

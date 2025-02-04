@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using Effects.Mimicry.PassiveMimicry;
 
 namespace Entities.Mimic.States
@@ -12,7 +11,7 @@ namespace Entities.Mimic.States
 
 
         [Header("References")]
-        [SerializeField] private NavMeshAgent _agent;
+        [SerializeField] private EntityMovement _entityMovement;
         [SerializeField] private PassiveMimicryController _passiveMimicryController;
 
 
@@ -26,7 +25,7 @@ namespace Entities.Mimic.States
         public override void OnEnter()
         {
             _chaseStartTimeRemaining = _chaseStartTime;
-            _agent.isStopped = true;
+            _entityMovement.SetIsStopped(true);
 
             // Set mimicry strength.
             _passiveMimicryController.SetMimicryStrengthTarget(0.0f);
@@ -37,7 +36,7 @@ namespace Entities.Mimic.States
         }
         public override void OnExit()
         {
-            _agent.isStopped = false;
+            _entityMovement.SetIsStopped(false);
         }
     }
 }
