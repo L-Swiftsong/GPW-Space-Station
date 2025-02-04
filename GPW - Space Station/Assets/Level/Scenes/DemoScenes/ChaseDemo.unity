@@ -773,8 +773,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 15209172}
-  - component: {fileID: 15209174}
   - component: {fileID: 15209173}
+  - component: {fileID: 15209174}
   m_Layer: 0
   m_Name: ChaseEndTrigger
   m_TagString: Untagged
@@ -791,7 +791,7 @@ Transform:
   m_GameObject: {fileID: 15209171}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 120, y: 0, z: 0.5}
+  m_LocalPosition: {x: 120.5, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -827,10 +827,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 15209171}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 389a528387173e54e9aa7acdecec7d6b, type: 3}
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _chaseEndType: 1
+  _onlyTriggerOnce: 1
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 2026812554}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+  _useDelayedTrigger: 1
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1.5
+  OnDelayedTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 0}
+      _MemberName: Entities.Mimic.ChaseMimic, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.EndChase
+      _PersistentArguments: []
+  _triggerTypes: 1
 --- !u!1 &18385338
 GameObject:
   m_ObjectHideFlags: 0
@@ -1952,7 +1968,12 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8393542029877967486, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
   m_PrefabInstance: {fileID: 678733779}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &84783443
+--- !u!4 &84783447 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6021116274624225557, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
+  m_PrefabInstance: {fileID: 678733779}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &84783448
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1961,14 +1982,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 84783436}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78ea1b71a7bcfb04590cb3d77f3b795c, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a17c9df550fc4848b546c1e7b26a014, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &84783447 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6021116274624225557, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
-  m_PrefabInstance: {fileID: 678733779}
-  m_PrefabAsset: {fileID: 0}
+  _onlyTriggerOnce: 1
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 0}
+      _MemberName: Entities.Mimic.ChaseMimic, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.StartChase
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerOnSuccess: 1
+  _triggerOnFailure: 0
 --- !u!1 &92473678
 GameObject:
   m_ObjectHideFlags: 0
@@ -7194,7 +7225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 367622477}
   - component: {fileID: 367622476}
-  - component: {fileID: 367622475}
+  - component: {fileID: 367622478}
   m_Layer: 0
   m_Name: DoorTrigger (RightDoor_2)
   m_TagString: Untagged
@@ -7202,20 +7233,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &367622475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 367622474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38514d72222a78c49a447b9845509354, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _doors:
-  - {fileID: 211915815}
 --- !u!65 &367622476
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7252,6 +7269,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 55623665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &367622478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367622474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlyTriggerOnce: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 211915815}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!1 &373938411 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6994913511615752168, guid: 199dd5fe1f7748148930469bedbdee44, type: 3}
@@ -11584,171 +11626,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!43 &580504106
-Mesh:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-2614(Clone)
-  serializedVersion: 11
-  m_SubMeshes:
-  - serializedVersion: 2
-    firstByte: 0
-    indexCount: 36
-    topology: 0
-    baseVertex: 0
-    firstVertex: 0
-    vertexCount: 24
-    localAABB:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.25, y: 0.05, z: 0.15}
-  m_Shapes:
-    vertices: []
-    shapes: []
-    channels: []
-    fullWeights: []
-  m_BindPose: []
-  m_BoneNameHashes: 
-  m_RootBoneNameHash: 0
-  m_BonesAABB: []
-  m_VariableBoneCountWeights:
-    m_Data: 
-  m_MeshCompression: 0
-  m_IsReadable: 1
-  m_KeepVertices: 1
-  m_KeepIndices: 1
-  m_IndexFormat: 0
-  m_IndexBuffer: 000001000200010003000200040005000600050007000600080009000a0009000b000a000c000d000e000d000f000e00100011001200110013001200140015001600150017001600
-  m_VertexData:
-    serializedVersion: 3
-    m_VertexCount: 24
-    m_Channels:
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 12
-      format: 0
-      dimension: 3
-    - stream: 0
-      offset: 24
-      format: 0
-      dimension: 4
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 40
-      format: 0
-      dimension: 2
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    - stream: 0
-      offset: 0
-      format: 0
-      dimension: 0
-    m_DataSize: 1152
-    _typelessdata: 000080becdcc4cbd9a99193e00000000000000000000803f000080bf0000000000000000000080bf0000803ecdcc4cbd0000803ecdcc4cbd9a99193e00000000000000000000803f000080bf0000000000000000000080bf000080becdcc4cbd000080becdcc4c3d9a99193e00000000000000000000803f000080bf0000000000000000000080bf0000803ecdcc4c3d0000803ecdcc4c3d9a99193e00000000000000000000803f000080bf0000000000000000000080bf000080becdcc4c3d0000803ecdcc4cbd9a99193e0000803f000000000000000000000000000000000000803f000080bf9a99193ecdcc4cbd0000803ecdcc4cbd9a9919be0000803f000000000000000000000000000000000000803f000080bf9a9919becdcc4cbd0000803ecdcc4c3d9a99193e0000803f000000000000000000000000000000000000803f000080bf9a99193ecdcc4c3d0000803ecdcc4c3d9a9919be0000803f000000000000000000000000000000000000803f000080bf9a9919becdcc4c3d0000803ecdcc4cbd9a9919be0000000000000000000080bf0000803f0000000000000000000080bf0000803ecdcc4cbd000080becdcc4cbd9a9919be0000000000000000000080bf0000803f0000000000000000000080bf000080becdcc4cbd0000803ecdcc4c3d9a9919be0000000000000000000080bf0000803f0000000000000000000080bf0000803ecdcc4c3d000080becdcc4c3d9a9919be0000000000000000000080bf0000803f0000000000000000000080bf000080becdcc4c3d000080becdcc4cbd9a9919be000080bf00000000000000000000000000000000000080bf000080bf9a99193ecdcc4cbd000080becdcc4cbd9a99193e000080bf00000000000000000000000000000000000080bf000080bf9a9919becdcc4cbd000080becdcc4c3d9a9919be000080bf00000000000000000000000000000000000080bf000080bf9a99193ecdcc4c3d000080becdcc4c3d9a99193e000080bf00000000000000000000000000000000000080bf000080bf9a9919becdcc4c3d000080becdcc4c3d9a99193e000000000000803f000000000000803f0000000000000000000080bf000080be9a99193e0000803ecdcc4c3d9a99193e000000000000803f000000000000803f0000000000000000000080bf0000803e9a99193e000080becdcc4c3d9a9919be000000000000803f000000000000803f0000000000000000000080bf000080be9a9919be0000803ecdcc4c3d9a9919be000000000000803f000000000000803f0000000000000000000080bf0000803e9a9919be000080becdcc4cbd9a9919be00000000000080bf00000000000080bf0000000000000000000080bf0000803e9a9919be0000803ecdcc4cbd9a9919be00000000000080bf00000000000080bf0000000000000000000080bf000080be9a9919be000080becdcc4cbd9a99193e00000000000080bf00000000000080bf0000000000000000000080bf0000803e9a99193e0000803ecdcc4cbd9a99193e00000000000080bf00000000000080bf0000000000000000000080bf000080be9a99193e
-  m_CompressedMesh:
-    m_Vertices:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UV:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Normals:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Tangents:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Weights:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_NormalSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_TangentSigns:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_FloatColors:
-      m_NumItems: 0
-      m_Range: 0
-      m_Start: 0
-      m_Data: 
-      m_BitSize: 0
-    m_BoneIndices:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_Triangles:
-      m_NumItems: 0
-      m_Data: 
-      m_BitSize: 0
-    m_UVInfo: 0
-  m_LocalAABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.25, y: 0.05, z: 0.15}
-  m_MeshUsageFlags: 0
-  m_CookingOptions: 30
-  m_BakedConvexCollisionMesh: 
-  m_BakedTriangleCollisionMesh: 
-  m_MeshMetrics[0]: 1
-  m_MeshMetrics[1]: 1
-  m_MeshOptimizationFlags: 1
-  m_StreamData:
-    serializedVersion: 2
-    offset: 0
-    size: 0
-    path: 
 --- !u!850595691 &589311481
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -13465,7 +13342,7 @@ PrefabInstance:
     - target: {fileID: 6181798709738590116, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 580504106}
+      objectReference: {fileID: 1417877084}
     - target: {fileID: 7034755127385829495, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_keyCardID
       value: 1
@@ -13477,7 +13354,7 @@ PrefabInstance:
     - target: {fileID: 7752475445774721241, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 580504106}
+      objectReference: {fileID: 1417877084}
     - target: {fileID: 8393542029877967486, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_Name
       value: KeyCard
@@ -13488,7 +13365,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8393542029877967486, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 84783443}
+      addedObject: {fileID: 84783448}
   m_SourcePrefab: {fileID: 100100000, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
 --- !u!1 &706532930
 GameObject:
@@ -14410,7 +14287,7 @@ GameObject:
   m_Component:
   - component: {fileID: 812116140}
   - component: {fileID: 812116139}
-  - component: {fileID: 812116138}
+  - component: {fileID: 812116141}
   m_Layer: 0
   m_Name: DoorTrigger (CentreDoor_1)
   m_TagString: Untagged
@@ -14418,20 +14295,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &812116138
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 812116137}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38514d72222a78c49a447b9845509354, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _doors:
-  - {fileID: 1694527547}
 --- !u!65 &812116139
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -14468,6 +14331,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 55623665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &812116141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 812116137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlyTriggerOnce: 1
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 1694527547}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!43 &816571218
 Mesh:
   m_ObjectHideFlags: 0
@@ -15808,6 +15696,7 @@ Transform:
   - {fileID: 1060150828}
   - {fileID: 987023004}
   - {fileID: 1359454033}
+  - {fileID: 1824803145}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &924525247
@@ -15851,7 +15740,7 @@ GameObject:
   m_Component:
   - component: {fileID: 944065838}
   - component: {fileID: 944065837}
-  - component: {fileID: 944065836}
+  - component: {fileID: 944065839}
   m_Layer: 0
   m_Name: DoorTrigger (FinalDoor)
   m_TagString: Untagged
@@ -15859,20 +15748,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &944065836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 944065835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38514d72222a78c49a447b9845509354, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _doors:
-  - {fileID: 2026812554}
 --- !u!65 &944065837
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15909,6 +15784,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 55623665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &944065839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944065835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlyTriggerOnce: 1
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 2026812554}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!43 &944572714
 Mesh:
   m_ObjectHideFlags: 0
@@ -20473,7 +20373,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1088374838}
   - component: {fileID: 1088374837}
-  - component: {fileID: 1088374836}
+  - component: {fileID: 1088374839}
   m_Layer: 0
   m_Name: DoorTrigger (RightDoor_1)
   m_TagString: Untagged
@@ -20481,20 +20381,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1088374836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1088374835}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38514d72222a78c49a447b9845509354, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _doors:
-  - {fileID: 1658630405}
 --- !u!65 &1088374837
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20531,6 +20417,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 55623665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1088374839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1088374835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlyTriggerOnce: 1
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 1658630405}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!43 &1098788396
 Mesh:
   m_ObjectHideFlags: 0
@@ -25010,7 +24921,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1309830258}
   - component: {fileID: 1309830257}
-  - component: {fileID: 1309830256}
+  - component: {fileID: 1309830259}
   m_Layer: 0
   m_Name: DoorTrigger (LeftSideExit)
   m_TagString: Untagged
@@ -25018,21 +24929,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1309830256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1309830255}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38514d72222a78c49a447b9845509354, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _doors:
-  - {fileID: 519441881}
-  - {fileID: 1799396176}
 --- !u!65 &1309830257
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25069,6 +24965,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 55623665}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &1309830259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1309830255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlyTriggerOnce: 1
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 1799396176}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+    - _Target: {fileID: 519441881}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!1 &1329188330
 GameObject:
   m_ObjectHideFlags: 0
@@ -26678,6 +26602,171 @@ Transform:
   - {fileID: 1309247129}
   m_Father: {fileID: 1060150828}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!43 &1417877084
+Mesh:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: pb_Mesh-2614(Clone)(Clone)(Clone)
+  serializedVersion: 11
+  m_SubMeshes:
+  - serializedVersion: 2
+    firstByte: 0
+    indexCount: 36
+    topology: 0
+    baseVertex: 0
+    firstVertex: 0
+    vertexCount: 24
+    localAABB:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.25, y: 0.05, z: 0.15}
+  m_Shapes:
+    vertices: []
+    shapes: []
+    channels: []
+    fullWeights: []
+  m_BindPose: []
+  m_BoneNameHashes: 
+  m_RootBoneNameHash: 0
+  m_BonesAABB: []
+  m_VariableBoneCountWeights:
+    m_Data: 
+  m_MeshCompression: 0
+  m_IsReadable: 1
+  m_KeepVertices: 1
+  m_KeepIndices: 1
+  m_IndexFormat: 0
+  m_IndexBuffer: 000001000200010003000200040005000600050007000600080009000a0009000b000a000c000d000e000d000f000e00100011001200110013001200140015001600150017001600
+  m_VertexData:
+    serializedVersion: 3
+    m_VertexCount: 24
+    m_Channels:
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 12
+      format: 0
+      dimension: 3
+    - stream: 0
+      offset: 24
+      format: 0
+      dimension: 4
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 40
+      format: 0
+      dimension: 2
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    - stream: 0
+      offset: 0
+      format: 0
+      dimension: 0
+    m_DataSize: 1152
+    _typelessdata: 000080becdcc4cbd9a99193e00000000000000000000803f000080bf0000000000000000000080bf0000803ecdcc4cbd0000803ecdcc4cbd9a99193e00000000000000000000803f000080bf0000000000000000000080bf000080becdcc4cbd000080becdcc4c3d9a99193e00000000000000000000803f000080bf0000000000000000000080bf0000803ecdcc4c3d0000803ecdcc4c3d9a99193e00000000000000000000803f000080bf0000000000000000000080bf000080becdcc4c3d0000803ecdcc4cbd9a99193e0000803f000000000000000000000000000000000000803f000080bf9a99193ecdcc4cbd0000803ecdcc4cbd9a9919be0000803f000000000000000000000000000000000000803f000080bf9a9919becdcc4cbd0000803ecdcc4c3d9a99193e0000803f000000000000000000000000000000000000803f000080bf9a99193ecdcc4c3d0000803ecdcc4c3d9a9919be0000803f000000000000000000000000000000000000803f000080bf9a9919becdcc4c3d0000803ecdcc4cbd9a9919be0000000000000000000080bf0000803f0000000000000000000080bf0000803ecdcc4cbd000080becdcc4cbd9a9919be0000000000000000000080bf0000803f0000000000000000000080bf000080becdcc4cbd0000803ecdcc4c3d9a9919be0000000000000000000080bf0000803f0000000000000000000080bf0000803ecdcc4c3d000080becdcc4c3d9a9919be0000000000000000000080bf0000803f0000000000000000000080bf000080becdcc4c3d000080becdcc4cbd9a9919be000080bf00000000000000000000000000000000000080bf000080bf9a99193ecdcc4cbd000080becdcc4cbd9a99193e000080bf00000000000000000000000000000000000080bf000080bf9a9919becdcc4cbd000080becdcc4c3d9a9919be000080bf00000000000000000000000000000000000080bf000080bf9a99193ecdcc4c3d000080becdcc4c3d9a99193e000080bf00000000000000000000000000000000000080bf000080bf9a9919becdcc4c3d000080becdcc4c3d9a99193e000000000000803f000000000000803f0000000000000000000080bf000080be9a99193e0000803ecdcc4c3d9a99193e000000000000803f000000000000803f0000000000000000000080bf0000803e9a99193e000080becdcc4c3d9a9919be000000000000803f000000000000803f0000000000000000000080bf000080be9a9919be0000803ecdcc4c3d9a9919be000000000000803f000000000000803f0000000000000000000080bf0000803e9a9919be000080becdcc4cbd9a9919be00000000000080bf00000000000080bf0000000000000000000080bf0000803e9a9919be0000803ecdcc4cbd9a9919be00000000000080bf00000000000080bf0000000000000000000080bf000080be9a9919be000080becdcc4cbd9a99193e00000000000080bf00000000000080bf0000000000000000000080bf0000803e9a99193e0000803ecdcc4cbd9a99193e00000000000080bf00000000000080bf0000000000000000000080bf000080be9a99193e
+  m_CompressedMesh:
+    m_Vertices:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UV:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Normals:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Tangents:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Weights:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_NormalSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_TangentSigns:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_FloatColors:
+      m_NumItems: 0
+      m_Range: 0
+      m_Start: 0
+      m_Data: 
+      m_BitSize: 0
+    m_BoneIndices:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_Triangles:
+      m_NumItems: 0
+      m_Data: 
+      m_BitSize: 0
+    m_UVInfo: 0
+  m_LocalAABB:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.25, y: 0.05, z: 0.15}
+  m_MeshUsageFlags: 0
+  m_CookingOptions: 30
+  m_BakedConvexCollisionMesh: 
+  m_BakedTriangleCollisionMesh: 
+  m_MeshMetrics[0]: 1
+  m_MeshMetrics[1]: 1
+  m_MeshOptimizationFlags: 1
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 
 --- !u!1 &1418560108
 GameObject:
   m_ObjectHideFlags: 0
@@ -27594,7 +27683,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1525766355}
   - component: {fileID: 1525766354}
-  - component: {fileID: 1525766353}
+  - component: {fileID: 1525766356}
   m_Layer: 0
   m_Name: DoorTrigger (LeftDoor_1)
   m_TagString: Untagged
@@ -27602,20 +27691,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1525766353
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1525766352}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38514d72222a78c49a447b9845509354, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _doors:
-  - {fileID: 1475173093}
 --- !u!65 &1525766354
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27652,6 +27727,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 55623665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1525766356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525766352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlyTriggerOnce: 1
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 1475173093}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!43 &1585749017
 Mesh:
   m_ObjectHideFlags: 0
@@ -31608,6 +31708,54 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1824803144
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1824803145}
+  - component: {fileID: 1824803146}
+  m_Layer: 0
+  m_Name: ExitRoomNoWalk
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1824803145
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824803144}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 127, y: 0, z: 0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 924525246}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1824803146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824803144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35e95dc5ff2b64380880dd7ac5922847, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Size: {x: 11, y: 3, z: 16}
+  m_Center: {x: 0, y: 1, z: 0}
+  m_Area: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &1831872190
 GameObject:
   m_ObjectHideFlags: 0
@@ -36335,7 +36483,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2003575826}
   - component: {fileID: 2003575825}
-  - component: {fileID: 2003575824}
+  - component: {fileID: 2003575827}
   m_Layer: 0
   m_Name: DoorTrigger (RightSideExit)
   m_TagString: Untagged
@@ -36343,21 +36491,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2003575824
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2003575823}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38514d72222a78c49a447b9845509354, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _doors:
-  - {fileID: 519441881}
-  - {fileID: 222954081}
 --- !u!65 &2003575825
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -36394,6 +36527,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 55623665}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &2003575827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2003575823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlyTriggerOnce: 1
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 222954081}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+    - _Target: {fileID: 519441881}
+      _MemberName: Deactivate
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!1 &2008132140
 GameObject:
   m_ObjectHideFlags: 0

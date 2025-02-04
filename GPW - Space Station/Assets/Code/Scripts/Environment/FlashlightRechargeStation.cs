@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items;
 using Interaction;
+using System;
 
 namespace Environment
 {
@@ -31,6 +32,9 @@ namespace Environment
         [SerializeField] private ProgressBar _rechargeProgressBar;
 
 
+
+        public event Action OnSuccessfulInteraction;
+        public event Action OnFailedInteraction;
         private void Awake()
         {
             // Start with everything hidden.
@@ -55,6 +59,7 @@ namespace Environment
                 if (!_hasFlashlight)
                 {
                     // This recharge station has no flashlight.
+                    OnFailedInteraction?.Invoke();
                     return;
                 }
 
@@ -62,6 +67,8 @@ namespace Environment
                 // Return the flashlight to the player.
                 ReturnFlashlightToPlayer(playerInteraction.Inventory);
             }
+
+            OnSuccessfulInteraction?.Invoke();
         }
 
 

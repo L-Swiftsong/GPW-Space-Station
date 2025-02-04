@@ -7,10 +7,16 @@ namespace Saving
 {
     public class SaveStation : MonoBehaviour, IInteractable
     {
+        public event System.Action OnSuccessfulInteraction;
+        public event System.Action OnFailedInteraction;
+
+
         public void Interact(PlayerInteraction interactingScript)
         {
             Debug.Log("Manual Save");
             SaveManager.ManualSave();
+
+            OnSuccessfulInteraction?.Invoke();
         }
     }
 }

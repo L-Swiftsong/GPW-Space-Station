@@ -12,6 +12,10 @@ namespace Environment.Buttons
         [SerializeField] private int _number;
         [SerializeField] private Keypad _keypad;
 
+        public event System.Action OnSuccessfulInteraction;
+        public event System.Action OnFailedInteraction;
+
+
         public void Interact(PlayerInteraction player)
         {
             switch (_buttonType)
@@ -26,6 +30,8 @@ namespace Environment.Buttons
                     _keypad.DeleteLastCharacter();
                     break;
             }
+
+            OnSuccessfulInteraction?.Invoke();
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
+using System;
 
 namespace Hiding
 {
@@ -41,7 +42,9 @@ namespace Hiding
         #endregion
 
 
-        public static event System.Action<HidingSpot> OnAnyHidingSpotInteracted;
+        public static event Action<HidingSpot> OnAnyHidingSpotInteracted;
+        public event Action OnSuccessfulInteraction;
+        public event Action OnFailedInteraction;
 
 
 #if UNITY_EDITOR
@@ -79,6 +82,7 @@ namespace Hiding
         public void Interact(PlayerInteraction interactingScript)
         {
             OnAnyHidingSpotInteracted?.Invoke(this);
+            OnSuccessfulInteraction?.Invoke();
         }
         private Vector3 GetExitSpot(int index) => transform.TransformPoint(_exitSpots[index]);
         public bool TryGetExitPosition(Vector3 forward, float minimuimUnhideAngle, out Vector3 exitSpot)
