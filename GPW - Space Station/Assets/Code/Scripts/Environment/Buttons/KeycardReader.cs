@@ -32,6 +32,9 @@ namespace Environment.Buttons
         public static event System.EventHandler OnAnyKeycardReaderHighlighted;
         public static event System.EventHandler OnAnyKeycardReaderStopHighlighted;
 
+        public event System.Action OnSuccessfulInteraction;
+        public event System.Action OnFailedInteraction;
+
 
         private void Awake()
         {
@@ -64,6 +67,7 @@ namespace Environment.Buttons
         private void FailedInteraction()
         {
             Debug.Log("Failed Interaction");
+            OnFailedInteraction?.Invoke();
 
             if (_failedInteractionClip != null)
             {
@@ -74,6 +78,7 @@ namespace Environment.Buttons
         private void SuccessfulInteraction()
         {
             Debug.Log("Successful Interaction");
+            OnSuccessfulInteraction?.Invoke();
 
             Activate();
 

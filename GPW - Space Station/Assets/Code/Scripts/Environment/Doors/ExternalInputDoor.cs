@@ -2,12 +2,13 @@ namespace Environment.Doors
 {
     public class ExternalInputDoor : Door, ITriggerable
     {
-        /// <remarks> Toggles the door's open state (Closed > Open | Open > Closed).</remarks>
+        /// <summary> Toggles the door's open state (Closed > Open | Open > Closed).</summary>
         public void Trigger() => base.ToggleOpen();
 
-        /// <remarks> Opens the door.</remarks>
+        /// <summary> Opens the door.</summary>
         public void Activate() => base.Open();
-        /// <remarks> Closes the door.</remarks>
+
+        /// <summary> Closes the door.</summary>
         public void Deactivate() => base.Close();
     }
 }

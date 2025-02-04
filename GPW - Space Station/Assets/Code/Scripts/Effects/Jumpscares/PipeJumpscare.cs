@@ -26,15 +26,8 @@ namespace Effects.Jumpscares
             _audioSource.volume = maxVolume;
         }
 
-        private void OnTriggerEnter(Collider other)
-        {
-            if(other.gameObject.tag == "Player" && !isActive)
-            {
-                JumpScare();
-            }
-        }
 
-        private void JumpScare()
+        public void StartJumpScare()
         {
             if (SteamParticleSystem != null)
             {
