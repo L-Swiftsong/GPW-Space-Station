@@ -27,7 +27,7 @@ namespace Environment.Vents
                 if (!_isOmnidirectional)
                 {
                     Vector3 directionToPlayer = (other.transform.position - transform.position).normalized;
-                    if (Vector3.Dot(transform.forward, directionToPlayer) < 0.0f)
+                    if (Vector3.Dot(transform.forward, directionToPlayer) > 0.0f)
                     {
                         // The player isn't entering from this vent entrance.
                         return;
@@ -44,7 +44,7 @@ namespace Environment.Vents
                 if (!_isOmnidirectional)
                 {
                     Vector3 directionToPlayer = (other.transform.position - transform.position).normalized;
-                    if (Vector3.Dot(transform.forward, directionToPlayer) < 0.0f)
+                    if (Vector3.Dot(transform.forward, directionToPlayer) > 0.0f)
                     {
                         // The player isn't exiting from this vent entrance.
                         return;
