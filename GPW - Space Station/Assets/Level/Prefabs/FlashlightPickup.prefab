@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9467ab9ab8324e845bc7213443893794, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _flashlightInventoryData: {fileID: 11400000, guid: 25bec1776164dc84cb656be5662ec472, type: 2}
+  _startingBattery: 100
 --- !u!65 &7671132028024252501
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -62,7 +62,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
