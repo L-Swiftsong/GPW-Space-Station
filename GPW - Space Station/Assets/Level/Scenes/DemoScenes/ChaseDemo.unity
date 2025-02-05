@@ -26,13 +26,13 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10650, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: f7f800d56bc6c824a9bc54e982d4ed0f, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
   m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
-  m_DefaultReflectionMode: 0
+  m_DefaultReflectionMode: 1
   m_DefaultReflectionResolution: 128
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 0.062
@@ -831,6 +831,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 2026812554}
@@ -1986,6 +1987,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 0}
@@ -7282,6 +7284,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 0
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 211915815}
@@ -14344,6 +14347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 1694527547}
@@ -15726,7 +15730,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.13333334
+  m_VoxelSize: 0.1
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: d2c7ab46645175c4abcd036c6af010cd, type: 2}
   m_BuildHeightMesh: 0
@@ -15797,6 +15801,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 2026812554}
@@ -20430,6 +20435,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 1658630405}
@@ -24978,6 +24984,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 1799396176}
@@ -27740,6 +27747,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 1475173093}
@@ -36540,6 +36548,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 222954081}
