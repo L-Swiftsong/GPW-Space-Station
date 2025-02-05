@@ -23,11 +23,11 @@ namespace Items
         [SerializeField] private Medkit _medkit;
 
 
+
         private void Awake()
         {
-            // Start without any items.
-            RemoveFlashlight();
-            //RemoveKeycardDecoder();
+            // Start with a full Flashlight and a Level 0 Keycard Decoder.
+            AddFlashlight(100.0f);
             AddKeycardDecoder(0);
         }
         public void SetHasObtainedFlashlight(bool hasFlashlight, float flashlightBattery)
