@@ -21,6 +21,10 @@ public class PlayerTablet : MonoBehaviour
     private Coroutine _disableSelfCoroutine;
 
 
+    [Header("UI Sections")]
+    [SerializeField] private Transform _sectionRootsContainer;
+
+
     private void Awake()
     {
         // Start unequipped, but without performing things like cursor lock or input prevention removal.
@@ -102,4 +106,14 @@ public class PlayerTablet : MonoBehaviour
     }
 
     #endregion
+
+
+    public void EnableSection(GameObject sectionGO)
+    {
+        foreach(Transform sectionRoot in _sectionRootsContainer)
+        {
+            sectionRoot.gameObject.SetActive(sectionRoot.gameObject == sectionGO);
+            Debug.Log(sectionRoot.name);
+        }
+    }
 }

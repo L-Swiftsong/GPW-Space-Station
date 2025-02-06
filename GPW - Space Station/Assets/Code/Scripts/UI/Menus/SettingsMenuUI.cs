@@ -62,6 +62,11 @@ namespace UI.Menus
         {
             SetupUISliders();
             SetupUIEvents();
+
+        }
+        private void OnDestroy()
+        {
+            
         }
 
         /// <summary> Setup the minimum & maximum values of the UI sliders we have the data for.</summary>
