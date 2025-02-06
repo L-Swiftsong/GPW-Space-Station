@@ -33,12 +33,12 @@ namespace UI.Menus
         private void OnEnable()
         {
             // Subscribe to input events.
-            PlayerInput.OnPauseGamePerformed += PlayerInput_OnPauseGamePerformed;
+            //PlayerInput.OnPauseGamePerformed += PlayerInput_OnPauseGamePerformed;
         }
         private void OnDisable()
         {
             // Unsubscribe from input events.
-            PlayerInput.OnPauseGamePerformed -= PlayerInput_OnPauseGamePerformed;
+            //PlayerInput.OnPauseGamePerformed -= PlayerInput_OnPauseGamePerformed;
             HideWithoutCursorLocking();
         }
 
