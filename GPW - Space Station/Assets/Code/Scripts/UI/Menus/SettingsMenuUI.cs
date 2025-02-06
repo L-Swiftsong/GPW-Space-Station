@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
@@ -52,10 +51,6 @@ namespace UI.Menus
         [SerializeField] private AudioSource _masterPreviewAudioSource;
         [SerializeField] private AudioSource _musicPreviewAudioSource;
         [SerializeField] private AudioSource _sfxPreviewAudioSource;
-
-
-        [Header("Fps Display")]
-        [SerializeField] private GameObject _fpsDisplay;
 
 
         private void Awake()
@@ -172,10 +167,7 @@ namespace UI.Menus
             _fovDropdown.RefreshShownValue();
 
             // FPS display 
-            if (_fpsDisplay != null)
-            {
-                _fpsDisplay.SetActive(_showFPSToggle.isOn);
-            }
+            FPSDisplay.SetEnabled(_showFPSToggle.isOn);
 
 
             // Update Sliders (Audio).
@@ -263,11 +255,7 @@ namespace UI.Menus
         private void OnShowFPSChanged(bool value)
         {
             SettingsManager.Instance.SetShowFPS(value);
-
-            if (_fpsDisplay != null)
-            {
-                _fpsDisplay.SetActive(value);
-            }
+            FPSDisplay.SetEnabled(value);
         }
 
 
