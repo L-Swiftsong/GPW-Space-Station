@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Items.Collectables
 {
     public static class CollectableManager
     {
-        private static Dictionary<Type, SortedList<CollectableData>> _obtainedCollectableData = new Dictionary<Type, SortedList<CollectableData>>();
+        private static Dictionary<Type, CollectableDataList> _obtainedCollectableData = new Dictionary<Type, CollectableDataList>();
 
 
         public static void AddCollectable(CollectableData collectableData)
@@ -24,7 +23,7 @@ namespace Items.Collectables
             {
                 // We don't have an entry for this collectableType.
                 // Create a new entry for this collectableType and add our obtained collectable as the first value.
-                _obtainedCollectableData.Add(dataType, new SortedList<CollectableData>() { collectableData });
+                _obtainedCollectableData.Add(dataType, new CollectableDataList(collectableData));
             }
         }
 
@@ -41,38 +40,56 @@ namespace Items.Collectables
         }
 
 
-        public class SortedList<T> : IEnumerable<T> where T : IComparable<T>
+        public class CollectableDataList
         {
-            private List<T> _list;
+            private List<CollectableData> _list;
+            private CollectableDataOrderSO _orderData;
 
 
-            public SortedList() 
+            public CollectableDataList(CollectableData firstItem)
             {
-                _list = new List<T>();
+                // Create our list with our first item.
+                _list = new List<CollectableData>() { firstItem };
+
+
+                // Get a reference to our CollectableOrderData instance, throwing an error if one doesn't exist for our firstItem's type.
+                try
+                {
+                    _orderData = CollectableDataOrderManager.s_AllCollectableOrdersList[firstItem.GetType()];
+                }
+                catch
+                {
+                    UnityEngine.Debug.LogError($"Error: No CollectableDataOrderSO for type: {firstItem.GetType()}.");
+                }
             }
             
 
-            public void Add(T item)
+            public void Add(CollectableData item)
             {
-                for(int i = 0; i < _list.Count; ++i)
+                int newItemIndex = _orderData.GetDataIndex(item);
+
+                if (newItemIndex != -1)
                 {
-                    if (_list[i].CompareTo(item) > 0)
+                    for (int i = 0; i < _list.Count; ++i)
                     {
-                        // This element should follow the new item in the list.
-                        _list.Insert(i, item);
-                        return;
+                        if (_orderData.GetDataIndex(_list[i]) > newItemIndex)
+                        {
+                            // This element should follow the new item in the list.
+                            _list.Insert(i, item);
+                            return;
+                        }
                     }
                 }
+                else
+                {
+                    UnityEngine.Debug.LogWarning($"Warning: {item.name.ToString()} doesn't have a place in the CollectableDataOrderSO for the type {_orderData.Type.ToString()}");
+                }
 
-                // All existing elements should precede the new item.
+                // All existing elements should precede the new item (Or our new item hasn't had a index set.
                 // Add the new item to the end of the list.
                 _list.Add(item);
             }
-            public List<T> AsList() => _list;
-
-
-            public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            public List<CollectableData> AsList() => _list;
         }
     }
 }
