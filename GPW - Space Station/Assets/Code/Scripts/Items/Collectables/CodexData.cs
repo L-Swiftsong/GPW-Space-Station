@@ -7,6 +7,7 @@ namespace Items.Collectables
     [CreateAssetMenu(menuName = "Collectables/New Codex Data")]
     public class CodexData : CollectableData
     {
+        [Header("Codex Data")]
         [SerializeField] private string _codexInformation;
         [SerializeField] [TextArea(5, 15)] private string _codexContents;
 

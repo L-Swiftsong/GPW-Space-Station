@@ -113,7 +113,6 @@ public class PlayerTablet : MonoBehaviour
         foreach(Transform sectionRoot in _sectionRootsContainer)
         {
             sectionRoot.gameObject.SetActive(sectionRoot.gameObject == sectionGO);
-            Debug.Log(sectionRoot.name);
         }
     }
 }

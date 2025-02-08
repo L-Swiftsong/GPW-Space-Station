@@ -15,13 +15,9 @@ namespace UI.Journal
         private List<CodexEntryUI> _codexEntryUIInstanceList;
 
 
-        [Header("Debug")]
-        [SerializeField] private List<CodexData> _collectedCodexesList;
-        [SerializeField] private List<CollectableData> _assortedDataList;
-
-
         private void Awake()
         {
+            // Destroy accidentally remaining UI elements.
             foreach(Transform existingElement in _codexEntryInstanceContainer)
             {
                 Destroy(existingElement.gameObject);
@@ -29,30 +25,18 @@ namespace UI.Journal
 
             _codexEntryUIInstanceList = new List<CodexEntryUI>();
         }
+        private void OnEnable() => UpdateCollectedData();
 
 
-        [ContextMenu(itemName: "Reset Test")]
-        private void ResetForTest()
-        {
-            // Delete existing children.
-            foreach (Transform existingElement in _codexEntryInstanceContainer)
-            {
-                Destroy(existingElement.gameObject);
-            }
-
-            // Reset CodexEntryUI List.
-            _codexEntryUIInstanceList = new List<CodexEntryUI>();
-        }
-
-        [ContextMenu(itemName: "Perform Test")]
         public void UpdateCollectedData()
         {
-            // Find current collected data.
+            // Find current Codex Data.
+            List<CodexData> collectedCodexData = CollectableManager.GetCollectablesOfType<CodexData>();
             
 
             // Update our CodexEntryUI Instances.
             int codexEntryInstanceCount = _codexEntryUIInstanceList.Count;
-            for (int i = 0; i < _collectedCodexesList.Count; ++i)
+            for (int i = 0; i < collectedCodexData.Count; ++i)
             {
                 if (i >= codexEntryInstanceCount)
                 {
@@ -63,7 +47,7 @@ namespace UI.Journal
                     ++codexEntryInstanceCount;
                 }
 
-                _codexEntryUIInstanceList[i].SetupCodexEntry(_collectedCodexesList[i]);
+                _codexEntryUIInstanceList[i].SetupCodexEntry(collectedCodexData[i]);
             }
         }
     }
