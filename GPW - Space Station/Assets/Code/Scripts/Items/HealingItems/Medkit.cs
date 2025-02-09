@@ -69,6 +69,9 @@ namespace Items.Healing
         }
 
 
+        public int GetCurrentCount() => _currentMedkitCount;
+
+
         private void StartHealing() => _playerHealth.StartHealing(_healingAmount, _healingDelay);
         private void CancelHealing() => _playerHealth.CancelHealing();
     }

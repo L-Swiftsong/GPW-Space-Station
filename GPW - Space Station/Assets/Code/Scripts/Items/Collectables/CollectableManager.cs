@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Items.Collectables
 {
@@ -40,6 +41,42 @@ namespace Items.Collectables
         }
 
 
+        public static void PrepareForLoad() => _obtainedCollectableData.Clear();
+        public static void LoadObtainedCollectables(CollectableDataType type, bool[] obtainedValues) => LoadObtainedCollectables(type.ToSystemType(), obtainedValues);
+        public static void LoadObtainedCollectables(System.Type type, bool[] obtainedValues)
+        {
+            // Construct a list of our obtained collectable instances.
+            List<CollectableData> obtainedCollectables = new List<CollectableData>(obtainedValues.Where(t => t == true).Count());
+            for (int i = 0; i < obtainedValues.Length; ++i)
+            {
+                if (obtainedValues[i] == true)
+                {
+                    obtainedCollectables.Add(CollectableDataOrderManager.s_AllCollectableOrdersList[type].GetDataAtIndex(i));
+                }
+            }
+
+            // Our obtainedCollectables list SHOULD be all collectables that the player has for this type.
+            _obtainedCollectableData.Add(type, new CollectableDataList(obtainedCollectables));
+        }
+        public static bool[] GetObtainedStateArrayForType(System.Type type)
+        {
+            if (type.BaseType != typeof(CollectableData))
+            {
+                throw new ArgumentException($"{type.Name} does not inherit from CollectableData.");
+            }
+
+            if (_obtainedCollectableData.TryGetValue(type, out CollectableDataList data))
+            {
+                // We have an instance.
+                return data.AsObtainedArray();
+            }
+            else
+            {
+                return new bool[CollectableDataOrderManager.s_AllCollectableOrdersList[type].Count];
+            }
+        }
+
+
         public class CollectableDataList
         {
             private List<CollectableData> _list;
@@ -62,6 +99,20 @@ namespace Items.Collectables
                     UnityEngine.Debug.LogError($"Error: No CollectableDataOrderSO for type: {firstItem.GetType()}.");
                 }
             }
+            public CollectableDataList(List<CollectableData> list)
+            {
+                _list = list;
+
+                // Get a reference to our CollectableOrderData instance using our first element, throwing an error if one doesn't exist for our first element's type.
+                try
+                {
+                    _orderData = CollectableDataOrderManager.s_AllCollectableOrdersList[list[0].GetType()];
+                }
+                catch
+                {
+                    UnityEngine.Debug.LogError($"Error: No CollectableDataOrderSO for type: {list[0].GetType()}.");
+                }
+            }
             
 
             public void Add(CollectableData item)
@@ -82,7 +133,7 @@ namespace Items.Collectables
                 }
                 else
                 {
-                    UnityEngine.Debug.LogWarning($"Warning: {item.name.ToString()} doesn't have a place in the CollectableDataOrderSO for the type {_orderData.Type.ToString()}");
+                    UnityEngine.Debug.LogWarning($"Warning: {item.name.ToString()} doesn't have a place in the CollectableDataOrderSO for the type {_orderData.SystemType.ToString()}");
                 }
 
                 // All existing elements should precede the new item (Or our new item hasn't had a index set.
@@ -90,6 +141,20 @@ namespace Items.Collectables
                 _list.Add(item);
             }
             public List<CollectableData> AsList() => _list;
+            public bool[] AsObtainedArray()
+            {
+                // Create an array of all existing (Though not neccessarily obtained) data instances for this type. (Default bool value is false).
+                bool[] dataObtainedStateArray = new bool[_orderData.Count];
+
+                // Mark all obtained data instances as true.
+                for(int i = 0; i < _list.Count; ++i)
+                {
+                    dataObtainedStateArray[_orderData.GetDataIndex(_list[i])] = true;
+                }
+
+                // Return our array.
+                return dataObtainedStateArray;
+            }
         }
     }
 }

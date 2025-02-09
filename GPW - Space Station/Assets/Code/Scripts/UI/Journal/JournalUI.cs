@@ -33,9 +33,21 @@ namespace UI.Journal
             // Find current Codex Data.
             List<CodexData> collectedCodexData = CollectableManager.GetCollectablesOfType<CodexData>();
             
+            int codexEntryDataCount = collectedCodexData.Count;
+            int codexEntryInstanceCount = _codexEntryUIInstanceList.Count;
+
+            // Delete unnecessary CodexEntryUI Instances.
+            if (codexEntryInstanceCount > codexEntryDataCount)
+            {
+                for(int i = codexEntryDataCount; i < codexEntryInstanceCount; ++i)
+                {
+                    Destroy(_codexEntryUIInstanceList[i].gameObject);
+                    _codexEntryUIInstanceList.RemoveAt(i);
+                    --codexEntryInstanceCount;
+                }
+            }
 
             // Update our CodexEntryUI Instances.
-            int codexEntryInstanceCount = _codexEntryUIInstanceList.Count;
             for (int i = 0; i < collectedCodexData.Count; ++i)
             {
                 if (i >= codexEntryInstanceCount)

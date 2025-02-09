@@ -11,21 +11,13 @@ namespace Items.Collectables
         [SerializeField] private List<CollectableData> _collectableData;
 
 
-        public System.Type Type => _type switch
-        {
-            CollectableDataType.Codex => typeof(CodexData),
+        public CollectableDataType Type => _type;
+        public System.Type SystemType => _type.ToSystemType();
 
-            _ => throw new System.NotImplementedException($"Conversion to System.Type is not implemented for CollectableDataType: {_type.ToString()}"),
-        };
-        
+
+        public int Count => _collectableData.Count;
         public int GetDataIndex(CollectableData data) => _collectableData.IndexOf(data);
-
-
-        [System.Serializable]
-        private enum CollectableDataType
-        {
-            Codex
-        }
+        public CollectableData GetDataAtIndex(int index) => _collectableData[index];
     }
 
     public static class CollectableDataOrderManager
@@ -39,10 +31,10 @@ namespace Items.Collectables
 
             foreach (CollectableDataOrderSO collectableDataOrderSO in Resources.LoadAll(COLLECTABLES_FOLDER_PATH, typeof(CollectableDataOrderSO)))
             {
-                if (!s_AllCollectableOrdersList.TryAdd(collectableDataOrderSO.Type, collectableDataOrderSO))
+                if (!s_AllCollectableOrdersList.TryAdd(collectableDataOrderSO.SystemType, collectableDataOrderSO))
                 {
                     // Failed to add (We have duplicate instances).
-                    Debug.LogError($"Error: We have multiple CollectableDataOrderSO instances for the Type: {collectableDataOrderSO.Type}");
+                    Debug.LogError($"Error: We have multiple CollectableDataOrderSO instances for the Type: {collectableDataOrderSO.SystemType}");
                 }
             }
         }

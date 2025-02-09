@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Items;
+using Saving;
+using Items.Collectables;
 
 namespace Entities.Player
 {
@@ -68,11 +70,6 @@ namespace Entities.Player
                 _ => MovementState.Walking,
             };
             _player.GetComponent<PlayerController>().InitialiseMovementState(startingMovementState);
-
-
-            // Setup the Player's Inventory.
-            _playerInventory.SetHasObtainedFlashlight(setupData.HasFlashlight, setupData.FlashlightBattery);
-            _playerInventory.SetHasObtainedKeycardDecoder(setupData.HasDecoder, setupData.DecoderLevel);
         }
         public PlayerSetupData GetCurrentPlayerData()
         {
@@ -94,16 +91,28 @@ namespace Entities.Player
             };
 
 
-            // Save Player Inventory.
-            setupData.HasFlashlight = _playerInventory.HasFlashlight();
-            setupData.FlashlightBattery = _playerInventory.GetFlashlightBattery();
-
-            setupData.HasDecoder = _playerInventory.HasKeycardDecoder();
-            setupData.DecoderLevel = _playerInventory.GetDecoderSecurityLevel();
-
-
             // Return the filled PlayerSetupData.
             return setupData;
+        }
+
+
+        public ItemSaveData GetInventorySaveData() => ItemSaveData.FromInventoryData(_playerInventory);
+        public void LoadInventorySaveData(ItemSaveData saveData)
+        {
+            // Player Items.
+            _playerInventory.SetHasObtainedFlashlight(saveData.FlashlightObtained, saveData.FlashlightBattery);
+            _playerInventory.SetHasObtainedKeycardDecoder(saveData.DecoderObtained, saveData.DecoderSecurityLevel);
+            _playerInventory.SetMedkits(saveData.MedkitCount);
+
+            // Key Items.
+
+
+            // Collectables.
+            CollectableManager.PrepareForLoad();
+            foreach (CollectableSaveData collectableSaveData in saveData.CollectablesSaveData)
+            {
+                CollectableManager.LoadObtainedCollectables(collectableSaveData.CollectableType.ToSystemType(), collectableSaveData.CollectablesObtained);
+            }
         }
 
 
@@ -127,24 +136,12 @@ namespace Entities.Player
             public StandingState PlayerStandingState;
 
 
-            // Inventory Information.
-            public bool HasFlashlight;
-            public float FlashlightBattery;
-            public bool HasDecoder;
-            public int DecoderLevel;
-
-
             public static PlayerSetupData Default => new PlayerSetupData() {
                 RootPosition = Vector3.zero,
                 RootRotation = Quaternion.identity,
                 CameraXRotation = 0.0f,
 
-                PlayerStandingState = StandingState.Standing,
-
-                HasFlashlight = false,
-                FlashlightBattery = 0.0f,
-                HasDecoder = false,
-                DecoderLevel = 0,
+                PlayerStandingState = StandingState.Standing
             };
         }
     }

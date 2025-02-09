@@ -105,6 +105,7 @@ namespace Items
         public int AddMedkits(int numberToAdd) => _medkit.AddMedkits(numberToAdd);
         public void SetMedkits(int newCount) => _medkit.SetMedkits(newCount);
         public void RemoveMedkits(int numberToRemove) => _medkit.RemoveMedkits(numberToRemove);
+        public int GetMedkitCount() => _medkit.GetCurrentCount();
 
         #endregion
     }

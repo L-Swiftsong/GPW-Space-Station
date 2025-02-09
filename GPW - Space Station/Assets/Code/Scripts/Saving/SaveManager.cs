@@ -6,7 +6,6 @@ using JSONSerialisation;
 using System.IO;
 using Entities.Player;
 
-
 namespace Saving
 {
     public class SaveManager : MonoBehaviour
@@ -22,6 +21,7 @@ namespace Saving
 
 
             public PlayerManager.PlayerSetupData PlayerData;
+            public ItemSaveData ItemSaveData;
 
             
             public static SaveData Empty = new SaveData() {
@@ -32,6 +32,7 @@ namespace Saving
                 ActiveSceneIndex = -1,
 
                 PlayerData = PlayerManager.PlayerSetupData.Default,
+                ItemSaveData = ItemSaveData.Default,
             };
         }
         [System.Serializable]
@@ -186,6 +187,10 @@ namespace Saving
             // Save Player Data.
             saveData.PlayerData = PlayerManager.Instance.GetCurrentPlayerData();
 
+            // Save Inventory Data.
+            saveData.ItemSaveData = PlayerManager.Instance.GetInventorySaveData();
+
+
             // Save Level Data.
             #region Level Data
 
@@ -223,6 +228,9 @@ namespace Saving
             
             // Load Player Data.
             PlayerManager.Instance.LoadFromPlayerData(saveData.PlayerData);
+
+            // Load Inventory Data.
+            PlayerManager.Instance.LoadInventorySaveData(saveData.ItemSaveData);
 
             // Load Level Data.
         }
