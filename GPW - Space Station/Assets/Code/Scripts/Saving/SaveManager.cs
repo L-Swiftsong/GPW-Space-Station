@@ -10,45 +10,6 @@ namespace Saving
 {
     public class SaveManager : MonoBehaviour
     {
-        [System.Serializable]
-        private struct SaveData
-        {
-            public bool Exists;
-            public float SaveTime;
-
-            public int[] LoadedSceneIndices;
-            public int ActiveSceneIndex;
-
-
-            public PlayerManager.PlayerSetupData PlayerData;
-            public ItemSaveData ItemSaveData;
-
-            
-            public static SaveData Empty = new SaveData() {
-                Exists = false,
-                SaveTime = 0.0f,
-                
-                LoadedSceneIndices = null,
-                ActiveSceneIndex = -1,
-
-                PlayerData = PlayerManager.PlayerSetupData.Default,
-                ItemSaveData = ItemSaveData.Default,
-            };
-        }
-        [System.Serializable]
-        private struct SaveDataBundle
-        {
-            public SaveData CheckpointSaveData;
-            public SaveData HubSaveData;
-            public SaveData CurrentSaveData;
-
-            public static SaveDataBundle Empty = new SaveDataBundle() {
-                CheckpointSaveData = SaveData.Empty,
-                HubSaveData = SaveData.Empty,
-                CurrentSaveData = SaveData.Empty,
-            };
-        }
-
         // Save Data.
         private static SaveData s_checkpointSaveData = SaveData.Empty; // The save data from when the player last entered a checkpoint.
         private static SaveData s_hubEnterSaveData = SaveData.Empty; // The save data from when the player last entered the Hub.

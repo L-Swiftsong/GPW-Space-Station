@@ -6,7 +6,7 @@ using Items;
 namespace Saving
 {
     [System.Serializable]
-    public class ItemSaveData
+    public class InventorySaveData
     {
         // Flashlight.
         public bool FlashlightObtained;
@@ -27,7 +27,7 @@ namespace Saving
 
 
 
-        public static ItemSaveData Default = new ItemSaveData()
+        public static InventorySaveData Default = new InventorySaveData()
         {
             FlashlightObtained = false,
             FlashlightBattery = 0.0f,
@@ -43,7 +43,7 @@ namespace Saving
         };
 
 
-        public static ItemSaveData FromInventoryData(PlayerInventory playerInventory) => new ItemSaveData()
+        public static InventorySaveData FromInventoryData(PlayerInventory playerInventory) => new InventorySaveData()
         {
             FlashlightObtained = playerInventory.HasFlashlight(),
             FlashlightBattery = playerInventory.GetFlashlightBattery(),

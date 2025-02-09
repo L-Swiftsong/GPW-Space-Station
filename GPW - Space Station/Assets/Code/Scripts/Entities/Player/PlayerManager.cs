@@ -52,7 +52,7 @@ namespace Entities.Player
             _player.SetPositionAndRotation(desiredPosition, Quaternion.Euler(desiredRotationEulerAngles));
             Physics.SyncTransforms();
         }
-        public void LoadFromPlayerData(PlayerSetupData setupData)
+        public void LoadFromPlayerData(PlayerSaveData setupData)
         {
             // Root Position.
             _player.position = setupData.RootPosition;
@@ -65,15 +65,15 @@ namespace Entities.Player
 
             // Standing State.
             MovementState startingMovementState = setupData.PlayerStandingState switch {
-                PlayerSetupData.StandingState.Crouching => MovementState.Crouching,
-                PlayerSetupData.StandingState.Crawling => MovementState.Crawling,
+                PlayerSaveData.StandingState.Crouching => MovementState.Crouching,
+                PlayerSaveData.StandingState.Crawling => MovementState.Crawling,
                 _ => MovementState.Walking,
             };
             _player.GetComponent<PlayerController>().InitialiseMovementState(startingMovementState);
         }
-        public PlayerSetupData GetCurrentPlayerData()
+        public PlayerSaveData GetCurrentPlayerData()
         {
-            PlayerSetupData setupData = new PlayerSetupData();
+            PlayerSaveData setupData = new PlayerSaveData();
 
             // Root Position.
             setupData.RootPosition = _player.position;
@@ -85,9 +85,9 @@ namespace Entities.Player
 
             // Standing State.
             setupData.PlayerStandingState = _player.GetComponent<PlayerController>().GetCurrentMovementState() switch {
-                MovementState.Crouching => PlayerSetupData.StandingState.Crouching,
-                MovementState.Crawling => PlayerSetupData.StandingState.Crawling,
-                _ => PlayerSetupData.StandingState.Standing,
+                MovementState.Crouching => PlayerSaveData.StandingState.Crouching,
+                MovementState.Crawling => PlayerSaveData.StandingState.Crawling,
+                _ => PlayerSaveData.StandingState.Standing,
             };
 
 
@@ -96,8 +96,8 @@ namespace Entities.Player
         }
 
 
-        public ItemSaveData GetInventorySaveData() => ItemSaveData.FromInventoryData(_playerInventory);
-        public void LoadInventorySaveData(ItemSaveData saveData)
+        public InventorySaveData GetInventorySaveData() => InventorySaveData.FromInventoryData(_playerInventory);
+        public void LoadInventorySaveData(InventorySaveData saveData)
         {
             // Player Items.
             _playerInventory.SetHasObtainedFlashlight(saveData.FlashlightObtained, saveData.FlashlightBattery);
@@ -122,27 +122,5 @@ namespace Entities.Player
 
         public Camera GetPlayerCamera() => _playerMainCamera;
         public Transform GetPlayerCameraTransform() => _playerMainCamera.transform;
-
-
-        [System.Serializable]
-        public struct PlayerSetupData
-        {
-            // Position & Rotation Information.
-            public Vector3 RootPosition;
-            public Quaternion RootRotation;
-            public float CameraXRotation;
-
-            [System.Serializable] public enum StandingState { Standing, Crouching, Crawling };
-            public StandingState PlayerStandingState;
-
-
-            public static PlayerSetupData Default => new PlayerSetupData() {
-                RootPosition = Vector3.zero,
-                RootRotation = Quaternion.identity,
-                CameraXRotation = 0.0f,
-
-                PlayerStandingState = StandingState.Standing
-            };
-        }
     }
 }
