@@ -11,7 +11,7 @@ namespace Items.Healing
 
 
         [Header("Healing Settings")]
-        [SerializeField] private float _healingAmount = 25.0f;
+        [SerializeField] private int _healingAmount = 1;
         [SerializeField] private float _healingDelay = 1.5f;
 
 

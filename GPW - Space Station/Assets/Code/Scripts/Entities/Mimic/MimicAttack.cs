@@ -58,7 +58,7 @@ public class MimicAttack : MonoBehaviour
         }
         if (_playerHealth != null)
         {
-            _playerHealth.PlayerTakeDamage(25);
+            _playerHealth.TakeDamage(1);
         }
 
         // Temporarily reduce mimic speed after attack

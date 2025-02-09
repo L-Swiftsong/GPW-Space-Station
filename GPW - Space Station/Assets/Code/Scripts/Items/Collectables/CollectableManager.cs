@@ -45,9 +45,18 @@ namespace Items.Collectables
         public static void LoadObtainedCollectables(CollectableDataType type, bool[] obtainedValues) => LoadObtainedCollectables(type.ToSystemType(), obtainedValues);
         public static void LoadObtainedCollectables(System.Type type, bool[] obtainedValues)
         {
+            // Get the number of obtained collectables of this type;
+            int obtainedCollectablesCount = obtainedValues.Where(t => t == true).Count();
+
+            if (obtainedCollectablesCount == 0)
+            {
+                // We haven't obtained any collectables of this type.
+                return;
+            }
+
             // Construct a list of our obtained collectable instances.
-            List<CollectableData> obtainedCollectables = new List<CollectableData>(obtainedValues.Where(t => t == true).Count());
-            for (int i = 0; i < obtainedValues.Length; ++i)
+            List<CollectableData> obtainedCollectables = new List<CollectableData>(obtainedCollectablesCount);
+            for (int i = 0; i < obtainedCollectablesCount; ++i)
             {
                 if (obtainedValues[i] == true)
                 {

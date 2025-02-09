@@ -13,6 +13,6 @@ namespace SceneManagement
         [Header("Positioning Settings")]
         public bool AlterPlayerLocation;
         public Vector3 EntryPosition;
-        public Vector3 EntryRotation;
+        public float EntryRotation;
     }
 }

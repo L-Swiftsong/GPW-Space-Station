@@ -47,20 +47,23 @@ namespace Entities.Player
         }
 
 
-        public void SetPlayerPositionAndRotation(Vector3 desiredPosition, Vector3 desiredRotationEulerAngles)
+        public void SetPlayerPositionAndRotation(Vector3 desiredPosition, float desiredRotation)
         {
-            _player.SetPositionAndRotation(desiredPosition, Quaternion.Euler(desiredRotationEulerAngles));
+            _player.position = desiredPosition;
+            _player.GetComponent<PlayerController>().SetYRotation(desiredRotation);
             Physics.SyncTransforms();
         }
         public void LoadFromPlayerData(PlayerSaveData setupData)
         {
+            PlayerController playerController = _player.GetComponent<PlayerController>();
+
             // Root Position.
             _player.position = setupData.RootPosition;
-            _player.rotation = setupData.RootRotation;
+            playerController.SetYRotation(setupData.YRotation);
             Physics.SyncTransforms();
 
             // Camera Rotation.
-            _playerMainCamera.transform.localEulerAngles = new Vector3(setupData.CameraXRotation, 0.0f, 0.0f); // Not working - PlayerController conflict?.
+            playerController.SetCameraRotation(setupData.CameraXRotation);
 
 
             // Standing State.
@@ -69,22 +72,23 @@ namespace Entities.Player
                 PlayerSaveData.StandingState.Crawling => MovementState.Crawling,
                 _ => MovementState.Walking,
             };
-            _player.GetComponent<PlayerController>().InitialiseMovementState(startingMovementState);
+            playerController.InitialiseMovementState(startingMovementState);
         }
         public PlayerSaveData GetCurrentPlayerData()
         {
             PlayerSaveData setupData = new PlayerSaveData();
+            PlayerController playerController = _player.GetComponent<PlayerController>();
 
             // Root Position.
             setupData.RootPosition = _player.position;
-            setupData.RootRotation = _player.rotation;
+            setupData.YRotation = playerController.GetYRotation();
 
             // Camera Rotation.
-            setupData.CameraXRotation = _playerMainCamera.transform.localEulerAngles.x;
+            setupData.CameraXRotation = playerController.GetCameraRotation();
 
 
             // Standing State.
-            setupData.PlayerStandingState = _player.GetComponent<PlayerController>().GetCurrentMovementState() switch {
+            setupData.PlayerStandingState = playerController.GetCurrentMovementState() switch {
                 MovementState.Crouching => PlayerSaveData.StandingState.Crouching,
                 MovementState.Crawling => PlayerSaveData.StandingState.Crawling,
                 _ => PlayerSaveData.StandingState.Standing,
