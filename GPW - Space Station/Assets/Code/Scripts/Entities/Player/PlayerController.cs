@@ -1,6 +1,7 @@
 ﻿using Audio.Footsteps;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 /*
  * CONTEXT:
@@ -16,6 +17,7 @@ namespace Entities.Player
         [SerializeField] private Transform _rotationPivot;
         private PlayerHealth playerHealth;
         private CharacterController _controller;
+        private CameraFocusLook cameraFocusLook;
 
         private MovementState _currentMovementState = MovementState.Walking;
 
@@ -107,7 +109,6 @@ namespace Entities.Player
         [SerializeField] private bool _drawDetectionRadiusGizmos = false;
         [SerializeField] private MovementState _detectionRadiusDebugState;
 
-
         private bool _wantsToSprint = false;
         private bool _wantsToCrouch = false;
         private bool _wantsToCrawl = false;
@@ -125,6 +126,7 @@ namespace Entities.Player
             // Get references.
             _controller = GetComponent<CharacterController>();
             playerHealth = GetComponent<PlayerHealth>();
+            cameraFocusLook = GetComponent<CameraFocusLook>();
 
             // Start walking.
             _currentMovementState = MovementState.Walking;
@@ -416,6 +418,13 @@ namespace Entities.Player
         /// </summary>
         private void HandleLook()
         {
+            if (cameraFocusLook != null && cameraFocusLook.IsFocusLookActive())
+            {
+                Debug.Log("Camera Focus is Active");
+                return;
+            }
+
+
             // Get the current look input (Already has sensitivity & inversion applied).
             Vector2 lookInput = PlayerInput.GetLookInputWithSensitivity * Time.deltaTime;
 
@@ -645,7 +654,7 @@ namespace Entities.Player
         #endregion
 
 
-        #region
+        #region Footsteps
 
         private void TickFootstepTime()
         {
