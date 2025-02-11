@@ -8,6 +8,7 @@ namespace UI.Menus.Settings
     public class SettingsMenuUI : MonoBehaviour
     {
         [Header("Settings Menu")]
+        [SerializeField] private GameObject _settingsTitleText;
         [SerializeField] private Transform _buttonsContainer;
         [SerializeField] private List<SettingsSubmenuUI> _submenuList;
 
@@ -22,6 +23,7 @@ namespace UI.Menus.Settings
             }
 
             _buttonsContainer.gameObject.SetActive(true);
+            _settingsTitleText.SetActive(true);
         }
         private void OnEnable()
         {
@@ -30,6 +32,9 @@ namespace UI.Menus.Settings
                 // The settings manager has not been initialised.
                 return;
             }
+
+            // Select the first button.
+            EventSystem.current.SetSelectedGameObject(_buttonsContainer.GetChild(0).gameObject);
 
             // Update our displayed values to match what they are currently set to.
             UpdateSettings();
@@ -53,11 +58,12 @@ namespace UI.Menus.Settings
 
         public void OpenSubmenu(SettingsSubmenuUI submenu)
         {
-            // Disable the buttons.
+            // Disable the Buttons & Title Text.
             _buttonsContainer.gameObject.SetActive(false);
+            _settingsTitleText.SetActive(false);
 
             // Disable all Submenus.
-            for(int i = 0; i < _submenuList.Count; ++i)
+            for (int i = 0; i < _submenuList.Count; ++i)
             {
                 _submenuList[i].gameObject.SetActive(false);
             }
@@ -73,8 +79,9 @@ namespace UI.Menus.Settings
                 _submenuList[i].gameObject.SetActive(false);
             }
 
-            // Enable the buttons.
+            // Enable the buttons & Title Text.
             _buttonsContainer.gameObject.SetActive(true);
+            _settingsTitleText.SetActive(true);
 
             // Select the proper button.
             EventSystem.current.SetSelectedGameObject(selectedButton.gameObject);
