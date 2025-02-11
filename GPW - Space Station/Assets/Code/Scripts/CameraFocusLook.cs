@@ -53,7 +53,8 @@ public class CameraFocusLook : MonoBehaviour
         }
     }
 
-    public void TriggerFocusLook (GameObject target, float duration = 3f, float strength = 3f)
+    public static void TriggerFocusLookStatic(GameObject target, float duration = 3f, float strength = 3f) => Entities.Player.PlayerManager.Instance.Player.GetComponent<CameraFocusLook>().TriggerFocusLook(target, duration, strength);
+    public void TriggerFocusLook(GameObject target, float duration = 3f, float strength = 3f)
     {
 		focusLookTarget = target;
         Debug.Log(target);

@@ -1004,6 +1004,11 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &136820741 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 931041222728491149, guid: f3233702979935c41bf9e4c8f59e3d75, type: 3}
+  m_PrefabInstance: {fileID: 1986188564}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &161375078
 Mesh:
   m_ObjectHideFlags: 0
@@ -20850,6 +20855,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isOmnidirectional: 1
+  _ventSource: {fileID: 0}
+  _ventEnter: {fileID: 0}
 --- !u!65 &1141450656
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -32891,12 +32898,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _onlyTriggerOnce: 0
+  _onlyTriggerOnce: 1
   _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
-    - _Target: {fileID: -3849963727783641991, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
-      _MemberName: TriggerFocusLook
+    - _Target: {fileID: 0}
+      _MemberName: CameraFocusLook, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.TriggerFocusLookStatic
       _PersistentArguments:
       - _Type: 13
         _Int: 0
@@ -32910,7 +32918,7 @@ MonoBehaviour:
       - _Type: 5
         _Int: 0
         _String: 
-        _X: 3
+        _X: 2
         _Y: 0
         _Z: 0
         _W: 0
@@ -32918,7 +32926,7 @@ MonoBehaviour:
       - _Type: 5
         _Int: 0
         _String: 
-        _X: 5
+        _X: 3
         _Y: 0
         _Z: 0
         _W: 0
@@ -33109,7 +33117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2777577557115616166, guid: f3233702979935c41bf9e4c8f59e3d75, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2777577557115616166, guid: f3233702979935c41bf9e4c8f59e3d75, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._Target
@@ -33129,7 +33137,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2777577557115616166, guid: f3233702979935c41bf9e4c8f59e3d75, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._PersistentArguments.Array.data[2]._X
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2777577557115616166, guid: f3233702979935c41bf9e4c8f59e3d75, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._PersistentArguments.Array.data[0]._Type
@@ -33146,7 +33154,7 @@ PrefabInstance:
     - target: {fileID: 2777577557115616166, guid: f3233702979935c41bf9e4c8f59e3d75, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._PersistentArguments.Array.data[0]._Object
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 136820741}
     - target: {fileID: 2777577557115616166, guid: f3233702979935c41bf9e4c8f59e3d75, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._PersistentArguments.Array.data[0]._String
       value: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
