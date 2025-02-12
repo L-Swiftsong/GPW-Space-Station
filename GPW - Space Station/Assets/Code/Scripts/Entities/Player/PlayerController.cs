@@ -287,9 +287,9 @@ namespace Entities.Player
                 UpdateCharacterHeight();
             }
         
-            HandleLook();   
+            HandleLook();
         
-            if (playerHealth.isHealing)
+            if (playerHealth.IsHealing)
             {
                 moveSpeed = healMoveSpeed;
                 sprintSpeed = healSprintSpeed;
@@ -425,6 +425,8 @@ namespace Entities.Player
             _playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);
             _rotationPivot.Rotate(Vector3.up * lookInput.x);
         }
+        public void SetCameraRotation(float xRotation) => _rotationX = xRotation;
+        public float GetCameraRotation() => _rotationX;
 
 
         /// <summary>
@@ -725,6 +727,8 @@ namespace Entities.Player
             UpdateCharacterHeightInstant();
             UpdateCameraTransformInstant();
         }
+        public float GetYRotation() => _rotationPivot.localEulerAngles.y;
+        public void SetYRotation(float yRotation) => _rotationPivot.localRotation = Quaternion.Euler(0.0f, yRotation, 0.0f);
 
 
         private void OnDrawGizmosSelected()

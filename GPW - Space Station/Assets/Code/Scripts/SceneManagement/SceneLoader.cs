@@ -217,7 +217,11 @@ namespace SceneManagement
         }
 
 
-        public void ReloadToMainMenu() => StartCoroutine(PerformLoadFromBuildIndices(new int[1] { _mainMenuScene.BuildIndex }, 0, transitionType: TransitionType.Menu));
+        public void ReloadToMainMenu()
+        {
+            UI.Menus.MainMenuUI.SetEntryFromOtherScene();
+            StartCoroutine(PerformLoadFromBuildIndices(new int[1] { _mainMenuScene.BuildIndex }, 0, transitionType: TransitionType.Menu));
+        }
         public void LoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback) => StartCoroutine(PerformLoadFromBuildIndices(buildIndices, activeSceneBuildIndex, onCompleteCallback));
         
         private enum TransitionType { Default, Hub, Menu };

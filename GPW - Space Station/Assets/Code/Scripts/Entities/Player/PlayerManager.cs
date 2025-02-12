@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Items;
+using Saving;
+using Items.Collectables;
 
 namespace Entities.Player
 {
@@ -45,65 +47,76 @@ namespace Entities.Player
         }
 
 
-        public void SetPlayerPositionAndRotation(Vector3 desiredPosition, Vector3 desiredRotationEulerAngles)
+        public void SetPlayerPositionAndRotation(Vector3 desiredPosition, float desiredRotation)
         {
-            _player.SetPositionAndRotation(desiredPosition, Quaternion.Euler(desiredRotationEulerAngles));
+            _player.position = desiredPosition;
+            _player.GetComponent<PlayerController>().SetYRotation(desiredRotation);
             Physics.SyncTransforms();
         }
-        public void LoadFromPlayerData(PlayerSetupData setupData)
+        public void LoadFromPlayerData(PlayerSaveData setupData)
         {
+            PlayerController playerController = _player.GetComponent<PlayerController>();
+
             // Root Position.
             _player.position = setupData.RootPosition;
-            _player.rotation = setupData.RootRotation;
+            playerController.SetYRotation(setupData.YRotation);
             Physics.SyncTransforms();
 
             // Camera Rotation.
-            _playerMainCamera.transform.localEulerAngles = new Vector3(setupData.CameraXRotation, 0.0f, 0.0f); // Not working - PlayerController conflict?.
+            playerController.SetCameraRotation(setupData.CameraXRotation);
 
 
             // Standing State.
             MovementState startingMovementState = setupData.PlayerStandingState switch {
-                PlayerSetupData.StandingState.Crouching => MovementState.Crouching,
-                PlayerSetupData.StandingState.Crawling => MovementState.Crawling,
+                PlayerSaveData.StandingState.Crouching => MovementState.Crouching,
+                PlayerSaveData.StandingState.Crawling => MovementState.Crawling,
                 _ => MovementState.Walking,
             };
-            _player.GetComponent<PlayerController>().InitialiseMovementState(startingMovementState);
-
-
-            // Setup the Player's Inventory.
-            _playerInventory.SetHasObtainedFlashlight(setupData.HasFlashlight, setupData.FlashlightBattery);
-            _playerInventory.SetHasObtainedKeycardDecoder(setupData.HasDecoder, setupData.DecoderLevel);
+            playerController.InitialiseMovementState(startingMovementState);
         }
-        public PlayerSetupData GetCurrentPlayerData()
+        public PlayerSaveData GetCurrentPlayerData()
         {
-            PlayerSetupData setupData = new PlayerSetupData();
+            PlayerSaveData setupData = new PlayerSaveData();
+            PlayerController playerController = _player.GetComponent<PlayerController>();
 
             // Root Position.
             setupData.RootPosition = _player.position;
-            setupData.RootRotation = _player.rotation;
+            setupData.YRotation = playerController.GetYRotation();
 
             // Camera Rotation.
-            setupData.CameraXRotation = _playerMainCamera.transform.localEulerAngles.x;
+            setupData.CameraXRotation = playerController.GetCameraRotation();
 
 
             // Standing State.
-            setupData.PlayerStandingState = _player.GetComponent<PlayerController>().GetCurrentMovementState() switch {
-                MovementState.Crouching => PlayerSetupData.StandingState.Crouching,
-                MovementState.Crawling => PlayerSetupData.StandingState.Crawling,
-                _ => PlayerSetupData.StandingState.Standing,
+            setupData.PlayerStandingState = playerController.GetCurrentMovementState() switch {
+                MovementState.Crouching => PlayerSaveData.StandingState.Crouching,
+                MovementState.Crawling => PlayerSaveData.StandingState.Crawling,
+                _ => PlayerSaveData.StandingState.Standing,
             };
-
-
-            // Save Player Inventory.
-            setupData.HasFlashlight = _playerInventory.HasFlashlight();
-            setupData.FlashlightBattery = _playerInventory.GetFlashlightBattery();
-
-            setupData.HasDecoder = _playerInventory.HasKeycardDecoder();
-            setupData.DecoderLevel = _playerInventory.GetDecoderSecurityLevel();
 
 
             // Return the filled PlayerSetupData.
             return setupData;
+        }
+
+
+        public InventorySaveData GetInventorySaveData() => InventorySaveData.FromInventoryData(_playerInventory);
+        public void LoadInventorySaveData(InventorySaveData saveData)
+        {
+            // Player Items.
+            _playerInventory.SetHasObtainedFlashlight(saveData.FlashlightObtained, saveData.FlashlightBattery);
+            _playerInventory.SetHasObtainedKeycardDecoder(saveData.DecoderObtained, saveData.DecoderSecurityLevel);
+            _playerInventory.SetMedkits(saveData.MedkitCount);
+
+            // Key Items.
+
+
+            // Collectables.
+            CollectableManager.PrepareForLoad();
+            foreach (CollectableSaveData collectableSaveData in saveData.CollectablesSaveData)
+            {
+                CollectableManager.LoadObtainedCollectables(collectableSaveData.CollectableType.ToSystemType(), collectableSaveData.CollectablesObtained);
+            }
         }
 
 
@@ -113,39 +126,5 @@ namespace Entities.Player
 
         public Camera GetPlayerCamera() => _playerMainCamera;
         public Transform GetPlayerCameraTransform() => _playerMainCamera.transform;
-
-
-        [System.Serializable]
-        public struct PlayerSetupData
-        {
-            // Position & Rotation Information.
-            public Vector3 RootPosition;
-            public Quaternion RootRotation;
-            public float CameraXRotation;
-
-            [System.Serializable] public enum StandingState { Standing, Crouching, Crawling };
-            public StandingState PlayerStandingState;
-
-
-            // Inventory Information.
-            public bool HasFlashlight;
-            public float FlashlightBattery;
-            public bool HasDecoder;
-            public int DecoderLevel;
-
-
-            public static PlayerSetupData Default => new PlayerSetupData() {
-                RootPosition = Vector3.zero,
-                RootRotation = Quaternion.identity,
-                CameraXRotation = 0.0f,
-
-                PlayerStandingState = StandingState.Standing,
-
-                HasFlashlight = false,
-                FlashlightBattery = 0.0f,
-                HasDecoder = false,
-                DecoderLevel = 0,
-            };
-        }
     }
 }
