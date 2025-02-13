@@ -3,7 +3,8 @@ namespace Items.Collectables
     [System.Serializable]
     public enum CollectableDataType
     {
-        Codex
+        Codex,
+        KeyItem,
     }
 
 
@@ -14,6 +15,7 @@ namespace Items.Collectables
             return collectableDataType switch
             {
                 CollectableDataType.Codex => typeof(CodexData),
+                CollectableDataType.KeyItem => typeof(KeyItemData),
 
                 _ => throw new System.NotImplementedException($"Conversion to System.Type is not implemented for CollectableDataType: {collectableDataType.ToString()}"),
             };
@@ -23,6 +25,7 @@ namespace Items.Collectables
             return systemType switch
             {
                 CodexData => CollectableDataType.Codex,
+                KeyItemData => CollectableDataType.KeyItem,
 
                 _ => throw new System.NotImplementedException($"Conversion to CollectableDataType is not implemented for System.Type: {systemType.ToString()}"),
             };

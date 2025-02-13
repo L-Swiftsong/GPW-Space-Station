@@ -28,6 +28,20 @@ namespace Items.Collectables
             }
         }
 
+        /// <remarks>
+        ///     May be unsafe.
+        /// </remarks>
+        public static List<CollectableData> GetCollectablesOfType(CollectableDataType collectableDataType)
+        {
+            if (_obtainedCollectableData.ContainsKey(collectableDataType.ToSystemType()))
+            {
+                return _obtainedCollectableData[collectableDataType.ToSystemType()].AsList();
+            }
+            else
+            {
+                return new List<CollectableData>();
+            }
+        }
         public static List<T> GetCollectablesOfType<T>() where T : CollectableData
         {
             if (_obtainedCollectableData.ContainsKey(typeof(T)))
