@@ -1,3 +1,4 @@
+using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -10,24 +11,26 @@ public class CameraFocusLook : MonoBehaviour
     [SerializeField] private GameObject focusLookTarget;
 
     public float lookStrength = 3f;
-    public float resistanceStrength = 0.5f;
+    public float resistanceStrength = 3f;
 
     [SerializeField] private bool isFocusLookActive;
     public float focusLookDuration;
     public float focusLookTimer;
 
-	private void Start()
-	{
-		playerCamera = Camera.main;
-        isFocusLookActive = false;
-	}
+    public float cameraXRotation;
+    public float cameraYRotation;
 
-	// Update is called once per frame
-	void Update()
+    private void Start()
     {
-		if (isFocusLookActive)
+        playerCamera = Camera.main;
+        isFocusLookActive = false;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (isFocusLookActive)
         {
-            Debug.Log("Focus look is active, handling focus...");
             HandleFocusLook();
         }
     }
@@ -49,21 +52,33 @@ public class CameraFocusLook : MonoBehaviour
 
         if (focusLookTimer >= focusLookDuration)
         {
+            cameraXRotation = playerCamera.transform.eulerAngles.x;
+            cameraYRotation = playerCamera.transform.eulerAngles.y;
+
+			Debug.Log($"[Focus Look] Stored X Rotation: {cameraXRotation}");
+            Debug.Log($"[Focus Look] Stored Y Rotation: {cameraYRotation}");
+
 			isFocusLookActive = false;
         }
     }
 
-    public static void TriggerFocusLookStatic(GameObject target, float duration = 3f, float strength = 3f) => Entities.Player.PlayerManager.Instance.Player.GetComponent<CameraFocusLook>().TriggerFocusLook(target, duration, strength);
+    public static void TriggerFocusLookStatic(GameObject target, float duration = 3f, float strength = 3f)
+    {
+        var playerInstance = Entities.Player.PlayerManager.Instance;
+
+        if (playerInstance.CameraFocusLook)
+        {
+            playerInstance.CameraFocusLook.TriggerFocusLook(target, duration, strength);
+        }
+    }
+
     public void TriggerFocusLook(GameObject target, float duration = 3f, float strength = 3f)
     {
-		focusLookTarget = target;
-        Debug.Log(target);
-		focusLookDuration = duration;
+        focusLookTarget = target;
+        focusLookDuration = duration;
         lookStrength = strength;
-
         focusLookTimer = 0f;
         isFocusLookActive = true;
-        Debug.Log(isFocusLookActive);
     }
 
     public bool IsFocusLookActive()

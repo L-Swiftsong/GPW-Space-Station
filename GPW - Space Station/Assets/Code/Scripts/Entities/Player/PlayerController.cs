@@ -420,15 +420,25 @@ namespace Entities.Player
         {
             if (cameraFocusLook != null && cameraFocusLook.IsFocusLookActive())
             {
-                Debug.Log("Camera Focus is Active");
                 return;
             }
 
+			if (!cameraFocusLook.IsFocusLookActive() && cameraFocusLook.cameraXRotation != 0f)
+			{
+				Debug.Log($"[PlayerController] Applying stored X Rotation: {cameraFocusLook.cameraXRotation}");
+				Debug.Log($"[PlayerController] Applying stored Y Rotation: {cameraFocusLook.cameraYRotation}");
 
+				_rotationX = cameraFocusLook.cameraXRotation;
+                _rotationPivot.rotation = Quaternion.Euler(0, cameraFocusLook.cameraYRotation, 0);
+
+                cameraFocusLook.cameraXRotation = 0f;
+                cameraFocusLook.cameraYRotation = 0f;
+			}            
+            
             // Get the current look input (Already has sensitivity & inversion applied).
             Vector2 lookInput = PlayerInput.GetLookInputWithSensitivity * Time.deltaTime;
 
-            _rotationX -= lookInput.y;
+			_rotationX -= lookInput.y;
             _rotationX = Mathf.Clamp(_rotationX, -90f, 90f);
 
             _playerCamera.transform.localRotation = Quaternion.Euler(_rotationX, 0.0f, _currentTilt);

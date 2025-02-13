@@ -38,10 +38,13 @@ namespace Entities.Player
         [Space(5)]
         [SerializeField] private PlayerInventory _playerInventory;
 
+        public CameraFocusLook CameraFocusLook { get; private set; }
+
 
         private void Awake()
         {
             Instance = this;
+            CameraFocusLook = Player.GetComponent<CameraFocusLook>();
         }
 
 
