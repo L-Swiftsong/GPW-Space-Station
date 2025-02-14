@@ -12,9 +12,12 @@ namespace Environment.Vents
         [SerializeField] private bool _isOmnidirectional = false;
         public bool IsOmnidirectional => _isOmnidirectional;
 
+		[SerializeField] private AudioSource _ventSource;
+		[SerializeField] private AudioClip _ventEnter;
 
-    #if UNITY_EDITOR
-        private void OnValidate()
+
+#if UNITY_EDITOR
+		private void OnValidate()
         {
             GetComponent<Collider>().isTrigger = true;
         }
@@ -35,6 +38,8 @@ namespace Environment.Vents
                 }
 
                 playerController.TryStartCrawling();
+                _ventSource.PlayOneShot(_ventEnter);
+
             }
         }
         private void OnTriggerExit(Collider other)

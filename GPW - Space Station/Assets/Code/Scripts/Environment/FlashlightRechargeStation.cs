@@ -4,6 +4,7 @@ using UnityEngine;
 using Items;
 using Interaction;
 using System;
+using Audio;
 
 namespace Environment
 {
@@ -26,6 +27,8 @@ namespace Environment
 
         [Header("Effects")]
         [SerializeField] private AudioClip _rechargeSound;
+        [SerializeField] private AudioClip _rechargeFinishSound;
+        [SerializeField] private AudioSource _rechargeSource;
 
         [Space(5)]
         [SerializeField] private GameObject _progressBarContainer;
@@ -86,7 +89,10 @@ namespace Environment
             _currentBattery = initialBattery;
             ShowRechargeProgressBar();
             _rechargeFlashlightCoroutine = StartCoroutine(RechargeFlashlight());
-        }
+
+			_rechargeSource.clip = _rechargeSound;
+			_rechargeSource.Play();
+		}
         private void ResumeRecharge()
         {
             if (!_hasFlashlight)
@@ -107,6 +113,8 @@ namespace Environment
             if (_rechargeFlashlightCoroutine != null)
             {
                 StopCoroutine(_rechargeFlashlightCoroutine);
+
+                _rechargeSource.Stop();
             }
 
             HideRechargeProgressBar();
@@ -129,6 +137,7 @@ namespace Environment
         /// <summary> Recharge the current flashlight at a fixed rate over time.</summary>
         private IEnumerator RechargeFlashlight()
         {
+
             while (_currentBattery < _maxBattery)
             {
                 // Recharge the flashlight at a fixed rate over time.
@@ -138,6 +147,7 @@ namespace Environment
                 {
                     // Update the progress bar.
                     _rechargeProgressBar.SetValues(current: _currentBattery, min: 0.0f, max: _maxBattery);
+
                 }
 
                 yield return null;
@@ -147,8 +157,13 @@ namespace Environment
 
             if (_rechargeSound != null)
             {
+                _rechargeSource.Stop();
+            }
+
+            if (_rechargeFinishSound != null)
+            {
                 // Notify the player that we have finished charging.
-                AudioSource.PlayClipAtPoint(_rechargeSound, transform.position);
+                AudioSource.PlayClipAtPoint(_rechargeFinishSound, transform.position);
             }
         }
 
