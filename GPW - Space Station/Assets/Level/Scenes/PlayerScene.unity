@@ -808,6 +808,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -3849963727783641991, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 843563095}
+    - target: {fileID: -3849963727783641991, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
       propertyPath: isFocusLookActive
       value: 0
       objectReference: {fileID: 0}
@@ -818,7 +822,7 @@ PrefabInstance:
     - target: {fileID: 333836014103471240, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1132607878}
+      objectReference: {fileID: 1846483762}
     - target: {fileID: 333836014103471240, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
       propertyPath: m_VersionIndex
       value: 155
@@ -970,7 +974,7 @@ PrefabInstance:
     - target: {fileID: 5948162251398661840, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1132607878}
+      objectReference: {fileID: 0}
     - target: {fileID: 6185967142476060764, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1066,7 +1070,7 @@ PrefabInstance:
     - target: {fileID: 8603620965953336779, guid: cfa134adb0403614f92bf841a9ccdc95, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1132607878}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1943,13 +1947,13 @@ MonoBehaviour:
   _tutorialModalContainer: {fileID: 2146252273}
   _defaultTutorialSprite: {fileID: 21300000, guid: ffdf80dc342e69344b2dccafe04c30ee, type: 3}
   _tutorialModalLifetime: 4
---- !u!43 &2049201169
+--- !u!43 &1846483762
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3730(Clone)(Clone)(Clone)(Clone)(Clone)
+  m_Name: pb_Mesh-67600
   serializedVersion: 11
   m_SubMeshes:
   - serializedVersion: 2
