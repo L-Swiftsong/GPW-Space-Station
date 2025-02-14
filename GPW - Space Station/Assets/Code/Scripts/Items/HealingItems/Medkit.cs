@@ -11,7 +11,7 @@ namespace Items.Healing
 
 
         [Header("Healing Settings")]
-        [SerializeField] private float _healingAmount = 25.0f;
+        [SerializeField] private int _healingAmount = 1;
         [SerializeField] private float _healingDelay = 1.5f;
 
 
@@ -67,6 +67,9 @@ namespace Items.Healing
             // Reduce our number of medkits by the 'numberToRemove' towards 0.
             _currentMedkitCount = Mathf.Max(_currentMedkitCount - numberToRemove, 0);
         }
+
+
+        public int GetCurrentCount() => _currentMedkitCount;
 
 
         private void StartHealing() => _playerHealth.StartHealing(_healingAmount, _healingDelay);

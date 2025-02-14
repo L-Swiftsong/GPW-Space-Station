@@ -5,110 +5,100 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public float maxHealth = 100f;
-    public float health;
+    [Header("Health")]
+    [SerializeField] private int _maxHealth = 4;
+    [SerializeField, ReadOnly] private int _currentHealth;
+    private bool _isDead;
 
-    public int damageTest;
 
-    public float damageCooldown = 0.25f;
-    private bool isDamageOnCooldown = false;
+    [Header("Damage")]
+    [SerializeField] private float _damageCooldown = 0.25f;
+    private bool _isOnDamageCooldown = false;
 
-    public GameObject brokenVisor1;
-    public GameObject brokenVisor2;
-    public GameObject brokenVisor3;
 
-    public bool isHealing = false;
+    [Header("VFX")]
+    [SerializeField] private GameObject _threeQuartersHealthVisor; // <75%.
+    [SerializeField] private GameObject _lowHealthVisor; // <50%.
+    [SerializeField] private GameObject _criticalHealthVisor; // <25%.
+
+
+    [Header("Healing")]
+    [SerializeField, ReadOnly] private bool _isHealing = false;
     private Coroutine _healingCoroutine;
 
-
+    public bool IsHealing => _isHealing;
     public event System.Action OnUsedHealthKit;
 
 
-    void Start()
+    void Awake()
     {
-        //Set health to max at start of the game
-        health = maxHealth;
+        // Set health to max at start of the game.
+        _currentHealth = _maxHealth;
+
+        _isDead = false;
+        _isOnDamageCooldown = false;
     }
 
     void Update()
     {
+        if (_isDead)
+        {
+            return;
+        }
+
         //Updates health UI to accurately reflect current health/damage taken
         UpdateHealthUI();
 
-        //Test damage by pressing R 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            health -= damageTest;
-        }
 
-        //Ensure player doesnt overheal
-        if (health > maxHealth)
+        if (_currentHealth > _maxHealth)
         {
-            health = maxHealth;
+            // Ensure the player doesn't overheal.
+            _currentHealth = _maxHealth;
         }
-
-        //Once health is depleted restart level
-        else if (health <= 0)
+        else if (_currentHealth <= 0 && !_isDead)
         {
+            // We have just died.
             Die();
+            _isDead = true;
         }
     }
 
     //Function to call player damage from external scripts
-    public void PlayerTakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
-        if (!isDamageOnCooldown) //Only take damage if enemies attack cooldown is finished
+        if (_isOnDamageCooldown) //Only take damage if enemies attack cooldown is finished
         {
-            health -= damage;
-            health = Mathf.Max(health, 0f);
-
-            isDamageOnCooldown = true;
-            StartCoroutine(StartDamageCooldown());
+            return;
         }
+        
+        _currentHealth -= damage;
+        _currentHealth = Mathf.Max(_currentHealth, 0);
+
+        _isOnDamageCooldown = true;
+        StartCoroutine(StartDamageCooldown());
     }
 
     // (Temp Implementation) Show the game over UI once the player dies.
-    void Die() => UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
+    private void Die() => UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
 
     void UpdateHealthUI()
     {
-        //changes visor state depending on current health
-        if (health == 100)
-        {
-            brokenVisor1.SetActive(false);
-            brokenVisor2.SetActive(false);
-            brokenVisor3.SetActive(false);
-        }
-        else if (health == 75)
-        {
-            brokenVisor1.SetActive(true);
-            brokenVisor2.SetActive(false);
-            brokenVisor3.SetActive(false);
-        }
-        else if (health == 50)
-        {
-            brokenVisor1.SetActive(false);
-            brokenVisor2.SetActive(true);
-            brokenVisor3.SetActive(false);
-        }
-        else if (health == 25)
-        {
-            brokenVisor1.SetActive(false);
-            brokenVisor2.SetActive(false);
-            brokenVisor3.SetActive(true);
-        }
+        // Changes visor state depending on current health.
+        _threeQuartersHealthVisor.SetActive(_currentHealth == 3);
+        _lowHealthVisor.SetActive(_currentHealth == 2);
+        _criticalHealthVisor.SetActive(_currentHealth == 1);
     }
 
     IEnumerator StartDamageCooldown()
     {
         //Timer for when the enemy can damage the player again
-        yield return new WaitForSeconds(damageCooldown);
-        isDamageOnCooldown = false;
+        yield return new WaitForSeconds(_damageCooldown);
+        _isOnDamageCooldown = false;
     }
 
 
     /// <summary> Start healing the player from a Medkit.</summary>
-    public void StartHealing(float healingAmount, float healingDelay)
+    public void StartHealing(int healingAmount, float healingDelay)
     {
         if (_healingCoroutine != null)
         {
@@ -125,21 +115,21 @@ public class PlayerHealth : MonoBehaviour
             StopCoroutine(_healingCoroutine);
         }
 
-        isHealing = false;
+        _isHealing = false;
     }
 
     // Healing process functionality.
-    IEnumerator HealPlayerAfterDelay(float healingAmount, float healingDelay)
+    IEnumerator HealPlayerAfterDelay(int healingAmount, float healingDelay)
     {
         // Start healing.
-        isHealing = true;
+        _isHealing = true;
 
         // Wait a few seconds before player is healed and health pack disappears.
         yield return new WaitForSeconds(healingDelay);
 
         // Finish healing.
-        isHealing = false;
-        health += healingAmount;
+        _isHealing = false;
+        _currentHealth += healingAmount;
         OnUsedHealthKit?.Invoke();
     }
 }

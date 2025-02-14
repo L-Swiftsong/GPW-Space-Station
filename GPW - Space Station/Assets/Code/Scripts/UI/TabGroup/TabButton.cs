@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using UI.Menus;
+using UltEvents;
 
 namespace UI.TabGroup
 {
     public class TabButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private SettingsMenuUI _settingsUI;
-
-
         [Header("References")]
         [SerializeField] private Image _background;
         private TabGroup _tabGroup;
+
+        public UltEvent OnSelected;
 
 
         [Header("Selection Settings")]
@@ -34,9 +33,16 @@ namespace UI.TabGroup
         public void SetBackgroundColour(Color newColor) => _background.color = newColor;
         public void SelectGroup()
         {
-            EventSystem.current.SetSelectedGameObject(_firstSelectedElement.gameObject);
+            if (_firstSelectedElement != null)
+            {
+                EventSystem.current.SetSelectedGameObject(_firstSelectedElement.gameObject);
+            }
 
-            _settingsUI.SetupBackButton(selectOnUp: _lastSelectedElement, selectOnDown: _firstSelectedElement);
+            OnSelected?.Invoke();
         }
+
+
+        public Selectable FirstSelectedElement => _firstSelectedElement;
+        public Selectable LastSelectedElement => _lastSelectedElement;
     }
 }

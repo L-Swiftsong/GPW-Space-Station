@@ -18,15 +18,11 @@ namespace Environment
             audioSource = GetComponentInChildren<AudioSource>();
         }
 
-    
-        void Update()
+        public void StartAlarms()
         {
-            if (keyCard == null && !alarmStarted)
-            {
-                alarmStarted = true;
+            alarmStarted = true;
 
-                audioSource.Play();
-            }
+            audioSource.Play();
         }
 
         private void OnTriggerEnter(Collider other)

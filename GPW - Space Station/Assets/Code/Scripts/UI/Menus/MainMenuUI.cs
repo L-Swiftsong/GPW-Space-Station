@@ -214,5 +214,9 @@ namespace UI.Menus
 
 
         public void ExitToDesktop() => Application.Quit();
+
+
+
+        public static void SetEntryFromOtherScene() => s_shouldLoadPersistentScene = false;
     }
 }

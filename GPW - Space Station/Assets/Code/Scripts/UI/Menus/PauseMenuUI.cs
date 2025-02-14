@@ -9,135 +9,60 @@ namespace UI.Menus
 {
     public class PauseMenuUI : MonoBehaviour
     {
-        private bool _isActive = false;
+        [SerializeField] private ConfirmationUI _confirmationUI;
+        private GameObject _lastUsedButtonGO;
 
 
-        [Header("References")]
-        [SerializeField] private GameObject _container;
-
-        [Space(5)]
-        [SerializeField] private GameObject _pauseMenu;
-        [SerializeField] private GameObject _settingsMenu;
-
-        [Space(5)]
-        [SerializeField] private GameObject _pauseMenuFirstSelectedElement;
-        [SerializeField] private GameObject _settingsMenuButtonGO;
-    
-
-        private void Awake()
+        private void OnConfirmationCancelled()
         {
-            // Start the pause menu hidden.
-            _container.SetActive(false);
-            _isActive = false;
+            ShowSelf();
+            EventSystem.current.SetSelectedGameObject(_lastUsedButtonGO);
         }
-        private void OnEnable()
-        {
-            // Subscribe to input events.
-            PlayerInput.OnPauseGamePerformed += PlayerInput_OnPauseGamePerformed;
-        }
-        private void OnDisable()
-        {
-            // Unsubscribe from input events.
-            PlayerInput.OnPauseGamePerformed -= PlayerInput_OnPauseGamePerformed;
-            HideWithoutCursorLocking();
-        }
-
-
-        private void PlayerInput_OnPauseGamePerformed()
-        {
-            if (_isActive)
-            {
-                Hide();
-            }
-            else
-            {
-                Show();
-            }
-        }
-
-
-        private void Show()
-        {
-            Cursor.lockState = CursorLockMode.Confined;
-
-            if (_isActive)
-            {
-                // We are already active.
-                return;
-            }
-
-            // Ensure that the pause menu is the open element.
-            OpenPauseMenu();
-
-            // Show the UI.
-            _isActive = true;
-            _container.SetActive(true);
-
-            // Pause the game.
-            Time.timeScale = 0.0f;
-
-            // Prevent player input.
-            PlayerInput.PreventAllActions(typeof(PauseMenuUI));
-        }
-        private void Hide()
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            HideWithoutCursorLocking();
-        }
-
-        private void HideWithoutCursorLocking()
-        {
-            // Hide the UI.
-            _isActive = false;
-            _container.SetActive(false);
-
-            // Unpause the game.
-            Time.timeScale = 1.0f;
-
-            // Allow player input.
-            PlayerInput.RemoveAllActionPrevention(typeof(PauseMenuUI));
-        }
+        private void ShowSelf() => this.gameObject.SetActive(true);
+        private void HideSelf() => this.gameObject.SetActive(false);
 
 
         #region Button Subscription Functions
 
-        private void OpenPauseMenu()
+        public void OpenSavesMenu()
         {
-            // Hide all other menus.
-            _settingsMenu.SetActive(false);
 
-            // Show the primary pause menu.
-            _pauseMenu.SetActive(true);
-
-
-            // Set the first selected button.
-            EventSystem.current.SetSelectedGameObject(_pauseMenuFirstSelectedElement);
         }
-        public void OpenSettingsMenu()
+        public void CloseSavesMenu()
         {
-            // Hide the primary pause menu.
-            _pauseMenu.SetActive(false);
 
-            // Show the settings menu.
-            _settingsMenu.SetActive(true);
-        }
-        public void CloseSettingsMenu()
-        {
-            // Hide the settings menu.
-            _settingsMenu.SetActive(false);
-
-            // Show the primary pause menu.
-            _pauseMenu.SetActive(true);
-
-
-            // Set the first selected button.
-            EventSystem.current.SetSelectedGameObject(_settingsMenuButtonGO.gameObject);
         }
 
-        public void ResumeGame() => Hide();
-        public void ReloadLastCheckpoint() => SaveManager.ReloadCheckpointSave();
-        public void ExitToMainMenu() => SceneLoader.Instance.ReloadToMainMenu();
-        public void ExitToDesktop() => Application.Quit();
+        public void ReloadLastCheckpoint(GameObject button)
+        {
+            _lastUsedButtonGO = button;
+
+            _confirmationUI.RequestConfirmation("Reload",
+                onCancelCallback: OnConfirmationCancelled,
+                onConfirmCallback: () => SaveManager.ReloadCheckpointSave());
+
+            HideSelf();
+        }
+        public void ExitToMainMenu(GameObject button)
+        {
+            _lastUsedButtonGO = button;
+
+            _confirmationUI.RequestConfirmation("Quit",
+                onCancelCallback: OnConfirmationCancelled,
+                onConfirmCallback: () => SceneLoader.Instance.ReloadToMainMenu());
+
+            HideSelf();
+        }
+        public void ExitToDesktop(GameObject button)
+        {
+            _lastUsedButtonGO = button;
+
+            _confirmationUI.RequestConfirmation("Quit",
+                onCancelCallback: OnConfirmationCancelled,
+                onConfirmCallback: () => Application.Quit());
+
+            HideSelf();
+        }
 
         #endregion
     }

@@ -6,6 +6,7 @@ namespace Environment.Lighting
 {
     public class AlarmLight : MonoBehaviour
     {
+        public bool startTurnedOff = true;
         private bool alarmInProgress = false;
         [SerializeField] private ActivateAlarms activateAlarms;
         private Light[] alarmLights;
@@ -15,9 +16,12 @@ namespace Environment.Lighting
         {
             alarmLights = GetComponentsInChildren<Light>();
 
-            foreach (Light light in alarmLights)
+            if (startTurnedOff)
             {
-                light.enabled = false;
+                foreach (Light light in alarmLights)
+                {
+                    light.enabled = false;
+                }
             }
         }
 
