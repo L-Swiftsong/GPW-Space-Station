@@ -33,19 +33,14 @@ namespace PSX
         static readonly int MainTexId = Shader.PropertyToID("_MainTex");
         static readonly int TempTargetId = Shader.PropertyToID("_TempTargetCRT");
 
+
         static readonly int ScanLinesWeight = Shader.PropertyToID("_ScanlinesWeight");
-        static readonly int NoiseWeight = Shader.PropertyToID("_NoiseWeight");
         
         static readonly int ScreenBendX = Shader.PropertyToID("_ScreenBendX");
         static readonly int ScreenBendY = Shader.PropertyToID("_ScreenBendY");
-        static readonly int VignetteAmount = Shader.PropertyToID("_VignetteAmount");
-        static readonly int VignetteSize = Shader.PropertyToID("_VignetteSize");
-        static readonly int VignetteRounding = Shader.PropertyToID("_VignetteRounding");
-        static readonly int VignetteSmoothing = Shader.PropertyToID("_VignetteSmoothing");
 
         static readonly int ScanLinesDensity = Shader.PropertyToID("_ScanLinesDensity");
         static readonly int ScanLinesSpeed = Shader.PropertyToID("_ScanLinesSpeed");
-        static readonly int NoiseAmount = Shader.PropertyToID("_NoiseAmount");
 
         static readonly int ChromaticRed = Shader.PropertyToID("_ChromaticRed");
         static readonly int ChromaticGreen = Shader.PropertyToID("_ChromaticGreen");
@@ -59,6 +54,7 @@ namespace PSX
         static readonly int GrilleUvRotation = Shader.PropertyToID("_GrilleUvRotation");
         static readonly int GrilleUvMidPoint = Shader.PropertyToID("_GrilleUvMidPoint");
         static readonly int GrilleShift = Shader.PropertyToID("_GrilleShift");
+
 
         Crt m_Crt;
         Material crtMaterial;
@@ -90,15 +86,8 @@ namespace PSX
             var stack = VolumeManager.instance.stack;
 
             this.m_Crt = stack.GetComponent<Crt>();
-            if (this.m_Crt == null)
-            {
-                return;
-            }
-
-            if (!this.m_Crt.IsActive())
-            {
-                return;
-            }
+            if (this.m_Crt == null) { return; }
+            if (!this.m_Crt.IsActive()) { return; }
 
             var cmd = CommandBufferPool.Get(k_RenderTag);
             Render(cmd, ref renderingData);
@@ -113,6 +102,13 @@ namespace PSX
 
         void Render(CommandBuffer cmd, ref RenderingData renderingData)
         {
+            if (!this.m_Crt.AnyPropertiesIsOverridden())
+            {
+                // Nothing is overriden (Aka: We don't have this component on our active PostProcessVolume OR it is on it but is disabled).
+                // Don't render with this Post-Processing Effect.
+                return;
+            }
+
             ref var cameraData = ref renderingData.cameraData;
             var source = currentTarget;
             int destination = TempTargetId;
@@ -125,18 +121,12 @@ namespace PSX
             cameraData.camera.depthTextureMode = cameraData.camera.depthTextureMode | DepthTextureMode.Depth;
 
             this.crtMaterial.SetFloat(ScanLinesWeight, this.m_Crt.scanlinesWeight.value);
-            this.crtMaterial.SetFloat(NoiseWeight, this.m_Crt.noiseWeight.value);
             
             this.crtMaterial.SetFloat(ScreenBendX, this.m_Crt.screenBendX.value);
             this.crtMaterial.SetFloat(ScreenBendY, this.m_Crt.screenBendY.value);
-            this.crtMaterial.SetFloat(VignetteAmount, this.m_Crt.vignetteAmount.value);
-            this.crtMaterial.SetFloat(VignetteSize, this.m_Crt.vignetteSize.value);
-            this.crtMaterial.SetFloat(VignetteRounding, this.m_Crt.vignetteRounding.value);
-            this.crtMaterial.SetFloat(VignetteSmoothing, this.m_Crt.vignetteSmoothing.value);
 
             this.crtMaterial.SetFloat(ScanLinesDensity, this.m_Crt.scanlinesDensity.value);
             this.crtMaterial.SetFloat(ScanLinesSpeed, this.m_Crt.scanlinesSpeed.value);
-            this.crtMaterial.SetFloat(NoiseAmount, this.m_Crt.noiseAmount.value);
 
             this.crtMaterial.SetVector(ChromaticRed, this.m_Crt.chromaticRed.value);
             this.crtMaterial.SetVector(ChromaticGreen, this.m_Crt.chromaticGreen.value);
