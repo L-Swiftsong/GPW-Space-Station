@@ -66,10 +66,10 @@ namespace PSX
             if (!renderingData.cameraData.postProcessEnabled) return;
     
             var stack = VolumeManager.instance.stack;
-            
+
             this.pixelation = stack.GetComponent<Pixelation>();
-            if (this.pixelation == null) { return; }
-            if (!this.pixelation.IsActive()) { return; }
+            if (this.pixelation == null) { Debug.Log("No Pixelation"); return; }
+            if (!this.pixelation.IsActive()) { Debug.Log("Inactive Pixelation"); return; }
     
             var cmd = CommandBufferPool.Get(k_RenderTag);
             Render(cmd, ref renderingData);
@@ -84,6 +84,13 @@ namespace PSX
     
         void Render(CommandBuffer cmd, ref RenderingData renderingData)
         {
+            if (!this.pixelation.AnyPropertiesIsOverridden())
+            {
+                // Nothing is overriden (Aka: We don't have this component on our active PostProcessVolume OR it is on it but is disabled).
+                // Don't render with this Post-Processing Effect.
+                return;
+            }
+
             ref var cameraData = ref renderingData.cameraData;
             var source = currentTarget;
             int destination = TempTargetId;

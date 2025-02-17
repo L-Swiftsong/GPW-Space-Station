@@ -12,18 +12,12 @@ Shader "PostEffect/CRTShader"
     sampler2D _CameraDepthTexture;
 
     float _ScanlinesWeight;
-    float _NoiseWeight;
 
     float _ScreenBendX;
     float _ScreenBendY;
-    float _VignetteAmount;
-    float _VignetteSize;
-    float _VignetteRounding;
-    float _VignetteSmoothing;
 
     float _ScanLinesDensity;
     float _ScanLinesSpeed;
-    float _NoiseAmount;
     half2 _ChromaticRed;
     half2 _ChromaticGreen;
     half2 _ChromaticBlue;
@@ -105,10 +99,7 @@ Shader "PostEffect/CRTShader"
 
     float4 Frag(v2f i) : SV_Target
     {
-        //pixelation 
         float2 uv = i.uv;
-        //uv.x = floor(uv.x * _WidthPixelation) / _WidthPixelation;
-        //uv.y = floor(uv.y * _HeightPixelation) / _HeightPixelation;
 
 
         const float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, uv);
@@ -126,21 +117,8 @@ Shader "PostEffect/CRTShader"
         uv += 0.5;
 
 
-        //---VIGNETTE---
-        //Copies the UV and shifts it to the center, exponentially reducing value is subtracted by 1 to simulate distance from the center
-        float shiftUVx = (uv.x - 0.5) * _VignetteSize;
-        float shiftUVy = (uv.y - 0.5) * _VignetteSize;
-        float vignetteAmount = 1.0 - (sqrt(
-            pow(abs(shiftUVx), _VignetteRounding) + pow(abs(shiftUVy), _VignetteRounding)) * (_VignetteAmount));
-        vignetteAmount = smoothstep(0.0, _VignetteSmoothing, vignetteAmount);
-
-
         //Scan lines
         float scanlines = _ScanlinesWeight * (scanLines(uv, _ScanLinesDensity, _ScanLinesSpeed));
-        //float disruptiveLines = (scanLines(uv, 0.005, -5));
-
-        //Noise
-        float valNoise = _NoiseWeight * (noise(uv * _NoiseAmount)); //noise size
 
         //Modify for chromatic abberation
         half2 redShift = _ChromaticRed;
@@ -186,7 +164,7 @@ Shader "PostEffect/CRTShader"
 
 
         //Set main color
-        float4 color = lerp(lerp(textureColor, scanlines, 0.05), valNoise, 0.15) * fog * vignetteAmount;
+        float4 color = lerp(textureColor, scanlines, 0.05) * fog;
         return grilleEffect * color;
     }
     ENDCG
