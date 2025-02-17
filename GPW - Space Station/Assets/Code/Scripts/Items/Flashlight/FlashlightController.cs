@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Entities;
+using UnityEngine.UI;
+using Unity.VisualScripting;
 
 namespace Items.Flashlight
 {
@@ -15,7 +17,7 @@ namespace Items.Flashlight
         [SerializeField] private Light _flashlightLight;
         [SerializeField] private float _defaultConeAngle = 45.0f;
         [SerializeField] private float _defaultIntensity = 2.5f;
-        
+
         [Space(5)]
         [SerializeField] private float _focusedConeAngle = 25.0f;
         [SerializeField] private float _focusedIntensity = 4.0f;
@@ -24,12 +26,11 @@ namespace Items.Flashlight
         [SerializeField] private float _angleChangeRate = 2.0f;
         [SerializeField] private float _intensityChangeRate = 2.0f;
 
-
         [Header("Battery Settings")]
         [Tooltip("How long the flashlight's battery lasts if continuously left on")]
-            [SerializeField] private float _defaultBatteryLifetime = 120.0f;
+        [SerializeField] private float _defaultBatteryLifetime = 120.0f;
         [Tooltip("How long the flashlight's battery lasts if continuously focused")]
-            [SerializeField] private float _focusedBatteryLifetime = 10.0f;
+        [SerializeField] private float _focusedBatteryLifetime = 10.0f;
 
         [Header("SFX Settings")]
         [SerializeField] private AudioSource _audioSource;
@@ -52,11 +53,25 @@ namespace Items.Flashlight
         [SerializeField] private LayerMask _stunnableLayers;
         [SerializeField] private float _focusStunRate = 35.0f;
 
-    
+
         public static event System.Action<float> OnObtainedFlashlight; // float: currentBattery.
         public static event System.Action OnLostFlashlight;
         public static event System.Action<float> OnFlashlightBatteryChanged; // float: currentBattery.
 
+        [Header("UI")]
+        [SerializeField] private Light _ledIndicator;
+        [SerializeField] private Renderer _ledRenderer;
+        [SerializeField] private Material _ledOnMaterial;
+        [SerializeField] private Material _ledOffMaterial;
+
+        [Space(5)]
+        [SerializeField] private Canvas _batteryCanvas;
+        [SerializeField] private Image _batteryBar1;
+        [SerializeField] private Image _batteryBar2;
+        [SerializeField] private Image _batteryBar3;
+
+        [SerializeField] private Color _barOnColour = Color.green;
+        [SerializeField] private Color _barOffColour = Color.black;
 
         private void OnEnable()
         {
@@ -103,8 +118,11 @@ namespace Items.Flashlight
         {
             _isOn = newActiveState;
             _flashlightLight.enabled = newActiveState;
-			_audioSource.PlayOneShot(_flashlightClick);
-		}
+            _audioSource.PlayOneShot(_flashlightClick);
+
+            UpdateLedIndicator();
+
+        }
 
         private void StartFocus()
         {
@@ -128,6 +146,7 @@ namespace Items.Flashlight
         {
             HandleFlashlightBattery();
             UpdateFlashlightLight();
+            UpdateBatteryUI();
 
             if (_isFocused)
             {
@@ -218,6 +237,34 @@ namespace Items.Flashlight
         /// <summary> Sets the flashlight's current battery level.</summary>
         public void SetBatteryLevel(float batteryLevel) => _currentBattery = batteryLevel;
         public float GetCurrentBattery() => _currentBattery;
+
+        #endregion
+
+        #region DiegeticUI
+
+        private void UpdateLedIndicator()
+        {
+            if (_currentBattery <= 0)
+            {
+                _ledIndicator.enabled = false;
+                return;
+            }
+
+            _ledIndicator.enabled = true;
+            _ledIndicator.color = _isOn ? Color.green : Color.red;
+            _ledRenderer.material = _isOn ? _ledOnMaterial : _ledOffMaterial;
+        }
+
+        private void UpdateBatteryUI()
+        {
+            float batteryPercentage = _currentBattery / 100f;
+
+            _batteryBar1.color = (batteryPercentage > 0.66f) ? _barOnColour : _barOffColour;
+            _batteryBar2.color = (batteryPercentage > 0.33f) ? _barOnColour : _barOffColour;
+            _batteryBar3.color = (batteryPercentage > 0.05f) ? _barOnColour : _barOffColour;
+
+            _batteryCanvas.enabled = (_currentBattery > 0);
+        }
 
         #endregion
     }
