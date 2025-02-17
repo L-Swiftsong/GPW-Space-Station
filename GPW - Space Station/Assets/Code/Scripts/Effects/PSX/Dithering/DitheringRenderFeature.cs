@@ -84,6 +84,13 @@ namespace PSX
     
         void Render(CommandBuffer cmd, ref RenderingData renderingData)
         {
+            if (!this.dithering.AnyPropertiesIsOverridden())
+            {
+                // Nothing is overriden (Aka: We don't have this component on our active PostProcessVolume OR it is on it but is disabled).
+                // Don't render with this Post-Processing Effect.
+                return;
+            }
+
             ref var cameraData = ref renderingData.cameraData;
             var source = currentTarget;
             int destination = TempTargetId;

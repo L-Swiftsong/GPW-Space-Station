@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: StealthDemo_PostProcessVolumeProfile
+  m_Name: Default_PostProcessVolumeProfile
   m_EditorClassIdentifier: 
   components:
   - {fileID: -1542762710764868513}
@@ -103,6 +103,8 @@ MonoBehaviour:
   - {fileID: 5616411660027135087}
   - {fileID: 4574355627038338139}
   - {fileID: 2401464722043320128}
+  - {fileID: 5248025012630064771}
+  - {fileID: 5714158795797778341}
 --- !u!114 &2401464722043320128
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -121,7 +123,7 @@ MonoBehaviour:
     m_Value: 0
   ditherThreshold:
     m_OverrideState: 1
-    m_Value: 5
+    m_Value: 7.5
   ditherStrength:
     m_OverrideState: 1
     m_Value: 1
@@ -143,52 +145,34 @@ MonoBehaviour:
   active: 1
   scanlinesWeight:
     m_OverrideState: 1
-    m_Value: 0.5
-  noiseWeight:
-    m_OverrideState: 1
-    m_Value: 1
+    m_Value: 0
   screenBendX:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 1000
   screenBendY:
-    m_OverrideState: 0
-    m_Value: 1000
-  vignetteAmount:
     m_OverrideState: 1
-    m_Value: 0.2
-  vignetteSize:
-    m_OverrideState: 0
-    m_Value: 2
-  vignetteRounding:
-    m_OverrideState: 0
-    m_Value: 2
-  vignetteSmoothing:
-    m_OverrideState: 0
-    m_Value: 1
+    m_Value: 1000
   scanlinesDensity:
     m_OverrideState: 1
-    m_Value: 200
+    m_Value: 150
   scanlinesSpeed:
     m_OverrideState: 1
     m_Value: -8
-  noiseAmount:
-    m_OverrideState: 1
-    m_Value: 250
   chromaticRed:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {x: 0.002, y: 0.002}
   chromaticGreen:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {x: 0.002, y: 0.002}
   chromaticBlue:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: {x: 0.002, y: 0.002}
   grilleOpacity:
     m_OverrideState: 0
-    m_Value: 0.4
+    m_Value: 0
   grilleCounterOpacity:
     m_OverrideState: 0
-    m_Value: 0.2
+    m_Value: 0
   grilleResolution:
     m_OverrideState: 0
     m_Value: 360
@@ -207,6 +191,31 @@ MonoBehaviour:
   grilleShift:
     m_OverrideState: 0
     m_Value: {x: 1, y: 1, z: 1}
+--- !u!114 &5248025012630064771
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29fa0085f50d5e54f8144f766051a691, type: 3}
+  m_Name: FilmGrain
+  m_EditorClassIdentifier: 
+  active: 0
+  type:
+    m_OverrideState: 1
+    m_Value: 4
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.2
+  response:
+    m_OverrideState: 1
+    m_Value: 0.8
+  texture:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
 --- !u!114 &5616411660027135087
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -229,3 +238,31 @@ MonoBehaviour:
   colorPrecision:
     m_OverrideState: 1
     m_Value: 128
+--- !u!114 &5714158795797778341
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 899c54efeace73346a0a16faa3afe726, type: 3}
+  m_Name: Vignette
+  m_EditorClassIdentifier: 
+  active: 0
+  color:
+    m_OverrideState: 0
+    m_Value: {r: 0, g: 0, b: 0, a: 1}
+  center:
+    m_OverrideState: 0
+    m_Value: {x: 0.5, y: 0.5}
+  intensity:
+    m_OverrideState: 1
+    m_Value: 0.15
+  smoothness:
+    m_OverrideState: 0
+    m_Value: 0.2
+  rounded:
+    m_OverrideState: 0
+    m_Value: 0
