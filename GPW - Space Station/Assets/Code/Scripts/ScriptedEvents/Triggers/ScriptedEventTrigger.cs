@@ -82,10 +82,10 @@ namespace ScriptedEvents.Triggers
 #region Call Presets
 #if UNITY_EDITOR
         [ContextMenu("Presets/Immediate/Add Chase End")]
-        private void ImmediatePreset_TriggerChaseEnd() => OnTriggerActivated.AddPersistentCall((System.Action)Entities.Mimic.ChaseMimic.EndChase);
+        private void ImmediatePreset_TriggerChaseEnd() => OnTriggerActivated.AddPersistentCall((System.Action)Entities.Mimic.ChaseMimic.EndAllChases);
         
         [ContextMenu("Presets/Delayed/Add Chase End")]
-        private void DelayedPreset_TriggerChaseEnd() => OnDelayedTriggerActivated.AddPersistentCall((System.Action)Entities.Mimic.ChaseMimic.EndChase);
+        private void DelayedPreset_TriggerChaseEnd() => OnDelayedTriggerActivated.AddPersistentCall((System.Action)Entities.Mimic.ChaseMimic.EndAllChases);
 #endif
 #endregion
     }

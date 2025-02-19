@@ -20,6 +20,11 @@ public class CameraFocusLook : MonoBehaviour
     public float cameraXRotation;
     public float cameraYRotation;
 
+
+    // Input Prevention.
+    private PlayerInput.ActionTypes _preventedActionTypes;
+
+
     private void Start()
     {
         playerCamera = Camera.main;
@@ -44,41 +49,49 @@ public class CameraFocusLook : MonoBehaviour
 
         playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetRotation, Time.deltaTime * lookStrength);
 
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+        Vector2 lookInput = PlayerInput.GetLookInputWithSensitivity * Time.deltaTime;
 
-        Vector2 resistance = new Vector2(-mouseY, mouseX);
+        Vector2 resistance = new Vector2(-lookInput.x, lookInput.y);
         playerCamera.transform.Rotate(resistance * resistanceStrength);
 
         if (focusLookTimer >= focusLookDuration)
         {
-            cameraXRotation = playerCamera.transform.eulerAngles.x;
-            cameraYRotation = playerCamera.transform.eulerAngles.y;
-
-			Debug.Log($"[Focus Look] Stored X Rotation: {cameraXRotation}");
-            Debug.Log($"[Focus Look] Stored Y Rotation: {cameraYRotation}");
-
-			isFocusLookActive = false;
+            StopFocusLook();
         }
     }
 
-    public static void TriggerFocusLookStatic(GameObject target, float duration = 3f, float strength = 3f)
+    public static void TriggerFocusLookStatic(GameObject target, float duration = 3f, float strength = 3f, PlayerInput.ActionTypes preventedActionTypes = PlayerInput.ActionTypes.Movement)
     {
         var playerInstance = Entities.Player.PlayerManager.Instance;
 
         if (playerInstance.CameraFocusLook)
         {
-            playerInstance.CameraFocusLook.TriggerFocusLook(target, duration, strength);
+            playerInstance.CameraFocusLook.TriggerFocusLook(target, duration, strength, preventedActionTypes);
         }
     }
 
-    public void TriggerFocusLook(GameObject target, float duration = 3f, float strength = 3f)
+    public void TriggerFocusLook(GameObject target, float duration = 3f, float strength = 3f, PlayerInput.ActionTypes preventedActionTypes = PlayerInput.ActionTypes.Movement)
     {
         focusLookTarget = target;
         focusLookDuration = duration;
         lookStrength = strength;
         focusLookTimer = 0f;
         isFocusLookActive = true;
+
+        _preventedActionTypes = preventedActionTypes;
+        PlayerInput.PreventActions(this.GetType(), preventedActionTypes);
+    }
+    private void StopFocusLook()
+    {
+        cameraXRotation = playerCamera.transform.eulerAngles.x;
+        cameraYRotation = playerCamera.transform.eulerAngles.y;
+
+        Debug.Log($"[Focus Look] Stored X Rotation: {cameraXRotation}");
+        Debug.Log($"[Focus Look] Stored Y Rotation: {cameraYRotation}");
+
+        isFocusLookActive = false;
+
+        PlayerInput.RemoveActionPrevention(this.GetType(), _preventedActionTypes);
     }
 
     public bool IsFocusLookActive()

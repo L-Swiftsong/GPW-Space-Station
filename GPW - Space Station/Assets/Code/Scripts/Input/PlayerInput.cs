@@ -329,6 +329,34 @@ public class PlayerInput : MonoBehaviour
 
     #region Action Prevention
 
+    [System.Serializable] [System.Flags]
+    public enum ActionTypes
+    {
+        None = 0,
+        Movement = 1 << 0,
+        Camera = 1 << 1,
+        Interaction = 1 << 2,
+    }
+    public static void PreventActions(Type lockingType, ActionTypes actionTypes)
+    {
+        if (actionTypes.HasFlag(ActionTypes.Movement))
+            PreventMovementActions(lockingType);
+        if (actionTypes.HasFlag(ActionTypes.Camera))
+            PreventCameraActions(lockingType);
+        if (actionTypes.HasFlag(ActionTypes.Interaction))
+            PreventInteractionActions(lockingType);
+    }
+    public static void RemoveActionPrevention(Type lockingType, ActionTypes actionTypes)
+    {
+        if (actionTypes.HasFlag(ActionTypes.Movement))
+            RemoveMovementActionPrevention(lockingType);
+        if (actionTypes.HasFlag(ActionTypes.Camera))
+            RemoveCameraActionPrevention(lockingType);
+        if (actionTypes.HasFlag(ActionTypes.Interaction))
+            RemoveInteractionActionPrevention(lockingType);
+    }
+
+
     // Movement Map.
     private static Dictionary<Type, int> s_typeToMovementPreventionCountDictionary = new Dictionary<Type, int>();
     public static void PreventMovementActions(Type lockingType)
