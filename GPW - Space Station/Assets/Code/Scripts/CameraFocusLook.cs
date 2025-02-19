@@ -1,24 +1,21 @@
-using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CameraFocusLook : MonoBehaviour
 {
+    [SerializeField] private Transform _rotationPivot;
     [SerializeField] private Camera playerCamera;
+
     [SerializeField] private GameObject focusLookTarget;
 
-    public float lookStrength = 3f;
-    public float resistanceStrength = 3f;
 
-    [SerializeField] private bool isFocusLookActive;
-    public float focusLookDuration;
-    public float focusLookTimer;
+    private float lookStrength = 3f;
 
-    public float cameraXRotation;
-    public float cameraYRotation;
+    [SerializeField, ReadOnly] private bool isFocusLookActive;
+    [SerializeField] private float _cameraInputPreventionDefaultTime = 0.5f;
+    private float focusLookDuration;
+    private float focusLookTimer;
 
 
     // Input Prevention.
@@ -44,19 +41,31 @@ public class CameraFocusLook : MonoBehaviour
     {
         focusLookTimer += Time.deltaTime;
 
+        if (focusLookTimer > _cameraInputPreventionDefaultTime && !_preventedActionTypes.HasFlag(PlayerInput.ActionTypes.Camera))
+        {
+            Debug.Log("Removed Action Prevention");
+            PlayerInput.RemoveActionPrevention(this.GetType(), PlayerInput.ActionTypes.Camera);
+        }
+
         Vector3 directionToTarget = focusLookTarget.transform.position - playerCamera.transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
 
+        float originalCameraLocalZ = playerCamera.transform.localEulerAngles.z;
         playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetRotation, Time.deltaTime * lookStrength);
+        _rotationPivot.rotation = Quaternion.Euler(0.0f, playerCamera.transform.rotation.eulerAngles.y, 0.0f);
+        playerCamera.transform.localEulerAngles = new Vector3(playerCamera.transform.localEulerAngles.x, 0.0f, originalCameraLocalZ);
 
-        Vector2 lookInput = PlayerInput.GetLookInputWithSensitivity * Time.deltaTime;
 
-        Vector2 resistance = new Vector2(-lookInput.x, lookInput.y);
-        playerCamera.transform.Rotate(resistance * resistanceStrength);
-
+        if (PlayerInput.GetLookInputWithSensitivity.sqrMagnitude > 0.0f)
+        {
+            // We are experiencing input.
+            StopFocusLook();
+            return;
+        }
         if (focusLookTimer >= focusLookDuration)
         {
             StopFocusLook();
+            return;
         }
     }
 
@@ -78,17 +87,22 @@ public class CameraFocusLook : MonoBehaviour
         focusLookTimer = 0f;
         isFocusLookActive = true;
 
+
+        if (focusLookDuration <= _cameraInputPreventionDefaultTime)
+        {
+            // Our camera focus duration is less than our default camera prevention time.
+            // Treat it as if we wanted to prevent camera input by default.
+            preventedActionTypes |= PlayerInput.ActionTypes.Camera;
+        }
         _preventedActionTypes = preventedActionTypes;
-        PlayerInput.PreventActions(this.GetType(), preventedActionTypes);
+
+        // Note: We're including Camera input in the prevention here so that the camera input isn't registered for the first '_cameraInputPreventionDefaultTime' seconds.
+        //      This effectively does nothing if we are already disabling camera input.
+        PlayerInput.PreventActions(this.GetType(), preventedActionTypes | PlayerInput.ActionTypes.Camera);
+
     }
     private void StopFocusLook()
     {
-        cameraXRotation = playerCamera.transform.eulerAngles.x;
-        cameraYRotation = playerCamera.transform.eulerAngles.y;
-
-        Debug.Log($"[Focus Look] Stored X Rotation: {cameraXRotation}");
-        Debug.Log($"[Focus Look] Stored Y Rotation: {cameraYRotation}");
-
         isFocusLookActive = false;
 
         PlayerInput.RemoveActionPrevention(this.GetType(), _preventedActionTypes);

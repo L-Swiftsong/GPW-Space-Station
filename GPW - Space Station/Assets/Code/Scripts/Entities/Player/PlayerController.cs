@@ -418,22 +418,11 @@ namespace Entities.Player
         /// </summary>
         private void HandleLook()
         {
-            if (cameraFocusLook != null && cameraFocusLook.IsFocusLookActive())
-            {
-                return;
-            }
-
-			if (!cameraFocusLook.IsFocusLookActive() && cameraFocusLook.cameraXRotation != 0f)
+			if (cameraFocusLook != null && cameraFocusLook.IsFocusLookActive())
 			{
-				Debug.Log($"[PlayerController] Applying stored X Rotation: {cameraFocusLook.cameraXRotation}");
-				Debug.Log($"[PlayerController] Applying stored Y Rotation: {cameraFocusLook.cameraYRotation}");
-
-				_rotationX = cameraFocusLook.cameraXRotation;
-                _rotationPivot.rotation = Quaternion.Euler(0, cameraFocusLook.cameraYRotation, 0);
-
-                cameraFocusLook.cameraXRotation = 0f;
-                cameraFocusLook.cameraYRotation = 0f;
-			}            
+				_rotationX = _playerCamera.transform.localEulerAngles.x;
+                return;
+			}
             
             // Get the current look input (Already has sensitivity & inversion applied).
             Vector2 lookInput = PlayerInput.GetLookInputWithSensitivity * Time.deltaTime;
