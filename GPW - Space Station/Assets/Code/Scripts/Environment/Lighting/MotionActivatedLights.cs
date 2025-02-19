@@ -26,6 +26,11 @@ namespace Environment.Lighting
             {
                 ActivateLights();
             }
+
+            if (other.CompareTag("Mimic"))
+            {
+                ActivateLights();
+            }
         }
 
         private void ActivateLights()
