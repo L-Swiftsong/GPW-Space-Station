@@ -16406,7 +16406,7 @@ MonoBehaviour:
   _useDelayedTrigger: 1
   _canTriggerWhileAwaitingDelay: 0
   _overridePreviousDelay: 1
-  _delayedTriggerDelayTime: 1
+  _delayedTriggerDelayTime: 6
   OnDelayedTriggerActivated:
     _PersistentCalls:
     - _Target: {fileID: 1899511449}
@@ -73788,7 +73788,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1899511447}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f50142aea40b34944a7a28b58fd2d637, type: 3}
   m_Name: 
@@ -73800,12 +73800,15 @@ MonoBehaviour:
     - _Target: {fileID: 1899511449}
       _MemberName: Activate
       _PersistentArguments: []
-  _useDelayedTrigger: 0
+  _useDelayedTrigger: 1
   _canTriggerWhileAwaitingDelay: 0
   _overridePreviousDelay: 1
-  _delayedTriggerDelayTime: 1
+  _delayedTriggerDelayTime: 5
   OnDelayedTriggerActivated:
-    _PersistentCalls: []
+    _PersistentCalls:
+    - _Target: {fileID: 1899511449}
+      _MemberName: Activate
+      _PersistentArguments: []
   _horizontalScreenActivationBounds: 0.75
   _verticalScreenActivationBounds: 0.75
   _maxActivationDistance: 10
