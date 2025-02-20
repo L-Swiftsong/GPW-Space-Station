@@ -48,14 +48,13 @@ GameObject:
   - component: {fileID: 4856519383059337709}
   - component: {fileID: 5037416545564764748}
   - component: {fileID: 5011720308764694068}
+  - component: {fileID: 5634940376478433513}
   - component: {fileID: 5446247313011897447}
   - component: {fileID: 5653812574155913496}
   - component: {fileID: 5900700402820769111}
   - component: {fileID: 3543574826053687875}
-  - component: {fileID: 6891961267791488188}
   - component: {fileID: 6914234632448979516}
   - component: {fileID: 3374010165802448572}
-  - component: {fileID: 5634940376478433513}
   m_Layer: 0
   m_Name: GeneralMimic
   m_TagString: Untagged
@@ -101,7 +100,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.4
+  m_Radius: 0.25
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
@@ -146,7 +145,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -185,11 +184,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _reachedDestinationDistance: 0.5
   _defaultSpeed: 2
-  _defaultAcceleration: 8
-  _defaultSpeedMomentum: 120
   _speedOverride: -1
+  _defaultAcceleration: 12
   _accelerationOverride: -1
+  _defaultSpeedMomentum: 240
   _angularSpeedOverride: -1
+  _defaultStoppingDistance: 0
+  _stoppingDistanceOverride: -1
   _crouchingLayers: 0
   _crouchingSpeedMultiplier: 0.8
   _crawlingLayers: 8
@@ -363,6 +364,23 @@ MonoBehaviour:
   _strengthChangeRate: 0.5
   _passiveMimicryGFXRoot: {fileID: 4566030846766552248}
   _mimicryCamera: {fileID: 3294420145252625523}
+--- !u!114 &5634940376478433513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5612615081326836176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62c9fda9427f0e241bec1013931648c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 3181101255938940964}
+  _attackCooldown: 2
+  _attackRadius: 1
+  _mimicSpeedAfterAttack: 2
+  _isAttacking: 0
 --- !u!114 &5446247313011897447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -397,7 +415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entityMovement: {fileID: 9116854351678556578}
   _passiveMimicryController: {fileID: 5011720308764694068}
-  _chaseStartTime: 0.75
+  _chaseStartTime: 1.5
 --- !u!114 &5900700402820769111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,12 +430,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entityMovement: {fileID: 9116854351678556578}
   _entitySenses: {fileID: 4856519383059337709}
+  _attackScript: {fileID: 5634940376478433513}
   _passiveMimicryController: {fileID: 5011720308764694068}
   _chaseMovementSpeed: 4.5
-  _chaseAcceleration: 8
+  _chaseAcceleration: 36
   _chaseAngularSpeed: 720
-  _playerCatchRadius: 1
-  _hasCaughtPlayer: 0
+  _chaseStoppingDistance: 1
 --- !u!114 &3543574826053687875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,21 +450,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entityMovement: {fileID: 9116854351678556578}
   _entitySenses: {fileID: 4856519383059337709}
---- !u!114 &6891961267791488188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5612615081326836176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a13297d463e550418d00a5448f18157, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
-  _maxVentDetectionRadius: 5
-  _minTimeBetweenVents: 10
 --- !u!114 &6914234632448979516
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -478,22 +481,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _entityMovement: {fileID: 9116854351678556578}
   _passiveMimicryController: {fileID: 5011720308764694068}
---- !u!114 &5634940376478433513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5612615081326836176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62c9fda9427f0e241bec1013931648c1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
-  _attackCooldown: 2
-  _mimicSpeedAfterAttack: 2
-  _isAttacking: 0
 --- !u!1 &6692561947466169341
 GameObject:
   m_ObjectHideFlags: 0

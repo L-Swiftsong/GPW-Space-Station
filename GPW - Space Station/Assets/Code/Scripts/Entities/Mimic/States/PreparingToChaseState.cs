@@ -29,6 +29,7 @@ namespace Entities.Mimic.States
 
             // Set mimicry strength.
             _passiveMimicryController.SetMimicryStrengthTarget(0.0f);
+            Debug.Log("Entered Chase Prep State: " + Time.time);
         }
         public override void OnLogic()
         {
@@ -37,6 +38,7 @@ namespace Entities.Mimic.States
         public override void OnExit()
         {
             _entityMovement.SetIsStopped(false);
+            Debug.Log("Exited Chase Prep State: " + Time.time);
         }
     }
 }

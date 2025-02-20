@@ -122,7 +122,7 @@ namespace Entities
             {
                 Vector3 detectionTargetPosition = _playerTargetableObject.DetectionTargets[i].position;
                 Vector3 directionToTargetableObject = (detectionTargetPosition - _headTransform.position).normalized;
-                if (Physics.Linecast(_headTransform.position, detectionTargetPosition, _obstructionLayers))
+                if (Physics.Linecast(_headTransform.position, detectionTargetPosition, _obstructionLayers, queryTriggerInteraction: QueryTriggerInteraction.Ignore))
                 {
                     // Point Obstructed.
                     Debug.DrawRay(_headTransform.position, directionToTargetableObject, Color.red);

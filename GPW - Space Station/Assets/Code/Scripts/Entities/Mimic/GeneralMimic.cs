@@ -49,6 +49,8 @@ namespace Entities.Mimic
             _flashlightStunnableScript = GetComponent<FlashlightStunnable>();
             _passiveMimicryController = GetComponent<PassiveMimicryController>();
             _mimicAttack = GetComponent<MimicAttack>();
+
+            _mimicAttack.SetCanAttack(false);
         }
 
         private void Start()

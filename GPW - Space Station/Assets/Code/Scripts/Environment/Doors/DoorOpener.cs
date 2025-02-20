@@ -13,8 +13,8 @@ namespace Environment.Doors
         private bool _wasPreviouslyOpenedFromFacingDirection = false;
 
         [SerializeField] private DoorFrame[] _doorFrames;
-        private NavMeshObstacle _navMeshObstacle;
-        private bool _shouldToggleObstalce = true;
+        private NavMeshObstacle[] _navMeshObstacles;
+        private bool _shouldToggleObstacles = true;
 
 
         private void Awake()
@@ -31,11 +31,15 @@ namespace Environment.Doors
 
 
             // Get NavMeshObstacle instance.
-            _navMeshObstacle = GetComponent<NavMeshObstacle>();
+            _navMeshObstacles = GetComponentsInChildren<NavMeshObstacle>();
             if (_door is MotionActivatedDoor)
             {
-                _shouldToggleObstalce = false;
-                _navMeshObstacle.enabled = false;
+                _shouldToggleObstacles = false;
+                
+                for (int i = 0; i < _navMeshObstacles.Length; ++i)
+                {
+                    _navMeshObstacles[i].enabled = false;
+                }
             }
         }
         private void OnDestroy()
@@ -76,10 +80,13 @@ namespace Environment.Doors
             bool openedFromFacingDirection = isOpen ? (_door is InteractableDoor) && (_door as InteractableDoor).WasOpenedFromFacingDirection : _wasPreviouslyOpenedFromFacingDirection;
             _wasPreviouslyOpenedFromFacingDirection = openedFromFacingDirection;
 
-            if (_shouldToggleObstalce && _navMeshObstacle != null)
+            if (_shouldToggleObstacles && _navMeshObstacles != null)
             {
                 // Toggle NavMeshObstacle enabled status (Closed = enabled).
-                _navMeshObstacle.enabled = !isOpen;
+                for (int i = 0; i < _navMeshObstacles.Length; ++i)
+                {
+                    _navMeshObstacles[i].enabled = !isOpen;
+                }
             }
 
 
@@ -159,6 +166,7 @@ namespace Environment.Doors
                     // If the door is open, the colliders are disabled. If it is closed, they are enabled.
                     _colliders[i].enabled = !isOpen;
                 }
+                Debug.Log(_colliders.Length);
             }
             
             
@@ -168,15 +176,17 @@ namespace Environment.Doors
             {
                 if (isOpening && _elapsedTime >= _openingDuration)
                 {
-                    // Finished (Positive).
+                    // Finished (Positive - Opening).
                     _elapsedTime = _openingDuration;
+                    ToggleColliders(isOpen: true);
                     return true;
 
                 }
                 else if (!isOpening && _elapsedTime <= 0.0f)
                 {
-                    // Finished (Negative).
+                    // Finished (Negative - Closing).
                     _elapsedTime = 0.0f;
+                    ToggleColliders(isOpen: false);
                     return true;
                 }
 
@@ -197,6 +207,7 @@ namespace Environment.Doors
                 HandlePositionTick(isOpening ? 1.0f : 0.0f);
                 HandleRotationTick(isOpening ? 1.0f : 0.0f, openedFromFacingDirection);
                 _elapsedTime = isOpening ? _openingDuration : 0.0f;
+                ToggleColliders(isOpening);
                 Debug.Log(_frameTransform.parent.name + " " + _elapsedTime);
             }
 

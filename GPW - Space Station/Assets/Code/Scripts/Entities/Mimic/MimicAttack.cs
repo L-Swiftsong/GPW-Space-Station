@@ -2,82 +2,83 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using Entities.Mimic;
-using Entities.Mimic.States;
 using Entities.Player;
 
 public class MimicAttack : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private NavMeshAgent _agent;
-    private ChaseState _chaseState;
-    private ChaseMimic _chaseMimic;
     private PlayerHealth _playerHealth;
 
     [Header("Settings")]
     [SerializeField] private float _attackCooldown = 2f;
+    [SerializeField] private float _attackRadius = 1.0f;
+
+    [Space(5)]
     [SerializeField] private float _mimicSpeedAfterAttack;
 
     [HideInInspector] public bool _isAttacking = false;
+    private bool _canAttack = true;
 
-
-    void Start()
+    private void Start()
     {
-        // Check if script is attached to general or chase mimic
-        if (gameObject.name == "GeneralMimic")
+        if (PlayerManager.Instance.Player.TryGetComponent<PlayerHealth>(out _playerHealth) == false)
         {
-            _chaseState = GetComponent<ChaseState>();
-        }
-        else if (gameObject.name == "ChaseMimic")
-        {
-            _chaseMimic = GetComponent<ChaseMimic>();
+            // Failed to get PlayerHealth reference.
+            Debug.LogError("Error: Chase Mimic initialised without PlayerHealth reference");
         }
     }
-
     void Update()
     {
-        // Start attack if general/chase mimic catches player and isnt currently attacking
-        if (_chaseState != null && _chaseState._hasCaughtPlayer && !_isAttacking)
+        if (_isAttacking || !_canAttack)
         {
-            StartCoroutine(Attack());
+            return;
         }
-        else if (_chaseMimic != null && _chaseMimic._hasCaughtPlayer && !_isAttacking)
+
+        // Start attack if general/chase mimic catches player and isnt currently attacking.
+        if ((transform.position - PlayerManager.Instance.Player.position).sqrMagnitude <= _attackRadius * _attackRadius)
         {
-            StartCoroutine(Attack());
+            PerformAttack();
         }
     }
 
-    IEnumerator Attack()
+
+    private void PerformAttack()
     {
+        if (_isAttacking)
+        {
+            return;
+        }
         _isAttacking = true;
 
-        // Damage Player
-        if (_playerHealth == null)
-        {
-            _playerHealth = PlayerManager.Instance.Player.GetComponent<PlayerHealth>();
-        }
-        if (_playerHealth != null)
-        {
-            _playerHealth.TakeDamage(1);
-        }
 
-        // Temporarily reduce mimic speed after attack
+        // Damage the Player.
+        _playerHealth.TakeDamage(1);
+
+
+        // Attack Recovery.
+        StartCoroutine(AttackRecovery());
+    }
+    IEnumerator AttackRecovery()
+    {
+        // Temporarily reduce mimic speed after attack.
         float originalSpeed = _agent.speed;
         _agent.speed = _mimicSpeedAfterAttack;
 
         yield return new WaitForSeconds(_attackCooldown);
 
-        // Restore mimic state
+        // Restore mimic state.
         _agent.speed = originalSpeed;
         _isAttacking = false;
+    }
 
-        if (_chaseState != null)
-        {
-            _chaseState._hasCaughtPlayer = false;
-        }
-        else if (_chaseMimic != null)
-        {
-            _chaseMimic._hasCaughtPlayer = false;
-        }
+
+    public void SetCanAttack(bool newValue) => _canAttack = newValue;
+
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, _attackRadius);
     }
 }

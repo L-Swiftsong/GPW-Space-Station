@@ -23,17 +23,25 @@ namespace Entities
 
         [Header("Movement Settings")]
         [SerializeField] private float _defaultSpeed = 2.0f;
-        [SerializeField] private float _defaultAcceleration = 120.0f;
-        [SerializeField] private float _defaultSpeedMomentum = 120.0f;
-
         [SerializeField, ReadOnly] private float _speedOverride = -1.0f;
+
+        [Space(5)]
+        [SerializeField] private float _defaultAcceleration = 120.0f;
         [SerializeField, ReadOnly] private float _accelerationOverride = -1.0f;
+        
+        [Space(5)]
+        [SerializeField] private float _defaultSpeedMomentum = 120.0f;
         [SerializeField, ReadOnly] private float _angularSpeedOverride = -1.0f;
+        
+        [Space(5)]
+        [SerializeField] private float _defaultStoppingDistance = 0.0f;
+        [SerializeField, ReadOnly] private float _stoppingDistanceOverride = -1.0f;
 
 
         private float _baseSpeed => _speedOverride >= 0.0f ? _speedOverride : _defaultSpeed;
-        private float _baseAcceleration => _speedOverride >= 0.0f ? _accelerationOverride : _defaultAcceleration;
+        private float _baseAcceleration => _accelerationOverride >= 0.0f ? _accelerationOverride : _defaultAcceleration;
         private float _baseAngularSpeed => _angularSpeedOverride >= 0.0f ? _angularSpeedOverride : _defaultSpeedMomentum;
+        private float _baseStoppingDistance => _stoppingDistanceOverride >= 0.0f ? _stoppingDistanceOverride : _defaultStoppingDistance;
 
 
         [Header("Crouching")]
@@ -88,6 +96,7 @@ namespace Entities
 
             UpdateMovementState();
             UpdateSpeed();
+            _agent.stoppingDistance = _baseStoppingDistance;
             Temp_UpdateHeight();
         }
 
@@ -245,19 +254,25 @@ namespace Entities
         public void SetSpeed(float newValue) => _defaultSpeed = newValue;
         public void SetAcceleration(float newValue) => _defaultAcceleration = newValue;
         public void SetAngularSpeed(float newValue) => _defaultSpeedMomentum = newValue;
+        public void SetStoppingDistance(float newValue) => _defaultStoppingDistance = newValue;
 
 
         // Overrides.
         public void SetSpeedOverride(float overrideValue) => _speedOverride = overrideValue;
         public void SetAccelerationOverride(float overrideValue) => _accelerationOverride = overrideValue;
         public void SetAngularSpeedOverride(float overrideValue) => _angularSpeedOverride = overrideValue;
+        public void SetStoppingDistanceOverride(float overrideValue) => _stoppingDistanceOverride = overrideValue;
 
         public void ResetSpeedOverride() => _speedOverride = -1.0f;
         public void ResetAccelerationOverride() => _accelerationOverride = -1.0f;
+        public void ResetAngularSpeedOverride() => _angularSpeedOverride = -1.0f;
+        public void ResetStoppingDistanceOverride() => _stoppingDistanceOverride = -1.0f;
         public void ResetAllOverrides()
         {
             ResetSpeedOverride();
             ResetAccelerationOverride();
+            ResetAngularSpeedOverride();
+            ResetStoppingDistanceOverride();
         }
 
 

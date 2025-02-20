@@ -13,6 +13,7 @@ namespace Entities.Mimic.States
         [Header("References")]
         [SerializeField] private EntityMovement _entityMovement;
         [SerializeField] private EntitySenses _entitySenses;
+        [SerializeField] private MimicAttack _attackScript;
         [SerializeField] private PassiveMimicryController _passiveMimicryController;
 
 
@@ -22,16 +23,18 @@ namespace Entities.Mimic.States
         [SerializeField] private float _chaseAngularSpeed = 720.0f;
 
         [Space(5)]
-        [SerializeField] private float _playerCatchRadius = 0.75f;
-        [HideInInspector] public bool _hasCaughtPlayer = false;
+        [SerializeField] private float _chaseStoppingDistance = 1.0f;
 
 
         public override void OnEnter()
         {
             // Override movement values with chase-specific values.
             _entityMovement.SetSpeedOverride(_chaseMovementSpeed);
-            _entityMovement.SetAccelerationOverride(_chaseMovementSpeed);
+            _entityMovement.SetAccelerationOverride(_chaseAcceleration);
             _entityMovement.SetAngularSpeedOverride(_chaseAngularSpeed);
+            _entityMovement.SetStoppingDistanceOverride(_chaseStoppingDistance);
+
+            _attackScript.SetCanAttack(true);
         }
         public override void OnLogic()
         {
@@ -44,28 +47,16 @@ namespace Entities.Mimic.States
 
             // Move towards the player.
             _entityMovement.SetDestination(_entitySenses.TargetPosition);
-
-            if ((transform.position - _entitySenses.TargetPosition).sqrMagnitude <= (_playerCatchRadius * _playerCatchRadius))
-            {
-                // We are close enough to catch the player.
-                _hasCaughtPlayer = true;
-            }
         }
         public override void OnExit()
         {
             // Reset agent movement values.
             _entityMovement.ResetAllOverrides();
 
+            _attackScript.SetCanAttack(true);
 
             // Reset mimicry strength.
             _passiveMimicryController.SetMimicryStrengthTarget(1.0f);
-        }
-
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, _playerCatchRadius);
         }
     }
 }

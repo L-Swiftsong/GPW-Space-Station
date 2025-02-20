@@ -18,10 +18,6 @@ namespace Entities.Mimic
         [Header("Movement Settings")]
         [SerializeField] private AnimationCurve _chaseSpeedCurve = AnimationCurve.Linear(5.0f, 5.0f, 10.0f, 7.0f);
 
-        [Space(5)]        
-        [SerializeField] private float _playerCatchRadius = 1.0f;
-        [HideInInspector] public bool _hasCaughtPlayer = false;
-
 
         [Header("Audio Settings")]
         [SerializeField] private AudioClip _chaseSFX;
@@ -73,12 +69,6 @@ namespace Entities.Mimic
                 
                 float distanceToPlayer = Vector3.Distance(transform.position, PlayerManager.Instance.Player.position);
                 _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(distanceToPlayer);
-
-                if (distanceToPlayer <= _playerCatchRadius)
-                {
-                    // We are close enough to catch the player.
-                    _hasCaughtPlayer = true;
-                }
             }
         }
 
