@@ -50,12 +50,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _flashlightLight: {fileID: 7344342922648999079}
-  _defaultConeAngle: 80
-  _defaultIntensity: 22.5
-  _focusedConeAngle: 25
+  _angleChangeRate: 5
+  _intensityChangeRate: 2
+  _defaultConeInnerAngle: 0
+  _defaultConeOuterAngle: 80
+  _defaultIntensity: 2.5
+  _focusedConeInnerAngle: 30
+  _focusedConeOuterAngle: 40
   _focusedIntensity: 13
-  _angleChangeRate: 2
-  _intensityChangeRate: 0.5
   _defaultBatteryLifetime: 120
   _focusedBatteryLifetime: 10
   _audioSource: {fileID: -3015297265930858768}
