@@ -37,6 +37,7 @@ namespace PSX
         static readonly int PatternIndex = Shader.PropertyToID("_PatternIndex");
         static readonly int DitherThreshold = Shader.PropertyToID("_DitherThreshold");
         static readonly int DitherStrength = Shader.PropertyToID("_DitherStrength");
+        static readonly int DitherFadeStrength = Shader.PropertyToID("_DitherFadeStrength");
         static readonly int DitherScale = Shader.PropertyToID("_DitherScale");
         
         Dithering dithering;
@@ -104,6 +105,7 @@ namespace PSX
             this.ditheringMaterial.SetInt(PatternIndex, this.dithering.patternIndex.value);
             this.ditheringMaterial.SetFloat(DitherThreshold, this.dithering.ditherThreshold.value);
             this.ditheringMaterial.SetFloat(DitherStrength, this.dithering.ditherStrength.value);
+            this.ditheringMaterial.SetFloat(DitherFadeStrength, this.dithering.ditherFadeStrength.value);
             this.ditheringMaterial.SetFloat(DitherScale, this.dithering.ditherScale.value);
 
             int shaderPass = 0;
