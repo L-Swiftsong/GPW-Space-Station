@@ -6,39 +6,37 @@ using System.Collections.Generic;
 [System.Serializable]
 public class WaypointData
 {
-    public Transform waypoint; // The position the agent moves to
-    public bool shouldPause; // Should the agent pause here?
-    public float pauseDuration = 1f; // How long to pause if enabled
-    public float speed = 3f; // Speed for this waypoint
+    public Transform waypoint; // position the agent moves to
+    public bool shouldPause; // should the mimic pause after reaching a waypoint
+    public float pauseDuration = 1f; // how long the mimic should pause for
+    public float speed = 3f; // speed the mimic will travel to a waypoint
 }
 
 public class MimicController : MonoBehaviour
 {
-    [SerializeField] private List<WaypointData> waypoints = new List<WaypointData>(); // Waypoints list
+    [SerializeField] private List<WaypointData> waypoints = new List<WaypointData>();
 
-    // Enum for selecting the mimic type
+    // Enum for what type the mimic should be at end of route
     public enum MimicType { GeneralMimic, ChaseMimic, None }
-    [SerializeField] private MimicType mimicType; // Option to choose the mimic type in the Inspector
+    [SerializeField] private MimicType mimicType;
 
-    [SerializeField] private GameObject generalMimicPrefab; // Prefab for GeneralMimic
-    [SerializeField] private GameObject chaseMimicPrefab; // Prefab for ChaseMimic
+    [SerializeField] private GameObject generalMimicPrefab;
+    [SerializeField] private GameObject chaseMimicPrefab;
 
     private NavMeshAgent agent;
     private bool isMoving = false;
 
     private void Start()
     {
-        gameObject.SetActive(false); // Start with this object disabled
+        gameObject.SetActive(false); // disabled by default until start movements called
     }
 
-    /// <summary>
-    /// Starts the movement sequence and activates the GameObject.
-    /// </summary>
+    // Starts the movement sequence and activates the GameObject
     public void StartMovement()
     {
         if (isMoving || waypoints.Count == 0) return;
 
-        gameObject.SetActive(true); // Activate the GameObject
+        gameObject.SetActive(true);
         if (agent == null) agent = GetComponent<NavMeshAgent>();
 
         if (agent != null)
@@ -54,12 +52,12 @@ public class MimicController : MonoBehaviour
         for (int i = 0; i < waypoints.Count; i++)
         {
             var waypointData = waypoints[i];
-            if (agent == null) yield break; // Stop if the agent is missing
+            if (agent == null) yield break;
 
-            agent.speed = waypointData.speed; // Set speed for this waypoint
+            agent.speed = waypointData.speed; // set speed for current waypoint
             agent.SetDestination(waypointData.waypoint.position);
 
-            // Wait until the agent reaches the target
+            // wait until the agent reaches the waypoint
             yield return new WaitUntil(() => !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance);
 
             if (waypointData.shouldPause)
@@ -68,7 +66,7 @@ public class MimicController : MonoBehaviour
             }
         }
 
-        // Replace the agent with the correct mimic prefab or do nothing if None is selected
+        // Replaces the agent with chosen mimic prefab in inspector or do nothing if None is selected
         if (mimicType != MimicType.None)
         {
             ReplaceWithMimicPrefab();
@@ -77,17 +75,15 @@ public class MimicController : MonoBehaviour
         isMoving = false;
     }
 
-    /// <summary>
-    /// Replaces the current agent with a new prefab based on the selected mimic type.
-    /// </summary>
+    // Replaces the event Mimic with a prefab based on the selected mimic type
     private void ReplaceWithMimicPrefab()
     {
         if (agent != null)
         {
-            Vector3 position = agent.transform.position; // Get current position
-            Destroy(agent.gameObject); // Destroy the current agent
+            Vector3 position = agent.transform.position;
+            Destroy(agent.gameObject); // Destroy the current mimic
 
-            // Instantiate the selected prefab at the agent's position
+            // Instantiate the selected mimic prefab at the agent's position
             GameObject newMimic = null;
             switch (mimicType)
             {
@@ -97,11 +93,6 @@ public class MimicController : MonoBehaviour
                 case MimicType.ChaseMimic:
                     newMimic = Instantiate(chaseMimicPrefab, position, Quaternion.identity);
                     break;
-            }
-
-            if (newMimic != null)
-            {
-                Debug.Log("Replaced with " + mimicType.ToString() + " prefab.");
             }
         }
     }
