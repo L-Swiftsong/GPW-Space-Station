@@ -65,10 +65,15 @@ namespace Items.Flashlight
         public static event System.Action<float> OnFlashlightBatteryChanged; // float: currentBattery.
 
         [Header("UI")]
-        [SerializeField] private Light _ledIndicator;
-        [SerializeField] private Renderer _ledRenderer;
+        [SerializeField] private Renderer _flashlightRenderer;
         [SerializeField] private Material _ledOnMaterial;
         [SerializeField] private Material _ledOffMaterial;
+        [SerializeField] private Material _ledDeadMaterial;
+        private const int LED_RENDERER_MATERIAL_INDEX = 2;
+
+        [Space(5)]
+        [SerializeField] private Light _ledLight;
+
 
         [Space(5)]
         [SerializeField] private Canvas _batteryCanvas;
@@ -252,15 +257,22 @@ namespace Items.Flashlight
 
         private void UpdateLedIndicator()
         {
+            Material[] modelMaterials = _flashlightRenderer.materials;
+
             if (_currentBattery <= 0)
             {
-                _ledIndicator.enabled = false;
-                return;
+                modelMaterials[LED_RENDERER_MATERIAL_INDEX] = _ledDeadMaterial;
+                _ledLight.enabled = false;
             }
+            else
+            {
+                modelMaterials[LED_RENDERER_MATERIAL_INDEX] = _isOn ? _ledOnMaterial : _ledOffMaterial;
 
-            _ledIndicator.enabled = true;
-            _ledIndicator.color = _isOn ? Color.green : Color.red;
-            _ledRenderer.material = _isOn ? _ledOnMaterial : _ledOffMaterial;
+                _ledLight.enabled = true;
+                _ledLight.color = _isOn ? Color.green : Color.red;
+            }
+            
+            _flashlightRenderer.materials = modelMaterials;
         }
 
         private void UpdateBatteryUI()
