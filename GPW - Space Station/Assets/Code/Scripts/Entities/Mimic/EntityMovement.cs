@@ -279,7 +279,7 @@ namespace Entities
         public bool SetDestination(Vector3 destination) => _agent.SetDestination(destination);
         public void SetIsStopped(bool newValue) => _agent.isStopped = newValue;
 
-        public bool HasReachedDestination() => _agent.remainingDistance <= _reachedDestinationDistance;
+        public bool HasReachedDestination() => _agent.remainingDistance <= _reachedDestinationDistance || _agent.remainingDistance < _agent.stoppingDistance;
         public bool TryFindRandomPointInBounds(Vector3 centre, Vector3 extents, out Vector3 result, int areaMask = -1, int maxAttempts = 5) => _agent.TryFindRandomPoint(centre, extents, out result, areaMask: areaMask, maxAttempts: maxAttempts);
 
 
