@@ -18,18 +18,21 @@ namespace Items.Flashlight
         [Space(5)]
         [SerializeField] private float _angleChangeRate = 2.0f;
         [SerializeField] private float _intensityChangeRate = 2.0f;
+        [SerializeField] private float _rangeChangeRate = 15.0f;
 
 
         [Header("Default Light Settings")]
         [SerializeField] private float _defaultConeInnerAngle = 0.0f;
         [SerializeField] private float _defaultConeOuterAngle = 80.0f;
         [SerializeField] private float _defaultIntensity = 2.5f;
+        [SerializeField] private float _defaultRange = 15.0f;
 
 
         [Header("Focused Light Settings")]
         [SerializeField] private float _focusedConeInnerAngle = 30.0f;
         [SerializeField] private float _focusedConeOuterAngle = 40.0f;
         [SerializeField] private float _focusedIntensity = 13.0f;
+        [SerializeField] private float _focusedRange = 22.5f;
 
 
         [Header("Battery Settings")]
@@ -174,7 +177,7 @@ namespace Items.Flashlight
                 _flashlightLight.innerSpotAngle = Mathf.Lerp(_flashlightLight.innerSpotAngle, _focusedConeInnerAngle, Time.deltaTime * _angleChangeRate);
                 _flashlightLight.spotAngle = Mathf.Lerp(_flashlightLight.spotAngle, _focusedConeOuterAngle, Time.deltaTime * _angleChangeRate);
                 _flashlightLight.intensity = Mathf.Lerp(_flashlightLight.intensity, _focusedIntensity, Time.deltaTime * _intensityChangeRate);
-
+                _flashlightLight.range = Mathf.Lerp(_flashlightLight.range, _focusedRange, Time.deltaTime * _rangeChangeRate);
             }
             else
             {
@@ -182,6 +185,7 @@ namespace Items.Flashlight
                 _flashlightLight.innerSpotAngle = Mathf.Lerp(_flashlightLight.innerSpotAngle, _defaultConeInnerAngle, Time.deltaTime * _angleChangeRate);
                 _flashlightLight.spotAngle = Mathf.Lerp(_flashlightLight.spotAngle, _defaultConeOuterAngle, Time.deltaTime * _angleChangeRate);
                 _flashlightLight.intensity = Mathf.Lerp(_flashlightLight.intensity, _defaultIntensity, Time.deltaTime * _intensityChangeRate);
+                _flashlightLight.range = Mathf.Lerp(_flashlightLight.range, _defaultRange, Time.deltaTime * _rangeChangeRate);
             }
         }
 
