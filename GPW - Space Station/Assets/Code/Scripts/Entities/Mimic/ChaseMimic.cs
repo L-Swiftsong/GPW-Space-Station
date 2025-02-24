@@ -24,7 +24,15 @@ namespace Entities.Mimic
         [SerializeField] private AudioClip _breakDoorClip;
         [SerializeField] private AudioClip _chaseEndClip;
 
+        [Header("Footstep Sounds")]
+        [SerializeField] private AudioClip _footstepSound1;
+        [SerializeField] private AudioClip _footstepSound2;
+        [SerializeField] private float _footstepInterval = 0.5f;
+        private float _footstepTimer = 0.0f;
+        private bool _useFirstFootstep = true; // Toggle flag
+
         private AudioSource audioSource;
+        private AudioSource audioSource2;
 
 
         private static System.Action<bool> OnPauseAllChases;
@@ -34,6 +42,7 @@ namespace Entities.Mimic
 
         private void Start()
         {
+            audioSource2 = gameObject.GetComponent<AudioSource>();
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
 
@@ -69,6 +78,8 @@ namespace Entities.Mimic
                 
                 float distanceToPlayer = Vector3.Distance(transform.position, PlayerManager.Instance.Player.position);
                 _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(distanceToPlayer);
+
+                HandleFootsteps();
             }
         }
 
@@ -187,6 +198,25 @@ namespace Entities.Mimic
             foreach (Keyframe key in _chaseSpeedCurve.keys)
             {
                 Gizmos.DrawWireSphere(transform.position, key.time);
+            }
+        }
+
+        private void HandleFootsteps()
+        {
+            if (_navMeshAgent.velocity.magnitude > 0.1f)
+            {
+                _footstepTimer -= Time.deltaTime;
+
+                if (_footstepTimer <= 0f)
+                {
+                    _footstepTimer = _footstepInterval;
+
+                    // Alternate between the two footstep sounds
+                    AudioClip footstepToPlay = _useFirstFootstep ? _footstepSound1 : _footstepSound2;
+                    _useFirstFootstep = !_useFirstFootstep;
+
+                    audioSource2.PlayOneShot(footstepToPlay);
+                }
             }
         }
     }
