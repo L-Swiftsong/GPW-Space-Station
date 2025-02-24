@@ -13,8 +13,9 @@ namespace Environment.Teleporters
 
         [Header("General (Teleportation Effects)")]
         [SerializeField] private ParticleSystem _teleporterWarmupParticleSystem;
+        public AudioClip soundClip;
+        private AudioSource audioSource;
 
-        
         protected IEnumerator TeleporterWarmup()
         {
             _teleporterWarmupParticleSystem.Play();
@@ -33,6 +34,7 @@ namespace Environment.Teleporters
             {
                 // The teleporter is already warming up.
                 return;
+                audioSource.Play();
             }
             
             _teleporterWarmupCoroutine = StartCoroutine(TeleporterWarmup());

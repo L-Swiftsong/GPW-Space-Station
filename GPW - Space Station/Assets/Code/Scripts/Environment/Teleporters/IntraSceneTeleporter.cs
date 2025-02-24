@@ -22,7 +22,9 @@ namespace Environment.Teleporters
         [SerializeField] public Vector3 _teleportPosition;
         public Vector3 TeleportPosition => transform.position + _teleportPosition;
 
-
+        public AudioClip soundClip;
+        private AudioSource audioSource;
+        
         private void Awake()
         {
             _canTeleport = true;
@@ -48,6 +50,10 @@ namespace Environment.Teleporters
                 _currentTeleportationTargets.Add(teleportationTarget);
 
                 StartTeleportation();
+
+                audioSource.Play();
+
+
             }
         }
         private void OnTriggerExit(Collider other)
