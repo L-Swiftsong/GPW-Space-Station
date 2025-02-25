@@ -21,8 +21,7 @@ namespace Environment.Teleporters
         [Space(5)]
         [SerializeField] public Vector3 _teleportPosition;
         public Vector3 TeleportPosition => transform.position + _teleportPosition;
-
-
+        
         private void Awake()
         {
             _canTeleport = true;
@@ -73,19 +72,26 @@ namespace Environment.Teleporters
             foreach(ITeleportableObject teleportableObject in _currentTeleportationTargets)
             {
                 // Preserve local positioning within the teleporter.
-                Vector3 destinationPosition = _linkedTeleporter.TeleportPosition + (TeleportPosition - teleportableObject.Position);
+                Vector3 relativeOffset = this.transform.InverseTransformPoint(teleportableObject.Position - _teleportPosition);
+                Vector3 destinationPosition = _linkedTeleporter.GetRelativeOffset(relativeOffset);
 
-                // Preserve local rotation within the teleporter.
-                Quaternion initialTeleporterRotation = Quaternion.FromToRotation(transform.forward, teleportableObject.Forward);
-                Quaternion targetRotation = initialTeleporterRotation * _linkedTeleporter.transform.rotation;
+                // Preserve relative forward direction within the teleporter.
+                Vector3 teleportableObjectRelativeForwardToThis = transform.InverseTransformDirection(teleportableObject.Forward);
+                Vector3 teleportableObjectRelativeForwardToLinked = _linkedTeleporter.transform.TransformDirection(teleportableObjectRelativeForwardToThis);
 
                 // Teleport the teleporation target.
-                teleportableObject.Teleport(destinationPosition, targetRotation);
+                teleportableObject.Teleport(destinationPosition, teleportableObjectRelativeForwardToLinked);
             }
 
             _teleporterReadyTime = Time.time + _teleporterCooldown;
         }
         public void PrepareToReceiveTarget() => _teleporterReadyTime = Time.time + 1.0f;
+
+
+        public Vector3 GetRelativeOffset(Vector3 offset)
+        {
+            return this.transform.TransformPoint(offset) + this._teleportPosition;
+        }
 
 
         private void OnDrawGizmosSelected()

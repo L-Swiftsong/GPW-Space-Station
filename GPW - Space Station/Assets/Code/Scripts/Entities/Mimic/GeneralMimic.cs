@@ -20,10 +20,12 @@ namespace Entities.Mimic
         private MimicAttack _mimicAttack;
 
         [Header("Sounds")]
-        [SerializeField] private AudioClip _footstepSound;
+        [SerializeField] private AudioClip _footstepSound1;
+        [SerializeField] private AudioClip _footstepSound2;
         [SerializeField] private float _footstepInterval = 0.5f;
         [SerializeField] private AudioSource _audioSource;
         private float _footstepTimer = 0.0f;
+        private bool _useFirstFootstep = true;
 
 
         [Header("States")]
@@ -65,8 +67,8 @@ namespace Entities.Mimic
             _stunnedState = GetComponent<StunnedState>();
 
 
-            _audioSource = gameObject.AddComponent<AudioSource>();
-            _audioSource.clip = _footstepSound;
+            _audioSource = gameObject.GetComponent<AudioSource>();
+            _audioSource.clip = _footstepSound1;
             _audioSource.playOnAwake = false;
 
             // Start in the wander state.
@@ -232,12 +234,17 @@ namespace Entities.Mimic
             {
                 _footstepTimer -= Time.deltaTime;
 
-                if (_footstepTimer >= _footstepInterval)
+                if (_footstepTimer <= 0f)
                 {
-					_footstepTimer = 0f;
+                    _footstepTimer = _footstepInterval;
 
-					_audioSource.PlayOneShot(_footstepSound);
-				}
+                    // Alternate between the two footstep sounds
+                    AudioClip footstepToPlay = _useFirstFootstep ? _footstepSound1 : _footstepSound2;
+                    _useFirstFootstep = !_useFirstFootstep;
+
+                    _audioSource.clip = footstepToPlay;
+                    _audioSource.PlayOneShot(footstepToPlay);
+                }
             }
         }
     }
