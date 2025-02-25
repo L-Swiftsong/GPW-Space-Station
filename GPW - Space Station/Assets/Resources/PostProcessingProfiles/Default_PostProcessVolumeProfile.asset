@@ -15,7 +15,7 @@ MonoBehaviour:
   active: 1
   postExposure:
     m_OverrideState: 0
-    m_Value: 0.2
+    m_Value: 0.5
   contrast:
     m_OverrideState: 1
     m_Value: 7
@@ -26,7 +26,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0
   saturation:
-    m_OverrideState: 1
+    m_OverrideState: 0
     m_Value: 4
 --- !u!114 &-263941478327850730
 MonoBehaviour:
@@ -127,6 +127,9 @@ MonoBehaviour:
   ditherStrength:
     m_OverrideState: 1
     m_Value: 1
+  ditherFadeStrength:
+    m_OverrideState: 0
+    m_Value: 1
   ditherScale:
     m_OverrideState: 1
     m_Value: 2
@@ -142,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4265a041954897941afec871c608473b, type: 3}
   m_Name: Crt
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   scanlinesWeight:
     m_OverrideState: 1
     m_Value: 0

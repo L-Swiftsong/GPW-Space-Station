@@ -13,18 +13,27 @@ namespace Items.Flashlight
         private bool _isFocused = false;
 
 
-        [Header("Light Settings")]
+        [Header("General Settings")]
         [SerializeField] private Light _flashlightLight;
-        [SerializeField] private float _defaultConeAngle = 45.0f;
-        [SerializeField] private float _defaultIntensity = 2.5f;
-
-        [Space(5)]
-        [SerializeField] private float _focusedConeAngle = 25.0f;
-        [SerializeField] private float _focusedIntensity = 4.0f;
-
         [Space(5)]
         [SerializeField] private float _angleChangeRate = 2.0f;
         [SerializeField] private float _intensityChangeRate = 2.0f;
+        [SerializeField] private float _rangeChangeRate = 15.0f;
+
+
+        [Header("Default Light Settings")]
+        [SerializeField] private float _defaultConeInnerAngle = 0.0f;
+        [SerializeField] private float _defaultConeOuterAngle = 80.0f;
+        [SerializeField] private float _defaultIntensity = 2.5f;
+        [SerializeField] private float _defaultRange = 15.0f;
+
+
+        [Header("Focused Light Settings")]
+        [SerializeField] private float _focusedConeInnerAngle = 30.0f;
+        [SerializeField] private float _focusedConeOuterAngle = 40.0f;
+        [SerializeField] private float _focusedIntensity = 13.0f;
+        [SerializeField] private float _focusedRange = 22.5f;
+
 
         [Header("Battery Settings")]
         [Tooltip("How long the flashlight's battery lasts if continuously left on")]
@@ -59,10 +68,15 @@ namespace Items.Flashlight
         public static event System.Action<float> OnFlashlightBatteryChanged; // float: currentBattery.
 
         [Header("UI")]
-        [SerializeField] private Light _ledIndicator;
-        [SerializeField] private Renderer _ledRenderer;
+        [SerializeField] private Renderer _flashlightRenderer;
         [SerializeField] private Material _ledOnMaterial;
         [SerializeField] private Material _ledOffMaterial;
+        [SerializeField] private Material _ledDeadMaterial;
+        private const int LED_RENDERER_MATERIAL_INDEX = 2;
+
+        [Space(5)]
+        [SerializeField] private Light _ledLight;
+
 
         [Space(5)]
         [SerializeField] private Canvas _batteryCanvas;
@@ -160,15 +174,18 @@ namespace Items.Flashlight
             if (_isFocused)
             {
                 // Is Focused.
-                _flashlightLight.spotAngle = Mathf.Lerp(_flashlightLight.spotAngle, _focusedConeAngle, Time.deltaTime * _angleChangeRate);
+                _flashlightLight.innerSpotAngle = Mathf.Lerp(_flashlightLight.innerSpotAngle, _focusedConeInnerAngle, Time.deltaTime * _angleChangeRate);
+                _flashlightLight.spotAngle = Mathf.Lerp(_flashlightLight.spotAngle, _focusedConeOuterAngle, Time.deltaTime * _angleChangeRate);
                 _flashlightLight.intensity = Mathf.Lerp(_flashlightLight.intensity, _focusedIntensity, Time.deltaTime * _intensityChangeRate);
-
+                _flashlightLight.range = Mathf.Lerp(_flashlightLight.range, _focusedRange, Time.deltaTime * _rangeChangeRate);
             }
             else
             {
                 // Not Focused.
-                _flashlightLight.spotAngle = Mathf.Lerp(_flashlightLight.spotAngle, _defaultConeAngle, Time.deltaTime * _angleChangeRate);
+                _flashlightLight.innerSpotAngle = Mathf.Lerp(_flashlightLight.innerSpotAngle, _defaultConeInnerAngle, Time.deltaTime * _angleChangeRate);
+                _flashlightLight.spotAngle = Mathf.Lerp(_flashlightLight.spotAngle, _defaultConeOuterAngle, Time.deltaTime * _angleChangeRate);
                 _flashlightLight.intensity = Mathf.Lerp(_flashlightLight.intensity, _defaultIntensity, Time.deltaTime * _intensityChangeRate);
+                _flashlightLight.range = Mathf.Lerp(_flashlightLight.range, _defaultRange, Time.deltaTime * _rangeChangeRate);
             }
         }
 
@@ -244,15 +261,22 @@ namespace Items.Flashlight
 
         private void UpdateLedIndicator()
         {
+            Material[] modelMaterials = _flashlightRenderer.materials;
+
             if (_currentBattery <= 0)
             {
-                _ledIndicator.enabled = false;
-                return;
+                modelMaterials[LED_RENDERER_MATERIAL_INDEX] = _ledDeadMaterial;
+                _ledLight.enabled = false;
             }
+            else
+            {
+                modelMaterials[LED_RENDERER_MATERIAL_INDEX] = _isOn ? _ledOnMaterial : _ledOffMaterial;
 
-            _ledIndicator.enabled = true;
-            _ledIndicator.color = _isOn ? Color.green : Color.red;
-            _ledRenderer.material = _isOn ? _ledOnMaterial : _ledOffMaterial;
+                _ledLight.enabled = true;
+                _ledLight.color = _isOn ? Color.green : Color.red;
+            }
+            
+            _flashlightRenderer.materials = modelMaterials;
         }
 
         private void UpdateBatteryUI()

@@ -8,9 +8,10 @@ namespace PSX
     {
         //PIXELATION
         //public TextureParameter ditherTexture;
-        public IntParameter patternIndex = new IntParameter(0);
+        public ClampedIntParameter patternIndex = new ClampedIntParameter(0, 0, 3);
         public FloatParameter ditherThreshold = new FloatParameter(512);
         public FloatParameter ditherStrength = new FloatParameter(1);
+        public ClampedFloatParameter ditherFadeStrength = new ClampedFloatParameter(1.0f, 0.0f, 1.0f);
         public FloatParameter ditherScale = new FloatParameter(2);
         
         

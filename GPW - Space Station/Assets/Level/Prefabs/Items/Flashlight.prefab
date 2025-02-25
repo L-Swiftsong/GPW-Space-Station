@@ -50,12 +50,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _flashlightLight: {fileID: 7344342922648999079}
-  _defaultConeAngle: 80
-  _defaultIntensity: 22.5
-  _focusedConeAngle: 25
-  _focusedIntensity: 13
-  _angleChangeRate: 2
-  _intensityChangeRate: 0.5
+  _angleChangeRate: 5
+  _intensityChangeRate: 10
+  _rangeChangeRate: 15
+  _defaultConeInnerAngle: 0
+  _defaultConeOuterAngle: 80
+  _defaultIntensity: 0.4
+  _defaultRange: 15
+  _focusedConeInnerAngle: 15
+  _focusedConeOuterAngle: 30
+  _focusedIntensity: 7
+  _focusedRange: 20
   _defaultBatteryLifetime: 120
   _focusedBatteryLifetime: 10
   _audioSource: {fileID: -3015297265930858768}
@@ -64,10 +69,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   _focusStunRate: 150
-  _ledIndicator: {fileID: 6672272333671118675}
-  _ledRenderer: {fileID: 7797260221228169208}
+  _flashlightRenderer: {fileID: 457031595426038924}
   _ledOnMaterial: {fileID: 2100000, guid: 5b6ae4d49b111684188805a8fef086ce, type: 2}
   _ledOffMaterial: {fileID: 2100000, guid: 8a960e25eeafa2e4ea5273729fad0203, type: 2}
+  _ledDeadMaterial: {fileID: -6922793697723135513, guid: 818cec61d0e24624f866f97d2777def5, type: 3}
+  _ledLight: {fileID: 6672272333671118675}
   _batteryCanvas: {fileID: 3132053808890006834}
   _batteryBar1: {fileID: 7736848616497826700}
   _batteryBar2: {fileID: 3603517989154155620}
@@ -179,7 +185,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3715793466474058511}
-  - component: {fileID: 7797260221228169208}
   m_Layer: 0
   m_Name: LED
   m_TagString: Untagged
@@ -203,48 +208,6 @@ Transform:
   - {fileID: 5532556231374565296}
   m_Father: {fileID: 1511791850703082886}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &7797260221228169208
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2252393506637547660}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 8a960e25eeafa2e4ea5273729fad0203, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3580060327547397645
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,7 +386,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.10000002, y: 0.10000002, z: 0.03}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3715793466474058511}
@@ -440,8 +403,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 1
-  m_Range: 0.01
+  m_Intensity: 5000
+  m_Range: 0.015
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -479,10 +442,10 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
@@ -633,8 +596,8 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 7.5
-  m_Range: 30
+  m_Intensity: 0.4
+  m_Range: 15
   m_SpotAngle: 75
   m_InnerSpotAngle: 20
   m_CookieSize: 10
@@ -875,6 +838,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 818cec61d0e24624f866f97d2777def5, type: 3}
+--- !u!23 &457031595426038924 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 818cec61d0e24624f866f97d2777def5, type: 3}
+  m_PrefabInstance: {fileID: 1267242613448988680}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1593323242681024483 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 818cec61d0e24624f866f97d2777def5, type: 3}

@@ -15,6 +15,7 @@
         uint _PatternIndex; 
         float _DitherThreshold;
         float _DitherStrength;
+        float _DitherFadeStrength;
         float _DitherScale;
         
         struct appdata
@@ -105,7 +106,7 @@
             uint y = uv.y % 4;
             
             if((brightness * _DitherThreshold) < pattern[x][y]) 
-                return 0;
+                return lerp(0, 1, (brightness * _DitherThreshold) * _DitherFadeStrength);
             else 
                 return 1;
         }      
@@ -134,8 +135,8 @@
             float brightness = PixelBrightness(Color.rgb);
             float4x4 ditherPattern = GetDitherPattern(_PatternIndex);
             float ditherPixel = Get4x4TexValue(ditherCoordinate.xy, brightness, ditherPattern);
-            
-            return Color * ditherPixel;        
+
+            return lerp(Color, Color * ditherPixel, _DitherStrength);
         }
     ENDCG
     
