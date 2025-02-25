@@ -133,6 +133,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b860f26df66dc43bc04ef3920ed46a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _positionTransform: {fileID: 8513550301921697003}
+  _rotationTransform: {fileID: 5472899290436885377}
 --- !u!114 &4542880227878347764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,13 +232,8 @@ MonoBehaviour:
   _rotationPivot: {fileID: 5472899290436885377}
   playerCamera: {fileID: 6197061550710832611}
   focusLookTarget: {fileID: 0}
-  lookStrength: 5
-  resistanceStrength: 0.5
   isFocusLookActive: 0
-  focusLookDuration: 0
-  focusLookTimer: 0
-  cameraXRotation: 0
-  cameraYRotation: 0
+  _cameraInputPreventionDefaultTime: 0.5
 --- !u!1 &745989413257143681
 GameObject:
   m_ObjectHideFlags: 0

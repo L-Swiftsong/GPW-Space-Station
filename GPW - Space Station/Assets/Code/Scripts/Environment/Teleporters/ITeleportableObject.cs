@@ -9,6 +9,6 @@ namespace Environment.Teleporters
         public Vector3 Position { get; }
         public Vector3 Forward { get; }
 
-        public void Teleport(Vector3 newPosition, Quaternion newRotation);
+        public void Teleport(Vector3 newPosition, Vector3 newForward);
     }
 }
