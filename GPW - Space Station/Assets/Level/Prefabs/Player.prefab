@@ -340,7 +340,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1516,6 +1516,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1451404063046177738}
     m_Modifications:
+    - target: {fileID: -3015297265930858768, guid: 47b74dd1c0f857d47a9c180ed206d8d8, type: 3}
+      propertyPath: m_Volume
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 209942478156537016, guid: 47b74dd1c0f857d47a9c180ed206d8d8, type: 3}
       propertyPath: m_Name
       value: Flashlight
