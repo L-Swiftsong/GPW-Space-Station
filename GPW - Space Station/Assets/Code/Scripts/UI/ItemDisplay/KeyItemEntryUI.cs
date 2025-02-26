@@ -1,13 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Items.Collectables;
+using Items;
+using Items.KeyItem;
+using UnityEngine.ProBuilder.MeshOperations;
 
 namespace UI.ItemDisplay
 {
     public class KeyItemEntryUI : ItemDisplaySegmentUI
     {
         [SerializeField] private Image _keyItemImage;
+        [SerializeField] private Button _equipButton;
 
+        private string itemName;
 
         public override void SetupCollectableEntry(CollectableData collectableData)
         {
@@ -25,7 +30,21 @@ namespace UI.ItemDisplay
         }
         public void SetupKeyItemEntry(KeyItemData keyItemData)
         {
+            itemName = keyItemData.name;
             _keyItemImage.sprite = keyItemData.KeyItemSprite;
+
+            _equipButton.onClick.RemoveAllListeners();
+
+            _equipButton.onClick.AddListener(OnEquipButtonClicked); 
+
+        }
+
+        public void OnEquipButtonClicked()
+        {
+            if (KeyItemManager.Instance != null)
+            {
+                KeyItemManager.Instance.EquipKeyItem(itemName);
+            }
         }
     }
 }
