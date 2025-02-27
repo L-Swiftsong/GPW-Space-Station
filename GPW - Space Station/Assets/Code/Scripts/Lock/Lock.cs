@@ -1,6 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
+using UnityEngine.InputSystem.Interactions;
 
 public class Lock : MonoBehaviour, IInteractable
 {
@@ -18,16 +20,19 @@ public class Lock : MonoBehaviour, IInteractable
 
     public bool lockInteraction = false;
 
-    [Header("Code Settings")]
-    [SerializeField] private int correctFirstDigit;
-    [SerializeField] private int correctSecondDigit;
-    [SerializeField] private int correctThirdDigit;
-    [SerializeField] private int correctFourthDigit;
+    [Header("Wheels")]
+    [SerializeField] private LockWheel[] _lockWheels;
+    [SerializeField, ReadOnly] private int _selectedWheelIndex;
 
-    private GameObject wheel1;
-    private GameObject wheel2;
-    private GameObject wheel3;
-    private GameObject wheel4;
+    [Space(5)]
+    [SerializeField] private float _interactionMinDelay = 0.1f;
+    private float _interactionReadyTime;
+
+
+    [Header("Code Settings")]
+    [SerializeField] private int[] _correctDigits;
+
+    
 
     public GameObject connectedDoor;
 
@@ -36,13 +41,55 @@ public class Lock : MonoBehaviour, IInteractable
         // stores locks orignial position so that it can return when not interacting
         originPosition = transform.position;
         originRotation = transform.rotation;
-
-        // wheel references
-        wheel1 = transform.Find("Wheel1").gameObject;
-        wheel2 = transform.Find("Wheel2").gameObject;
-        wheel3 = transform.Find("Wheel3").gameObject;
-        wheel4 = transform.Find("Wheel4").gameObject;
     }
+    
+
+    private void PlayerInput_OnUILeftClickPerformed()
+    {
+        // Determine if the left click falls on one of our padlock wheels.
+        // If not, stop interacting with the lock?
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (!Physics.Raycast(ray, out hit))
+        {
+            // Our ray didn't hit anything.
+            return;
+        }
+        
+        
+        if (!hit.transform.TryGetComponent<LockWheel>(out LockWheel lockWheel))
+        {
+            // We didn't click a wheel.
+            return;
+        }
+
+        // Determine the clicked wheel's index.
+        int selectedWheelIndex = -1;
+        for(int i = 0; i < _lockWheels.Length; ++i)
+        {
+            if (_lockWheels[i] == lockWheel)
+            {
+                selectedWheelIndex = i;
+                break;
+            }
+        }
+
+        if (selectedWheelIndex == -1)
+        {
+            // The selected wheel wasn't on this Padlock.
+            return;
+        }
+
+
+        // Select the wheel.
+        _selectedWheelIndex = selectedWheelIndex;
+        UpdateSelectedWheel();
+
+        // Rotate the wheel.
+        lockWheel.IncrementWheel();
+    }
+
 
     void Update()
     {
@@ -60,34 +107,11 @@ public class Lock : MonoBehaviour, IInteractable
                 isMoving = false;
             }
         }
-
-        // movement keys stop interaction with lock
-        if (lockInteraction)
-        {
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) ||
-            Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
-            {
-                ResetLockPosition();
-            }
-
-            // checks if wheels on lock are being clicked and if so rotates them
-            DetectWheelClick();
-            DetectCompletion();
-        }
     }
 
     public void Interact(PlayerInteraction player)
     {
-        // gets position infront of camera for lock to move to
-        SetTargetPosition();
-
-        isMoving = true;
-        lockInteraction = true;
-
-        Cursor.lockState = CursorLockMode.Confined;
-
-        PlayerInput.PreventAllActions(typeof(Lock));
-
+        StartInteraction();
         OnSuccessfulInteraction?.Invoke();
     }
 
@@ -114,53 +138,125 @@ public class Lock : MonoBehaviour, IInteractable
 
         transform.position = originPosition;
         transform.rotation = originRotation;
+    }
 
-        Cursor.lockState = CursorLockMode.Locked;
+
+
+    public void SelectNextWheel()
+    {
+        _selectedWheelIndex++;
+        if (_selectedWheelIndex > _lockWheels.Length - 1)
+        {
+            _selectedWheelIndex = 0;
+        }
+
+        UpdateSelectedWheel();
+    }
+    public void SelectPreviousWheel()
+    {
+        _selectedWheelIndex--;
+        if (_selectedWheelIndex < 0)
+        {
+            _selectedWheelIndex = _lockWheels.Length - 1;
+        }
+
+        UpdateSelectedWheel();
+    }
+    private void UpdateSelectedWheel()
+    {
+        // Deselect all wheels.
+        for(int i = 0; i < _lockWheels.Length; ++i)
+        {
+            _lockWheels[i].Deselect();
+        }
+
+        // Select our selected wheel;
+        _lockWheels[_selectedWheelIndex].Select();
+    }
+
+
+    // Checks if wheel digits match the correct digits.
+    public void DetectCompletion()
+    {
+        for(int i = 0; i < _lockWheels.Length; ++i)
+        {
+            if (_lockWheels[i].GetWheelDigit() != _correctDigits[i])
+            {
+                // This LockWheel is set to an incorrect value.
+                return;
+            }
+        }
+
+        // None of our LockWheels were set to incorrect digits.
+        StopInteraction();
+        connectedDoor.GetComponent<LockerDoor>().ToggleDoor();
+        Destroy(this.gameObject);
+    }
+
+
+    private void StartInteraction()
+    {
+        // Input.
+        PlayerInput.OnUILeftClickPerformed += PlayerInput_OnUILeftClickPerformed;
+        PlayerInput.OnUICancelPerformed += StopInteraction;
+
+        PlayerInput.PreventAllActions(typeof(Lock));
+
+
+        // gets position infront of camera for lock to move to
+        SetTargetPosition();
+
+        isMoving = true;
+        lockInteraction = true;
+        UpdateSelectedWheel();
+
+        Cursor.lockState = CursorLockMode.Confined;
+    }
+    private void StopInteraction()
+    {
+        // Input.
+        PlayerInput.OnUILeftClickPerformed -= PlayerInput_OnUILeftClickPerformed;
+        PlayerInput.OnUICancelPerformed -= StopInteraction;
 
         PlayerInput.RemoveAllActionPrevention(typeof(Lock));
+
+
+        // Reset the lock's position.
+        ResetLockPosition();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void DetectWheelClick()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+    public bool CanInteract() => _interactionReadyTime < Time.time;
+    public void UpdateInteractTime() => _interactionReadyTime = Time.time + _interactionMinDelay;
+
+    public int GetSelectedWheelIndex() => _selectedWheelIndex;
+
+
+#if UNITY_EDITOR
+
+    private void OnValidate()
+    {
+        if (_lockWheels.Length != _correctDigits.Length)
+        {
+            // Alter size of Correct Digits array.
+            int[] newValues = new int[_lockWheels.Length];
+            int correctDigitsLength = _correctDigits.Length;
+            for (int i = 0; i < _lockWheels.Length; ++i)
             {
-                if (hit.transform.CompareTag("Wheel"))
+                if (i < correctDigitsLength)
                 {
-                    RotateWheel(hit.transform);
+                    newValues[i] = _correctDigits[i];
+                }
+                else
+                {
+                    newValues[i] = 0;
                 }
             }
+
+            _correctDigits = newValues;
         }
     }
 
-    private void RotateWheel(Transform wheel)
-    {
-        wheel.Rotate(0, 36, 0);
-    }
-
-    // checks if wheel digits match the correct digits
-    private void DetectCompletion()
-    {
-        if (wheel1.GetComponent<LockWheel>().wheelDigit == correctFirstDigit)
-        {
-            if (wheel2.GetComponent<LockWheel>().wheelDigit == correctSecondDigit)
-            {
-                if (wheel3.GetComponent<LockWheel>().wheelDigit == correctThirdDigit)
-                {
-                    if (wheel4.GetComponent<LockWheel>().wheelDigit == correctFourthDigit)
-                    {
-                        ResetLockPosition();
-
-                        connectedDoor.GetComponent<LockerDoor>().ToggleDoor();
-
-                        Destroy(this.gameObject);
-                    }
-                }
-            }
-        }
-    }
+#endif
 }

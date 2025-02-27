@@ -4,62 +4,104 @@ using UnityEngine;
 
 public class LockWheel : MonoBehaviour
 {
-    public int wheelDigit = 0;
     private Lock _lock;
+
+
+    [SerializeField, ReadOnly] private int _wheelDigit = 0;
+    [SerializeField] private int _maxDigit = 9;
+
+
+    private bool _isSelected = false;
+    [SerializeField] private bool _isVerticalInputWheelChange = true; // Does vertical input change the active wheel, or does horizontal input?
+
 
     void Start()
     {
         _lock = GetComponentInParent<Lock>();
     }
 
+
+    public void Select()
+    {
+        _isSelected = true;
+    }
+    public void Deselect()
+    {
+        _isSelected = false;
+    }
+
+
     // Finds out what digit each wheel is on based on wheels rotation
     // Sorry this is so messy lol feel free to change this if anyone wants
     void Update()
     {
-        float yRotation = transform.localEulerAngles.y;
-
-        if (_lock.lockInteraction)
+        if (_isSelected)
         {
-            if (Mathf.Abs(yRotation - 0f) < 1f)
-            {
-                wheelDigit = 0;
-            }
-            else if (Mathf.Abs(yRotation - 36f) < 1f)
-            {
-                wheelDigit = 1;
-            }
-            else if (Mathf.Abs(yRotation - 72f) < 1f)
-            {
-                wheelDigit = 2;
-            }
-            else if (Mathf.Abs(yRotation - 108f) < 1f)
-            {
-                wheelDigit = 3;
-            }
-            else if (Mathf.Abs(yRotation - 144f) < 1f)
-            {
-                wheelDigit = 4;
-            }
-            else if (Mathf.Abs(yRotation - 180f) < 1f)
-            {
-                wheelDigit = 5;
-            }
-            else if (Mathf.Abs(yRotation - 216f) < 1f)
-            {
-                wheelDigit = 6;
-            }
-            else if (Mathf.Abs(yRotation - 252f) < 1f)
-            {
-                wheelDigit = 7;
-            }
-            else if (Mathf.Abs(yRotation - 288f) < 1f)
-            {
-                wheelDigit = 8;
-            }
-            else if (Mathf.Abs(yRotation - 324f) < 1f)
-            {
-                wheelDigit = 9;
-            }
+            // Register Inputs.
+            DetectInput();
         }
     }
+
+    private void DetectInput()
+    {
+        if (!_lock.CanInteract() || !_lock.lockInteraction)
+        {
+            return;
+        }
+
+
+        Vector2 navigateInput = PlayerInput.UINavigate.normalized;
+        
+        // Process Wheel Change Input (Changing to another Wheel).
+        float wheelChangeInput = _isVerticalInputWheelChange ? -navigateInput.y : navigateInput.x;
+        if (wheelChangeInput != 0)
+        {
+            _lock.UpdateInteractTime();
+            
+            if (wheelChangeInput > 0)
+            {
+                _lock.SelectNextWheel();
+            }
+            else
+            {
+                 _lock.SelectPreviousWheel();
+            }
+
+            // If we are swapping wheels, ignore further input.
+            return;
+        }
+
+
+        // Process Value Change Input (Changing this Wheel's value).
+        float valueChangeInput = _isVerticalInputWheelChange ? navigateInput.x : navigateInput.y;
+        if (valueChangeInput != 0)
+        {
+            _lock.UpdateInteractTime();
+            IncrementWheel(valueChangeInput > 0);
+        }
+    }
+    public void IncrementWheel(bool positiveIncrement = true)
+    {
+        // Alter value.
+        _wheelDigit += positiveIncrement ? 1 : -1;
+        Debug.Log(_wheelDigit);
+
+        // Clamp.
+        if (_wheelDigit > _maxDigit)
+        {
+            _wheelDigit = 0;
+        }
+        else if (_wheelDigit < 0)
+        {
+            _wheelDigit = _maxDigit;
+        }
+
+        this.transform.localEulerAngles = new Vector3(0.0f, _wheelDigit * (360f / (_maxDigit + 1)), 0.0f);
+
+
+        _lock.DetectCompletion();
+    }
+
+
+    public int GetWheelDigit() => _wheelDigit;
 }

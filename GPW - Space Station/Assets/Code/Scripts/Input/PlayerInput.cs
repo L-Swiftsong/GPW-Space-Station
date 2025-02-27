@@ -50,6 +50,17 @@ public class PlayerInput : MonoBehaviour
     public static event Action OnUseHealingItemStarted;
     public static event Action OnUseHealingItemCancelled;
 
+
+    #region UI
+
+    public static event Action OnUISubmitPerformed;
+
+    public static event Action OnUICancelPerformed;
+
+    public static event Action OnUILeftClickPerformed;
+
+    #endregion
+
     #endregion
 
     #region Input Values
@@ -102,6 +113,10 @@ public class PlayerInput : MonoBehaviour
     private static float s_sliderHorizontal;
     public static float SliderHorizontal => s_sliderHorizontal;
 
+
+    private static Vector2 s_uiNavigate;
+    public static Vector2 UINavigate => s_uiNavigate;
+
     #endregion
 
 
@@ -130,13 +145,17 @@ public class PlayerInput : MonoBehaviour
     }
 
 
-    [ContextMenu(itemName: "Display Locks")]
+    #if UNITY_EDITOR
+
+    [ContextMenu(itemName: "Display Active Locks")]
     private void DisplayLocks()
     {
         Debug.Log(s_typeToMovementPreventionCountDictionary.Count);
         Debug.Log(s_typeToCameraPreventionCountDictionary.Count);
         Debug.Log(s_typeToInteractionPreventionCountDictionary.Count);
     }
+
+    #endif
 
     private void CreateInputActions()
     {
@@ -148,9 +167,13 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Global.PauseGame.performed += PauseGame_performed;
 
 
-        // Subscribe to events (Menu).
+        // Subscribe to events (UI).
         s_playerInput.UI.SelectNextTab.performed += SelectNextTab_performed;
         s_playerInput.UI.SelectPreviousTab.performed += SelectPreviousTab_performed;
+
+        s_playerInput.UI.Submit.performed += Submit_performed;
+        s_playerInput.UI.Cancel.performed += Cancel_performed;
+        s_playerInput.UI.LeftClick.performed += LeftClick_performed;
 
 
         // Subscribe to events (Movement).
@@ -207,9 +230,13 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Global.PauseGame.performed -= PauseGame_performed;
 
 
-        // Unsubscribe from events (Menu).
-        s_playerInput.UI.SelectNextTab.performed += SelectNextTab_performed;
-        s_playerInput.UI.SelectPreviousTab.performed += SelectPreviousTab_performed;
+        // Unsubscribe from events (UI).
+        s_playerInput.UI.SelectNextTab.performed -= SelectNextTab_performed;
+        s_playerInput.UI.SelectPreviousTab.performed -= SelectPreviousTab_performed;
+
+        s_playerInput.UI.Submit.performed -= Submit_performed;
+        s_playerInput.UI.Cancel.performed -= Cancel_performed;
+        s_playerInput.UI.LeftClick.performed -= LeftClick_performed;
 
 
         // Unsubscribe from events (Movement).
@@ -286,6 +313,12 @@ public class PlayerInput : MonoBehaviour
     private void UseHealingItem_cancelled(InputAction.CallbackContext context) => OnUseHealingItemCancelled?.Invoke();
 
 
+    private void Submit_performed(InputAction.CallbackContext obj) => OnUISubmitPerformed?.Invoke();
+    private void Cancel_performed(InputAction.CallbackContext obj) => OnUICancelPerformed?.Invoke();
+
+    private void LeftClick_performed(InputAction.CallbackContext obj) => OnUILeftClickPerformed?.Invoke();
+
+
     #endregion
 
 
@@ -323,6 +356,7 @@ public class PlayerInput : MonoBehaviour
         s_gamepadLookInput = s_playerInput.Camera.GamepadLookInput.ReadValue<Vector2>();
 
         s_sliderHorizontal = s_playerInput.UI.SliderHorizontal.ReadValue<float>();
+        s_uiNavigate = s_playerInput.UI.Navigate.ReadValue<Vector2>();
     }
 
 
