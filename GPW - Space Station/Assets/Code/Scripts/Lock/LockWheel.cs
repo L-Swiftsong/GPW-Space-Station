@@ -31,8 +31,6 @@ public class LockWheel : MonoBehaviour
     }
 
 
-    // Finds out what digit each wheel is on based on wheels rotation
-    // Sorry this is so messy lol feel free to change this if anyone wants
     void Update()
     {
         if (_isSelected)
@@ -84,7 +82,6 @@ public class LockWheel : MonoBehaviour
     {
         // Alter value.
         _wheelDigit += positiveIncrement ? 1 : -1;
-        Debug.Log(_wheelDigit);
 
         // Clamp.
         if (_wheelDigit > _maxDigit)
@@ -99,6 +96,7 @@ public class LockWheel : MonoBehaviour
         this.transform.localEulerAngles = new Vector3(0.0f, _wheelDigit * (360f / (_maxDigit + 1)), 0.0f);
 
 
+        // Determine if the padlock is now complete.
         _lock.DetectCompletion();
     }
 

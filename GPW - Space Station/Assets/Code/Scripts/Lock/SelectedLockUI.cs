@@ -8,6 +8,9 @@ public class SelectedLockUI : MonoBehaviour
     [SerializeField] private Vector2[] _uiPositions;
     [SerializeField] private Lock _lock;
 
+    [Space(5)]
+    [SerializeField] private GameObject _root;
+
 
     #if UNITY_EDITOR
 
@@ -17,12 +20,28 @@ public class SelectedLockUI : MonoBehaviour
     #endif
 
 
-    private void Awake() => _rectTransform = GetComponent<RectTransform>();
+    private void Awake()
+    {
+        _rectTransform = GetComponent<RectTransform>();
+        _lock.OnSuccessfulInteraction += OnLockEnabled;
+    }
+    private void OnDestroy() => _lock.OnSuccessfulInteraction -= OnLockEnabled;
+    
     private void Update()
     {
+        if (!_lock.lockInteraction)
+        {
+            OnLockDisabled();
+            return;
+        }
+
         int uiPositionIndex = Mathf.Clamp(_lock.GetSelectedWheelIndex(), 0, _uiPositions.Length);
-        _rectTransform.localPosition = _uiPositions[uiPositionIndex];
+        _rectTransform.localPosition = new Vector3(_uiPositions[uiPositionIndex].x, _uiPositions[uiPositionIndex].y, _rectTransform.localPosition.z);
     }
+
+    private void OnLockEnabled() => _root.SetActive(true);
+    private void OnLockDisabled() => _root.SetActive(false);
+
 
     private void OnDrawGizmosSelected()
     {
@@ -36,7 +55,9 @@ public class SelectedLockUI : MonoBehaviour
         Gizmos.color = Color.green;
         for (int i = 0; i < _uiPositions.Length; ++i)
         {
-            Gizmos.DrawSphere(rectTransform.TransformPoint(_uiPositions[i]), 0.01f);
+            Vector3 position = rectTransform.TransformPoint(_uiPositions[i]);
+            position.z = transform.position.z;
+            Gizmos.DrawSphere(position, 0.01f);
         }
     }
 }

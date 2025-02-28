@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
-using UnityEngine.InputSystem.Interactions;
+using UI;
 
 public class Lock : MonoBehaviour, IInteractable
 {
@@ -20,6 +20,9 @@ public class Lock : MonoBehaviour, IInteractable
 
     public bool lockInteraction = false;
 
+    [SerializeField] private float _cameraOffsetDistance = 0.75f;
+
+
     [Header("Wheels")]
     [SerializeField] private LockWheel[] _lockWheels;
     [SerializeField, ReadOnly] private int _selectedWheelIndex;
@@ -32,9 +35,8 @@ public class Lock : MonoBehaviour, IInteractable
     [Header("Code Settings")]
     [SerializeField] private int[] _correctDigits;
 
-    
-
     public GameObject connectedDoor;
+
 
     void Start()
     {
@@ -95,17 +97,12 @@ public class Lock : MonoBehaviour, IInteractable
     {
         if (isMoving && lockInteraction)
         {
-            // moves lock towards camera
+            // Update the target position.
+            SetTargetPosition();
+
+            // Move the lock towards the camera.
             transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * moveSpeed);
-
-            // Stop moving when close enough to camera
-            if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
-            {
-                transform.position = targetPosition;
-                transform.rotation = targetRotation;
-                isMoving = false;
-            }
         }
     }
 
@@ -117,19 +114,22 @@ public class Lock : MonoBehaviour, IInteractable
 
     public void SetTargetPosition()
     {
-        Camera mainCamera = Camera.main;
-        if (mainCamera != null)
-        {
-            // offsets lock infront of camera
-            targetPosition = mainCamera.transform.position + mainCamera.transform.forward * 0.75f;
+        Transform playerCameraTransform = Entities.Player.PlayerManager.Instance.GetPlayerCameraTransform();
 
-            // little offsets as lock wasnt in centre of camera
-            targetPosition += mainCamera.transform.right * 0.1f;
-            targetPosition += mainCamera.transform.up * -0.1f;
+        // Offsets the lock infront of the camera.
+        targetPosition = GetLockPositionForWheelIndex(playerCameraTransform, _selectedWheelIndex);
 
-            // lock faces camera
-            targetRotation = Quaternion.LookRotation(-mainCamera.transform.forward);
-        }
+        // Lock faces camera.
+        targetRotation = Quaternion.LookRotation(-playerCameraTransform.forward);
+    }
+    private Vector3 GetLockPositionForWheelIndex(Transform playerCamTransform, int wheelIndex)
+    {
+        Vector3 wheelLocalPosition = transform.InverseTransformPoint(_lockWheels[wheelIndex].transform.position);
+
+        Vector3 desiredLockPosition = playerCamTransform.position + (playerCamTransform.forward * _cameraOffsetDistance);
+        desiredLockPosition += (playerCamTransform.right * wheelLocalPosition.x) + (playerCamTransform.up * -wheelLocalPosition.y);
+
+        return desiredLockPosition;
     }
 
     public void ResetLockPosition()
@@ -199,8 +199,9 @@ public class Lock : MonoBehaviour, IInteractable
         // Input.
         PlayerInput.OnUILeftClickPerformed += PlayerInput_OnUILeftClickPerformed;
         PlayerInput.OnUICancelPerformed += StopInteraction;
+        PlayerInput.OnUINavigateCancelled += ResetInteractTime;
 
-        PlayerInput.PreventAllActions(typeof(Lock));
+        PlayerInput.PreventAllActions(typeof(Lock), disableGlobalMaps: true);
 
 
         // gets position infront of camera for lock to move to
@@ -210,6 +211,7 @@ public class Lock : MonoBehaviour, IInteractable
         lockInteraction = true;
         UpdateSelectedWheel();
 
+        PlayerUIManager.Instance.HideInteractionUI();
         Cursor.lockState = CursorLockMode.Confined;
     }
     private void StopInteraction()
@@ -217,18 +219,22 @@ public class Lock : MonoBehaviour, IInteractable
         // Input.
         PlayerInput.OnUILeftClickPerformed -= PlayerInput_OnUILeftClickPerformed;
         PlayerInput.OnUICancelPerformed -= StopInteraction;
+        PlayerInput.OnUINavigateCancelled -= ResetInteractTime;
 
         PlayerInput.RemoveAllActionPrevention(typeof(Lock));
 
 
         // Reset the lock's position.
         ResetLockPosition();
+
+        PlayerUIManager.Instance.ShowInteractionUI();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
 
     public bool CanInteract() => _interactionReadyTime < Time.time;
     public void UpdateInteractTime() => _interactionReadyTime = Time.time + _interactionMinDelay;
+    private void ResetInteractTime() => _interactionReadyTime = 0.0f;
 
     public int GetSelectedWheelIndex() => _selectedWheelIndex;
 
