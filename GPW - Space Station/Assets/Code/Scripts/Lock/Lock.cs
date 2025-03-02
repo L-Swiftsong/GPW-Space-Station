@@ -48,6 +48,8 @@ public class Lock : MonoBehaviour, IInteractable
 
     private void PlayerInput_OnUILeftClickPerformed()
     {
+        Debug.Log("Left Click Performed");
+
         // Determine if the left click falls on one of our padlock wheels.
         // If not, stop interacting with the lock?
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -56,6 +58,7 @@ public class Lock : MonoBehaviour, IInteractable
         if (!Physics.Raycast(ray, out hit))
         {
             // Our ray didn't hit anything.
+            Debug.Log("Ray Miss");
             return;
         }
         
@@ -63,6 +66,7 @@ public class Lock : MonoBehaviour, IInteractable
         if (!hit.transform.TryGetComponent<LockWheel>(out LockWheel lockWheel))
         {
             // We didn't click a wheel.
+            Debug.Log($"Hit Object ({hit.transform.name}) isn't a LockWheel");
             return;
         }
 
@@ -84,12 +88,23 @@ public class Lock : MonoBehaviour, IInteractable
         }
 
 
-        // Select the wheel.
-        _selectedWheelIndex = selectedWheelIndex;
-        UpdateSelectedWheel();
+        if (selectedWheelIndex != _selectedWheelIndex)
+        {
+            // We've selected a new wheel.
+            // Update our selected wheel.
+            _selectedWheelIndex = selectedWheelIndex;
+            UpdateSelectedWheel();
+            return;
+        }
+        else
+        {
+            // We haven't selected a new wheel.
+            // Rotate the wheel.
+            bool positiveIncrement = Vector3.Dot(hit.point - hit.transform.position, this.transform.right) < 0;
+            lockWheel.IncrementWheel(positiveIncrement);
+        }
 
-        // Rotate the wheel.
-        lockWheel.IncrementWheel();
+
     }
 
 
