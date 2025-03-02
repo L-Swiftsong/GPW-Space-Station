@@ -50,6 +50,19 @@ public class PlayerInput : MonoBehaviour
     public static event Action OnUseHealingItemStarted;
     public static event Action OnUseHealingItemCancelled;
 
+
+    #region UI
+
+    public static event Action OnUINavigateCancelled;
+
+    public static event Action OnUISubmitPerformed;
+
+    public static event Action OnUICancelPerformed;
+
+    public static event Action OnUILeftClickPerformed;
+
+    #endregion
+
     #endregion
 
     #region Input Values
@@ -102,6 +115,10 @@ public class PlayerInput : MonoBehaviour
     private static float s_sliderHorizontal;
     public static float SliderHorizontal => s_sliderHorizontal;
 
+
+    private static Vector2 s_uiNavigate;
+    public static Vector2 UINavigate => s_uiNavigate;
+
     #endregion
 
 
@@ -130,13 +147,17 @@ public class PlayerInput : MonoBehaviour
     }
 
 
-    [ContextMenu(itemName: "Display Locks")]
+    #if UNITY_EDITOR
+
+    [ContextMenu(itemName: "Display Active Locks")]
     private void DisplayLocks()
     {
         Debug.Log(s_typeToMovementPreventionCountDictionary.Count);
         Debug.Log(s_typeToCameraPreventionCountDictionary.Count);
         Debug.Log(s_typeToInteractionPreventionCountDictionary.Count);
     }
+
+    #endif
 
     private void CreateInputActions()
     {
@@ -148,9 +169,15 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Global.PauseGame.performed += PauseGame_performed;
 
 
-        // Subscribe to events (Menu).
+        // Subscribe to events (UI).
         s_playerInput.UI.SelectNextTab.performed += SelectNextTab_performed;
         s_playerInput.UI.SelectPreviousTab.performed += SelectPreviousTab_performed;
+
+        s_playerInput.UI.Navigate.canceled += Navigate_cancelled;
+
+        s_playerInput.UI.Submit.performed += Submit_performed;
+        s_playerInput.UI.Cancel.performed += Cancel_performed;
+        s_playerInput.UI.LeftClick.performed += LeftClick_performed;
 
 
         // Subscribe to events (Movement).
@@ -207,9 +234,13 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Global.PauseGame.performed -= PauseGame_performed;
 
 
-        // Unsubscribe from events (Menu).
-        s_playerInput.UI.SelectNextTab.performed += SelectNextTab_performed;
-        s_playerInput.UI.SelectPreviousTab.performed += SelectPreviousTab_performed;
+        // Unsubscribe from events (UI).
+        s_playerInput.UI.SelectNextTab.performed -= SelectNextTab_performed;
+        s_playerInput.UI.SelectPreviousTab.performed -= SelectPreviousTab_performed;
+
+        s_playerInput.UI.Submit.performed -= Submit_performed;
+        s_playerInput.UI.Cancel.performed -= Cancel_performed;
+        s_playerInput.UI.LeftClick.performed -= LeftClick_performed;
 
 
         // Unsubscribe from events (Movement).
@@ -286,6 +317,14 @@ public class PlayerInput : MonoBehaviour
     private void UseHealingItem_cancelled(InputAction.CallbackContext context) => OnUseHealingItemCancelled?.Invoke();
 
 
+    private void Navigate_cancelled(InputAction.CallbackContext obj) => OnUINavigateCancelled?.Invoke();
+
+    private void Submit_performed(InputAction.CallbackContext obj) => OnUISubmitPerformed?.Invoke();
+    private void Cancel_performed(InputAction.CallbackContext obj) => OnUICancelPerformed?.Invoke();
+
+    private void LeftClick_performed(InputAction.CallbackContext obj) => OnUILeftClickPerformed?.Invoke();
+
+
     #endregion
 
 
@@ -323,6 +362,7 @@ public class PlayerInput : MonoBehaviour
         s_gamepadLookInput = s_playerInput.Camera.GamepadLookInput.ReadValue<Vector2>();
 
         s_sliderHorizontal = s_playerInput.UI.SliderHorizontal.ReadValue<float>();
+        s_uiNavigate = s_playerInput.UI.Navigate.ReadValue<Vector2>();
     }
 
 
@@ -336,6 +376,8 @@ public class PlayerInput : MonoBehaviour
         Movement = 1 << 0,
         Camera = 1 << 1,
         Interaction = 1 << 2,
+        Global = 1 << 3,
+        Everything = ~0,
     }
     public static void PreventActions(Type lockingType, ActionTypes actionTypes)
     {
@@ -345,6 +387,8 @@ public class PlayerInput : MonoBehaviour
             PreventCameraActions(lockingType);
         if (actionTypes.HasFlag(ActionTypes.Interaction))
             PreventInteractionActions(lockingType);
+        if (actionTypes.HasFlag(ActionTypes.Global))
+            PreventGlobalActions(lockingType);
     }
     public static void RemoveActionPrevention(Type lockingType, ActionTypes actionTypes)
     {
@@ -354,6 +398,8 @@ public class PlayerInput : MonoBehaviour
             RemoveCameraActionPrevention(lockingType);
         if (actionTypes.HasFlag(ActionTypes.Interaction))
             RemoveInteractionActionPrevention(lockingType);
+        if (actionTypes.HasFlag(ActionTypes.Global))
+            RemoveGlobalActionPrevention(lockingType);
     }
 
 
@@ -468,18 +514,51 @@ public class PlayerInput : MonoBehaviour
     }
 
 
-    // All Maps.
-    public static void PreventAllActions(Type lockingType)
+    // Global Map.
+    private static Dictionary<Type, int> s_typeToGlobalPreventionCountDictionary = new Dictionary<Type, int>();
+    private static void PreventGlobalActions(Type lockingType)
     {
-        PreventMovementActions(lockingType);
-        PreventCameraActions(lockingType);
-        PreventInteractionActions(lockingType);
+        if (!s_typeToGlobalPreventionCountDictionary.TryAdd(lockingType, 1))
+        {
+            // We already have a kvp with key 'lockingType', so increment it instead.
+            s_typeToGlobalPreventionCountDictionary[lockingType]++;
+        }
+
+        if (s_playerInput != null)
+        {
+            // Disable our 'Global' map.
+            s_playerInput.Global.Disable();
+        }
+    }
+    private static void RemoveGlobalActionPrevention(Type lockingType)
+    {
+        if (s_typeToGlobalPreventionCountDictionary.ContainsKey(lockingType))
+        {
+            s_typeToGlobalPreventionCountDictionary[lockingType]--;
+
+            if (s_typeToGlobalPreventionCountDictionary[lockingType] <= 0)
+            {
+                s_typeToGlobalPreventionCountDictionary.Remove(lockingType);
+            }
+        }
+
+        if (s_typeToGlobalPreventionCountDictionary.Count == 0 && s_playerInput != null)
+        {
+            // There is no longer anything wishing to disable our global controls (E.g. Pause Menu).
+            // Enable the 'Global' map.
+            s_playerInput.Global.Enable();
+        }
+    }
+
+
+    // All Maps.
+    public static void PreventAllActions(Type lockingType, bool disableGlobalMaps = false)
+    {
+        PreventActions(lockingType, disableGlobalMaps ? ActionTypes.Everything : ActionTypes.Everything & ~ActionTypes.Global);
     }
     public static void RemoveAllActionPrevention(Type lockingType)
     {
-        RemoveMovementActionPrevention(lockingType);
-        RemoveCameraActionPrevention(lockingType);
-        RemoveInteractionActionPrevention(lockingType);
+        RemoveActionPrevention(lockingType, ActionTypes.Everything);
     }
 
     private static void UpdateDisabledState()
@@ -501,6 +580,12 @@ public class PlayerInput : MonoBehaviour
             s_playerInput.Interaction.Disable();
         else
             s_playerInput.Interaction.Enable();
+
+        // Global.
+        if (s_typeToGlobalPreventionCountDictionary.Count > 0)
+            s_playerInput.Global.Disable();
+        else
+            s_playerInput.Global.Enable();
     }
 
     #endregion
