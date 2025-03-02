@@ -62,9 +62,6 @@ public class SettingsManager : MonoBehaviour
     enum VolumeType { MasterVolume, MusicVolume, SFXVolume } // Case-Sensitive (Converted into strings for the PlayerPrefs & AudioMixer)
     private void SetVolume(VolumeType volumeType, float value)
     {
-        Debug.Log("Base: " + value);
-        Debug.Log("Log10: " + Mathf.Log10(value));
-        Debug.Log("Log10 * 20: " + Mathf.Log10(value) * 20);
         PlayerPrefs.SetFloat(volumeType.ToString(), value);
         audioMixer.SetFloat(volumeType.ToString(), Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20);
     }
