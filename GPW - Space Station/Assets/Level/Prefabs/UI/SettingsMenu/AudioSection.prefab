@@ -643,8 +643,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3931628692932748331}
   m_HandleRect: {fileID: 5665421348734065638}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.9999981
+  m_Value: 1
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -686,7 +686,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 350.0009}
+  m_AnchoredPosition: {x: 0, y: 435}
   m_SizeDelta: {x: 900, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &3706369830369978511
@@ -887,8 +887,8 @@ MonoBehaviour:
   m_FillRect: {fileID: 7711209115635879500}
   m_HandleRect: {fileID: 560220031535037692}
   m_Direction: 0
-  m_MinValue: 1
-  m_MaxValue: 100
+  m_MinValue: 0.0001
+  m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
@@ -1492,7 +1492,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _firstSelectedElement: {fileID: 1029508864378799114}
   _linkedButton: {fileID: 0}
-  _audioMixer: {fileID: 24100000, guid: c6cceb697f88c6f41af12a9bc6c0c298, type: 2}
   _masterVolumeSlider: {fileID: 1029508864378799114}
   _musicVolumeSlider: {fileID: 2788271486085440597}
   _sfxVolumeSlider: {fileID: 7167106542120314403}
@@ -2109,8 +2108,8 @@ MonoBehaviour:
   m_FillRect: {fileID: 1467581500698289049}
   m_HandleRect: {fileID: 623484097624595152}
   m_Direction: 0
-  m_MinValue: 1
-  m_MaxValue: 100
+  m_MinValue: 0.0001
+  m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:
@@ -2739,8 +2738,8 @@ MonoBehaviour:
   m_FillRect: {fileID: 8405160929986794109}
   m_HandleRect: {fileID: 411414417286459704}
   m_Direction: 0
-  m_MinValue: 1
-  m_MaxValue: 100
+  m_MinValue: 0.0001
+  m_MaxValue: 1
   m_WholeNumbers: 0
   m_Value: 1
   m_OnValueChanged:

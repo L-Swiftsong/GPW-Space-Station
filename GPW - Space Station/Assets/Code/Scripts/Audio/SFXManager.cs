@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
+using UnityEngine.Audio;
 
 namespace Audio
 {
@@ -29,6 +30,8 @@ namespace Audio
         private ObjectPool<AudioSource> _audioSourcePool;
         private const int AUDIO_SOURCE_POOL_CAPACITY = 10;
         private const int AUDIO_SOURCE_POOL_MAX_SIZE = 30;
+
+        [SerializeField] private AudioMixerGroup _sfxMixerGroup;
 
 
         public static event System.Action<Vector3, float> OnDetectableSoundTriggered;
@@ -58,6 +61,8 @@ namespace Audio
             audioSource.spread = 0.0f;
             audioSource.minDistance = 500.0f;
             audioSource.maxDistance = 1.0f;
+
+            audioSource.outputAudioMixerGroup = _sfxMixerGroup;
 
 
             return audioSource;
