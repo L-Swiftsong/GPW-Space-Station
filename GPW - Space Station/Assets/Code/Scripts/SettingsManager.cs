@@ -9,6 +9,7 @@ public class SettingsManager : MonoBehaviour
     public static SettingsManager Instance { get; private set; }
 
     [SerializeField] private AudioMixer audioMixer;
+
     private Camera _mainCamera;
 
     private void Awake()
@@ -49,19 +50,20 @@ public class SettingsManager : MonoBehaviour
         QualitySettings.vSyncCount = PlayerPrefs.GetInt("VSync", 0) == 1 ? 1 : 0;
 
         // Apply Audio Settings
-        SetVolume("MasterVolume", PlayerPrefs.GetFloat("MasterVolume", 1f));
-        SetVolume("MusicVolume", PlayerPrefs.GetFloat("MusicVolume", 1f));
-        SetVolume("SFXVolume", PlayerPrefs.GetFloat("SFXVolume", 1f));
+        SetVolume(VolumeType.MasterVolume, PlayerPrefs.GetFloat(VolumeType.MasterVolume.ToString(), 1f));
+        SetVolume(VolumeType.MusicVolume, PlayerPrefs.GetFloat(VolumeType.MusicVolume.ToString(), 1f));
+        SetVolume(VolumeType.SFXVolume, PlayerPrefs.GetFloat(VolumeType.SFXVolume.ToString(), 1f));
 
         // Apply FOV setting to camera
         int savedFOV = PlayerPrefs.GetInt("FOV", 60);
         SetFOV(savedFOV);
     }
 
-    private void SetVolume(string parameter, float value)
+    enum VolumeType { MasterVolume, MusicVolume, SFXVolume } // Case-Sensitive (Converted into strings for the PlayerPrefs & AudioMixer)
+    private void SetVolume(VolumeType volumeType, float value)
     {
-        PlayerPrefs.SetFloat(parameter, value);
-        audioMixer.SetFloat(parameter, Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20);
+        PlayerPrefs.SetFloat(volumeType.ToString(), value);
+        audioMixer.SetFloat(volumeType.ToString(), Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20);
     }
 
     public void SetFOV(int fov)
@@ -75,11 +77,11 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
-    public void SetMasterVolume(float value) => SetVolume("MasterVolume", value);
+    public void SetMasterVolume(float value) => SetVolume(VolumeType.MasterVolume, value);
 
-    public void SetMusicVolume(float value) => SetVolume("MusicVolume", value);
+    public void SetMusicVolume(float value) => SetVolume(VolumeType.MusicVolume, value);
 
-    public void SetSFXVolume(float value) => SetVolume("SFXVolume", value);
+    public void SetSFXVolume(float value) => SetVolume(VolumeType.SFXVolume, value);
 
     public void SetVSync(bool value)
     {

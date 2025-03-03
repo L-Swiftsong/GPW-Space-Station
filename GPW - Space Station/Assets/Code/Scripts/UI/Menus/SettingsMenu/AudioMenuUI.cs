@@ -9,9 +9,6 @@ namespace UI.Menus.Settings
     public class AudioMenuUI : SettingsSubmenuUI
     {
         [Header("Audio Settings")]
-        [SerializeField] private AudioMixer _audioMixer;
-
-        [Space(10)]
         [SerializeField] private Slider _masterVolumeSlider;
         [SerializeField] private Slider _musicVolumeSlider;
         [SerializeField] private Slider _sfxVolumeSlider;

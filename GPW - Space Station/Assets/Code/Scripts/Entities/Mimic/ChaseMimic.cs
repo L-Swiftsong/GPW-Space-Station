@@ -8,7 +8,7 @@ using Entities.Player;
 namespace Entities.Mimic
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class ChaseMimic : MonoBehaviour
+    public class ChaseMimic : MonoBehaviour, IStunnable
     {
         private NavMeshAgent _navMeshAgent;
         private bool isChasing = false;
@@ -16,7 +16,13 @@ namespace Entities.Mimic
 
 
         [Header("Movement Settings")]
+        [SerializeField, ReadOnly] private float _targetSpeed;
+        [SerializeField] private float _movementLerpRate = 3.0f;
+
+        [Space(5)]
         [SerializeField] private AnimationCurve _chaseSpeedCurve = AnimationCurve.Linear(5.0f, 5.0f, 10.0f, 7.0f);
+        [SerializeField] [Range(0.0f, 1.0f)] private float _stunnedMovementMultiplier = 0.7f;
+        private bool _isBeingStunned = false;
 
 
         [Header("Audio Settings")]
@@ -72,16 +78,23 @@ namespace Entities.Mimic
 
         private void Update()
         {
-            if (isChasing && PlayerManager.Instance.Player != null)
+            if (!isChasing || PlayerManager.Instance.Player == null)
             {
-                _navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
-                
-                float distanceToPlayer = Vector3.Distance(transform.position, PlayerManager.Instance.Player.position);
-                _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(distanceToPlayer);
-
-                HandleFootsteps();
+                return;
             }
+
+            _navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
+                
+            float distanceToPlayer = Vector3.Distance(transform.position, PlayerManager.Instance.Player.position);
+            _targetSpeed = _chaseSpeedCurve.Evaluate(distanceToPlayer);
+            if (_isBeingStunned)
+                _targetSpeed *= _stunnedMovementMultiplier;
+
+            _navMeshAgent.speed = Mathf.MoveTowards(_navMeshAgent.speed, _targetSpeed, _movementLerpRate * Time.deltaTime);
+
+            HandleFootsteps();
         }
+        private void LateUpdate() => _isBeingStunned = false;
 
 
         private void OnCollisionEnter(Collision collision)
@@ -184,6 +197,8 @@ namespace Entities.Mimic
 
         #endregion
 
+
+        public void ApplyStun(float stunStrengthDelta) => _isBeingStunned = true;
 
 
         private void OnDrawGizmosSelected()
