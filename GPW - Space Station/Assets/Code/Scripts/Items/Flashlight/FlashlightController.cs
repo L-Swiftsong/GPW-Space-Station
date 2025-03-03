@@ -199,7 +199,7 @@ namespace Items.Flashlight
 
             for (int i = 0; i < coneHits.Count; i++)
             {
-                if (coneHits[i].collider.TryGetComponent<FlashlightStunnable>(out FlashlightStunnable stunnableScript))
+                if (coneHits[i].collider.TryGetComponent<IStunnable>(out IStunnable stunnableScript))
                 {
                     stunnableScript.ApplyStun(_focusStunRate * Time.deltaTime);
                 }

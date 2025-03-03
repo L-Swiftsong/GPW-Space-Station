@@ -154,6 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5c4867873dd3b4087fb6d7b1ef23f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetSpeed: 0
+  _movementLerpRate: 3
   _chaseSpeedCurve:
     serializedVersion: 2
     m_Curve:
@@ -178,7 +180,7 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 7
       value: 6
-      inSlope: -0
+      inSlope: 0
       outSlope: 0.6666667
       tangentMode: 69
       weightedMode: 0
@@ -214,6 +216,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _stunnedMovementMultiplier: 0.5
   _chaseSFX: {fileID: 8300000, guid: 0d3fe7f18a4ee4c41a9c57d09fe8b689, type: 3}
   _breakDoorClip: {fileID: 0}
   _chaseEndClip: {fileID: 0}

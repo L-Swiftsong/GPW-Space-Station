@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Entities
 {
-    public class FlashlightStunnable : MonoBehaviour
+    public class FlashlightStunnable : MonoBehaviour, IStunnable
     {
         private float m_currentStun = 0.0f;
         private float _currentStun
