@@ -1,5 +1,6 @@
 using UnityEngine;
 using Interaction;
+using Audio;
 
 namespace Items.Keycards
 {
@@ -7,18 +8,11 @@ namespace Items.Keycards
     {
         [SerializeField] private int m_securityLevel;
         [SerializeField] private AudioClip pickupSound; // Assign in Inspector
-        private AudioSource audioSource;
+        [SerializeField] private AudioSource audioSource;
 
         private void Awake()
         {
-            // Ensure there's an AudioSource component
-            audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
-            {
-                audioSource = gameObject.AddComponent<AudioSource>();
-            }
-
-            audioSource.playOnAwake = false; // Prevent unintended playback
+            //audioSource.playOnAwake = false; // Prevent unintended playback
         }
 
         public void SetupKeycard(int securityLevel) => m_securityLevel = securityLevel;
@@ -26,13 +20,10 @@ namespace Items.Keycards
 
         protected override bool PerformInteraction(PlayerInteraction interactingScript)
         {
-
-            if (pickupSound != null && audioSource != null)
-            {
-                audioSource.PlayOneShot(pickupSound);
-            }
-
+            SFXManager.Instance.PlayClipAtPosition(pickupSound, transform.position, 1, 1, 0.1f);
+            
             interactingScript.Inventory.GetKeycardDecoder().SetSecurityLevel(m_securityLevel);
+             //audioSource.PlayOneShot(pickupSound);
             Debug.Log($"Picked up {m_securityLevel}");
 
             return true;
