@@ -3,6 +3,8 @@ using UnityEngine;
 using Items.Flashlight;
 using Items.Keycards;
 using Items.Healing;
+using Items.KeyItem;
+using Items.Collectables;
 
 namespace Items
 {
@@ -23,6 +25,8 @@ namespace Items
         [SerializeField] private Medkit _medkit;
 
 
+        [Header("KeyItems")]
+        [SerializeField] private KeyItemManager _keyItemManager;
 
         private void Awake()
         {
@@ -107,6 +111,12 @@ namespace Items
         public void RemoveMedkits(int numberToRemove) => _medkit.RemoveMedkits(numberToRemove);
         public int GetMedkitCount() => _medkit.GetCurrentCount();
 
-        #endregion
-    }
+		#endregion
+
+		#region KeyItems
+
+
+
+		#endregion
+	}
 }

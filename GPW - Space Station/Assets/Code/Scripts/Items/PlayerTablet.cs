@@ -1,3 +1,4 @@
+using Items;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -61,9 +62,9 @@ public class PlayerTablet : MonoBehaviour
             Equip();
         }
     }
-    private void Equip()
+    public void Equip()
     {
-        _rootGO.SetActive(true);
+		_rootGO.SetActive(true);
         if (_disableSelfCoroutine != null)
         {
             StopCoroutine(_disableSelfCoroutine);
@@ -82,9 +83,9 @@ public class PlayerTablet : MonoBehaviour
         // Unlock the cursor.
         Cursor.lockState = CursorLockMode.None;
     }
-    private void Unequip()
+    public void Unequip()
     {
-        _isEquipped = false;
+		_isEquipped = false;
         _worldCanvasGO.SetActive(false);
 
         _animationController.SetBool(EQUIP_ANIMATION_VARIABLE_IDENTIFIER, false);

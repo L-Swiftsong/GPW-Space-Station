@@ -9,8 +9,9 @@ namespace Items.Collectables
     {
         [Header("Key Item")]
         [SerializeField] private Sprite _keyItemSprite;
-
+        [SerializeField] private GameObject _keyItemPrefab;
 
         public Sprite KeyItemSprite => _keyItemSprite;
+        public GameObject KeyItemPrefab => _keyItemPrefab;
     }
 }

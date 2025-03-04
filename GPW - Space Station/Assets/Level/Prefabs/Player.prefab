@@ -166,6 +166,7 @@ MonoBehaviour:
   _flashlightController: {fileID: 9129083199846821140}
   _keycardDecoder: {fileID: 5259610297136769897}
   _medkit: {fileID: 6221585909754026831}
+  _keyItemManager: {fileID: 1719136510640382411}
 --- !u!114 &508089038349390175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424,6 +425,38 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &2527801551600666057
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5121483955543904944}
+  m_Layer: 3
+  m_Name: KeyItemSlot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5121483955543904944
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2527801551600666057}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.1305263, y: -0, z: -0, w: 0.9914449}
+  m_LocalPosition: {x: -0.267, y: -0.07399988, z: 0.702}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4940870772108740201}
+  m_Father: {fileID: 1451404063046177738}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2590499106139515906
 GameObject:
   m_ObjectHideFlags: 0
@@ -664,6 +697,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 456925845773073281}
   - {fileID: 1451404063046177738}
   - {fileID: 7883156887753985635}
   m_Father: {fileID: 5472899290436885377}
@@ -772,6 +806,54 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &6867977173201105850
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 456925845773073281}
+  - component: {fileID: 1719136510640382411}
+  m_Layer: 3
+  m_Name: KeyItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &456925845773073281
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6867977173201105850}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.1305263, y: -0, z: -0, w: 0.9914449}
+  m_LocalPosition: {x: 0, y: -0.01849997, z: 0.1755}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3112507552405676298}
+  m_LocalEulerAnglesHint: {x: 15, y: 0, z: 0}
+--- !u!114 &1719136510640382411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6867977173201105850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8066418c040695a49bc42dcd70914941, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _keyItemSlot: {fileID: 5121483955543904944}
+  _playerTablet: {fileID: 1158835196539749134}
+  _playerInventory: {fileID: 3128927530586608082}
+  _flashlightController: {fileID: 9129083199846821140}
 --- !u!1 &7629004463045140051
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,6 +903,37 @@ MonoBehaviour:
   _healingDelay: 1.5
   _currentMedkitCount: 0
   _maxMedkitCount: 5
+--- !u!1 &7652652643111464480
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4940870772108740201}
+  m_Layer: 3
+  m_Name: Engine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4940870772108740201
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7652652643111464480}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5121483955543904944}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7890468557226472109
 GameObject:
   m_ObjectHideFlags: 0
@@ -1017,6 +1130,7 @@ Transform:
   - {fileID: 3306796446124629436}
   - {fileID: 7815967061111789935}
   - {fileID: 8685737779062685152}
+  - {fileID: 5121483955543904944}
   m_Father: {fileID: 3112507552405676298}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8504527296689539789
@@ -1325,6 +1439,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5252624311504728909, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
+      propertyPath: m_SelectedEditorRenderState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5739281675809270739, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1490,6 +1608,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6837062835776261654}
   m_SourcePrefab: {fileID: 100100000, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
+--- !u!114 &1158835196539749134 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1881626293561788284, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
+  m_PrefabInstance: {fileID: 723359206848185458}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 035403c7606d4b04f842d46cb42844b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5558636455606497375 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5128998793748411437, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
