@@ -78,6 +78,7 @@ namespace Hiding
             }
         }
 
+        
 
         public void Interact(PlayerInteraction interactingScript)
         {
