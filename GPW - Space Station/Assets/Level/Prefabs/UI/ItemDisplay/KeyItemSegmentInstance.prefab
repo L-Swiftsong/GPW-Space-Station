@@ -51,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CollectableNameText: {fileID: 7851721677630485967}
   _keyItemImage: {fileID: 7815133226471066862}
-  _equipButton: {fileID: 567714101702144006}
+  _UseButton: {fileID: 567714101702144006}
 --- !u!1 &6076726083897581713
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 567714101702144006}
   - component: {fileID: 4251568593916328536}
   m_Layer: 5
-  m_Name: EquipButton
+  m_Name: UseButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -211,9 +211,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7771703409121273832}
+      - m_Target: {fileID: 11500000, guid: 8066418c040695a49bc42dcd70914941, type: 3}
         m_TargetAssemblyTypeName: UI.ItemDisplay.KeyItemEntryUI, Assembly-CSharp
-        m_MethodName: OnEquipButtonClicked
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

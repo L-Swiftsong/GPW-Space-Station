@@ -3,18 +3,24 @@ using UnityEngine.UI;
 using Items.Collectables;
 using Items;
 using Items.KeyItem;
-using UnityEngine.ProBuilder.MeshOperations;
 
 namespace UI.ItemDisplay
 {
     public class KeyItemEntryUI : ItemDisplaySegmentUI
     {
+        public static KeyItemEntryUI Instance {  get; private set; }
+
         [SerializeField] private Image _keyItemImage;
-        [SerializeField] private Button _equipButton;
+        [SerializeField] private Button _UseButton;
+        private KeyItemData _currentKeyItem;
 
-        private string itemName;
+		private void Awake()
+		{
+			if (Instance == null)
+				Instance = this;
+		}
 
-        public override void SetupCollectableEntry(CollectableData collectableData)
+		public override void SetupCollectableEntry(CollectableData collectableData)
         {
             try
             {
@@ -30,21 +36,29 @@ namespace UI.ItemDisplay
         }
         public void SetupKeyItemEntry(KeyItemData keyItemData)
         {
-            itemName = keyItemData.name;
+            if (keyItemData == null) return;
+
             _keyItemImage.sprite = keyItemData.KeyItemSprite;
+            _currentKeyItem = keyItemData;
 
-            _equipButton.onClick.RemoveAllListeners();
-
-            _equipButton.onClick.AddListener(OnEquipButtonClicked); 
-
+            _UseButton.onClick.RemoveAllListeners();
+            _UseButton.onClick.AddListener(() => OnUseButtonClicked());
         }
 
-        public void OnEquipButtonClicked()
+        private void OnUseButtonClicked()
         {
-            if (KeyItemManager.Instance != null)
-            {
-                KeyItemManager.Instance.EquipKeyItem(itemName);
-            }
+            KeyItemManager.Instance.EquipKeyItem(_currentKeyItem);
+            UseKeyItem.Instance.TryUseKeyItem(_currentKeyItem);
         }
+
+        public void RemoveItemFromUI(KeyItemData keyItemData)
+        {
+            if (_currentKeyItem == keyItemData)
+            {
+                _keyItemImage.sprite = null;
+                _currentKeyItem = null;
+                _UseButton.gameObject.SetActive(false);
+            }
+        }     
     }
 }

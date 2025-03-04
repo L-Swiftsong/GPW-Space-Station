@@ -26,7 +26,7 @@ namespace Items
 
 
         [Header("KeyItems")]
-		private Dictionary<string, KeyItemData> _keyItems = new Dictionary<string, KeyItemData>();
+        [SerializeField] private KeyItemManager _keyItemManager;
 
         private void Awake()
         {
@@ -115,18 +115,7 @@ namespace Items
 
 		#region KeyItems
 
-        public void AddKeyItem(KeyItemData keyItem)
-        {
-			if (!_keyItems.ContainsKey(keyItem.name))
-			{
-                _keyItems[keyItem.name] = keyItem;
-				Debug.Log("Added Key Item: " + keyItem.name);
-			}
-		}
 
-        public bool HasKeyItem(string keyItemName) => _keyItems.ContainsKey(keyItemName);
-
-        public Dictionary<string, KeyItemData> GetKeyItems() => _keyItems;
 
 		#endregion
 	}

@@ -1,5 +1,6 @@
 using Environment.Buttons;
 using Items.Collectables;
+using Items.Flashlight;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,51 +9,96 @@ namespace Items.KeyItem
 {
 	public class KeyItemManager : MonoBehaviour
 	{
-		public static KeyItemManager Instance;
+		public static KeyItemManager Instance { get; private set; }
 
-		[SerializeField] private Transform keyItemSlot; // Assign this to your empty GameObject in the player's hand
-		[SerializeField] private GameObject[] keyItemPrefabs;
+		[SerializeField] private Transform _keyItemSlot;
+		[SerializeField] private PlayerTablet _playerTablet;
+		[SerializeField] private PlayerInventory _playerInventory;
+		[SerializeField] private FlashlightController _flashlightController;
 
-		private Dictionary<string, GameObject> keyItemDictionary = new Dictionary<string, GameObject>();
-		private GameObject currentEquippedItem;
+		private GameObject _currentItem;
+		private KeyItemData _currentKeyItem;
+
+		private float _currentBattery;
+
+		private bool _allowManualEquip = false;
+		private bool _interactionTriggered = false;
 
 		private void Awake()
 		{
 			if (Instance == null)
-			{
 				Instance = this;
-			}
 			else
-			{
 				Destroy(gameObject);
+
+			_playerTablet = FindAnyObjectByType<PlayerTablet>();
+
+			_currentBattery = _flashlightController.GetCurrentBattery();
+		}
+
+		public PlayerTablet GetPlayerTablet() { return _playerTablet; }
+		public void SetManualEquip(bool enable) => _allowManualEquip = enable;
+
+		public void AllowKeyItemEquip() => _interactionTriggered = true;
+		public void ResetKeyItemEquip() => _interactionTriggered = false;
+
+		public bool CanEquipKeyItem() => _allowManualEquip || _interactionTriggered;
+
+		public void EquipKeyItem(KeyItemData keyItemData)
+		{
+			if (!CanEquipKeyItem()) return;
+
+			Debug.Log("Equipping Key Item: " + keyItemData.KeyItemPrefab.name);
+
+			if (_currentKeyItem == keyItemData)
+			{
+				UnequipKeyItem();
 				return;
 			}
 
-			// Populate the dictionary for quick lookup
-			foreach (var item in keyItemPrefabs)
+			if (_currentItem != null)
+				Destroy(_currentItem);
+
+
+			_currentItem = Instantiate(keyItemData.KeyItemPrefab, _keyItemSlot);
+			_currentItem.transform.localPosition = Vector3.zero;
+			_currentItem.transform.localRotation = Quaternion.identity;
+
+			if (_currentItem.TryGetComponent(out CollectablePickup collectablePickup))
+				Destroy(collectablePickup);
+
+			if (_currentItem.TryGetComponent(out Collider itemCollider))
+				itemCollider.enabled = false;
+
+			_currentKeyItem = keyItemData;
+
+			_playerTablet?.Unequip();
+			//_playerInventory?.RemoveFlashlight();
+		}
+
+		public void UnequipKeyItem()
+		{
+			if (_currentItem != null)
 			{
-				keyItemDictionary[item.name] = item;
+				Destroy(_currentItem);
+				_currentItem = null;
+				_currentKeyItem = null;
+
+				//_playerInventory.AddFlashlight(_currentBattery);
 			}
 		}
 
-		public void EquipKeyItem(string itemName)
+		public GameObject GetHeldItem() => _currentItem;
+
+		public void PlaceItemAtLocation(Transform location)
 		{
-			if (!keyItemDictionary.ContainsKey(itemName))
+			if (_currentItem != null)
 			{
-				Debug.LogWarning($"Key item '{itemName}' not found in dictionary!");
-				return;
+				_currentItem.transform.SetParent(null);
+				_currentItem.transform.SetPositionAndRotation(location.position, location.rotation);
 			}
 
-			// Remove the currently equipped item (if any)
-			foreach (Transform child in keyItemSlot)
-			{
-				Destroy(child.gameObject);
-			}
-
-			// Instantiate and attach the new item to keyItemSlot
-			currentEquippedItem = Instantiate(keyItemDictionary[itemName], keyItemSlot.position, keyItemSlot.rotation);
-			currentEquippedItem.transform.SetParent(keyItemSlot);
-			currentEquippedItem.SetActive(true);
+			ResetKeyItemEquip();
 		}
 	}
 }

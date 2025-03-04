@@ -164,6 +164,7 @@ MonoBehaviour:
   _flashlightController: {fileID: 9129083199846821140}
   _keycardDecoder: {fileID: 5259610297136769897}
   _medkit: {fileID: 6221585909754026831}
+  _keyItemManager: {fileID: 1719136510640382411}
 --- !u!114 &508089038349390175
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -447,7 +448,7 @@ Transform:
   m_GameObject: {fileID: 2527801551600666057}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1305263, y: -0, z: -0, w: 0.9914449}
-  m_LocalPosition: {x: 0, y: -0.07399988, z: 0.702}
+  m_LocalPosition: {x: -0.267, y: -0.07399988, z: 0.702}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -847,9 +848,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8066418c040695a49bc42dcd70914941, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyItemSlot: {fileID: 4940870772108740201}
-  keyItemPrefabs:
-  - {fileID: 4346389407098289585, guid: 5598d534a84e35b4ca5143ecc6753e89, type: 3}
+  _keyItemSlot: {fileID: 5121483955543904944}
+  _playerTablet: {fileID: 1158835196539749134}
+  _playerInventory: {fileID: 3128927530586608082}
+  _flashlightController: {fileID: 9129083199846821140}
 --- !u!1 &7629004463045140051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1604,6 +1606,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6837062835776261654}
   m_SourcePrefab: {fileID: 100100000, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
+--- !u!114 &1158835196539749134 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1881626293561788284, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
+  m_PrefabInstance: {fileID: 723359206848185458}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 035403c7606d4b04f842d46cb42844b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5558636455606497375 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5128998793748411437, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
