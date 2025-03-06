@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UI.Icons;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Pool;
@@ -26,15 +27,27 @@ namespace UI.Popups
         [Space(5)]
         [SerializeField] private PopupElement _worldSpaceMultiLinePopupPrefab;
         private ObjectPool<PopupElement> _worldSpaceMultiLinePopupPool;
-        
-
-        [Header("Interaction Settings")]
-        [SerializeField] private InputActionAsset _playerInputActions;
 
 
         [Header("Tutorial Popup Settings")]
         [SerializeField] private Vector2 _tutorialPopupPosition;
         [SerializeField] private Vector2 _tutorialPopupAnchors;
+        
+
+        [Header("Interaction Settings")]
+        [SerializeField] private InputActionAsset _playerInputAsset;
+
+        private static Dictionary<InteractionType, string> s_interactionTypeToIdentifierDictionary = new Dictionary<InteractionType, string>()
+        {
+            {  InteractionType.DefaultInteract, "Interaction/Interact" },
+            {  InteractionType.FlashlightEnable, "Interaction/ToggleFlashlight" },
+            {  InteractionType.FlashlightFocus, "Interaction/FocusFlashlight" },
+            {  InteractionType.Healing, "Interaction/UseHealingItem" },
+            {  InteractionType.Movement, "Movement/Movement" },
+            {  InteractionType.Sprint, "Movement/Sprint" },
+            {  InteractionType.Crouch, "Movement/Crouch" },
+        };
+
 
 
         private void Awake()
@@ -119,7 +132,7 @@ namespace UI.Popups
 
         public static void CreateTutorialPopup(string popupText) => CreateScreenPopup(s_instance._tutorialPopupPosition, s_instance._tutorialPopupAnchors, popupText);
 
-        [System.Serializable] public enum InteractionType { DefaultInteract, FlashlightEnable, FlashlightFocus, Healing, Crouch, Movement }
+        [System.Serializable] public enum InteractionType { DefaultInteract, FlashlightEnable, FlashlightFocus, Healing, Movement, Sprint, Crouch }
         public static void CreateInteractionPopup(Transform pivotTransform, Vector3 offset, bool rotateInPlace = true, string interactionPreText = "Press", InteractionType interactionType = InteractionType.DefaultInteract, string interactionPostText = "to Interact", bool interactionInformationOnNewLine = false)
         {
             ObjectPool<PopupElement> utilisedPool = interactionInformationOnNewLine ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
@@ -127,18 +140,24 @@ namespace UI.Popups
 
             popupElement.SetPosition(pivotTransform, offset, rotateInPlace);
 
-            popupElement.SetInformation(interactionPreText, GetInteractionSpriteFromInteractionType(interactionType), interactionPostText);
+            popupElement.SetInformation(interactionPreText, s_instance.GetInteractionSpriteFromInteractionType(interactionType), interactionPostText);
         }
 
 
-        private static Sprite GetInteractionSpriteFromInteractionType(InteractionType interactionType)
-        {
-            switch (interactionType)
-            {
-                case InteractionType.DefaultInteract:
+        [ContextMenu(itemName: "Test/Default Interact")]
+        private void TestInteractSprite() => GetInteractionSpriteFromInteractionType(InteractionType.DefaultInteract);
+        [ContextMenu(itemName: "Test/Flashlight Enable")]
+        private void TestFlashlightEnableSprite() => GetInteractionSpriteFromInteractionType(InteractionType.FlashlightEnable);
 
-                    return;
+        private Sprite GetInteractionSpriteFromInteractionType(InteractionType interactionType)
+        {
+            if (s_interactionTypeToIdentifierDictionary.TryGetValue(interactionType, out string schemeName) == false)
+            {
+                Debug.LogError("Error: No Identifier set for Interaction Type: " + interactionType.ToString());
+                throw new System.NotImplementedException();
             }
+
+            return InputIconManager.GetIconForScheme(_playerInputAsset, schemeName);
         }
     }
 }

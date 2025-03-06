@@ -465,9 +465,9 @@ MonoBehaviour:
   _screenSpacePopupPrefab: {fileID: 0}
   _worldSpaceSingleLinePopupPrefab: {fileID: 0}
   _worldSpaceMultiLinePopupPrefab: {fileID: 0}
-  _playerInputActions: {fileID: -944628639613478452, guid: d81f1df9c6c177e4d958af6394242beb, type: 3}
   _tutorialPopupPosition: {x: 0, y: 0}
   _tutorialPopupAnchors: {x: 0, y: 0}
+  _playerInputAsset: {fileID: -944628639613478452, guid: d81f1df9c6c177e4d958af6394242beb, type: 3}
 --- !u!224 &233554461 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4316538347156781680, guid: f41ece30b8c61f044b5bffc3fb26cb8b, type: 3}
@@ -914,7 +914,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 428de70370df69d45bd4c0025b7ba36e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1579,7 +1579,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 913901367}
-  - component: {fileID: 913901368}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -1605,64 +1604,6 @@ Transform:
   - {fileID: 210180796}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &913901368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 913901366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f50142aea40b34944a7a28b58fd2d637, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _onlyTriggerOnce: 1
-  _destroyObjectOnTrigger: 0
-  OnTriggerActivated:
-    _PersistentCalls:
-    - _Target: {fileID: 0}
-      _MemberName: UI.Popups.PopupManager, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null.CreateInteractionPopup
-      _PersistentArguments:
-      - _Type: 2
-        _Int: 0
-        _String: Press
-        _X: 0
-        _Y: 0
-        _Z: 0
-        _W: 0
-        _Object: {fileID: 0}
-      - _Type: 4
-        _Int: 0
-        _String: UI.Popups.PopupManager+InteractionType, Assembly-CSharp, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
-        _X: 0
-        _Y: 0
-        _Z: 0
-        _W: 0
-        _Object: {fileID: 0}
-      - _Type: 2
-        _Int: 0
-        _String: to Interact
-        _X: 0
-        _Y: 0
-        _Z: 0
-        _W: 0
-        _Object: {fileID: 0}
-  _useDelayedTrigger: 0
-  _canTriggerWhileAwaitingDelay: 0
-  _overridePreviousDelay: 1
-  _delayedTriggerDelayTime: 1
-  OnDelayedTriggerActivated:
-    _PersistentCalls: []
-  _horizontalScreenActivationBounds: 0.75
-  _verticalScreenActivationBounds: 0.75
-  _maxActivationDistance: 10
-  _onlyActivateIfUnobstructed: 1
-  _obstructionLayers:
-    serializedVersion: 2
-    m_Bits: 192
 --- !u!1 &932785738
 GameObject:
   m_ObjectHideFlags: 0
