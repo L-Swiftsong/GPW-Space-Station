@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -60,6 +61,7 @@ public class EditorInitialiser
 
         if (state == PlayModeStateChange.EnteredPlayMode && EditorPrefs.GetBool(EDITOR_INITIALISED_PREF_IDENTIFIER))
         {
+            // We're entering Play mode haven't already loaded the extra scenes.
             LoadExtraScenes();
         }
 
@@ -106,6 +108,8 @@ public class EditorInitialiser
 
         string originalScene = EditorPrefs.GetString(ACTIVE_EDITOR_SCENE_PREF_IDENTIFIER);
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(originalScene));
+
+        EditorUtils.EditorSpawnPoint.SetPlayerSpawn();
     }
 
 
@@ -115,3 +119,4 @@ public class EditorInitialiser
         return invalidScenes.Contains(sceneName);
     }
 }
+#endif

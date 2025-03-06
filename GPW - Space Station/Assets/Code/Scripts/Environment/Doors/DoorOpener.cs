@@ -166,7 +166,6 @@ namespace Environment.Doors
                     // If the door is open, the colliders are disabled. If it is closed, they are enabled.
                     _colliders[i].enabled = !isOpen;
                 }
-                Debug.Log(_colliders.Length);
             }
             
             
@@ -208,7 +207,6 @@ namespace Environment.Doors
                 HandleRotationTick(isOpening ? 1.0f : 0.0f, openedFromFacingDirection);
                 _elapsedTime = isOpening ? _openingDuration : 0.0f;
                 ToggleColliders(isOpening);
-                Debug.Log(_frameTransform.parent.name + " " + _elapsedTime);
             }
 
             private void HandlePositionTick(float lerpTime)
