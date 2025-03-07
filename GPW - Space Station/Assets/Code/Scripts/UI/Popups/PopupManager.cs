@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UI.Icons;
@@ -133,16 +134,12 @@ namespace UI.Popups
         public static void CreateTutorialPopup(string popupText) => CreateScreenPopup(s_instance._tutorialPopupPosition, s_instance._tutorialPopupPivot, popupText);
 
         [System.Serializable] public enum InteractionType { DefaultInteract, FlashlightEnable, FlashlightFocus, Healing, Movement, Sprint, Crouch }
-        public static void CreateInteractionPopup(Transform pivotTransform, Vector3 offset, bool rotateInPlace = true,
-            string interactionPreText = "Press", InteractionType interactionType = InteractionType.DefaultInteract, string interactionPostText = "to Interact", bool interactionInformationOnNewLine = false,
-            float lifetime = -1, float maxDistance = -1, bool disableOnObstructed = true)
+        public static void CreateInteractionPopup(PopupSetupInformation popupSetupInformation)
         {
-            ObjectPool<PopupElement> utilisedPool = interactionInformationOnNewLine ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
+            ObjectPool<PopupElement> utilisedPool = popupSetupInformation.DisplayOnMultipleLines ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
             PopupElement popupElement = utilisedPool.Get();
 
-            popupElement.SetPosition(pivotTransform, offset, rotateInPlace)
-                .SetInformation(interactionPreText, s_instance.GetInteractionSpriteFromInteractionType(interactionType), interactionPostText)
-                .SetDeactivationPerameters(onDisableCallback: () => utilisedPool.Release(popupElement), lifetime: lifetime, distanceToPlayer: maxDistance, disableIfObstructed: disableOnObstructed);
+            popupElement.SetupWithInformation(popupSetupInformation, s_instance.GetInteractionSpriteFromInteractionType(popupSetupInformation.InteractionType), () => utilisedPool.Release(popupElement));
         }
 
 

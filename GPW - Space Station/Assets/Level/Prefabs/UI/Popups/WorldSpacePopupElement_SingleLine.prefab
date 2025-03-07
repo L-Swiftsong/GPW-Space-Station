@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4016576949595417352}
   - component: {fileID: 2133107267623828716}
+  - component: {fileID: 1883989617951105452}
   m_Layer: 10
   m_Name: Offset
   m_TagString: Untagged
@@ -60,6 +61,18 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!225 &1883989617951105452
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 714989124136713979}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1894245669115847773
 GameObject:
   m_ObjectHideFlags: 0
@@ -515,6 +528,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pivotTransform: {fileID: 5030830587011511630}
   _offsetTransform: {fileID: 4016576949595417352}
+  _canvasGroup: {fileID: 1883989617951105452}
   _preText: {fileID: 2142258628596691815}
   _image: {fileID: 1896690609695446015}
   _postText: {fileID: 3576332960627162258}
@@ -525,3 +539,5 @@ MonoBehaviour:
   _obstructionLayers:
     serializedVersion: 2
     m_Bits: 192
+  _disableIfPivotLost: 0
+  _linkedPivot: {fileID: 0}

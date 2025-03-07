@@ -1,10 +1,11 @@
-using Entities.Player;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
 using UnityEngine.UI;
+using Entities.Player;
+using Interaction;
 
 namespace UI.Popups
 {
@@ -13,6 +14,8 @@ namespace UI.Popups
         [SerializeField] private Transform _pivotTransform;
         [SerializeField] private Transform _offsetTransform;
 
+        [Space(5)]
+        [SerializeField] private CanvasGroup _canvasGroup; 
 
         [Space(5)]
         [SerializeField] private TMP_Text _preText;
@@ -24,27 +27,63 @@ namespace UI.Popups
         [SerializeField, ReadOnly] private float _maxLifetime;
         [SerializeField, ReadOnly] private float _currentLifetime;
 
+        [Space(5)]
         [SerializeField, ReadOnly] private float _maxPlayerDistance;
+        [SerializeField, ReadOnly] private bool _fadeIfOutwithDistance;
+
+        [Space(5)]
         [SerializeField, ReadOnly] private bool _disableIfObstructed;
+        [SerializeField, ReadOnly] private bool _fadeIfObstructed;
         [SerializeField] private LayerMask _obstructionLayers;
 
-        private Func<bool> _customDeactivationFunc;
+        [Space(5)]
+        [SerializeField, ReadOnly] private bool _disableIfPivotLost;
+        [SerializeField, ReadOnly] private Transform _linkedPivot; 
+
+
+        [Header("Interaction Disabling")]
+        private IInteractable _linkedInteractable;
+
+
+        private bool _shouldShow;
         private Action _onDisableCallback;
+
+
+        private void OnEnable()
+        {
+            _canvasGroup.alpha = 1.0f;
+            _shouldShow = true;
+        }
+        private void OnDisable()
+        {
+            if (_linkedInteractable != null)
+            {
+                _linkedInteractable.OnSuccessfulInteraction -= Deactivate;
+                _linkedInteractable.OnFailedInteraction -= Deactivate;
+            }
+        }
 
 
         private void Update()
         {
-            if (ShouldDeactivate())
-            {
-                Deactivate();
-                return;
-            }
+            CheckForDeactivation();
+
+            _canvasGroup.alpha = Mathf.MoveTowards(_canvasGroup.alpha, _shouldShow ? 1.0f : 0.0f, 5.0f * Time.deltaTime);
 
             RotateToFacePlayerCamera();
         }
 
 
-        private bool ShouldDeactivate()
+        private void CheckForDeactivation()
+        {
+            _shouldShow = true;
+
+            if (CheckLifetime() || CheckDistance() || CheckObstruction() || CheckPivotLoss())
+            {
+                Deactivate();
+            }
+        }
+        private bool CheckLifetime()
         {
             if (_maxLifetime > 0)
             {
@@ -56,33 +95,55 @@ namespace UI.Popups
                     return true;
                 }
             }
-
-            if (_maxPlayerDistance > 0)
+            
+            // Lifetime hasn't elapsed.
+            return false;
+        }
+        private bool CheckDistance()
+        {
+            if (_maxPlayerDistance <= 0)
             {
-                if (Vector3.Distance(_offsetTransform.position, PlayerManager.Instance.GetPlayerCameraTransform().position) >= _maxPlayerDistance)
+                // We aren't considering player distance for deactivation/fading.
+                return false;
+            }
+
+            if (Vector3.Distance(_offsetTransform.position, PlayerManager.Instance.GetPlayerCameraTransform().position) >= _maxPlayerDistance)
+            {
+                // Outwith Max Distance.
+                if (_fadeIfOutwithDistance)
                 {
-                    // Outwith Max Distance.
+                    // We only want to fade when outwith the max distance.
+                    _shouldShow = false;
+                    return false;
+                }
+                else
+                {
                     return true;
                 }
             }
-
-            if (_disableIfObstructed)
+            
+            return false;
+        }
+        private bool CheckObstruction()
+        {
+            if (_disableIfObstructed && Physics.Linecast(_offsetTransform.position, PlayerManager.Instance.GetPlayerCameraTransform().position, _obstructionLayers, QueryTriggerInteraction.Ignore))
             {
-                if (Physics.Linecast(_offsetTransform.position, PlayerManager.Instance.GetPlayerCameraTransform().position, _obstructionLayers, QueryTriggerInteraction.Ignore))
+                if (_fadeIfObstructed)
                 {
-                    // Obstruction.
+                    // We only want to fade when the player's camera is obstructed.
+                    _shouldShow = false;
+                    return false;
+                }
+                else
+                {
                     return true;
                 }
             }
-
-            if (_customDeactivationFunc())
-            {
-                return true;
-            }
-
 
             return false;
         }
+        private bool CheckPivotLoss() => _disableIfPivotLost && _pivotTransform == null;
+
 
         private void Deactivate() => _onDisableCallback?.Invoke();
 
@@ -104,47 +165,73 @@ namespace UI.Popups
         }
 
 
-        public PopupElement SetPosition(Transform pivot, Vector3 offset, bool rotateInPlace)
+
+        public void SetupWithInformation(PopupSetupInformation setupInformation, Sprite contentsSprite, Action onDisableCallback)
         {
-            if (rotateInPlace)
+            // Position Setup.
+            SetupPosition(setupInformation);
+
+            // Contents Setup.
+            SetupContents(setupInformation.PopupPreText, contentsSprite, setupInformation.PopupPostText);
+
+
+            // General Disabling Setup.
+            _onDisableCallback = onDisableCallback;
+            SetupGeneralDisabling(setupInformation);
+
+            // Interaction Disabling Setup.
+            if (setupInformation.LinkedInteractable != null)
             {
-                _pivotTransform.position = pivot.position + offset;
+                SetupInteractionDisabling(setupInformation.LinkedInteractable, setupInformation.LinkToSuccess, setupInformation.LinkToFailure);
+            }
+        }
+        private void SetupPosition(PopupSetupInformation popupSetupInformation)
+        {
+            if (popupSetupInformation.RotateInPlace)
+            {
+                _pivotTransform.position = popupSetupInformation.PivotTransform.position + popupSetupInformation.PopupOffset;
                 _offsetTransform.localPosition = Vector3.zero;
             }
             else
             {
-                _pivotTransform.position = pivot.position;
-                _offsetTransform.localPosition = offset;
+                _pivotTransform.position = popupSetupInformation.PivotTransform.position;
+                _offsetTransform.localPosition = popupSetupInformation.PopupOffset;
             }
-
-            // Temp: Deactivate if the pivot is destroyed (Replace this with a custom deactivation func parameter in the SetDeactivationParameters() method).
-            _customDeactivationFunc = () => pivot == null;
-
-            return this;
         }
-        public PopupElement SetInformation(string preText, Sprite sprite, string postText)
+        private void SetupContents(string preText, Sprite sprite, string postText)
         {
             _preText.text = preText;
             _image.sprite = sprite;
             _postText.text = postText;
-
-            return this;
         }
-        public PopupElement SetDeactivationPerameters(Action onDisableCallback, float lifetime = -1, float distanceToPlayer = -1, bool disableIfObstructed = false)
+        private void SetupGeneralDisabling(PopupSetupInformation popupSetupInformation)
         {
-            // Callback.
-            _onDisableCallback = onDisableCallback;
-
-            // Deactivation Parameters.
-            _maxLifetime = lifetime;
+            _maxLifetime = popupSetupInformation.PopupLifetime;
             _currentLifetime = 0;
 
-            _maxPlayerDistance = distanceToPlayer;
-            _disableIfObstructed = disableIfObstructed;
+            _maxPlayerDistance = popupSetupInformation.MaxDistance;
+            _fadeIfOutwithDistance = popupSetupInformation.OnlyFadeIfOutwithMaxDistance;
+
+            _disableIfObstructed = popupSetupInformation.DisableIfObstructed;
+            _fadeIfObstructed = popupSetupInformation.OnlyFadeIfObstructed;
+
+            _disableIfPivotLost = popupSetupInformation.DisableIfPivotDestroyed;
+            _linkedPivot = popupSetupInformation.PivotTransform;
+        }
+        private void SetupInteractionDisabling(GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure)
+        {
+            if (linkedInteractable.TryGetComponent(out IInteractable interactableScript) == false)
+            {
+                throw new ArgumentException($"The GameObject '{linkedInteractable.name}' does not contain a script that inherits from IInteractable.");
+            }
 
 
-            // Fluent Interface.
-            return this;
+            _linkedInteractable = interactableScript;
+
+            if (linkToSuccess)
+                _linkedInteractable.OnSuccessfulInteraction += Deactivate;
+            if (linkToFailure)
+                _linkedInteractable.OnFailedInteraction += Deactivate;
         }
     }
 }
