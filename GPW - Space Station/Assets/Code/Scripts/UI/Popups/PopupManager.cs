@@ -31,7 +31,7 @@ namespace UI.Popups
 
         [Header("Tutorial Popup Settings")]
         [SerializeField] private Vector2 _tutorialPopupPosition;
-        [SerializeField] private Vector2 _tutorialPopupAnchors;
+        [SerializeField] private Vector2 _tutorialPopupPivot;
         
 
         [Header("Interaction Settings")]
@@ -130,17 +130,19 @@ namespace UI.Popups
         }
 
 
-        public static void CreateTutorialPopup(string popupText) => CreateScreenPopup(s_instance._tutorialPopupPosition, s_instance._tutorialPopupAnchors, popupText);
+        public static void CreateTutorialPopup(string popupText) => CreateScreenPopup(s_instance._tutorialPopupPosition, s_instance._tutorialPopupPivot, popupText);
 
         [System.Serializable] public enum InteractionType { DefaultInteract, FlashlightEnable, FlashlightFocus, Healing, Movement, Sprint, Crouch }
-        public static void CreateInteractionPopup(Transform pivotTransform, Vector3 offset, bool rotateInPlace = true, string interactionPreText = "Press", InteractionType interactionType = InteractionType.DefaultInteract, string interactionPostText = "to Interact", bool interactionInformationOnNewLine = false)
+        public static void CreateInteractionPopup(Transform pivotTransform, Vector3 offset, bool rotateInPlace = true,
+            string interactionPreText = "Press", InteractionType interactionType = InteractionType.DefaultInteract, string interactionPostText = "to Interact", bool interactionInformationOnNewLine = false,
+            float lifetime = -1, float maxDistance = -1, bool disableOnObstructed = true)
         {
             ObjectPool<PopupElement> utilisedPool = interactionInformationOnNewLine ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
             PopupElement popupElement = utilisedPool.Get();
 
-            popupElement.SetPosition(pivotTransform, offset, rotateInPlace);
-
-            popupElement.SetInformation(interactionPreText, s_instance.GetInteractionSpriteFromInteractionType(interactionType), interactionPostText);
+            popupElement.SetPosition(pivotTransform, offset, rotateInPlace)
+                .SetInformation(interactionPreText, s_instance.GetInteractionSpriteFromInteractionType(interactionType), interactionPostText)
+                .SetDeactivationPerameters(onDisableCallback: () => utilisedPool.Release(popupElement), lifetime: lifetime, distanceToPlayer: maxDistance, disableIfObstructed: disableOnObstructed);
         }
 
 
@@ -157,7 +159,8 @@ namespace UI.Popups
                 throw new System.NotImplementedException();
             }
 
-            return InputIconManager.GetIconForScheme(_playerInputAsset, schemeName);
+            Debug.Log(InputIconManager.GetIconForAction(_playerInputAsset[schemeName]));
+            return InputIconManager.GetIconForAction(_playerInputAsset[schemeName]);
         }
     }
 }

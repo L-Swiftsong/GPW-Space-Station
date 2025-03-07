@@ -26,22 +26,21 @@ namespace UI.Icons
         }
 
 
-        public static Sprite GetIconForScheme(InputActionAsset inputActionAsset, string schemeName)
+        public static Sprite GetIconForAction(InputAction inputAction)
         {
-            var bindings = inputActionAsset[schemeName].bindings;
+            var bindings = inputAction.bindings;
             var bindingCount = bindings.Count;
             for (int i = 0; i < bindingCount; ++i)
             {
                 if (bindings[i].groups.Contains(PlayerInput.LastUsedDevice.ToString()))
                 {
                     // This binding is compatable with our active device. Use it to determine our Icon.
-                    inputActionAsset[schemeName].GetBindingDisplayString(i, out string deviceLayoutName, out string controlPath);
-                    Debug.Log(controlPath);
+                    inputAction.GetBindingDisplayString(i, out string deviceLayoutName, out string controlPath);
                     return InputIconManager.GetIconForPath(controlPath);
                 }
             }
 
-            Debug.LogError($"Error: No Binding for the action scheme '{schemeName}' for the last used device ({PlayerInput.LastUsedDevice.ToString()})");
+            Debug.LogError($"Error: No Binding for the action '{inputAction.name}' for the last used device ({PlayerInput.LastUsedDevice.ToString()})");
             return null;
         }
         public static Sprite GetIconForPath(string controlPath)
