@@ -93,11 +93,29 @@ namespace Interaction
             {
                 // Interact with our currently highlighted interactable.
                 _currentInteractable.Interact(this);
+
+                PlayInteractionSound(_currentInteractable);
+            }
+        }
+        private void PlayInteractionSound(IInteractable interactable)
+        {
+            // Try to get an AudioSource component from the interactable object.
+            MonoBehaviour interactableMono = interactable as MonoBehaviour;
+            if (interactableMono != null)
+            {
+                AudioSource audioSource = interactableMono.GetComponent<AudioSource>();
+                if (audioSource != null && audioSource.clip != null)
+                {
+                    audioSource.Play();
+                }
+                else
+                {
+                    Debug.LogWarning("No AudioSource or AudioClip found on interactable object!", interactableMono);
+                }
             }
         }
 
-
-        public void SetCurrentInteractableOverride(IInteractable interactableOverride)
+            public void SetCurrentInteractableOverride(IInteractable interactableOverride)
         {
             _currentInteractableOverride = interactableOverride;
 
