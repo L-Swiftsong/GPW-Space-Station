@@ -41,7 +41,7 @@ namespace UI.Popups
         {
             _rootTransform.pivot = pivot;
             _rootTransform.anchorMin = anchorMin;
-            _rootTransform.anchorMin = anchorMax;
+            _rootTransform.anchorMax = anchorMax;
             _rootTransform.anchoredPosition = anchoredPosition;
         }
     }
