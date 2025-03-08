@@ -17,11 +17,17 @@ namespace UI.Popups
         [Space(5)]
         [SerializeField] private CanvasGroup _canvasGroup; 
 
-        [Space(5)]
+
+        [Header("Contents")]
         [SerializeField] private TMP_Text _preText;
         [SerializeField] private Image _image;
         [SerializeField] private TMP_Text _postText;
         [SerializeField] private LayoutGroup _elementLayoutGroup;
+
+
+        [Header("Background")]
+        [SerializeField] private RectTransform _backgroundRoot; // Leave null to not have a background.
+        [SerializeField] private Vector2 _backgroundPadding = new Vector2(5.0f, 5.0f); // Padding in each direction.
 
 
         [Header("Deactivation")]
@@ -175,6 +181,7 @@ namespace UI.Popups
             // Contents Setup.
             SetupContents(setupInformation.PopupPreText, contentsSprite, setupInformation.PopupPostText);
             UpdateTextWidth(setupInformation.KeepIconCentred);
+            StartCoroutine(InvokeAfterFrameDelay(UpdateBackgroundSize)); // Invoked after a single frame delay so that bounds properly update.
 
             // General Disabling Setup.
             _onDisableCallback = onDisableCallback;
@@ -232,6 +239,9 @@ namespace UI.Popups
                     _preText.rectTransform.localPosition = new Vector2(0.0f, _image.rectTransform.sizeDelta.y / 2.0f + spacing);
                     _postText.rectTransform.localPosition = new Vector2(0.0f, -(_image.rectTransform.sizeDelta.y / 2.0f + spacing));
                 }
+
+                _preText.ForceMeshUpdate();
+                _postText.ForceMeshUpdate();
             }
             else
             {
@@ -244,6 +254,39 @@ namespace UI.Popups
                 _postText.ForceMeshUpdate();
                 _postText.rectTransform.sizeDelta = new Vector2(_postText.textBounds.size.x, _postText.rectTransform.sizeDelta.y);
             }
+        }
+        private IEnumerator InvokeAfterFrameDelay(System.Action callback)
+        {
+            yield return null;
+            callback?.Invoke();
+        }
+        private void UpdateBackgroundSize()
+        {
+            if (_backgroundRoot == null)
+                return;
+
+            // Calculate corners.
+            Vector2 topLeft = _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMax);
+            Vector2 bottomLeft = _isMultiLine ? _postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMin, _postText.rectTransform.rect.yMin)
+                                              : _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMin);
+
+            Vector2 bottomRight = _postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMin);
+            Vector2 topRight = _isMultiLine ? _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMax, _preText.rectTransform.rect.yMax)
+                                            : _postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMax);
+
+            // Calculate centre position & desired size.
+            Vector2 centre = (topLeft + topRight + bottomLeft + bottomRight) / 4.0f;
+            float width = Mathf.Max(topRight.x, bottomRight.x) - Mathf.Min(topLeft.x, bottomLeft.x);
+            float height = Mathf.Max(topRight.y, topLeft.y) - Mathf.Min(bottomRight.y, bottomLeft.y);
+
+            // Account for image size in width & height calculations.
+            width = Mathf.Max(width, _image.rectTransform.sizeDelta.x);
+            height = Mathf.Max(height, _image.rectTransform.sizeDelta.y);
+
+
+            // Set the position and size of the background.
+            _backgroundRoot.localPosition = centre;
+            _backgroundRoot.sizeDelta = new Vector2(width + (_backgroundPadding.x * 2.0f), height + (_backgroundPadding.y * 2.0f));
         }
         private void SetupGeneralDisabling(PopupSetupInformation popupSetupInformation)
         {
@@ -276,13 +319,53 @@ namespace UI.Popups
         }
 
 
-        [ContextMenu(itemName: "Test Text Width Update")]
-        private void UpdateTextWidth()
+        [ContextMenu("Test Background")]
+        private void TestBackground()
         {
-            _preText.ForceMeshUpdate();
-            _preText.rectTransform.sizeDelta = new Vector2(_preText.textBounds.size.x, _preText.rectTransform.sizeDelta.y);
-            _postText.ForceMeshUpdate();
-            _postText.rectTransform.sizeDelta = new Vector2(_postText.textBounds.size.x, _postText.rectTransform.sizeDelta.y);
+            UpdateBackgroundSize();
+        }
+
+
+        [Header("Gizmos")]
+        [SerializeField] private RectTransform _canvasTransform;
+        [SerializeField] private bool _isMultiLine;
+        private void OnDrawGizmos()
+        {
+            if (_canvasTransform == null)
+                return;
+
+            Vector2 topLeft = _canvasTransform.TransformPoint(_preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMax));
+            Vector2 bottomLeft;
+            Vector2 topRight;
+            Vector2 bottomRight = _canvasTransform.TransformPoint(_postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMin));
+            if (_isMultiLine)
+            {
+                topRight = _canvasTransform.TransformPoint(_preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMax, _preText.rectTransform.rect.yMax));
+                bottomLeft = _canvasTransform.TransformPoint(_postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMin, _postText.rectTransform.rect.yMin));
+            }
+            else
+            {
+                bottomLeft = _canvasTransform.TransformPoint(_preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMin));
+                topRight = _canvasTransform.TransformPoint(_postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMax));
+            }
+
+            Vector2 centre = (topLeft + topRight + bottomLeft + bottomRight) / 4.0f;
+            float width = Mathf.Max(topRight.x, bottomRight.x) - Mathf.Min(topLeft.x, bottomLeft.x);
+            float height = Mathf.Max(topRight.y, topLeft.y) - Mathf.Min(bottomRight.y, bottomLeft.y);
+
+            Gizmos.color = Color.white;
+            Gizmos.DrawSphere(topLeft, 0.01f);
+            Gizmos.color = Color.black;
+            Gizmos.DrawSphere(bottomLeft, 0.01f);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(topRight, 0.01f);
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(bottomRight, 0.01f);
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(centre, 0.01f);
+            Gizmos.DrawLine(centre + (Vector2.left * width / 2.0f), centre + (Vector2.right * width / 2.0f));
+            Gizmos.DrawLine(centre + (Vector2.down * height / 2.0f), centre + (Vector2.up * height / 2.0f));
         }
     }
 }

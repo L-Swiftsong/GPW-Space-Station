@@ -432,7 +432,7 @@ Transform:
   m_GameObject: {fileID: 6780379148653469396}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.75, y: 0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -458,6 +458,8 @@ MonoBehaviour:
   _image: {fileID: 2646919412836900540}
   _postText: {fileID: 7483579810244669772}
   _elementLayoutGroup: {fileID: 7112799071884403269}
+  _backgroundRoot: {fileID: 0}
+  _backgroundPadding: 5
   _maxLifetime: 0
   _currentLifetime: 0
   _maxPlayerDistance: 0
@@ -469,6 +471,8 @@ MonoBehaviour:
     m_Bits: 192
   _disableIfPivotLost: 0
   _linkedPivot: {fileID: 0}
+  _canvasTransform: {fileID: 0}
+  _isMultiLine: 1
 --- !u!1 &7663643918483531072
 GameObject:
   m_ObjectHideFlags: 0
