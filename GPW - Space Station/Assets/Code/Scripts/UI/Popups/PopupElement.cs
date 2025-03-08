@@ -21,6 +21,7 @@ namespace UI.Popups
         [SerializeField] private TMP_Text _preText;
         [SerializeField] private Image _image;
         [SerializeField] private TMP_Text _postText;
+        [SerializeField] private LayoutGroup _elementLayoutGroup;
 
 
         [Header("Deactivation")]
@@ -173,7 +174,7 @@ namespace UI.Popups
 
             // Contents Setup.
             SetupContents(setupInformation.PopupPreText, contentsSprite, setupInformation.PopupPostText);
-
+            UpdateTextWidth(setupInformation.KeepIconCentred);
 
             // General Disabling Setup.
             _onDisableCallback = onDisableCallback;
@@ -200,9 +201,49 @@ namespace UI.Popups
         }
         private void SetupContents(string preText, Sprite sprite, string postText)
         {
+            // Set Values.
             _preText.text = preText;
             _image.sprite = sprite;
             _postText.text = postText;
+        }
+        private void UpdateTextWidth(bool keepIconCentred)
+        {
+            if (keepIconCentred)
+            {
+                // Disable the Horizontal/Vertical Layout Group.
+                _elementLayoutGroup.enabled = false;
+
+                // Position the text boxes & image so that the icon is in the centre.
+                if (_elementLayoutGroup is HorizontalLayoutGroup)
+                {
+                    // Position Horizontally.
+                    float spacing = (_elementLayoutGroup as HorizontalLayoutGroup).spacing;
+
+                    _image.rectTransform.localPosition = Vector2.zero;
+                    _preText.rectTransform.localPosition = new Vector2(-(_image.rectTransform.sizeDelta.x / 2.0f + spacing), 0.0f);
+                    _postText.rectTransform.localPosition = new Vector2(_image.rectTransform.sizeDelta.x / 2.0f + spacing, 0.0f);
+                }
+                else if (_elementLayoutGroup is VerticalLayoutGroup)
+                {
+                    // Position Vertically.
+                    float spacing = (_elementLayoutGroup as VerticalLayoutGroup).spacing;
+
+                    _image.rectTransform.localPosition = Vector2.zero;
+                    _preText.rectTransform.localPosition = new Vector2(0.0f, _image.rectTransform.sizeDelta.y / 2.0f + spacing);
+                    _postText.rectTransform.localPosition = new Vector2(0.0f, -(_image.rectTransform.sizeDelta.y / 2.0f + spacing));
+                }
+            }
+            else
+            {
+                // Enable the Horizontal/Vertical Layout Group.
+                _elementLayoutGroup.enabled = true;
+
+                // Resize the Text Boxes to accurately represent the text size.
+                _preText.ForceMeshUpdate();
+                _preText.rectTransform.sizeDelta = new Vector2(_preText.textBounds.size.x, _preText.rectTransform.sizeDelta.y);
+                _postText.ForceMeshUpdate();
+                _postText.rectTransform.sizeDelta = new Vector2(_postText.textBounds.size.x, _postText.rectTransform.sizeDelta.y);
+            }
         }
         private void SetupGeneralDisabling(PopupSetupInformation popupSetupInformation)
         {
@@ -232,6 +273,16 @@ namespace UI.Popups
                 _linkedInteractable.OnSuccessfulInteraction += Deactivate;
             if (linkToFailure)
                 _linkedInteractable.OnFailedInteraction += Deactivate;
+        }
+
+
+        [ContextMenu(itemName: "Test Text Width Update")]
+        private void UpdateTextWidth()
+        {
+            _preText.ForceMeshUpdate();
+            _preText.rectTransform.sizeDelta = new Vector2(_preText.textBounds.size.x, _preText.rectTransform.sizeDelta.y);
+            _postText.ForceMeshUpdate();
+            _postText.rectTransform.sizeDelta = new Vector2(_postText.textBounds.size.x, _postText.rectTransform.sizeDelta.y);
         }
     }
 }

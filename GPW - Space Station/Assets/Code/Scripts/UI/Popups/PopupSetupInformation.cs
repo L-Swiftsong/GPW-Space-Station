@@ -21,6 +21,7 @@ namespace UI.Popups
 
         [Space(5)]
         public bool DisplayOnMultipleLines = false;
+        public bool KeepIconCentred = false;
 
 
         [Header("General Deactivation Settings")]
