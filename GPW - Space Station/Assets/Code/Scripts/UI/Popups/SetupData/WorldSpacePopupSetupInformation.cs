@@ -24,8 +24,8 @@ namespace UI.Popups
 
 
 
-        private WorldSpacePopupSetupInformation() : base(fontSize: 72.0f, iconSize: 100.0f, lifetime: -1.0f) { }
-        public WorldSpacePopupSetupInformation(Transform pivotTransform) : base(fontSize: 72.0f, iconSize: 100.0f, lifetime: -1.0f) => this.PivotTransform = pivotTransform;
+        private WorldSpacePopupSetupInformation() : base(fontSize: 72.0f, iconSize: 100.0f, lifetime: -1.0f, showBackground: false) { }
+        public WorldSpacePopupSetupInformation(Transform pivotTransform) : base(fontSize: 72.0f, iconSize: 100.0f, lifetime: -1.0f, showBackground: false) => this.PivotTransform = pivotTransform;
         public WorldSpacePopupSetupInformation(PopupSetupInformation other) : base(other) { }
     }
 }

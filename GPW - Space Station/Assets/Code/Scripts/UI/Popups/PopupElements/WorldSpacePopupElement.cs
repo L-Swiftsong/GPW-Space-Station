@@ -24,9 +24,6 @@ namespace UI.Popups
         [SerializeField, ReadOnly] private Transform _linkedPivot;
 
 
-        
-
-
         protected override void Update()
         {
             base.Update();
@@ -123,9 +120,10 @@ namespace UI.Popups
                 SetupContents(setupInformation.PopupPreText, contentsSprite, setupInformation.PopupPostText);
             }
             SetContentsSize(setupInformation.FontSize, setupInformation.IconSize);
+            ToggleBackground(setupInformation.ShowBackground);
 
             UpdateTextWidth(setupInformation.KeepIconCentred);
-            StartCoroutine(InvokeAfterFrameDelay(UpdateBackgroundSize)); // Invoked after a single frame delay so that bounds properly update.
+            StartCoroutine(UpdateContentsRootSizeAndReadyAfterDelay()); // Invoked after a single frame delay so that bounds properly update.
 
             // General Disabling Setup.
             OnDisableCallback = onDisableCallback;

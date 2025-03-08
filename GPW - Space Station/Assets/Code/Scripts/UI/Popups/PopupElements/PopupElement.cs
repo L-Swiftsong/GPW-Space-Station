@@ -10,6 +10,13 @@ namespace UI.Popups
 {
     public abstract class PopupElement : MonoBehaviour
     {
+        [SerializeField] private RectTransform _contentsContainer;
+        [SerializeField] private Vector2 _contentsPadding = new Vector2(5.0f, 5.0f); // Padding in each direction.
+        [SerializeField] private bool _isMultiLine = false;
+        [SerializeField] private bool _dontUpdateContentsRootPosition = false;
+
+
+        [Header("Alpha")]
         [SerializeField] private CanvasGroup _canvasGroup;
 
         [Space(5)]
@@ -28,10 +35,7 @@ namespace UI.Popups
 
 
         [Header("Background")]
-        [SerializeField] private RectTransform _backgroundRoot; // Leave null to not have a background.
-        [SerializeField] private Vector2 _backgroundPadding = new Vector2(5.0f, 5.0f); // Padding in each direction.
-        [SerializeField] private bool _isMultiLine = false;
-        [SerializeField] private bool _ignorePosition = false;
+        [SerializeField] private RectTransform _backgroundRoot;
 
 
         [Header("Deactivation")]
@@ -199,12 +203,13 @@ namespace UI.Popups
                 _postText.rectTransform.sizeDelta = _postText.text == string.Empty ? Vector2.zero : _postText.textBounds.size;
             }
         }
-        protected IEnumerator InvokeAfterFrameDelay(System.Action callback)
+        protected IEnumerator UpdateContentsRootSizeAndReadyAfterDelay()
         {
             yield return null;
-            callback?.Invoke();
+            UpdateContentsRootSize();
+            _isReady = true;
         }
-        protected void UpdateBackgroundSize()
+        protected void UpdateContentsRootSize()
         {
             if (_backgroundRoot == null)
                 return;
@@ -229,14 +234,13 @@ namespace UI.Popups
 
 
             // Set the position and size of the background.
-            if (!_ignorePosition)
+            if (!_dontUpdateContentsRootPosition)
             {
-                _backgroundRoot.localPosition = centre;
+                _contentsContainer.localPosition = centre;
             }
-            _backgroundRoot.sizeDelta = new Vector2(width + (_backgroundPadding.x * 2.0f), height + (_backgroundPadding.y * 2.0f));
-
-            _isReady = true;
+            _contentsContainer.sizeDelta = new Vector2(width + (_contentsPadding.x * 2.0f), height + (_contentsPadding.y * 2.0f));
         }
+        protected void ToggleBackground(bool enableBackground) => _backgroundRoot.gameObject.SetActive(enableBackground);
         protected void SetupLifetimeDisabling(float lifetime)
         {
             _maxLifetime = lifetime;

@@ -29,6 +29,10 @@ namespace UI.Popups
         public string CustomPostText;
 
 
+        [Header("Background")]
+        public bool ShowBackground;
+
+
         [Header("General Deactivation Settings")]
         public float PopupLifetime = -1;
 
@@ -42,12 +46,13 @@ namespace UI.Popups
 
 
         private PopupSetupInformation() { }
-        public PopupSetupInformation(float fontSize, float iconSize, float lifetime)
+        public PopupSetupInformation(float fontSize, float iconSize, float lifetime, bool showBackground)
         {
             this.FontSize = fontSize;
             this.IconSize = iconSize;
 
             this.PopupLifetime = lifetime;
+            this.ShowBackground = showBackground;
         }
         public PopupSetupInformation(PopupSetupInformation other)
         {
