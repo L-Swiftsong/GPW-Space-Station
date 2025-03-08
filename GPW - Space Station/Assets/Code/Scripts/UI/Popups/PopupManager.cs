@@ -130,7 +130,7 @@ namespace UI.Popups
         #endregion
 
 
-        public static void CreateScreenPopup(ScreenSpacePopupSetupInformation setupInformation)
+        public static void CreateScreenSpacePopup(ScreenSpacePopupSetupInformation setupInformation)
         {
             ObjectPool<ScreenSpacePopupElement> utilisedPool = setupInformation.DisplayOnMultipleLines ? s_instance._screenSpaceMultiLinePopupPool : s_instance._screenSpaceSingleLinePopupPool;
             ScreenSpacePopupElement popupElement = utilisedPool.Get();
@@ -140,7 +140,7 @@ namespace UI.Popups
 
 
         [System.Serializable] public enum InteractionType { DefaultInteract, FlashlightEnable, FlashlightFocus, Healing, Movement, Sprint, Crouch }
-        public static void CreateWorldSpacePopup(PopupSetupInformation popupSetupInformation)
+        public static void CreateWorldSpacePopup(WorldSpacePopupSetupInformation popupSetupInformation)
         {
             ObjectPool<WorldSpacePopupElement> utilisedPool = popupSetupInformation.DisplayOnMultipleLines ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
             WorldSpacePopupElement popupElement = utilisedPool.Get();
