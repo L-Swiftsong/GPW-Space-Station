@@ -13,7 +13,7 @@ namespace UI.Popups
         public Vector2 AnchorMax = new Vector2(1.0f, 1.0f);
 
 
-        private ScreenSpacePopupSetupInformation() : base(fontSize: 36.0f, iconSize: 50.0f, lifetime: -1.0f) { }
+        private ScreenSpacePopupSetupInformation() : base(fontSize: 36.0f, iconSize: 50.0f, lifetime: 3.0f) { }
         public ScreenSpacePopupSetupInformation(PopupSetupInformation other) : base(other) { }
     }
 }
