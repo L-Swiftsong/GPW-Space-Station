@@ -17,17 +17,20 @@ namespace UI.Popups
         [SerializeField] private RectTransform _screenSpacePopupRoot;
 
         [Space(5)]
-        [SerializeField] private PopupElement _screenSpacePopupPrefab;
-        private ObjectPool<PopupElement> _screenSpacePopupPool;
+        [SerializeField] private ScreenSpacePopupElement _screenSpaceSingleLinePopupPrefab;
+        private ObjectPool<ScreenSpacePopupElement> _screenSpaceSingleLinePopupPool;
+
+        [SerializeField] private ScreenSpacePopupElement _screenSpaceMultiLinePopupPrefab;
+        private ObjectPool<ScreenSpacePopupElement> _screenSpaceMultiLinePopupPool;
 
 
         [Header("World-Space Popups")]
-        [SerializeField] private PopupElement _worldSpaceSingleLinePopupPrefab;
-        private ObjectPool<PopupElement> _worldSpaceSingleLinePopupPool;
+        [SerializeField] private WorldSpacePopupElement _worldSpaceSingleLinePopupPrefab;
+        private ObjectPool<WorldSpacePopupElement> _worldSpaceSingleLinePopupPool;
 
         [Space(5)]
-        [SerializeField] private PopupElement _worldSpaceMultiLinePopupPrefab;
-        private ObjectPool<PopupElement> _worldSpaceMultiLinePopupPool;
+        [SerializeField] private WorldSpacePopupElement _worldSpaceMultiLinePopupPrefab;
+        private ObjectPool<WorldSpacePopupElement> _worldSpaceMultiLinePopupPool;
 
 
         [Header("Tutorial Popup Settings")]
@@ -66,10 +69,11 @@ namespace UI.Popups
         }
         private void SetupPopupManager()
         {
-            _screenSpacePopupPool = new ObjectPool<PopupElement>(createFunc: CreateScreenSpacePopup, actionOnGet: OnGetScreenSpacePopup, actionOnRelease: OnReleaseScreenSpacePopup);
+            _screenSpaceSingleLinePopupPool = new ObjectPool<ScreenSpacePopupElement>(createFunc: CreateScreenSpaceSingleLinePopup, actionOnGet: OnGetScreenSpacePopup, actionOnRelease: OnReleaseScreenSpacePopup);
+            _screenSpaceMultiLinePopupPool = new ObjectPool<ScreenSpacePopupElement>(createFunc: CreateScreenSpaceMultiLinePopup, actionOnGet: OnGetScreenSpacePopup, actionOnRelease: OnReleaseScreenSpacePopup);
 
-            _worldSpaceSingleLinePopupPool = new ObjectPool<PopupElement>(createFunc: CreateWorldSpaceSingleLinePopup, actionOnGet: OnGetWorldSpacePopup, actionOnRelease: OnReleaseWorldSpacePopup);
-            _worldSpaceMultiLinePopupPool = new ObjectPool<PopupElement>(createFunc: CreateWorldSpaceMultiLinePopup, actionOnGet: OnGetWorldSpacePopup, actionOnRelease: OnReleaseWorldSpacePopup);
+            _worldSpaceSingleLinePopupPool = new ObjectPool<WorldSpacePopupElement>(createFunc: CreateWorldSpaceSingleLinePopup, actionOnGet: OnGetWorldSpacePopup, actionOnRelease: OnReleaseWorldSpacePopup);
+            _worldSpaceMultiLinePopupPool = new ObjectPool<WorldSpacePopupElement>(createFunc: CreateWorldSpaceMultiLinePopup, actionOnGet: OnGetWorldSpacePopup, actionOnRelease: OnReleaseWorldSpacePopup);
         }
 
 
@@ -77,16 +81,22 @@ namespace UI.Popups
 
         #region Screen Space
 
-        private PopupElement CreateScreenSpacePopup()
+        private ScreenSpacePopupElement CreateScreenSpaceSingleLinePopup()
         {
-            PopupElement element = Instantiate<PopupElement>(_screenSpacePopupPrefab, _screenSpacePopupRoot);
+            ScreenSpacePopupElement element = Instantiate<ScreenSpacePopupElement>(_screenSpaceSingleLinePopupPrefab, _screenSpacePopupRoot);
             return element;
         }
-        private void OnGetScreenSpacePopup(PopupElement popupElement)
+        private ScreenSpacePopupElement CreateScreenSpaceMultiLinePopup()
+        {
+            ScreenSpacePopupElement element = Instantiate<ScreenSpacePopupElement>(_screenSpaceMultiLinePopupPrefab, _screenSpacePopupRoot);
+            return element;
+        }
+
+        private void OnGetScreenSpacePopup(ScreenSpacePopupElement popupElement)
         {
             popupElement.gameObject.SetActive(true);
         }
-        private void OnReleaseScreenSpacePopup(PopupElement popupElement)
+        private void OnReleaseScreenSpacePopup(ScreenSpacePopupElement popupElement)
         {
             popupElement.gameObject.SetActive(false);
         }
@@ -95,22 +105,22 @@ namespace UI.Popups
 
         #region World Space
 
-        private PopupElement CreateWorldSpaceSingleLinePopup()
+        private WorldSpacePopupElement CreateWorldSpaceSingleLinePopup()
         {
-            PopupElement element = Instantiate<PopupElement>(_worldSpaceSingleLinePopupPrefab, this.transform);
+            WorldSpacePopupElement element = Instantiate<WorldSpacePopupElement>(_worldSpaceSingleLinePopupPrefab, this.transform);
             return element;
         }
-        private PopupElement CreateWorldSpaceMultiLinePopup()
+        private WorldSpacePopupElement CreateWorldSpaceMultiLinePopup()
         {
-            PopupElement element = Instantiate<PopupElement>(_worldSpaceMultiLinePopupPrefab, this.transform);
+            WorldSpacePopupElement element = Instantiate<WorldSpacePopupElement>(_worldSpaceMultiLinePopupPrefab, this.transform);
             return element;
         }
 
-        private void OnGetWorldSpacePopup(PopupElement popupElement)
+        private void OnGetWorldSpacePopup(WorldSpacePopupElement popupElement)
         {
             popupElement.gameObject.SetActive(true);
         }
-        private void OnReleaseWorldSpacePopup(PopupElement popupElement)
+        private void OnReleaseWorldSpacePopup(WorldSpacePopupElement popupElement)
         {
             popupElement.gameObject.SetActive(false);
         }
@@ -120,33 +130,25 @@ namespace UI.Popups
         #endregion
 
 
-        public static void CreateScreenPopup(Vector2 popupPosition, Vector2 popupAnchors, string popupText)
+        public static void CreateScreenPopup(ScreenSpacePopupSetupInformation setupInformation)
         {
+            ObjectPool<ScreenSpacePopupElement> utilisedPool = setupInformation.DisplayOnMultipleLines ? s_instance._screenSpaceMultiLinePopupPool : s_instance._screenSpaceSingleLinePopupPool;
+            ScreenSpacePopupElement popupElement = utilisedPool.Get();
 
+            popupElement.SetupWithInformation(setupInformation, s_instance.GetInteractionSpriteFromInteractionType(setupInformation.InteractionType), () => utilisedPool.Release(popupElement));
         }
 
-        public static void CreateWorldSpacePopup(Transform pivotTransform, Vector3 offset, string popupText, bool alwaysDisplayOnTop = false, bool rotateInPlace = true)
-        {
-
-        }
-
-
-        public static void CreateTutorialPopup(string popupText) => CreateScreenPopup(s_instance._tutorialPopupPosition, s_instance._tutorialPopupPivot, popupText);
 
         [System.Serializable] public enum InteractionType { DefaultInteract, FlashlightEnable, FlashlightFocus, Healing, Movement, Sprint, Crouch }
-        public static void CreateInteractionPopup(PopupSetupInformation popupSetupInformation)
+        public static void CreateWorldSpacePopup(PopupSetupInformation popupSetupInformation)
         {
-            ObjectPool<PopupElement> utilisedPool = popupSetupInformation.DisplayOnMultipleLines ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
-            PopupElement popupElement = utilisedPool.Get();
+            ObjectPool<WorldSpacePopupElement> utilisedPool = popupSetupInformation.DisplayOnMultipleLines ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
+            WorldSpacePopupElement popupElement = utilisedPool.Get();
 
             popupElement.SetupWithInformation(popupSetupInformation, s_instance.GetInteractionSpriteFromInteractionType(popupSetupInformation.InteractionType), () => utilisedPool.Release(popupElement));
         }
 
 
-        [ContextMenu(itemName: "Test/Default Interact")]
-        private void TestInteractSprite() => GetInteractionSpriteFromInteractionType(InteractionType.DefaultInteract);
-        [ContextMenu(itemName: "Test/Flashlight Enable")]
-        private void TestFlashlightEnableSprite() => GetInteractionSpriteFromInteractionType(InteractionType.FlashlightEnable);
 
         private Sprite GetInteractionSpriteFromInteractionType(InteractionType interactionType)
         {

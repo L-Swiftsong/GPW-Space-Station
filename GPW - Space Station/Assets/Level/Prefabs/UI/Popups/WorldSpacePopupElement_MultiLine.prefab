@@ -415,7 +415,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7198289507944531068}
-  - component: {fileID: 5512572578117690103}
+  - component: {fileID: 9193904278238379109}
   m_Layer: 10
   m_Name: WorldSpacePopupElement_MultiLine
   m_TagString: Untagged
@@ -439,7 +439,7 @@ Transform:
   - {fileID: 9083522148299667048}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5512572578117690103
+--- !u!114 &9193904278238379109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -448,20 +448,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 6780379148653469396}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98fb7366ded3bc94da5f672d3cc83c8e, type: 3}
+  m_Script: {fileID: 11500000, guid: 68c0a33ef0603ba4c9f7f35b94445e79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pivotTransform: {fileID: 7198289507944531068}
-  _offsetTransform: {fileID: 9083522148299667048}
   _canvasGroup: {fileID: 6229577160451517660}
+  _fadeDuration: 0.1
+  _showDuration: 0.2
   _preText: {fileID: 8140233544464927878}
   _image: {fileID: 2646919412836900540}
   _postText: {fileID: 7483579810244669772}
   _elementLayoutGroup: {fileID: 7112799071884403269}
   _backgroundRoot: {fileID: 0}
-  _backgroundPadding: 5
+  _backgroundPadding: {x: 5, y: 5}
+  _isMultiLine: 0
+  _ignorePosition: 0
   _maxLifetime: 0
   _currentLifetime: 0
+  _pivotTransform: {fileID: 7198289507944531068}
+  _offsetTransform: {fileID: 9083522148299667048}
   _maxPlayerDistance: 0
   _fadeIfOutwithDistance: 0
   _disableIfObstructed: 0
@@ -471,8 +475,6 @@ MonoBehaviour:
     m_Bits: 192
   _disableIfPivotLost: 0
   _linkedPivot: {fileID: 0}
-  _canvasTransform: {fileID: 0}
-  _isMultiLine: 1
 --- !u!1 &7663643918483531072
 GameObject:
   m_ObjectHideFlags: 0

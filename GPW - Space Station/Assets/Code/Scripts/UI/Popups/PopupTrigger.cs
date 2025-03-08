@@ -6,12 +6,20 @@ namespace UI.Popups
 {
     public class PopupTrigger : MonoBehaviour
     {
+        [Header("World Space")]
         [SerializeField] private PopupSetupInformation _popupSetupInformation;
 
+        [Header("Screen Space")]
+        [SerializeField] private ScreenSpacePopupSetupInformation _screenSpaceSetupInformation;
 
-        public void Trigger()
+
+        public void TriggerWorldSpace()
         {
-            PopupManager.CreateInteractionPopup(_popupSetupInformation);
+            PopupManager.CreateWorldSpacePopup(_popupSetupInformation);
+        }
+        public void TriggerScreenSpace()
+        {
+            PopupManager.CreateScreenPopup(_screenSpaceSetupInformation);
         }
 
 

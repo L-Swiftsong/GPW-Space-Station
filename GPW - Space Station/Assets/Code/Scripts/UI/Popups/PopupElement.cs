@@ -4,64 +4,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using Entities.Player;
 using Interaction;
 
 namespace UI.Popups
 {
-    public class PopupElement : MonoBehaviour
+    public abstract class PopupElement : MonoBehaviour
     {
-        [SerializeField] private Transform _pivotTransform;
-        [SerializeField] private Transform _offsetTransform;
+        [SerializeField] private CanvasGroup _canvasGroup;
 
         [Space(5)]
-        [SerializeField] private CanvasGroup _canvasGroup; 
+        [SerializeField, Range(0.0f, 0.5f)] private float _fadeDuration = 0.1f;
+        [SerializeField, Range(0.0f, 0.5f)] private float _showDuration = 0.2f;
+        private bool _isReady;
 
 
         [Header("Contents")]
         [SerializeField] private TMP_Text _preText;
         [SerializeField] private Image _image;
         [SerializeField] private TMP_Text _postText;
+
+        [Space(5)]
         [SerializeField] private LayoutGroup _elementLayoutGroup;
 
 
         [Header("Background")]
         [SerializeField] private RectTransform _backgroundRoot; // Leave null to not have a background.
         [SerializeField] private Vector2 _backgroundPadding = new Vector2(5.0f, 5.0f); // Padding in each direction.
+        [SerializeField] private bool _isMultiLine = false;
+        [SerializeField] private bool _ignorePosition = false;
 
 
         [Header("Deactivation")]
         [SerializeField, ReadOnly] private float _maxLifetime;
         [SerializeField, ReadOnly] private float _currentLifetime;
 
-        [Space(5)]
-        [SerializeField, ReadOnly] private float _maxPlayerDistance;
-        [SerializeField, ReadOnly] private bool _fadeIfOutwithDistance;
-
-        [Space(5)]
-        [SerializeField, ReadOnly] private bool _disableIfObstructed;
-        [SerializeField, ReadOnly] private bool _fadeIfObstructed;
-        [SerializeField] private LayerMask _obstructionLayers;
-
-        [Space(5)]
-        [SerializeField, ReadOnly] private bool _disableIfPivotLost;
-        [SerializeField, ReadOnly] private Transform _linkedPivot; 
-
 
         [Header("Interaction Disabling")]
         private IInteractable _linkedInteractable;
 
 
-        private bool _shouldShow;
-        private Action _onDisableCallback;
+        protected bool ShouldShow;
+
+        protected bool IsDisabled;
+        protected Action OnDisableCallback;
 
 
-        private void OnEnable()
+        protected void OnEnable()
         {
-            _canvasGroup.alpha = 1.0f;
-            _shouldShow = true;
+            _canvasGroup.alpha = 0.0f;
+            ShouldShow = true;
+            _isReady = false;
+            IsDisabled = false;
         }
-        private void OnDisable()
+        protected void OnDisable()
         {
             if (_linkedInteractable != null)
             {
@@ -70,25 +65,45 @@ namespace UI.Popups
             }
         }
 
-
-        private void Update()
+        protected virtual void Update()
         {
-            CheckForDeactivation();
+            if (!_isReady)
+            {
+                return;
+            }
 
-            _canvasGroup.alpha = Mathf.MoveTowards(_canvasGroup.alpha, _shouldShow ? 1.0f : 0.0f, 5.0f * Time.deltaTime);
+            if (IsDisabled)
+            {
+                HandleCanvasAlpha(false);
+                if (_canvasGroup.alpha <= 0.0f)
+                {
+                    OnDisableCallback?.Invoke();
+                }
 
-            RotateToFacePlayerCamera();
-        }
+                return;
+            }
 
 
-        private void CheckForDeactivation()
-        {
-            _shouldShow = true;
-
-            if (CheckLifetime() || CheckDistance() || CheckObstruction() || CheckPivotLoss())
+            if (CheckForDeactivation())
             {
                 Deactivate();
             }
+
+            HandleCanvasAlpha(ShouldShow);
+        }
+        private void HandleCanvasAlpha(bool show) => _canvasGroup.alpha = Mathf.MoveTowards(_canvasGroup.alpha, show ? 1.0f : 0.0f, (1.0f / (show ? _showDuration : _fadeDuration)) * Time.deltaTime);
+
+
+        protected virtual bool CheckForDeactivation()
+        {
+            ShouldShow = true;
+
+            if (CheckLifetime())
+            {
+                return true;
+            }
+
+            return false;
         }
         private bool CheckLifetime()
         {
@@ -102,118 +117,46 @@ namespace UI.Popups
                     return true;
                 }
             }
-            
+
             // Lifetime hasn't elapsed.
             return false;
         }
-        private bool CheckDistance()
+
+
+        protected void Deactivate() => IsDisabled = true;
+        
+
+
+        protected void SetupContents(string preText, Sprite sprite, string postText)
         {
-            if (_maxPlayerDistance <= 0)
-            {
-                // We aren't considering player distance for deactivation/fading.
-                return false;
-            }
+            // Ensure the image is enabled.
+            _image.gameObject.SetActive(true);
 
-            if (Vector3.Distance(_offsetTransform.position, PlayerManager.Instance.GetPlayerCameraTransform().position) >= _maxPlayerDistance)
-            {
-                // Outwith Max Distance.
-                if (_fadeIfOutwithDistance)
-                {
-                    // We only want to fade when outwith the max distance.
-                    _shouldShow = false;
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-        private bool CheckObstruction()
-        {
-            if (_disableIfObstructed && Physics.Linecast(_offsetTransform.position, PlayerManager.Instance.GetPlayerCameraTransform().position, _obstructionLayers, QueryTriggerInteraction.Ignore))
-            {
-                if (_fadeIfObstructed)
-                {
-                    // We only want to fade when the player's camera is obstructed.
-                    _shouldShow = false;
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-        private bool CheckPivotLoss() => _disableIfPivotLost && _pivotTransform == null;
-
-
-        private void Deactivate() => _onDisableCallback?.Invoke();
-
-
-        private void RotateToFacePlayerCamera()
-        {
-            Transform playerCameraTransform = PlayerManager.Instance.GetPlayerCameraTransform();
-
-            // Rotate Pivot around the Y-Axis.
-            Vector3 pivotLookDirection = _pivotTransform.position - playerCameraTransform.position;
-            float yDegrees = Mathf.Atan2(pivotLookDirection.x, pivotLookDirection.z) * Mathf.Rad2Deg;
-            _pivotTransform.LookAt(new Vector3(playerCameraTransform.position.x, transform.position.y, playerCameraTransform.position.z));
-
-            // Rotate Offset around the X-Axis.
-            Vector3 offsetLookDirection = _offsetTransform.position - playerCameraTransform.position;
-            float xDegrees = Mathf.Atan2(offsetLookDirection.x, offsetLookDirection.y) * Mathf.Rad2Deg;
-            _offsetTransform.LookAt(playerCameraTransform.position);
-            _offsetTransform.localRotation = Quaternion.Euler(-_offsetTransform.localRotation.eulerAngles.x, -180.0f, 0.0f);
-        }
-
-
-
-        public void SetupWithInformation(PopupSetupInformation setupInformation, Sprite contentsSprite, Action onDisableCallback)
-        {
-            // Position Setup.
-            SetupPosition(setupInformation);
-
-            // Contents Setup.
-            SetupContents(setupInformation.PopupPreText, contentsSprite, setupInformation.PopupPostText);
-            UpdateTextWidth(setupInformation.KeepIconCentred);
-            StartCoroutine(InvokeAfterFrameDelay(UpdateBackgroundSize)); // Invoked after a single frame delay so that bounds properly update.
-
-            // General Disabling Setup.
-            _onDisableCallback = onDisableCallback;
-            SetupGeneralDisabling(setupInformation);
-
-            // Interaction Disabling Setup.
-            if (setupInformation.LinkedInteractable != null)
-            {
-                SetupInteractionDisabling(setupInformation.LinkedInteractable, setupInformation.LinkToSuccess, setupInformation.LinkToFailure);
-            }
-        }
-        private void SetupPosition(PopupSetupInformation popupSetupInformation)
-        {
-            if (popupSetupInformation.RotateInPlace)
-            {
-                _pivotTransform.position = popupSetupInformation.PivotTransform.position + popupSetupInformation.PopupOffset;
-                _offsetTransform.localPosition = Vector3.zero;
-            }
-            else
-            {
-                _pivotTransform.position = popupSetupInformation.PivotTransform.position;
-                _offsetTransform.localPosition = popupSetupInformation.PopupOffset;
-            }
-        }
-        private void SetupContents(string preText, Sprite sprite, string postText)
-        {
             // Set Values.
             _preText.text = preText;
             _image.sprite = sprite;
             _postText.text = postText;
         }
-        private void UpdateTextWidth(bool keepIconCentred)
+        protected void SetupCustomText(string customPreText = "", Sprite customSprite = null, string customPostText = "")
+        {
+            // Ensure the image is only active if we are supplying it with a value.
+            _image.gameObject.SetActive(customSprite != null);
+
+            // Set the value of the pre-text.
+            _preText.text = customPreText;
+            _image.sprite = customSprite;
+            _postText.text = customPostText;
+        }
+
+
+        protected void SetContentsSize(float textSize, float imageSize)
+        {
+            _preText.fontSize = textSize;
+            _postText.fontSize = textSize;
+
+            _image.rectTransform.sizeDelta = new Vector2(imageSize, imageSize);
+        }
+        protected void UpdateTextWidth(bool keepIconCentred)
         {
             if (keepIconCentred)
             {
@@ -250,17 +193,18 @@ namespace UI.Popups
 
                 // Resize the Text Boxes to accurately represent the text size.
                 _preText.ForceMeshUpdate();
-                _preText.rectTransform.sizeDelta = new Vector2(_preText.textBounds.size.x, _preText.rectTransform.sizeDelta.y);
+                _preText.rectTransform.sizeDelta = _preText.text == string.Empty ? Vector2.zero : _preText.textBounds.size;
+
                 _postText.ForceMeshUpdate();
-                _postText.rectTransform.sizeDelta = new Vector2(_postText.textBounds.size.x, _postText.rectTransform.sizeDelta.y);
+                _postText.rectTransform.sizeDelta = _postText.text == string.Empty ? Vector2.zero : _postText.textBounds.size;
             }
         }
-        private IEnumerator InvokeAfterFrameDelay(System.Action callback)
+        protected IEnumerator InvokeAfterFrameDelay(System.Action callback)
         {
             yield return null;
             callback?.Invoke();
         }
-        private void UpdateBackgroundSize()
+        protected void UpdateBackgroundSize()
         {
             if (_backgroundRoot == null)
                 return;
@@ -268,7 +212,7 @@ namespace UI.Popups
             // Calculate corners.
             Vector2 topLeft = _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMax);
             Vector2 bottomLeft = _isMultiLine ? _postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMin, _postText.rectTransform.rect.yMin)
-                                              : _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMin);
+                                                : _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMin);
 
             Vector2 bottomRight = _postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMin);
             Vector2 topRight = _isMultiLine ? _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMax, _preText.rectTransform.rect.yMax)
@@ -285,24 +229,20 @@ namespace UI.Popups
 
 
             // Set the position and size of the background.
-            _backgroundRoot.localPosition = centre;
+            if (!_ignorePosition)
+            {
+                _backgroundRoot.localPosition = centre;
+            }
             _backgroundRoot.sizeDelta = new Vector2(width + (_backgroundPadding.x * 2.0f), height + (_backgroundPadding.y * 2.0f));
+
+            _isReady = true;
         }
-        private void SetupGeneralDisabling(PopupSetupInformation popupSetupInformation)
+        protected void SetupLifetimeDisabling(float lifetime)
         {
-            _maxLifetime = popupSetupInformation.PopupLifetime;
-            _currentLifetime = 0;
-
-            _maxPlayerDistance = popupSetupInformation.MaxDistance;
-            _fadeIfOutwithDistance = popupSetupInformation.OnlyFadeIfOutwithMaxDistance;
-
-            _disableIfObstructed = popupSetupInformation.DisableIfObstructed;
-            _fadeIfObstructed = popupSetupInformation.OnlyFadeIfObstructed;
-
-            _disableIfPivotLost = popupSetupInformation.DisableIfPivotDestroyed;
-            _linkedPivot = popupSetupInformation.PivotTransform;
+            _maxLifetime = lifetime;
+            _currentLifetime = 0.0f;
         }
-        private void SetupInteractionDisabling(GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure)
+        protected void SetupInteractionDisabling(GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure)
         {
             if (linkedInteractable.TryGetComponent(out IInteractable interactableScript) == false)
             {
@@ -316,56 +256,6 @@ namespace UI.Popups
                 _linkedInteractable.OnSuccessfulInteraction += Deactivate;
             if (linkToFailure)
                 _linkedInteractable.OnFailedInteraction += Deactivate;
-        }
-
-
-        [ContextMenu("Test Background")]
-        private void TestBackground()
-        {
-            UpdateBackgroundSize();
-        }
-
-
-        [Header("Gizmos")]
-        [SerializeField] private RectTransform _canvasTransform;
-        [SerializeField] private bool _isMultiLine;
-        private void OnDrawGizmos()
-        {
-            if (_canvasTransform == null)
-                return;
-
-            Vector2 topLeft = _canvasTransform.TransformPoint(_preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMax));
-            Vector2 bottomLeft;
-            Vector2 topRight;
-            Vector2 bottomRight = _canvasTransform.TransformPoint(_postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMin));
-            if (_isMultiLine)
-            {
-                topRight = _canvasTransform.TransformPoint(_preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMax, _preText.rectTransform.rect.yMax));
-                bottomLeft = _canvasTransform.TransformPoint(_postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMin, _postText.rectTransform.rect.yMin));
-            }
-            else
-            {
-                bottomLeft = _canvasTransform.TransformPoint(_preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMin));
-                topRight = _canvasTransform.TransformPoint(_postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMax));
-            }
-
-            Vector2 centre = (topLeft + topRight + bottomLeft + bottomRight) / 4.0f;
-            float width = Mathf.Max(topRight.x, bottomRight.x) - Mathf.Min(topLeft.x, bottomLeft.x);
-            float height = Mathf.Max(topRight.y, topLeft.y) - Mathf.Min(bottomRight.y, bottomLeft.y);
-
-            Gizmos.color = Color.white;
-            Gizmos.DrawSphere(topLeft, 0.01f);
-            Gizmos.color = Color.black;
-            Gizmos.DrawSphere(bottomLeft, 0.01f);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(topRight, 0.01f);
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(bottomRight, 0.01f);
-
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(centre, 0.01f);
-            Gizmos.DrawLine(centre + (Vector2.left * width / 2.0f), centre + (Vector2.right * width / 2.0f));
-            Gizmos.DrawLine(centre + (Vector2.down * height / 2.0f), centre + (Vector2.up * height / 2.0f));
         }
     }
 }
