@@ -15,12 +15,25 @@ namespace Environment.Buttons
         [SerializeField] private int _securityLevel = 0;
 
         [Space(5)]
+        [SerializeField] private bool _isUnlocked = false;
+
+        [Space(5)]
         [SerializeField] private bool _canOnlyActivate = false;
 
         [Space(5)]
         [SerializeField] private bool _limitedDuration = false;
         [SerializeField] private float _duration = 3.0f;
         private Coroutine _deactivateDoorCoroutine;
+
+
+        [Header("GFX")]
+        [SerializeField] private MeshRenderer _renderer;
+        [SerializeField] private int _keycardScreenMaterialIndex;
+
+        private MaterialPropertyBlock _materialPropertyBlock;
+        private const string SECURITY_LEVEL_IDENTIFIER = "_SecurityLevel";
+        private const string IS_UNLOCKED_IDENTIFIER = "_IsSecurityLevelValid";
+        private const string NOISE_OFFSET_IDENTIFIER = "_NoiseTimeOffset";
 
 
         [Header("SFX")]
@@ -39,22 +52,34 @@ namespace Environment.Buttons
         private void Awake()
         {
             _connectedTriggerable = _connectedObject.GetComponent<ITriggerable>();
+
+            // Setup the MaterialPropertyBlock.
+            _materialPropertyBlock = new MaterialPropertyBlock();
+            _materialPropertyBlock.SetInteger(SECURITY_LEVEL_IDENTIFIER, _securityLevel);
+            _materialPropertyBlock.SetInteger(IS_UNLOCKED_IDENTIFIER, _isUnlocked ? 1 : 0);
+            _materialPropertyBlock.SetFloat(NOISE_OFFSET_IDENTIFIER, Random.Range(0.01f, 5.0f));
+
+            // Setup the Keycard Screen.
+            _renderer.SetPropertyBlock(_materialPropertyBlock);
         }
 
 
         public void Interact(PlayerInteraction interactingScript)
         {
-            if (!interactingScript.Inventory.HasKeycardDecoder())
+            if (!_isUnlocked)
             {
-                // The player doesn't have a keycard decoder.
-                Debug.Log("No Decoder");
-                return;
-            }
-            if (_securityLevel > interactingScript.Inventory.GetDecoderSecurityLevel())
-            {
-                // The player's keycard reader doesn't have a high enough security rating to use this KeycardReader.
-                FailedInteraction();
-                return;
+                if (!interactingScript.Inventory.HasKeycardDecoder())
+                {
+                    // The player doesn't have a keycard decoder.
+                    Debug.Log("No Decoder");
+                    return;
+                }
+                if (_securityLevel > interactingScript.Inventory.GetDecoderSecurityLevel())
+                {
+                    // The player's keycard reader doesn't have a high enough security rating to use this KeycardReader.
+                    FailedInteraction();
+                    return;
+                }
             }
 
             // The player has a keycard reader of a valid security level.
@@ -79,8 +104,19 @@ namespace Environment.Buttons
         {
             Debug.Log("Successful Interaction");
             OnSuccessfulInteraction?.Invoke();
+            
+            if (!_isUnlocked)
+            {
+                _isUnlocked = true;
 
-            Activate();
+                _renderer.GetPropertyBlock(_materialPropertyBlock);
+                _materialPropertyBlock.SetInteger(IS_UNLOCKED_IDENTIFIER, 1);
+                _renderer.SetPropertyBlock(_materialPropertyBlock);
+            }
+            else
+            {
+                Activate();
+            }
 
             if (_successfulInteractionClip != null)
             {
@@ -120,6 +156,7 @@ namespace Environment.Buttons
 
 
         public int GetSecurityLevel() => _securityLevel;
+        public bool GetIsUnlocked() => _isUnlocked;
 
 
 
@@ -136,6 +173,17 @@ namespace Environment.Buttons
                     // The Connected Object doesn't have an instance of ITriggerable on it.
                     throw new System.ArgumentException($"{_connectedObject.name} does not have an instance of ITriggerable on it.");
                 }
+            }
+
+            if (_renderer != null && !Application.isPlaying)
+            {
+                // Setup the MaterialPropertyBlock.
+                MaterialPropertyBlock materialPropertyBlock = new MaterialPropertyBlock();
+                materialPropertyBlock.SetInteger(SECURITY_LEVEL_IDENTIFIER, _securityLevel);
+                materialPropertyBlock.SetInteger(IS_UNLOCKED_IDENTIFIER, _isUnlocked ? 1 : 0);
+
+                // Setup the Keycard Screen.
+                _renderer.SetPropertyBlock(materialPropertyBlock);
             }
         }
     #endif
