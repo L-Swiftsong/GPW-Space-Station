@@ -9,14 +9,14 @@ namespace Items.Collectables
     public class CollectablePickup : ItemPickup
     {
         [SerializeField] private CollectableData _collectableData;
-        [SerializeField] private AudioClip pickupSound; // Assign in Inspector
+        [SerializeField] private AudioClip pickupSound;
         [SerializeField] private AudioSource audioSource;
 
 
         protected override bool PerformInteraction(PlayerInteraction interactingScript)
         {
 
-            SFXManager.Instance.PlayClipAtPosition(pickupSound, transform.position, 1, 1, 1f);
+            SFXManager.Instance.PlayClipAtPosition(pickupSound, transform.position, 1, 1, 0.5f);
             CollectableManager.AddCollectable(_collectableData);
 
 

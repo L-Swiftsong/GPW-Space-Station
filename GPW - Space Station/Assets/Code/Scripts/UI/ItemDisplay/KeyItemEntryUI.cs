@@ -10,19 +10,17 @@ namespace UI.ItemDisplay
 {
     public class KeyItemEntryUI : ItemDisplaySegmentUI
     {
-        public static KeyItemEntryUI Instance {  get; private set; }
-
-        private List<KeyItemEntryUI> _keyItemEntryUIs = new List<KeyItemEntryUI>();
+        private static List<KeyItemEntryUI> _allKeyItemEntryUIs = new List<KeyItemEntryUI>();
 
         [SerializeField] private Image _keyItemImage;
         [SerializeField] private Button _UseButton;
-        private KeyItemData _currentKeyItem;
+        public KeyItemData _currentKeyItem;
         private RepairSpotManager _repairSpotManager;
 
 		private void Awake()
 		{
-			if (Instance == null)
-				Instance = this;
+            if (!_allKeyItemEntryUIs.Contains(this))
+                _allKeyItemEntryUIs.Add(this);
 
             _repairSpotManager = FindObjectOfType<RepairSpotManager>();
 		}
@@ -50,8 +48,6 @@ namespace UI.ItemDisplay
 
             _UseButton.onClick.RemoveAllListeners();
             _UseButton.onClick.AddListener(() => OnUseButtonClicked());
-
-            RegisterKeyItemEntry(this);
         }
 
         private void OnUseButtonClicked()
@@ -82,20 +78,17 @@ namespace UI.ItemDisplay
 			}
 		}     
 
-        public void RegisterKeyItemEntry(KeyItemEntryUI keyItemEntryUI)
-        {
-			if (!_keyItemEntryUIs.Contains(keyItemEntryUI))
+		public void UnregisterKeyItemEntry(KeyItemEntryUI entryUI)
+		{
+			if (_allKeyItemEntryUIs.Contains(entryUI))
 			{
-				_keyItemEntryUIs.Add(keyItemEntryUI);
+				_allKeyItemEntryUIs.Remove(entryUI);
 			}
 		}
 
-		public void UnregisterKeyItemEntry(KeyItemEntryUI entryUI)
+		private void OnDestroy()
 		{
-			if (_keyItemEntryUIs.Contains(entryUI))
-			{
-				_keyItemEntryUIs.Remove(entryUI);
-			}
+			UnregisterKeyItemEntry(this);
 		}
 	}
 }

@@ -9,17 +9,24 @@ using UI.ItemDisplay;
 using Interaction;
 using Items;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class UseKeyItem : MonoBehaviour, IInteractable
 {
 	public event System.Action OnSuccessfulInteraction;
 	public event System.Action OnFailedInteraction;
 
+	[Header("Key Item")]
 	[SerializeField] private KeyItemData _requiredKeyItem;
 	[SerializeField] private Transform _keyItemPlacement;
 
+	[Header("Player Tablet")]
 	[SerializeField] private PlayerTablet _playerTablet;
 	[SerializeField] private GameObject _itemsTab;
+
+	[Header("UI Feedback")]
+	[SerializeField] private Text _feedbackText;
+	[SerializeField] private string _incorrectItemMessage = "Incorrect item!";
 
 	private bool _isInteracted;
 
@@ -45,7 +52,17 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 				KeyItemManager.Instance.PlaceItemAtLocation(_keyItemPlacement);
 				OnSuccessfulInteraction?.Invoke();
 
-				KeyItemEntryUI.Instance.RemoveItemFromUI(selectedKeyItem);
+				KeyItemEntryUI[] allUIEntries = FindObjectsOfType<KeyItemEntryUI>();
+
+				foreach (var uiEntry in allUIEntries)
+				{
+					if (uiEntry._currentKeyItem == selectedKeyItem)
+					{
+						uiEntry.RemoveItemFromUI(selectedKeyItem);
+						break; 
+					}
+				}
+
 				_playerTablet.Unequip();
 			}
 			else
@@ -78,7 +95,25 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 	public void FailInteraction()
 	{
 		OnFailedInteraction?.Invoke();
+		ShowErrorMessage(_incorrectItemMessage);
 	}
+
+	private void ShowErrorMessage(string message)
+	{
+		if (_feedbackText != null)
+		{
+			_feedbackText.text = message;
+			_feedbackText.gameObject.SetActive(true);
+			StartCoroutine(HideFeedbackAfterDelay(2f));
+		}
+	}
+
+	private IEnumerator HideFeedbackAfterDelay(float delay)
+	{
+		yield return new WaitForSeconds(delay);
+		_feedbackText.gameObject.SetActive(false);
+	}
+
 }
 
 

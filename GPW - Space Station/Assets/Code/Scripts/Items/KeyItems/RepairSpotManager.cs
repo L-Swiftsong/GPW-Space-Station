@@ -4,15 +4,30 @@ using UnityEngine;
 using Interaction;
 using Items.KeyItem;
 using Items.Collectables;
+using Audio;
+using System;
 
 public class RepairSpotManager : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private List<UseKeyItem> _repairSpots;
     private UseKeyItem _activeRepairSpot;
 
+    [Header("Audio")]
+	[SerializeField] private AudioClip incorrectItemSound;
+	[SerializeField] private AudioClip correctItemSound;
+	[SerializeField] private AudioSource audioSource;
 
-    void Start()
+    [Header("Win")]
+    private int _successfulRepairs = 0;
+    private int _totalRepairsNeeded = 3;
+
+    public static event Action OnAllRepairsCompleted;
+
+	void Start()
     {
+        //_totalRepairsNeeded = _repairSpots.Count;
+
         foreach (var repairSpot in _repairSpots)
         {
             repairSpot.OnSuccessfulInteraction += HandleSuccessfulInteraction;
@@ -47,6 +62,7 @@ public class RepairSpotManager : MonoBehaviour
             if (_activeRepairSpot.IsKeyItemCorrect(keyItemData))
             {
                 _activeRepairSpot.TryUseKeyItem(keyItemData);
+                CompletedRepairs();
             }
             else
             {
@@ -62,10 +78,31 @@ public class RepairSpotManager : MonoBehaviour
 
     private void HandleSuccessfulInteraction()
     {
-        Debug.Log("Repair spot interaction succeeded.");
+		SFXManager.Instance.PlayClipAtPosition(correctItemSound, transform.position, 1, 1, 0.5f);
+		Debug.Log("Repair spot interaction succeeded. " + _successfulRepairs);
+
+        CheckForWinCondition();
     }
     private void HandleFailedInteraction()
     {
-        Debug.Log("Repair spot interaction failed.");
+		SFXManager.Instance.PlayClipAtPosition(incorrectItemSound, transform.position, 1, 1, 0.5f);
+		Debug.Log("Repair spot interaction failed.");
+    }
+
+    private void CompletedRepairs()
+    {
+        _successfulRepairs++;
+		Debug.Log($"Completed repair spots: {_successfulRepairs}");
+
+        CheckForWinCondition();
+	}
+
+    private void CheckForWinCondition()
+    {
+        if (_successfulRepairs == _totalRepairsNeeded)
+        {
+			Debug.Log("All repair spots completed! You win!");
+            OnAllRepairsCompleted?.Invoke();
+		}
     }
 }
