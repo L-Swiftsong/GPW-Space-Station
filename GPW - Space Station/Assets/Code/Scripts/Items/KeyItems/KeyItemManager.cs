@@ -24,6 +24,8 @@ namespace Items.KeyItem
 		private bool _allowManualEquip = false;
 		private bool _interactionTriggered = false;
 
+		private UseKeyItem _activeRepairSpot;
+
 		private void Awake()
 		{
 			if (Instance == null)
@@ -89,6 +91,13 @@ namespace Items.KeyItem
 		}
 
 		public GameObject GetHeldItem() => _currentItem;
+
+		public void SetActiveRepairSpot(UseKeyItem repairSpot)
+		{
+			_activeRepairSpot = repairSpot;
+		}
+
+		public UseKeyItem GetActiveRepairSpot() { return _activeRepairSpot; }
 
 		public void PlaceItemAtLocation(Transform location)
 		{
