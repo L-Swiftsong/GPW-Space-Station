@@ -43,8 +43,15 @@ namespace Hiding
 
 
         public static event Action<HidingSpot> OnAnyHidingSpotInteracted;
-        public event Action OnSuccessfulInteraction;
-        public event Action OnFailedInteraction;
+
+        #region IInteractable Properties & Events
+
+        private int _previousLayer;
+
+        public event System.Action OnSuccessfulInteraction;
+        public event System.Action OnFailedInteraction;
+
+        #endregion
 
 
 #if UNITY_EDITOR
@@ -85,6 +92,10 @@ namespace Hiding
             OnAnyHidingSpotInteracted?.Invoke(this);
             OnSuccessfulInteraction?.Invoke();
         }
+        public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+        public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
+
+
         private Vector3 GetExitSpot(int index) => transform.TransformPoint(_exitSpots[index]);
         public bool TryGetExitPosition(Vector3 forward, float minimuimUnhideAngle, out Vector3 exitSpot)
         {

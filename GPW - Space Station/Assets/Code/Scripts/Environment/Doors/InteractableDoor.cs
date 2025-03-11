@@ -12,8 +12,14 @@ namespace Environment.Doors
         public bool WasOpenedFromFacingDirection => _wasOpenedFromFacingDirection;
 
 
-        public event Action OnSuccessfulInteraction;
-        public event Action OnFailedInteraction;
+        #region IInteractable Properties & Events
+
+        private int _previousLayer;
+
+        public event System.Action OnSuccessfulInteraction;
+        public event System.Action OnFailedInteraction;
+
+        #endregion
 
 
         public void Interact(PlayerInteraction interactingScript)
@@ -25,5 +31,7 @@ namespace Environment.Doors
 
             OnSuccessfulInteraction?.Invoke();
         }
+        public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+        public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
     }
 }

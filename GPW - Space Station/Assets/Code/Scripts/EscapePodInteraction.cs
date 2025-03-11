@@ -7,10 +7,17 @@ using Items.KeyItem;
 
 public class EscapePodInteraction : MonoBehaviour, IInteractable
 {
-	public event System.Action OnSuccessfulInteraction;
-	public event System.Action OnFailedInteraction;
+    #region IInteractable Properties & Events
 
-	public event System.Action OnPlayerInteracted;
+    private int _previousLayer;
+
+    public event System.Action OnSuccessfulInteraction;
+    public event System.Action OnFailedInteraction;
+
+    #endregion
+
+
+    public event System.Action OnPlayerInteracted;
 
 	private bool _hasInteracted;
 
@@ -23,9 +30,12 @@ public class EscapePodInteraction : MonoBehaviour, IInteractable
 		OnSuccessfulInteraction?.Invoke();
 
 		KeyItemManager.Instance.AllowKeyItemEquip();
-	}
+    }
+    public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+    public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
 
-	public void ResetInteraction()
+
+    public void ResetInteraction()
 	{
 		_hasInteracted = false;
 	}

@@ -45,8 +45,14 @@ namespace Environment.Buttons
         public static event System.EventHandler OnAnyKeycardReaderHighlighted;
         public static event System.EventHandler OnAnyKeycardReaderStopHighlighted;
 
+        #region IInteractable Properties & Events
+
+        private int _previousLayer;
+
         public event System.Action OnSuccessfulInteraction;
         public event System.Action OnFailedInteraction;
+
+        #endregion
 
 
         private void Awake()
@@ -85,8 +91,16 @@ namespace Environment.Buttons
             // The player has a keycard reader of a valid security level.
             SuccessfulInteraction();
         }
-        public void Highlight() => OnAnyKeycardReaderHighlighted?.Invoke(this, System.EventArgs.Empty);
-        public void StopHighlighting() => OnAnyKeycardReaderStopHighlighted?.Invoke(this, System.EventArgs.Empty);
+        public void Highlight()
+        {
+            OnAnyKeycardReaderHighlighted?.Invoke(this, System.EventArgs.Empty);
+            IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+        }
+        public void StopHighlighting()
+        {
+            OnAnyKeycardReaderStopHighlighted?.Invoke(this, System.EventArgs.Empty);
+            IInteractable.StopHighlight(this.gameObject, _previousLayer);
+        }
 
 
         private void FailedInteraction()

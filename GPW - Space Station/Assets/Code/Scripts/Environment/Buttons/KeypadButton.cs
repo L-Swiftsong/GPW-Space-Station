@@ -12,8 +12,15 @@ namespace Environment.Buttons
         [SerializeField] private int _number;
         [SerializeField] private Keypad _keypad;
 
+
+        #region IInteractable Properties & Events
+
+        private int _previousLayer;
+
         public event System.Action OnSuccessfulInteraction;
         public event System.Action OnFailedInteraction;
+
+        #endregion
 
 
         public void Interact(PlayerInteraction player)
@@ -33,5 +40,7 @@ namespace Environment.Buttons
 
             OnSuccessfulInteraction?.Invoke();
         }
+        public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+        public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
     }
 }

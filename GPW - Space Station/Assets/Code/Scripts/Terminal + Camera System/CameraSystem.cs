@@ -40,8 +40,6 @@ public class CameraSystem : MonoBehaviour, IInteractable
     [Header("Rec Indicator")]
     [SerializeField] private TextMeshProUGUI recIndicator;
 
-    public event System.Action OnSuccessfulInteraction;
-    public event System.Action OnFailedInteraction;
 
     private bool isViewingCameras = false;
     private PlayerInteraction currentInteractingScript;
@@ -52,6 +50,18 @@ public class CameraSystem : MonoBehaviour, IInteractable
 
     //stop the "REC" indicator animation when closing the camera UI.
     private Coroutine recIndicatorCoroutine;
+
+
+    #region IInteractable Properties & Events
+
+    private int _previousLayer;
+
+    public event System.Action OnSuccessfulInteraction;
+    public event System.Action OnFailedInteraction;
+
+    #endregion
+
+
 
     private void Awake()
     {
@@ -96,9 +106,9 @@ public class CameraSystem : MonoBehaviour, IInteractable
             CloseCameraView(currentInteractingScript);
         }
     }
+    public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+    public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
 
-    public void Highlight() { }
-    public void StopHighlighting() { }
 
     private void OpenCameraView()
     {
