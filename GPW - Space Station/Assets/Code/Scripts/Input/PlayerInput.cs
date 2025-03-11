@@ -71,9 +71,10 @@ public class PlayerInput : MonoBehaviour
     private const string GAMEPAD_CONTROL_SCHEME_NAME = "Gamepad";
 
     private static InputControlScheme s_currentControlScheme = default;
+    public static InputControl CurrentInputDevice { get; private set; }
 
-    enum DeviceType { MnK, Gamepad }
-    private static DeviceType s_lastUsedDevice => s_currentControlScheme.name == MOUSE_AND_KEYBOARD_CONTROL_SCHEME_NAME ? DeviceType.MnK : DeviceType.Gamepad;
+    public enum DeviceType { MnK, Gamepad }
+    public static DeviceType LastUsedDevice => s_currentControlScheme.name == MOUSE_AND_KEYBOARD_CONTROL_SCHEME_NAME ? DeviceType.MnK : DeviceType.Gamepad;
 
 
     // Movement Input.
@@ -94,7 +95,7 @@ public class PlayerInput : MonoBehaviour
     public static float GamepadLookX => s_gamepadLookInput.x;
     public static float GamepadLookY => s_gamepadLookInput.y;
 
-    public static Vector2 GetLookInputWithSensitivity =>s_lastUsedDevice switch {
+    public static Vector2 GetLookInputWithSensitivity =>LastUsedDevice switch {
         // Device is Mouse & Keyboard.
         DeviceType.MnK => new Vector2(
             x: MouseLookX * PlayerSettings.MouseHorizontalSensititvity,
@@ -334,6 +335,7 @@ public class PlayerInput : MonoBehaviour
     {
         // Get the control scheme associated with the used device.
         InputControlScheme deviceControlScheme = s_playerInput.controlSchemes.Where(t => t.SupportsDevice(inputControl.device)).FirstOrDefault();
+        CurrentInputDevice = inputControl.device;
 
         if (deviceControlScheme != default && deviceControlScheme != s_currentControlScheme)
         {

@@ -35,9 +35,16 @@ namespace Environment
         [SerializeField] private ProgressBar _rechargeProgressBar;
 
 
+        #region IInteractable Properties & Events
 
-        public event Action OnSuccessfulInteraction;
-        public event Action OnFailedInteraction;
+        private int _previousLayer;
+
+        public event System.Action OnSuccessfulInteraction;
+        public event System.Action OnFailedInteraction;
+
+        #endregion
+
+
         private void Awake()
         {
             // Start with everything hidden.
@@ -73,6 +80,8 @@ namespace Environment
 
             OnSuccessfulInteraction?.Invoke();
         }
+        public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+        public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
 
 
         private void StartRecharge(float initialBattery)

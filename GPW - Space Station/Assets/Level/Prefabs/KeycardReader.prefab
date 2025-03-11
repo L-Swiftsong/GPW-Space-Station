@@ -50,9 +50,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _connectedObject: {fileID: 0}
   _securityLevel: 0
+  _isUnlocked: 0
   _canOnlyActivate: 0
   _limitedDuration: 0
   _duration: 3
+  _renderer: {fileID: 3030884355282248540}
+  _keycardScreenMaterialIndex: 0
   _audioSource: {fileID: 4657113257095379803}
   _successfulInteractionClip: {fileID: 8300000, guid: ddd7f7200a11047449abba59eb7dd319, type: 3}
   _failedInteractionClip: {fileID: 0}
@@ -576,6 +579,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3bf42b00500be794cbd179b5b9a59569, type: 3}
+--- !u!23 &3030884355282248540 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 3bf42b00500be794cbd179b5b9a59569, type: 3}
+  m_PrefabInstance: {fileID: 4453577219519922136}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4198746421777455155 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3bf42b00500be794cbd179b5b9a59569, type: 3}

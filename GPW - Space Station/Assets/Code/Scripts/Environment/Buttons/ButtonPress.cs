@@ -10,8 +10,14 @@ namespace Environment.Buttons
     {
         public event System.Action<SequenceButton> OnButtonPressed;
 
+        #region IInteractable Properties & Events
+
+        private int _previousLayer;
+
         public event System.Action OnSuccessfulInteraction;
         public event System.Action OnFailedInteraction;
+
+        #endregion
 
 
         public void Interact(PlayerInteraction playerInteraction)
@@ -20,5 +26,7 @@ namespace Environment.Buttons
             OnButtonPressed?.Invoke(this);
             OnSuccessfulInteraction?.Invoke();
         }
+        public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+        public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
     }
 }

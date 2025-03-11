@@ -65,9 +65,16 @@ public class Terminal : MonoBehaviour, IInteractable
     [Header("Files Settings")]
     [SerializeField] private FileStory[] files;
 
-    // IInteractable events
+
+    #region IInteractable Properties & Events
+
+    private int _previousLayer;
+
     public event System.Action OnSuccessfulInteraction;
     public event System.Action OnFailedInteraction;
+
+    #endregion
+
 
     private bool _isUsingTerminal = false;
     private PlayerInteraction _currentInteractingScript;
@@ -205,8 +212,9 @@ public class Terminal : MonoBehaviour, IInteractable
             OpenTerminalUI();
         }
     }
-    public void Highlight() { }
-    public void StopHighlighting() { }
+    public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+    public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
+
 
     private void OpenTerminalUI()
     {

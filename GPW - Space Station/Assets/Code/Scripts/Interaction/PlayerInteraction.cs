@@ -24,12 +24,12 @@ namespace Interaction
                 if (value != m_currentInteractable)
                 {
                     // Our current interactable has changed.
-                    if (value == null)
+                    if (m_currentInteractable != null)
                     {
-                        // We have stopped looking at an interactable.
                         m_currentInteractable.StopHighlighting();
                     }
-                    else
+
+                    if (value != null)
                     {
                         // We are looking at a new interactable object
                         OnHighlightedInteractableObject?.Invoke();
