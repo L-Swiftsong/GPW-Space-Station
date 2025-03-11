@@ -15,7 +15,6 @@ public class RepairSpotManager : MonoBehaviour
 
     [Header("Audio")]
 	[SerializeField] private AudioClip incorrectItemSound;
-	[SerializeField] private AudioClip correctItemSound;
 	[SerializeField] private AudioSource audioSource;
 
     [Header("Win")]
@@ -77,8 +76,7 @@ public class RepairSpotManager : MonoBehaviour
     }
 
     private void HandleSuccessfulInteraction()
-    {
-		SFXManager.Instance.PlayClipAtPosition(correctItemSound, transform.position, 1, 1, 0.5f);
+	{
 		Debug.Log("Repair spot interaction succeeded. " + _successfulRepairs);
 
         CheckForWinCondition();

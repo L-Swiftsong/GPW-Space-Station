@@ -10,6 +10,8 @@ using Interaction;
 using Items;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using TMPro;
+using Audio;
 
 public class UseKeyItem : MonoBehaviour, IInteractable
 {
@@ -25,8 +27,12 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 	[SerializeField] private GameObject _itemsTab;
 
 	[Header("UI Feedback")]
-	[SerializeField] private Text _feedbackText;
-	[SerializeField] private string _incorrectItemMessage = "Incorrect item!";
+	[SerializeField] private GameObject _feedbackText;
+	[SerializeField] private Transform _feedbackTransform;
+
+	[Header("Audio")]
+	[SerializeField] private AudioClip correctItemSound;
+	[SerializeField] private AudioSource audioSource;
 
 	private bool _isInteracted;
 
@@ -49,6 +55,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 		{
 			if (IsKeyItemCorrect(selectedKeyItem))
 			{
+				SFXManager.Instance.PlayClipAtPosition(correctItemSound, transform.position, 1, 1, 2f);
 				KeyItemManager.Instance.PlaceItemAtLocation(_keyItemPlacement);
 				OnSuccessfulInteraction?.Invoke();
 
@@ -95,25 +102,22 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 	public void FailInteraction()
 	{
 		OnFailedInteraction?.Invoke();
-		ShowErrorMessage(_incorrectItemMessage);
+		ShowErrorMessage("Incorrect item", 1f);
 	}
 
-	private void ShowErrorMessage(string message)
+	private void ShowErrorMessage(string message, float duration)
 	{
-		if (_feedbackText != null)
+		GameObject feedbackInstance = Instantiate(_feedbackText, _feedbackTransform);
+
+		TextMeshProUGUI feedbackText = feedbackInstance.GetComponent<TextMeshProUGUI>();
+
+		if (feedbackText != null)
 		{
-			_feedbackText.text = message;
-			_feedbackText.gameObject.SetActive(true);
-			StartCoroutine(HideFeedbackAfterDelay(2f));
+			feedbackText.text = message;
 		}
-	}
 
-	private IEnumerator HideFeedbackAfterDelay(float delay)
-	{
-		yield return new WaitForSeconds(delay);
-		_feedbackText.gameObject.SetActive(false);
+		Destroy(feedbackInstance, duration);
 	}
-
 }
 
 
