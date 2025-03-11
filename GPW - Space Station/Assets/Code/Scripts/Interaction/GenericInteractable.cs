@@ -35,9 +35,16 @@ namespace Interaction
         public void Interact(PlayerInteraction interactingScript)
         {
             // Play Audio.
-            int randomClipIndex = UnityEngine.Random.Range(0, _interactionAudioClips.Length);
-            SFXManager.Instance.PlayClipAtPosition(_interactionAudioClips[randomClipIndex], transform.TransformPoint(_audioClipOffset),
-                minPitch: 1.0f - _pitchOffset, maxPitch: 1.0f + _pitchOffset, volume: _volume);
+            if (_interactionAudioClips != null)
+            {
+                int length = _interactionAudioClips.Length;
+                if (length > 0)
+                {
+                    int randomClipIndex = UnityEngine.Random.Range(0, length);
+                    SFXManager.Instance.PlayClipAtPosition(_interactionAudioClips[randomClipIndex], transform.TransformPoint(_audioClipOffset),
+                        minPitch: 1.0f - _pitchOffset, maxPitch: 1.0f + _pitchOffset, volume: _volume);
+                }
+            }
 
 
             // Play Animation.
