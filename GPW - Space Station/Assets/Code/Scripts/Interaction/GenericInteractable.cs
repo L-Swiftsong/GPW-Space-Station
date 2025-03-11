@@ -34,6 +34,7 @@ namespace Interaction
 
         public void Interact(PlayerInteraction interactingScript)
         {
+            print("Sound Called");
             // Play Audio.
             if (_interactionAudioClips != null)
             {
@@ -41,6 +42,7 @@ namespace Interaction
                 if (length > 0)
                 {
                     int randomClipIndex = UnityEngine.Random.Range(0, length);
+                    print("Sound Called");
                     SFXManager.Instance.PlayClipAtPosition(_interactionAudioClips[randomClipIndex], transform.TransformPoint(_audioClipOffset),
                         minPitch: 1.0f - _pitchOffset, maxPitch: 1.0f + _pitchOffset, volume: _volume);
                 }
