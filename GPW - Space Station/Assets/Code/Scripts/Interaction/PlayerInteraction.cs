@@ -47,6 +47,10 @@ namespace Interaction
         public LayerMask interactableLayer;
 
 
+        [Header("Temp")]
+        [SerializeField] private bool _displayAudioSourceWarnings = false;
+
+
         public static System.Action OnHighlightedInteractableObject;
 
 
@@ -108,14 +112,14 @@ namespace Interaction
                 {
                     audioSource.Play();
                 }
-                else
+                else if (_displayAudioSourceWarnings)
                 {
                     Debug.LogWarning("No AudioSource or AudioClip found on interactable object!", interactableMono);
                 }
             }
         }
 
-            public void SetCurrentInteractableOverride(IInteractable interactableOverride)
+        public void SetCurrentInteractableOverride(IInteractable interactableOverride)
         {
             _currentInteractableOverride = interactableOverride;
 
