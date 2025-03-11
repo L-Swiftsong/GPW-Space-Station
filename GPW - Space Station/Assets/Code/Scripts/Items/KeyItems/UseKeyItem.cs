@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items.Collectables;
 using Items.KeyItem;
-using Items.Flashlight;
-using TMPro.EditorUtilities;
 using UI.ItemDisplay;
 using Interaction;
-using Items;
-using UnityEngine.Rendering;
-using UnityEngine.UI;
 using TMPro;
 using Audio;
 
 public class UseKeyItem : MonoBehaviour, IInteractable
 {
-	public event System.Action OnSuccessfulInteraction;
-	public event System.Action OnFailedInteraction;
+    #region IInteractable Properties & Events
 
-	[Header("Key Item")]
+    private int _previousLayer;
+
+    public event System.Action OnSuccessfulInteraction;
+    public event System.Action OnFailedInteraction;
+
+    #endregion
+
+
+    [Header("Key Item")]
 	[SerializeField] private KeyItemData _requiredKeyItem;
 	[SerializeField] private Transform _keyItemPlacement;
 
@@ -97,9 +99,11 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 
 			OnSuccessfulInteraction.Invoke();
 		}
-	}
+    }
+    public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+    public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
 
-	public void FailInteraction()
+    public void FailInteraction()
 	{
 		OnFailedInteraction?.Invoke();
 		ShowErrorMessage("Incorrect item", 1f);

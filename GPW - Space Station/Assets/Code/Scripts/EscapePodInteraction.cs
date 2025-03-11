@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
 using Items.KeyItem;
-using UnityEngine.Rendering;
 
 
 public class EscapePodInteraction : MonoBehaviour, IInteractable
 {
-	public event System.Action OnSuccessfulInteraction;
-	public event System.Action OnFailedInteraction;
+    #region IInteractable Properties & Events
 
-	[SerializeField] private UseKeyItem[] _repairSpots;
+    private int _previousLayer;
+
+    public event System.Action OnSuccessfulInteraction;
+    public event System.Action OnFailedInteraction;
+
+    #endregion
+
+
+    [SerializeField] private UseKeyItem[] _repairSpots;
 	private UseKeyItem _activeRepairSpot;
 
 	private bool _hasInteracted;
@@ -31,9 +37,11 @@ public class EscapePodInteraction : MonoBehaviour, IInteractable
 		OnSuccessfulInteraction?.Invoke();
 
 		KeyItemManager.Instance.AllowKeyItemEquip();
-	}
+    }
+    public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+    public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
 
-	public void ResetInteraction()
+    public void ResetInteraction()
 	{
 		_hasInteracted = false;
 		_activeRepairSpot = null;	

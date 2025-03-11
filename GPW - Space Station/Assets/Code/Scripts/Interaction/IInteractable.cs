@@ -15,12 +15,21 @@ namespace Interaction
 
         protected static void StartHighlight(UnityEngine.GameObject gameObject, ref int previousLayer)
         {
+            if (gameObject == null)
+                return;
+
             if (gameObject.layer != INTERACTION_OUTLINE_LAYER)
             {
                 previousLayer = gameObject.layer;
-                gameObject.SetLayerRecursive(INTERACTION_OUTLINE_LAYER);
+                gameObject.SetLayerRecursive(INTERACTION_OUTLINE_LAYER, gameObject.layer);
             }
         }
-        protected static void StopHighlight(UnityEngine.GameObject gameObject, int previousLayer) => gameObject.SetLayerRecursive(previousLayer);
+        protected static void StopHighlight(UnityEngine.GameObject gameObject, int previousLayer)
+        {
+            if (gameObject == null)
+                return;
+
+            gameObject.SetLayerRecursive(previousLayer, INTERACTION_OUTLINE_LAYER);
+        }
     }
 }
