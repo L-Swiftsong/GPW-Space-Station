@@ -70,7 +70,7 @@ namespace UI.ItemDisplay
 
                 UnregisterKeyItemEntry(this);
 
-                Destroy(gameObject);
+                //Destroy(gameObject);
             }
 			else
 			{
