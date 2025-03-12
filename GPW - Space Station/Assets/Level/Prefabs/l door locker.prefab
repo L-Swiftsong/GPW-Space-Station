@@ -100,6 +100,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: -90
       objectReference: {fileID: 0}
+    - target: {fileID: -4224802563465909751, guid: c7145a98eb478e641a87b655cd383553, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c7145a98eb478e641a87b655cd383553, type: 3}
       propertyPath: m_Name
       value: lockers
@@ -144,6 +148,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -4224802563465909751, guid: c7145a98eb478e641a87b655cd383553, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4948938016579047271}
     - targetCorrespondingSourceObject: {fileID: 2239415887478834489, guid: c7145a98eb478e641a87b655cd383553, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5883140372564089509}
@@ -245,6 +252,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startOpen: 0
   _minToggleDelay: 0.2
+--- !u!1 &4749659494852713700 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4224802563465909751, guid: c7145a98eb478e641a87b655cd383553, type: 3}
+  m_PrefabInstance: {fileID: 338986403506796269}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4948938016579047271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4749659494852713700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a24103f9650d4c4ebe5500739a12532, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _successAudioClip: {fileID: 8300000, guid: 794ee1940059a484faa06d2ac39f68a3, type: 3}
+  _failedAudioClip: {fileID: 8300000, guid: ad199320fee944a4b9a91276a6e3e5c2, type: 3}
+  _volume: 1
+  _minPitch: 1
+  _maxPitch: 1
 --- !u!4 &6727730063527471573 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6478956445914160952, guid: c7145a98eb478e641a87b655cd383553, type: 3}
