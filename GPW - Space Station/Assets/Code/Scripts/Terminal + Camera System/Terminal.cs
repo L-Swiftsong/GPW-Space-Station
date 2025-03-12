@@ -152,8 +152,6 @@ public class Terminal : MonoBehaviour, IInteractable
         if (terminalCamera != null)
             terminalCamera.gameObject.SetActive(false);
     }
-    private void OnEnable() => PlayerInput.OnUICancelPerformed += CloseTerminal;
-    private void OnDisable() => PlayerInput.OnUICancelPerformed -= CloseTerminal;
 
 
     private void Update()
@@ -209,7 +207,7 @@ public class Terminal : MonoBehaviour, IInteractable
             OnSuccessfulInteraction?.Invoke();
 
             // Prevent all actions s 
-            PlayerInput.PreventAllActions(typeof(Terminal));
+            PlayerInput.PreventAllActions(typeof(Terminal), disableGlobalMaps: true);
 
             interactingScript.SetCurrentInteractableOverride(this);
             OpenTerminalUI();
@@ -226,6 +224,9 @@ public class Terminal : MonoBehaviour, IInteractable
 
         if (terminalCamera != null)
             terminalCamera.gameObject.SetActive(true);
+
+        // Subscribe to input events.
+        PlayerInput.OnUICancelPerformed += CloseTerminal;
 
         if (hasAuthenticated)
         {
@@ -612,6 +613,10 @@ public class Terminal : MonoBehaviour, IInteractable
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        // Unsubscribe from Input Events.
+        PlayerInput.OnUICancelPerformed -= CloseTerminal;
+
 
         _currentInteractingScript?.ResetCurrentInteractableOverride();
         _currentInteractingScript = null;
