@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 5795088142869797343}
   - component: {fileID: 9060824910576064705}
   - component: {fileID: 4932668727370100386}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ProgressText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +330,7 @@ GameObject:
   - component: {fileID: 1772036936663005278}
   - component: {fileID: 4846226056837675071}
   - component: {fileID: 4607137617699877227}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -524,7 +524,7 @@ GameObject:
   - component: {fileID: 651964341257193847}
   - component: {fileID: 7550371571737262882}
   - component: {fileID: 3967471273800580477}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: LinearProgressBar(Clone)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -689,10 +689,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _flashlightModel: {fileID: 6307898510040669332}
-  _rechargeRate: 20
-  _rechargeSound: {fileID: 8300000, guid: 73aeb25c97c617f4f8234fcf40f7e077, type: 3}
-  _rechargeFinishSound: {fileID: 0}
-  _rechargeSource: {fileID: 8972413256279283359}
+  _rechargeRate: 25
+  _rechargeAudioSource: {fileID: 8972413256279283359}
+  _rechargeClip: {fileID: 8300000, guid: 73aeb25c97c617f4f8234fcf40f7e077, type: 3}
+  _rechargeFinishClip: {fileID: 0}
   _progressBarContainer: {fileID: 7665288895313594348}
   _rechargeProgressBar: {fileID: 3967471273800580477}
 --- !u!65 &3064538979455302853
@@ -725,9 +725,9 @@ AudioSource:
   m_GameObject: {fileID: 6285150138103175977}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -2633832918951429155, guid: c6cceb697f88c6f41af12a9bc6c0c298, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -857,7 +857,7 @@ GameObject:
   - component: {fileID: 4175978754559970123}
   - component: {fileID: 7089967671214582631}
   - component: {fileID: 5090833925191989175}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -944,6 +944,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 8909357502185475476}
     m_Modifications:
     - target: {fileID: -8764077512085610462, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -8764077512085610462, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
@@ -988,40 +992,80 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8462709953001013040, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -8462709953001013040, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -7862391691550088030, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -7862391691550088030, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: -7639331209684527813, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -7639331209684527813, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -5921505478000457673, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -5921505478000457673, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: -4593130486874181694, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -4593130486874181694, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -3068240195741245191, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -3068240195741245191, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: -1916899210259106318, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -1916899210259106318, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -1014268425052216762, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -1014268425052216762, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: -584413233861867849, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -584413233861867849, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 52361805505633545, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 52361805505633545, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1032,16 +1076,32 @@ PrefabInstance:
       value: charging station model
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300593632408891413, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 2300593632408891413, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
     - target: {fileID: 4603337159546281427, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4603337159546281427, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7742780737561719692, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7742780737561719692, guid: 64fe3b7fe24cc1c4eb2a30aa134d486d, type: 3}
       propertyPath: m_StaticEditorFlags

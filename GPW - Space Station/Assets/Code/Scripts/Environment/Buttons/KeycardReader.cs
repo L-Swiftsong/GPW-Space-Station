@@ -1,12 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Environment.Doors;
 using Interaction;
 
 namespace Environment.Buttons
 {
-    [RequireComponent(typeof(AudioSource))]
     public class KeycardReader : MonoBehaviour, IInteractable
     {
         [Header("Keycard Reader Settings")]
@@ -34,12 +32,6 @@ namespace Environment.Buttons
         private const string SECURITY_LEVEL_IDENTIFIER = "_SecurityLevel";
         private const string IS_UNLOCKED_IDENTIFIER = "_IsSecurityLevelValid";
         private const string NOISE_OFFSET_IDENTIFIER = "_NoiseTimeOffset";
-
-
-        [Header("SFX")]
-        [SerializeField] private AudioSource _audioSource;
-        [SerializeField] private AudioClip _successfulInteractionClip;
-        [SerializeField] private AudioClip _failedInteractionClip;
 
 
         public static event System.EventHandler OnAnyKeycardReaderHighlighted;
@@ -107,12 +99,6 @@ namespace Environment.Buttons
         {
             Debug.Log("Failed Interaction");
             OnFailedInteraction?.Invoke();
-
-            if (_failedInteractionClip != null)
-            {
-                // Play the 'Interaction Failed' audio.
-                _audioSource.PlayOneShot(_failedInteractionClip);
-            }
         }
         private void SuccessfulInteraction()
         {
@@ -130,12 +116,6 @@ namespace Environment.Buttons
             else
             {
                 Activate();
-            }
-
-            if (_successfulInteractionClip != null)
-            {
-                // Play the 'Interaction Successful' audio.
-                _audioSource.PlayOneShot(_successfulInteractionClip);
             }
         }
 

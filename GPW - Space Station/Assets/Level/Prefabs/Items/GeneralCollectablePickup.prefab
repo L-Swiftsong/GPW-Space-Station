@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3484100038014117902}
   - component: {fileID: 6318305640585859996}
+  - component: {fileID: 9134933286200169282}
   m_Layer: 0
   m_Name: GeneralCollectablePickup
   m_TagString: Untagged
@@ -47,6 +48,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _collectableData: {fileID: 0}
+--- !u!114 &9134933286200169282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650553735342460502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a24103f9650d4c4ebe5500739a12532, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _successAudioClip: {fileID: 8300000, guid: 4105686ef9926104785a93bc3493313c, type: 3}
+  _failedAudioClip: {fileID: 0}
+  _volume: 1
+  _minPitch: 1
+  _maxPitch: 1
 --- !u!1 &5817206788285601617
 GameObject:
   m_ObjectHideFlags: 0

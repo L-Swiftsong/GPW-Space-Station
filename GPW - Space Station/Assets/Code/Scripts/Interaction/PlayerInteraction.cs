@@ -98,7 +98,7 @@ namespace Interaction
                 // Interact with our currently highlighted interactable.
                 _currentInteractable.Interact(this);
 
-                PlayInteractionSound(_currentInteractable);
+                //PlayInteractionSound(_currentInteractable);
             }
         }
         private void PlayInteractionSound(IInteractable interactable)

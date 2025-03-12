@@ -26,9 +26,9 @@ namespace Environment
 
 
         [Header("Effects")]
-        [SerializeField] private AudioClip _rechargeSound;
-        [SerializeField] private AudioClip _rechargeFinishSound;
-        [SerializeField] private AudioSource _rechargeSource;
+        [SerializeField] private AudioSource _rechargeAudioSource;
+        [SerializeField] private AudioClip _rechargeClip;
+        [SerializeField] private AudioClip _rechargeFinishClip;
 
         [Space(5)]
         [SerializeField] private GameObject _progressBarContainer;
@@ -99,8 +99,18 @@ namespace Environment
             ShowRechargeProgressBar();
             _rechargeFlashlightCoroutine = StartCoroutine(RechargeFlashlight());
 
-			_rechargeSource.clip = _rechargeSound;
-			_rechargeSource.Play();
+			_rechargeAudioSource.Stop();
+            if (_rechargeClip != null && _currentBattery < 100.0f)
+            {
+			    _rechargeAudioSource.clip = _rechargeClip;
+                
+                float progressPercentage = _currentBattery / 100.0f;
+                float desiredTime = _rechargeClip.length * progressPercentage;
+                Debug.Log(desiredTime);
+                _rechargeAudioSource.time = desiredTime;
+
+			    _rechargeAudioSource.Play();
+            }
 		}
         private void ResumeRecharge()
         {
@@ -123,7 +133,7 @@ namespace Environment
             {
                 StopCoroutine(_rechargeFlashlightCoroutine);
 
-                _rechargeSource.Stop();
+                _rechargeAudioSource.Stop();
             }
 
             HideRechargeProgressBar();
@@ -146,7 +156,6 @@ namespace Environment
         /// <summary> Recharge the current flashlight at a fixed rate over time.</summary>
         private IEnumerator RechargeFlashlight()
         {
-
             while (_currentBattery < _maxBattery)
             {
                 // Recharge the flashlight at a fixed rate over time.
@@ -163,16 +172,11 @@ namespace Environment
             }
 
             // We have finished recharging.
-
-            if (_rechargeSound != null)
+            _rechargeAudioSource.Stop();
+            if (_rechargeFinishClip != null)
             {
-                _rechargeSource.Stop();
-            }
-
-            if (_rechargeFinishSound != null)
-            {
-                // Notify the player that we have finished charging.
-                AudioSource.PlayClipAtPoint(_rechargeFinishSound, transform.position);
+                _rechargeAudioSource.clip = _rechargeFinishClip;
+                _rechargeAudioSource.Play();
             }
         }
 

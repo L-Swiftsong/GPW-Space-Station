@@ -1,25 +1,18 @@
-using Audio;
-using Interaction;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Interaction;
 
 namespace Items.Collectables
 {
     public class CollectablePickup : ItemPickup
     {
         [SerializeField] private CollectableData _collectableData;
-        [SerializeField] private AudioClip pickupSound;
-        [SerializeField] private AudioSource audioSource;
 
 
         protected override bool PerformInteraction(PlayerInteraction interactingScript)
         {
-
-            SFXManager.Instance.PlayClipAtPosition(pickupSound, transform.position, 1, 1, 0.5f);
             CollectableManager.AddCollectable(_collectableData);
-
-
 
             Debug.Log($"Obtained Collectable of Type: {_collectableData.GetType()}");
 

@@ -152,6 +152,9 @@ public class Terminal : MonoBehaviour, IInteractable
         if (terminalCamera != null)
             terminalCamera.gameObject.SetActive(false);
     }
+    private void OnEnable() => PlayerInput.OnUICancelPerformed += CloseTerminal;
+    private void OnDisable() => PlayerInput.OnUICancelPerformed -= CloseTerminal;
+
 
     private void Update()
     {
