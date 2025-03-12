@@ -13,6 +13,11 @@ namespace Items
 
         [Header("Flashlight")]
         [SerializeField] private FlashlightController _flashlightController;
+
+        #if UNITY_EDITOR
+        [SerializeField] private bool _startWithFlashlightInEditor = true;
+        #endif
+
         private bool _hasFlashlight = false;
 
 
@@ -30,8 +35,14 @@ namespace Items
 
         private void Awake()
         {
-            // Start with a full Flashlight and a Level 0 Keycard Decoder.
-            AddFlashlight(100.0f);
+            // Set Starting Items.
+            #if UNITY_EDITOR
+            if (_startWithFlashlightInEditor)
+            {
+                AddFlashlight(100.0f);
+            }
+            #endif
+
             AddKeycardDecoder(0);
         }
         public void SetHasObtainedFlashlight(bool hasFlashlight, float flashlightBattery)

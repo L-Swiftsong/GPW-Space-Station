@@ -43,6 +43,8 @@ public class SelectedLockUI : MonoBehaviour
     private void OnLockDisabled() => _root.SetActive(false);
 
 
+#if UNITY_EDITOR
+
     private void OnDrawGizmosSelected()
     {
         if (!_drawGizmos)
@@ -60,4 +62,6 @@ public class SelectedLockUI : MonoBehaviour
             Gizmos.DrawSphere(position, 0.01f);
         }
     }
+
+#endif
 }

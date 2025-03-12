@@ -83,7 +83,7 @@ namespace ScriptedEvents.Triggers
 
             if (_triggerTypes == TriggerTypes.None)
             {
-                Debug.LogWarning("Warning: No values are set for the '_triggerTypes' of this object, and so it will never trigger its event.");
+                Debug.LogWarning("Warning: No values are set for the '_triggerTypes' of this object, and so it will never trigger its event.", this);
             }
         }
 #endif
