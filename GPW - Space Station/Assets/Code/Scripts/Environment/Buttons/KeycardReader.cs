@@ -14,6 +14,7 @@ namespace Environment.Buttons
 
         [Space(5)]
         [SerializeField] private bool _isUnlocked = false;
+        [SerializeField] private bool _alsoTriggerWhenFirstUnlocked = true;
 
         [Space(5)]
         [SerializeField] private bool _canOnlyActivate = false;
@@ -112,11 +113,14 @@ namespace Environment.Buttons
                 _renderer.GetPropertyBlock(_materialPropertyBlock);
                 _materialPropertyBlock.SetInteger(IS_UNLOCKED_IDENTIFIER, 1);
                 _renderer.SetPropertyBlock(_materialPropertyBlock);
+
+                if (!_alsoTriggerWhenFirstUnlocked)
+                {
+                    return;
+                }
             }
-            else
-            {
-                Activate();
-            }
+            
+            Activate();
         }
 
         private void Activate()
