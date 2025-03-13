@@ -45,7 +45,7 @@ namespace Entities
 
 
         [Header("Crouching")]
-        [SerializeField] private NavMeshLayers _crouchingLayers = NavMeshLayers.None; // To-Implement (E.g. Doors).
+        //[SerializeField] private NavMeshLayers _crouchingLayers = NavMeshLayers.None; // To-Implement (E.g. Doors).
         [SerializeField] private float _crouchingSpeedMultiplier = 0.8f;
 
 

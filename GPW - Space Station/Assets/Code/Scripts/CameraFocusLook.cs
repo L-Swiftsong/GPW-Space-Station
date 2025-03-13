@@ -41,10 +41,16 @@ public class CameraFocusLook : MonoBehaviour
     {
         focusLookTimer += Time.deltaTime;
 
-        if (focusLookTimer > _cameraInputPreventionDefaultTime && !_preventedActionTypes.HasFlag(PlayerInput.ActionTypes.Camera))
+        if (!_preventedActionTypes.HasFlag(PlayerInput.ActionTypes.Camera) && ShouldStopFocusLook(false))
         {
-            Debug.Log("Removed Action Prevention");
             PlayerInput.RemoveActionPrevention(this.GetType(), PlayerInput.ActionTypes.Camera);
+            StopFocusLook();
+            return;
+        }
+        if (ShouldStopFocusLook(true))
+        {
+            StopFocusLook();
+            return;
         }
 
         Vector3 directionToTarget = focusLookTarget.transform.position - playerCamera.transform.position;
@@ -54,19 +60,6 @@ public class CameraFocusLook : MonoBehaviour
         playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetRotation, Time.deltaTime * lookStrength);
         _rotationPivot.rotation = Quaternion.Euler(0.0f, playerCamera.transform.rotation.eulerAngles.y, 0.0f);
         playerCamera.transform.localEulerAngles = new Vector3(playerCamera.transform.localEulerAngles.x, 0.0f, originalCameraLocalZ);
-
-
-        if (PlayerInput.GetLookInputWithSensitivity.sqrMagnitude > 0.0f)
-        {
-            // We are experiencing input.
-            StopFocusLook();
-            return;
-        }
-        if (focusLookTimer >= focusLookDuration)
-        {
-            StopFocusLook();
-            return;
-        }
     }
 
     public static void TriggerFocusLookStatic(GameObject target, float duration = 3f, float strength = 3f, PlayerInput.ActionTypes preventedActionTypes = PlayerInput.ActionTypes.Movement)
@@ -101,6 +94,27 @@ public class CameraFocusLook : MonoBehaviour
         PlayerInput.PreventActions(this.GetType(), preventedActionTypes | PlayerInput.ActionTypes.Camera);
 
     }
+
+    private bool ShouldStopFocusLook(bool allowInputToCancel)
+    {
+        if (focusLookTimer >= focusLookDuration)
+        {
+            // Focus look duration elapsed.
+            return true;
+        }
+        if (focusLookTarget == null)
+        {
+            // Lost reference to our target.
+            return true;
+        }
+        if (allowInputToCancel && PlayerInput.GetLookInputWithSensitivity.sqrMagnitude > 0.0f)
+        {
+            // We received input.
+            return true;
+        }
+
+        return false;
+    }
     private void StopFocusLook()
     {
         isFocusLookActive = false;
@@ -108,8 +122,5 @@ public class CameraFocusLook : MonoBehaviour
         PlayerInput.RemoveActionPrevention(this.GetType(), _preventedActionTypes);
     }
 
-    public bool IsFocusLookActive()
-    {
-        return isFocusLookActive;
-    }
+    public bool IsFocusLookActive() => isFocusLookActive;
 }

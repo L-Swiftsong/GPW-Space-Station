@@ -89,7 +89,6 @@ namespace Entities.Player
 
 
         [Header("Footstep Settings")]
-        [SerializeField] private AudioSource _footstepsSource;
         [SerializeField] private EntityFootstepClips _footstepClips;
         private float _timeTillNextFootstep;
 
@@ -421,6 +420,9 @@ namespace Entities.Player
 			if (cameraFocusLook != null && cameraFocusLook.IsFocusLookActive())
 			{
 				_rotationX = _playerCamera.transform.localEulerAngles.x;
+                if (_rotationX > 180.0f)
+                    _rotationX -= 360.0f;
+
                 return;
 			}
             

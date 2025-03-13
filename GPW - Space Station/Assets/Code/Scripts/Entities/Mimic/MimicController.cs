@@ -58,7 +58,15 @@ public class MimicController : MonoBehaviour
             agent.SetDestination(waypointData.waypoint.position);
 
             // wait until the agent reaches the waypoint
-            yield return new WaitUntil(() => !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance);
+            yield return new WaitUntil(() => !agent.pathPending);
+            Debug.Log(i + ": Path Determined");
+            while(agent.remainingDistance > agent.stoppingDistance)
+            {
+                Debug.DrawRay(agent.destination, Vector3.up);
+                yield return null;
+            }
+            Debug.Log($"{i}: Reached New Destination ({waypointData.waypoint.position} | {agent.destination} | {agent.remainingDistance})");
+            Debug.LogError("R");
 
             if (waypointData.shouldPause)
             {
