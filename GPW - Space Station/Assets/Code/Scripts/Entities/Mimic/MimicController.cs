@@ -10,6 +10,11 @@ public class WaypointData
     public bool shouldPause; // should the mimic pause after reaching a waypoint
     public float pauseDuration = 1f; // how long the mimic should pause for
     public float speed = 3f; // speed the mimic will travel to a waypoint
+
+    [Space(5)]
+    public ShowLogType LogOnPartialPath = ShowLogType.Warning;
+
+    [System.Serializable] public enum ShowLogType { None, Warning, Error }
 }
 
 public class MimicController : MonoBehaviour
@@ -59,14 +64,34 @@ public class MimicController : MonoBehaviour
 
             // wait until the agent reaches the waypoint
             yield return new WaitUntil(() => !agent.pathPending);
-            Debug.Log(i + ": Path Determined");
-            while(agent.remainingDistance > agent.stoppingDistance)
+
+            if (agent.pathStatus == NavMeshPathStatus.PathPartial || agent.pathStatus == NavMeshPathStatus.PathInvalid)
             {
-                Debug.DrawRay(agent.destination, Vector3.up);
-                yield return null;
+                // We received a partial or invalid path.
+                // Notify that the path was impartial (E.g. This was unexpected).
+                switch (waypointData.LogOnPartialPath)
+                {
+                    case WaypointData.ShowLogType.Warning:
+                        Debug.LogWarning($"Chase Mimic Path from {agent.transform.position} to {waypointData.waypoint.position} was partial or invalid.");
+                        break;
+                    case WaypointData.ShowLogType.Error:
+                        Debug.LogError($"Chase Mimic Path from {agent.transform.position} to {waypointData.waypoint.position} was partial or invalid.");
+                        break;
+                }
+
+                
+                float sqrStoppingDistance = agent.stoppingDistance * agent.stoppingDistance;
+                while ((agent.transform.position - waypointData.waypoint.position).sqrMagnitude > sqrStoppingDistance)
+                {
+                    agent.transform.position = Vector3.MoveTowards(agent.transform.position, waypointData.waypoint.position, agent.speed * Time.deltaTime);
+                    yield return null;
+                }
             }
-            Debug.Log($"{i}: Reached New Destination ({waypointData.waypoint.position} | {agent.destination} | {agent.remainingDistance})");
-            Debug.LogError("R");
+            else
+            {
+                // We successfully received a path.
+                yield return new WaitUntil(() => agent.remainingDistance <= agent.stoppingDistance);
+            }
 
             if (waypointData.shouldPause)
             {
@@ -82,6 +107,7 @@ public class MimicController : MonoBehaviour
 
         isMoving = false;
     }
+
 
     // Replaces the event Mimic with a prefab based on the selected mimic type
     private void ReplaceWithMimicPrefab()
