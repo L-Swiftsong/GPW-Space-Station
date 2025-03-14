@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Entities.Player;
+using Audio;
 
 
 namespace Entities.Mimic
@@ -38,7 +39,6 @@ namespace Entities.Mimic
         private bool _useFirstFootstep = true; // Toggle flag
 
         private AudioSource audioSource;
-        private AudioSource audioSource2;
 
 
         private static System.Action<bool> OnPauseAllChases;
@@ -48,8 +48,7 @@ namespace Entities.Mimic
 
         private void Start()
         {
-            audioSource2 = gameObject.GetComponent<AudioSource>();
-            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.playOnAwake = false;
 
             _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -106,7 +105,7 @@ namespace Entities.Mimic
 
                 if (_breakDoorClip != null)
                 {
-                    audioSource.PlayOneShot(_breakDoorClip);
+                    SFXManager.Instance.PlayClipAtPosition(_breakDoorClip, transform.position);
                 }
             }
         }
@@ -119,7 +118,7 @@ namespace Entities.Mimic
 
                 if (_breakDoorClip != null)
                 {
-                    audioSource.PlayOneShot(_breakDoorClip);
+                    SFXManager.Instance.PlayClipAtPosition(_breakDoorClip, transform.position);
                 }
             }
         }
@@ -230,7 +229,7 @@ namespace Entities.Mimic
                     AudioClip footstepToPlay = _useFirstFootstep ? _footstepSound1 : _footstepSound2;
                     _useFirstFootstep = !_useFirstFootstep;
 
-                    audioSource2.PlayOneShot(footstepToPlay);
+                    SFXManager.Instance.PlayClipAtPosition(footstepToPlay, transform.position); 
                 }
             }
         }
