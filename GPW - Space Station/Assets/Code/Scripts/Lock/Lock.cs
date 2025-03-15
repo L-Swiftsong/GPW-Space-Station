@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
 using UI;
+using System.Runtime.InteropServices;
+using Environment.Doors;
 
 public class Lock : MonoBehaviour, IInteractable
 {
@@ -214,7 +216,7 @@ public class Lock : MonoBehaviour, IInteractable
 
         // None of our LockWheels were set to incorrect digits.
         StopInteraction();
-        connectedDoor.GetComponent<LockerDoor>().ToggleDoor();
+        connectedDoor.GetComponent<ExternalInputDoor>().Activate();
         Destroy(this.gameObject);
     }
 

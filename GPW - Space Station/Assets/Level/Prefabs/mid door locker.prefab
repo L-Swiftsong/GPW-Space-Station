@@ -174,6 +174,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -4224802563465909751, guid: c7145a98eb478e641a87b655cd383553, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3936919602468164827}
+    - targetCorrespondingSourceObject: {fileID: -4224802563465909751, guid: c7145a98eb478e641a87b655cd383553, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7154404026577425206}
   m_SourcePrefab: {fileID: 100100000, guid: c7145a98eb478e641a87b655cd383553, type: 3}
 --- !u!4 &233882804780847366 stripped
 Transform:
@@ -256,3 +259,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startOpen: 0
   _minToggleDelay: 0.2
+--- !u!114 &7154404026577425206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4749659494852713700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a24103f9650d4c4ebe5500739a12532, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _successAudioClip: {fileID: 8300000, guid: 794ee1940059a484faa06d2ac39f68a3, type: 3}
+  _failedAudioClip: {fileID: 8300000, guid: ad199320fee944a4b9a91276a6e3e5c2, type: 3}
+  _volume: 1
+  _minPitch: 1
+  _maxPitch: 1
