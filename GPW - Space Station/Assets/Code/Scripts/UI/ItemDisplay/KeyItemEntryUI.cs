@@ -14,8 +14,11 @@ namespace UI.ItemDisplay
 
         [SerializeField] private Image _keyItemImage;
         [SerializeField] private Button _UseButton;
+
         public KeyItemData _currentKeyItem;
         private RepairSpotManager _repairSpotManager;
+
+        public bool _isUsed = false;
 
 		private void Awake()
 		{
@@ -45,7 +48,6 @@ namespace UI.ItemDisplay
 
             _keyItemImage.sprite = keyItemData.KeyItemSprite;
             _currentKeyItem = keyItemData;
-
             _UseButton.onClick.RemoveAllListeners();
             _UseButton.onClick.AddListener(() => OnUseButtonClicked());
         }
@@ -53,6 +55,8 @@ namespace UI.ItemDisplay
         private void OnUseButtonClicked()
         {
 			//KeyItemManager.Instance.EquipKeyItem(_currentKeyItem);
+
+            if (_isUsed) return;
 
             if (_repairSpotManager != null)
             {
@@ -64,18 +68,13 @@ namespace UI.ItemDisplay
         {
             if (_currentKeyItem == keyItemData)
             {
-                _keyItemImage.sprite = null;
+                _isUsed = true;
+                _UseButton.interactable = false;
+                _keyItemImage.color = new Color(1, 1, 1, 0.5f);
                 _currentKeyItem = null;
-                _UseButton.gameObject.SetActive(false);
-
+                
                 UnregisterKeyItemEntry(this);
-
-                //Destroy(gameObject);
             }
-			else
-			{
-				Debug.LogWarning("Item not found in UI for removal: " + keyItemData.name);
-			}
 		}     
 
 		public void UnregisterKeyItemEntry(KeyItemEntryUI entryUI)
