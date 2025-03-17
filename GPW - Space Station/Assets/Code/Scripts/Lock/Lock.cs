@@ -34,7 +34,7 @@ public class Lock : MonoBehaviour, IInteractable
     [Header("Code Settings")]
     [SerializeField] private int[] _correctDigits;
 
-    public GameObject connectedDoor;
+    public ExternalInputDoor connectedDoor;
 
 
     #region IInteractable Properties & Events
@@ -216,7 +216,7 @@ public class Lock : MonoBehaviour, IInteractable
 
         // None of our LockWheels were set to incorrect digits.
         StopInteraction();
-        connectedDoor.GetComponent<ExternalInputDoor>().Activate();
+        connectedDoor.Activate();
         Destroy(this.gameObject);
     }
 
