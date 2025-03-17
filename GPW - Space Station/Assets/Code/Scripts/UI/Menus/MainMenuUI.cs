@@ -14,7 +14,7 @@ namespace UI.Menus
     {
         [SerializeField] private SceneField _persistentScene;
         private static bool s_shouldLoadPersistentScene = true;
-        [SerializeField] private ForegroundSceneTransition _firstSceneTransition;
+        [SerializeField] private MainMenuEntryTransition _firstSceneTransition;
 
 
         [Header("Main Menu")]

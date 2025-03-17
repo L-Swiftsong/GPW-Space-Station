@@ -14,5 +14,14 @@ namespace SceneManagement
         public bool AlterPlayerLocation;
         public Vector3 EntryPosition;
         public float EntryRotation;
+
+
+        public HardLoadData GetLoadData()
+        {
+            return new HardLoadData(
+                scenesToLoad: ScenesToLoad, activeSceneName: ActiveSceneName,
+                IsHubTransition,
+                EntryPosition, EntryRotation);
+        }
     }
 }

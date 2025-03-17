@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class WinCondition : MonoBehaviour
 {
-	[SerializeField] private SceneField winSceneField;
+	[SerializeField] private ForegroundSceneTransition _winTransition;
+
 
 	private void OnEnable()
 	{
@@ -21,18 +22,7 @@ public class WinCondition : MonoBehaviour
 
 	private void HandleWinCondition()
 	{
-		if (winSceneField == null)
-		{
-			Debug.LogError("Win Scene is not assigned!");
-			return;
-		}
-
-		ForegroundSceneTransition winTransition = ScriptableObject.CreateInstance<ForegroundSceneTransition>();
-
-		winTransition.ScenesToLoad = new SceneField[] { winSceneField };
-		winTransition.ActiveSceneIndex = 0;
-
-		SceneLoader.Instance.PerformTransition(winTransition);
+		SceneLoader.Instance.PerformTransition(_winTransition);
 
 		Vector3 spawnPosition = Vector3.zero;
 

@@ -9,5 +9,11 @@ namespace SceneManagement
     {
         [Header("Transition")]
         public SceneField[] ScenesToUnload;
+
+
+        public SoftLoadData GetLoadData()
+        {
+            return new SoftLoadData(scenesToLoad: ScenesToLoad, activeSceneName: ActiveSceneName, scenesToUnload: ScenesToUnload);
+        }
     }
 }

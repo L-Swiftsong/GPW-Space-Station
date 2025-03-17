@@ -87,26 +87,31 @@ namespace SceneManagement
         }
 
 
-        public void PerformTransition(SceneTransition transition)
+        public void PerformTransition(ISceneTransition transition)
         {
             if (transition is ForegroundSceneTransition)
             {
-                StartCoroutine(PerformForegroundTransition(transition as ForegroundSceneTransition));
+                StartCoroutine(PerformHardTransition((transition as ForegroundSceneTransition).GetLoadData()));
             }
-            else
+            else if (transition is BackgroundSceneTransition)
             {
-                StartCoroutine(PerformBackgroundTransition(transition as BackgroundSceneTransition));
+                StartCoroutine(PerformSoftTransition((transition as BackgroundSceneTransition).GetLoadData()));
+            }
+            else if (transition is MainMenuEntryTransition)
+            {
+                StartCoroutine(PerformHardTransition((transition as MainMenuEntryTransition).GetLoadData()));
             }
         }
-        
-        private IEnumerator PerformForegroundTransition(ForegroundSceneTransition transition)
+
+
+        private IEnumerator PerformHardTransition(HardLoadData transitionData)
         {
             // Hard/Foreground load.
             OnHardLoadStarted?.Invoke();
 
 
             // Save what scene we want to have as our active scene.
-            var activeScene = transition.ActiveScene;
+            string activeSceneName = transitionData.ActiveSceneName;
 
 
             // Unload all non-persistent scenes.
@@ -123,17 +128,17 @@ namespace SceneManagement
 
 
             // Load desired scenes.
-            for (int i = 0; i < transition.ScenesToLoad.Length; i++)
+            for (int i = 0; i < transitionData.ScenesToLoad.Length; i++)
             {
-                _scenesLoading.Add(SceneManager.LoadSceneAsync(transition.ScenesToLoad[i], LoadSceneMode.Additive));
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(transitionData.ScenesToLoad[i], LoadSceneMode.Additive));
             }
             yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
 
-            if (activeScene != null)
+            if (activeSceneName != null)
             {
                 // Set the active scene.
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(activeScene));
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(activeSceneName));
             }
 
 
@@ -147,15 +152,15 @@ namespace SceneManagement
 
 
             // Alter player rotation.
-            if (transition.AlterPlayerLocation)
+            if (transitionData.AlterPlayerLocation)
             {
-                PlayerManager.Instance.SetPlayerPositionAndRotation(transition.EntryPosition, transition.EntryRotation);
+                PlayerManager.Instance.SetPlayerPositionAndRotation(transitionData.EntryPosition, transitionData.EntryRotation);
             }
 
 
             // Once we recieve player input, continue.
 #if ENABLE_INPUT_SYSTEM
-            if (transition.IsHubTransition)
+            if (transitionData.IsHubTransition)
             {
                 InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishHubLoading());
             }
@@ -176,36 +181,36 @@ namespace SceneManagement
             }
 #endif
         }
-        private IEnumerator PerformBackgroundTransition(BackgroundSceneTransition transition)
+        private IEnumerator PerformSoftTransition(SoftLoadData transitionData)
         {
             // Notify background load.
             OnSoftLoadStarted?.Invoke();
 
 
             // Save what scene we want to have as our active scene.
-            var activeScene = transition.ActiveScene;
+            string activeSceneName = transitionData.ActiveSceneName;
 
 
             // Unload desired scenes.
-            for (int i = 0; i < transition.ScenesToUnload.Length; i++)
+            for (int i = 0; i < transitionData.ScenesToUnload.Length; i++)
             {
-                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(transition.ScenesToUnload[i]));
+                _scenesUnloading.Add(SceneManager.UnloadSceneAsync(transitionData.ScenesToUnload[i]));
             }
             yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
 
 
             // Load desired scenes.
-            for (int i = 0; i < transition.ScenesToLoad.Length; i++)
+            for (int i = 0; i < transitionData.ScenesToLoad.Length; i++)
             {
-                _scenesLoading.Add(SceneManager.LoadSceneAsync(transition.ScenesToLoad[i], LoadSceneMode.Additive));
+                _scenesLoading.Add(SceneManager.LoadSceneAsync(transitionData.ScenesToLoad[i], LoadSceneMode.Additive));
             }
             yield return new WaitUntil(() => _scenesLoading.All(t => t.isDone));
 
 
-            if (activeScene != null)
+            if (activeSceneName != null)
             {
                 // Set the active scene.
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(activeScene));
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(activeSceneName));
             }
 
 
