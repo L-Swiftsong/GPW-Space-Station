@@ -7,6 +7,8 @@ using UI.ItemDisplay;
 using Interaction;
 using TMPro;
 using Audio;
+using UnityEngine.InputSystem;
+using Entities.Player;
 
 public class UseKeyItem : MonoBehaviour, IInteractable
 {
@@ -36,70 +38,99 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 	[SerializeField] private AudioClip correctItemSound;
 	[SerializeField] private AudioSource audioSource;
 
-	private bool _isInteracted;
+	private bool _hasPlacedItem;
 
 	public bool IsKeyItemCorrect(KeyItemData selectedKeyItem)
 	{
 		return _requiredKeyItem == selectedKeyItem;
 	}
 
-	private void Awake()
+	private void Start()
 	{
 		if (_playerTablet == null)
 		{
-			_playerTablet = FindObjectOfType<PlayerTablet>();
+			if (PlayerManager.Instance != null && PlayerManager.Instance.Player != null)
+			{
+				_playerTablet = PlayerManager.Instance.Player.GetComponentInChildren<PlayerTablet>(true);
+				if (_playerTablet == null)
+				{
+					Debug.LogError("PlayerTablet is still NULL after attempting to find it!");
+				}
+				else
+				{
+					Debug.Log("Successfully found PlayerTablet in children!");
+				}
+			}
+			else
+			{
+				Debug.LogError("PlayerManager or Player is null!");
+			}
+		}
+		else
+		{
+			Debug.Log("PlayerTablet is NOT NULL in build!");
 		}
 	}
 
 	public void TryUseKeyItem(KeyItemData selectedKeyItem)
 	{
-		if (_isInteracted)
+		if (_hasPlacedItem) return;
+
+		if (IsKeyItemCorrect(selectedKeyItem))
 		{
-			if (IsKeyItemCorrect(selectedKeyItem))
+			SFXManager.Instance.PlayClipAtPosition(correctItemSound, transform.position, 1, 1, 2f);
+			KeyItemManager.Instance.PlaceItemAtLocation(_keyItemPlacement);
+			OnSuccessfulInteraction?.Invoke();
+			_hasPlacedItem = true;
+
+			KeyItemEntryUI[] allUIEntries = FindObjectsOfType<KeyItemEntryUI>();
+
+			foreach (var uiEntry in allUIEntries)
 			{
-				SFXManager.Instance.PlayClipAtPosition(correctItemSound, transform.position, 1, 1, 2f);
-				KeyItemManager.Instance.PlaceItemAtLocation(_keyItemPlacement);
-				OnSuccessfulInteraction?.Invoke();
-
-				KeyItemEntryUI[] allUIEntries = FindObjectsOfType<KeyItemEntryUI>();
-
-				foreach (var uiEntry in allUIEntries)
-				{
-					if (uiEntry._currentKeyItem == selectedKeyItem)
-					{
-						uiEntry.RemoveItemFromUI(selectedKeyItem);
-						break; 
-					}
+				if (uiEntry._currentKeyItem == selectedKeyItem)
+				{ 
+					uiEntry.RemoveItemFromUI(selectedKeyItem);
+					break;
 				}
+			}
 
-				_playerTablet.Unequip();
-			}
-			else
-			{
-				OnFailedInteraction?.Invoke();
-			}
+			_playerTablet.Unequip();
+		}
+		else
+		{
+			FailInteraction();
 		}
 	}
 
 	public void Interact(PlayerInteraction interaction)
 	{
-		if (!_isInteracted)
+		if (interaction == null)
 		{
-			_isInteracted = true;
-
-			_playerTablet.Equip();
-			//_itemsTab.SetActive(true);
-
-			var repairSpotManager = FindObjectOfType<RepairSpotManager>();
-
-			if (repairSpotManager != null)
-			{
-				repairSpotManager.InteractWithRepairSpot(this);
-			}
-
-			OnSuccessfulInteraction.Invoke();
+			Debug.LogError("PlayerInteraction is null!");
+			return;
 		}
-    }
+
+		Debug.Log("Interact() called on " + gameObject.name);
+
+
+		if (_hasPlacedItem) return;
+
+		_playerTablet.Equip();
+		//_itemsTab.SetActive(true);
+
+		var repairSpotManager = FindObjectOfType<RepairSpotManager>();
+
+		if (repairSpotManager != null)
+		{
+			repairSpotManager.InteractWithRepairSpot(this);
+			Debug.Log("Repair spot manager interaction triggered.");
+		}
+		else
+		{
+			Debug.LogError("RepairSpotManager not found in the scene.");
+		}
+	}
+
     public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
     public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
 
