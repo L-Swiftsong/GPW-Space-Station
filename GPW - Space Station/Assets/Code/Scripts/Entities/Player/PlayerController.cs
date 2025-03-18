@@ -18,6 +18,7 @@ namespace Entities.Player
         private PlayerHealth playerHealth;
         private CharacterController _controller;
         private CameraFocusLook cameraFocusLook;
+        private CameraShake cameraShake;
 
         private MovementState _currentMovementState = MovementState.Walking;
 
@@ -119,13 +120,13 @@ namespace Entities.Player
         private float healMoveSpeed = 2f;
         private float healSprintSpeed = 3f;
 
-
         private void Start()
         {
             // Get references.
             _controller = GetComponent<CharacterController>();
             playerHealth = GetComponent<PlayerHealth>();
             cameraFocusLook = GetComponent<CameraFocusLook>();
+            cameraShake = GetComponentInChildren<CameraShake>();
 
             // Start walking.
             _currentMovementState = MovementState.Walking;
@@ -286,6 +287,8 @@ namespace Entities.Player
 
                 HandleGravity();
                 UpdateCharacterHeight();
+
+                CameraShake();
             }
         
             HandleLook();
@@ -299,6 +302,26 @@ namespace Entities.Player
             {
                 moveSpeed = baseMoveSpeed;
                 sprintSpeed = baseSprintSpeed;
+            }
+        }
+        
+
+        private void CameraShake()
+        {
+            if (PlayerInput.MovementInput != Vector2.zero)
+            {
+                if (_currentMovementState == MovementState.Walking)
+                {
+                    cameraShake.SetShakeState(isWalking: true, isRunning: false);
+                }
+                else if (_currentMovementState == MovementState.Sprinting)
+                {
+                    cameraShake.SetShakeState(isWalking: false, isRunning: true);
+                }
+            }
+            else
+            {
+                cameraShake.SetShakeState(isWalking: false, isRunning: false);
             }
         }
 
