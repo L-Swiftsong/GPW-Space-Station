@@ -38,8 +38,6 @@ namespace Entities.Mimic
         private float _footstepTimer = 0.0f;
         private bool _useFirstFootstep = true; // Toggle flag
 
-        private AudioSource audioSource;
-
 
         private static System.Action<bool> OnPauseAllChases;
         private static System.Action OnResumeAllChases;
@@ -48,18 +46,9 @@ namespace Entities.Mimic
 
         private void Start()
         {
-            audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.playOnAwake = false;
-
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(0.0f);
             _navMeshAgent.updateRotation = true;
-
-
-            if (_chaseSFX != null)
-            {
-                audioSource.clip = _chaseSFX;
-            }
 
         }
         private void OnEnable()
@@ -144,7 +133,7 @@ namespace Entities.Mimic
             _hasStartedChase = true;
             Debug.Log("Chase Activated!");
 
-            audioSource.Play();
+            BackgroundMusicManager.OverrideBackgroundMusic(_chaseSFX);
         }
         public void PauseChase(bool pauseMusic)
         {
@@ -157,8 +146,8 @@ namespace Entities.Mimic
             isChasing = false;
             Debug.Log("Chase Paused");
 
-            if (pauseMusic)
-                audioSource.Pause();
+            //if (pauseMusic)
+            //    audioSource.Pause();
             _navMeshAgent.isStopped = true;
         }
         public void ResumeChase()
@@ -172,8 +161,8 @@ namespace Entities.Mimic
             isChasing = true;
             Debug.Log("Chase Resumed");
 
-            if (!audioSource.isPlaying)
-                audioSource.Play();
+            //if (!audioSource.isPlaying)
+            //    audioSource.Play();
             _navMeshAgent.isStopped = false;
         }
         public void EndChase()
@@ -184,10 +173,10 @@ namespace Entities.Mimic
                 return;
             }
 
-            audioSource.Stop();
+            BackgroundMusicManager.RemoveBackgroundMusicOverride();
             if (_chaseEndClip != null)
             {
-                audioSource.PlayOneShot(_chaseEndClip);
+                BackgroundMusicManager.PlaySingleClip(_chaseEndClip);
             }
 
             Debug.Log("Chase Ended");
