@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
+
 public class WaypointData
 {
     public Transform waypoint; // position the agent moves to
@@ -19,6 +20,7 @@ public class WaypointData
 
 public class MimicController : MonoBehaviour
 {
+    Animator animator;
     [SerializeField] private List<WaypointData> waypoints = new List<WaypointData>();
 
     // Enum for what type the mimic should be at end of route
@@ -34,6 +36,7 @@ public class MimicController : MonoBehaviour
     private void Start()
     {
         gameObject.SetActive(false); // disabled by default until start movements called
+        animator = GetComponent<Animator>();
     }
 
     // Starts the movement sequence and activates the GameObject
@@ -47,18 +50,20 @@ public class MimicController : MonoBehaviour
         if (agent != null)
         {
             StartCoroutine(HandleMovement());
+           
         }
     }
 
     private IEnumerator HandleMovement()
     {
         isMoving = true;
+        animator.SetBool("IsWalking", true);
 
         for (int i = 0; i < waypoints.Count; i++)
         {
             var waypointData = waypoints[i];
             if (agent == null) yield break;
-
+           
             agent.speed = waypointData.speed; // set speed for current waypoint
             agent.SetDestination(waypointData.waypoint.position);
 
@@ -95,7 +100,9 @@ public class MimicController : MonoBehaviour
 
             if (waypointData.shouldPause)
             {
+                animator.SetBool("IsWalking", false);
                 yield return new WaitForSeconds(waypointData.pauseDuration);
+                animator.SetBool("IsWalking", true);
             }
         }
 
@@ -105,6 +112,7 @@ public class MimicController : MonoBehaviour
             ReplaceWithMimicPrefab();
         }
 
+        animator.SetBool("IsWalking", false);
         isMoving = false;
     }
 
