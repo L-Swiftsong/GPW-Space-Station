@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9128723723369303309}
   - component: {fileID: 811563024855429214}
   - component: {fileID: 8222274348782107167}
+  - component: {fileID: 9130868322298531690}
   m_Layer: 0
   m_Name: EventMimic
   m_TagString: Mimic
@@ -34,6 +35,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1659512822111223909}
   - {fileID: 7989961918341014921}
   - {fileID: 7225935641895413025}
   m_Father: {fileID: 0}
@@ -143,6 +145,33 @@ MonoBehaviour:
   mimicType: 2
   generalMimicPrefab: {fileID: 5612615081326836176, guid: f312311370d62534d9c3ea0a0a58f304, type: 3}
   chaseMimicPrefab: {fileID: 7319193291588237927, guid: 280a7245b394884478d132850cbb4a5e, type: 3}
+--- !u!95 &9130868322298531690
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349603379135055441}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 2b1536b1bd3c8c64ba0add37d735b86e, type: 3}
+  m_Controller: {fileID: 9100000, guid: c9f5861cad14d6947a868a5ce7789313, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
+    'mixamorig:LeftHandIndex1'\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform
+    'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform 'mixamorig:LeftShoulder'\n\tTransform
+    'mixamorig:RightHandIndex3'\n\tTransform 'mixamorig:RightFoot'\n\tand more ...\n\tFrom
+    animation clip 'Idle'\n\tFrom animation clip 'Walking'"
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3086041892528777725
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,13 +212,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7989961918341014921}
+  - component: {fileID: 4266726500604985788}
   m_Layer: 0
   m_Name: GFX_Default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7989961918341014921
 Transform:
   m_ObjectHideFlags: 0
@@ -206,6 +236,130 @@ Transform:
   - {fileID: 4185339195676752723}
   m_Father: {fileID: 7960099509896515468}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &4266726500604985788
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9018052176584891094}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4ba90d45d82249d46ae448e2196f90f0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!1001 &1192749543672260494
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7960099509896515468}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.15
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      propertyPath: m_Name
+      value: Idle Breathing Still
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5758042243376271509}
+  m_SourcePrefab: {fileID: 100100000, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+--- !u!4 &1659512822111223909 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+  m_PrefabInstance: {fileID: 1192749543672260494}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2039029685531515615 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 7d58db4878bf80a4394308756ec59777, type: 3}
+  m_PrefabInstance: {fileID: 1192749543672260494}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &5758042243376271509
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039029685531515615}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c9f5861cad14d6947a868a5ce7789313, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &4440538991915801784
 PrefabInstance:
   m_ObjectHideFlags: 0
