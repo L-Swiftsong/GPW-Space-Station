@@ -57,7 +57,13 @@ public class MimicController : MonoBehaviour
     private IEnumerator HandleMovement()
     {
         isMoving = true;
-        animator.SetBool("IsWalking", true);
+        
+        if (animator != null)
+        {
+            animator.SetBool("IsWalking", true);
+            Debug.Log("Walking animation started");
+        }
+
 
         for (int i = 0; i < waypoints.Count; i++)
         {
@@ -138,6 +144,8 @@ public class MimicController : MonoBehaviour
             }
         }
     }
+
+   
 }
 
 
