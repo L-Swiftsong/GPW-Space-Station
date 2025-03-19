@@ -7,14 +7,19 @@ namespace Audio
 {
     public class BackgroundMusicManager : Singleton<BackgroundMusicManager>
     {
-        [SerializeField] private AudioClip[] _defaultBackgroundClips;
-        private AudioClip[] _overridenAudioClips;
+        [SerializeField] private AudioClipSettings[] _defaultBackgroundClips;
+        private AudioClipSettings[] _overridenAudioClips;
         int _currentAudioClipIndex;
-        private AudioClip[] _currentActiveBackgroundClips => _overridenAudioClips != null ? _overridenAudioClips : _defaultBackgroundClips;
+        private AudioClipSettings[] _currentActiveBackgroundClips => _overridenAudioClips != null ? _overridenAudioClips : _defaultBackgroundClips;
 
 
         [SerializeField] private float _defaultFadeDuration = 1.0f;
-        [SerializeField] private float _defaultVolume = 1.0f;
+
+        private float _currentVolumeOverride = 1.0f;
+        private float _currentPitchOverride = 1.0f;
+
+        private float _currentVolumeMultiplier = 1.0f;
+        private float _currentPitchMultiplier = 1.0f;
 
 
         private Coroutine _handleTransitionCoroutine;
@@ -49,16 +54,43 @@ namespace Audio
             }
         }
         private void OnEnable() => _isTransitioning = false;
-        
 
 
-        public static void OverrideBackgroundMusic(AudioClip audioClip, float transitionTime = 1.0f) => OverrideBackgroundMusic(new AudioClip[1] { audioClip }, transitionTime);
-        public static void OverrideBackgroundMusic(AudioClip[] audioClips, float transitionTime = 1.0f)
+        #region OverrideBackgroundMusic Overloads
+
+        public static void OverrideBackgroundMusic(AudioClip audioClip, float volume = 1.0f, float pitch = 1.0f, float transitionTime = 1.0f)
+            => OverrideBackgroundMusic(new AudioClipSettings[1] { new AudioClipSettings(audioClip, volume, pitch) }, transitionTime);
+        public static void OverrideBackgroundMusic(AudioClip[] audioClips, float volume, float pitch, float transitionTime = 1.0f)
+        {
+            AudioClipSettings[] audioClipSettings = new AudioClipSettings[audioClips.Length];
+            for (int i = 0; i < audioClipSettings.Length; ++i)
+            {
+                audioClipSettings[i] = new AudioClipSettings(audioClips[i], volume, pitch);
+            }
+
+            OverrideBackgroundMusic(audioClipSettings, transitionTime);
+        }
+        public static void OverrideBackgroundMusic(AudioClip[] audioClips, float[] volume, float[] pitch, float transitionTime = 1.0f)
+        {
+            AudioClipSettings[] audioClipSettings = new AudioClipSettings[audioClips.Length];
+            for(int i = 0; i < audioClipSettings.Length; ++i)
+            {
+                audioClipSettings[i] = new AudioClipSettings(audioClips[i], volume[i], pitch[i]);
+            }
+
+            OverrideBackgroundMusic(audioClipSettings, transitionTime);
+        }
+
+        public static void OverrideBackgroundMusic(AudioClipSettings[] audioClips, float transitionTime = 1.0f)
         {
             Instance._overridenAudioClips = audioClips;
             Instance.SelectNewAudioClip(transitionTime, skipSameClipCheck: true);
         }
-        public static void PlaySingleClip(AudioClip audioClip, float transitionTime = 1.0f)
+
+        #endregion
+
+        public static void PlaySingleClip(AudioClip audioClip, float baseVolume = 1.0f, float basePitch = 1.0f, float transitionTime = 1.0f) => PlaySingleClip(new AudioClipSettings(audioClip, baseVolume, basePitch), transitionTime);
+        public static void PlaySingleClip(AudioClipSettings audioClip, float transitionTime = 1.0f)
         {
             Instance.TransitionToNewClip(audioClip, transitionTime);
         }
@@ -68,6 +100,19 @@ namespace Audio
             Instance._overridenAudioClips = null;
             Instance.SelectNewAudioClip(transitionTime, skipSameClipCheck: true);
         }
+
+
+        #region Value Multiplier Overrides
+
+        // Volume.
+        public static void OverrideVolumeMultiplier(float newMultiplier) => Instance._currentVolumeMultiplier = newMultiplier;
+        public static void ResetVolumeMultiplier() => Instance._currentVolumeMultiplier = 1.0f;
+
+        // Pitch.
+        public static void OverridePitchMultiplier(float newMultiplier) => Instance._currentPitchMultiplier = newMultiplier;
+        public static void ResetPitchMultiplier() => Instance._currentPitchMultiplier = 1.0f;
+
+        #endregion
 
 
         private void SelectNewAudioClip(float transitionTime, bool skipSameClipCheck = false)
@@ -104,14 +149,20 @@ namespace Audio
         }
 
 
-        private void TransitionToNewClip(AudioClip audioClip, float transitionTime)
+        private void TransitionToNewClip(in AudioClipSettings audioClipSettings, float transitionTime)
         {
             if (transitionTime <= 0.0f)
             {
                 // Instant transition.
                 _currentAudioSource.Stop();
-                _currentAudioSource.clip = audioClip;
-                _currentAudioSource.volume = _defaultVolume;
+                _currentAudioSource.clip = audioClipSettings.AudioClip;
+                
+                _currentVolumeOverride = audioClipSettings.BaseVolume;
+                _currentAudioSource.volume = GetDesiredVolume();
+
+                _currentPitchOverride = audioClipSettings.BasePitch;
+                _currentAudioSource.pitch = GetDesiredPitch();
+
                 _currentAudioSource.Play();
             }
             else
@@ -121,37 +172,49 @@ namespace Audio
                 {
                     StopCoroutine(_handleTransitionCoroutine);
                 }
-                _handleTransitionCoroutine = StartCoroutine(HandleTransition(audioClip, transitionTime));
+                _handleTransitionCoroutine = StartCoroutine(HandleTransition(audioClipSettings, transitionTime));
             }
         }
-        private IEnumerator HandleTransition(AudioClip audioClip, float transitionTime)
+        private IEnumerator HandleTransition(AudioClipSettings audioClipSettings, float transitionTime)
         {
             _isTransitioning = true;
+            _isCurrentSourcePrimary = !_isCurrentSourcePrimary;
 
             // Setup the new clip.
-            _otherAudioSource.clip = audioClip;
-            _otherAudioSource.volume = 0.0f;
-            _otherAudioSource.Play();
+            _currentAudioSource.clip = audioClipSettings.AudioClip;
+
+            _currentVolumeOverride = audioClipSettings.BaseVolume;
+            _currentPitchOverride = audioClipSettings.BasePitch;
+
+            _currentAudioSource.volume = 0.0f;
+            _currentAudioSource.pitch = GetDesiredPitch();
+
+            _currentAudioSource.Play();
 
 
-            float transitionRate = _defaultVolume / transitionTime;
-            while(_otherAudioSource.volume < _defaultVolume)
+            // Fade between the two clips.
+            float fadeInRate = GetDesiredVolume() / transitionTime;
+            float fadeOutRate = _otherAudioSource.volume / transitionTime;
+            while(_otherAudioSource.volume > 0.0f)
             {
-                _otherAudioSource.volume += transitionRate * Time.deltaTime;
-                _currentAudioSource.volume -= transitionRate * Time.deltaTime;
+                _currentAudioSource.volume += fadeInRate * Time.deltaTime;
+                _otherAudioSource.volume -= fadeOutRate * Time.deltaTime;
 
                 yield return null;
             }
 
             // Ensure proper values.
-            _currentAudioSource.volume = 0.0f;
-            _otherAudioSource.volume = _defaultVolume;
+            _otherAudioSource.volume = 0.0f;
+            _currentAudioSource.volume = GetDesiredVolume();
 
-            // Update current audio source.
-            _isCurrentSourcePrimary = !_isCurrentSourcePrimary;
 
             _isTransitioning = false;
         }
+
+
+        private float GetDesiredVolume() => _currentVolumeOverride * _currentVolumeMultiplier;
+        private float GetDesiredPitch() => _currentPitchOverride * _currentPitchMultiplier;
+        
 
 
         #if UNITY_EDITOR
@@ -184,5 +247,21 @@ namespace Audio
         }
 
         #endif
+
+
+        [System.Serializable]
+        public struct AudioClipSettings
+        {
+            public AudioClip AudioClip;
+            public float BaseVolume;
+            public float BasePitch;
+
+            public AudioClipSettings(AudioClip audioClip, float baseVolume = 1.0f, float basePitch = 1.0f)
+            {
+                this.AudioClip = audioClip;
+                this.BaseVolume = baseVolume;
+                this.BasePitch = basePitch;
+            }
+        }
     }
 }

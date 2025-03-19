@@ -439,7 +439,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 4681491457174965359, guid: c6cceb697f88c6f41af12a9bc6c0c298, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -535,7 +535,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 4681491457174965359, guid: c6cceb697f88c6f41af12a9bc6c0c298, type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -633,10 +633,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _defaultBackgroundClips:
-  - {fileID: 8300000, guid: b127137ebfa8080469d8de161e823558, type: 3}
-  - {fileID: 8300000, guid: bebb741bc5e14ad46b8e34c025584fea, type: 3}
+  - AudioClip: {fileID: 8300000, guid: b127137ebfa8080469d8de161e823558, type: 3}
+    BaseVolume: 1
+    BasePitch: 1
+  - AudioClip: {fileID: 8300000, guid: bebb741bc5e14ad46b8e34c025584fea, type: 3}
+    BaseVolume: 1
+    BasePitch: 1
   _defaultFadeDuration: 1
-  _defaultVolume: 1
   _primaryAudioSource: {fileID: 1333578653}
   _secondaryAudioSource: {fileID: 1333578652}
 --- !u!224 &1362165031 stripped
