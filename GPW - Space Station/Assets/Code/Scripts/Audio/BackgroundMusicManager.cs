@@ -7,6 +7,17 @@ namespace Audio
 {
     public class BackgroundMusicManager : Singleton<BackgroundMusicManager>
     {
+        #region Defaults
+
+        private const float DEFAULT_VOLUME = 1.0f;
+        private const float DEFAULT_PITCH = 1.0f;
+        private const float DEFAULT_INITIAL_TRANSITION_DELAY = 0.0f;
+        private const float DEFAULT_INITIAL_TRANSITION_DURATION = 1.0f;
+
+        #endregion
+
+
+
         [SerializeField] private AudioClipSettings[] _defaultBackgroundClips;
         private AudioClipSettings[] _overridenAudioClips;
         int _currentAudioClipIndex;
@@ -23,6 +34,7 @@ namespace Audio
 
 
         private Coroutine _handleTransitionCoroutine;
+        private Coroutine _handleTransitionSecondaryCoroutine;
         private bool _isTransitioning = false;
 
 
@@ -38,7 +50,7 @@ namespace Audio
         protected override void Awake()
         {
             base.Awake();
-            SelectNewAudioClip(0.0f);
+            SelectNewAudioClip(transitionTime: 0.0f, delayBetweenClips: 0.0f);
         }
         private void Update()
         {
@@ -50,7 +62,7 @@ namespace Audio
 
             if (_currentAudioSource.time >= (_currentAudioSource.clip.length - _defaultFadeDuration))
             {
-                SelectNewAudioClip(_defaultFadeDuration);
+                SelectNewAudioClip(transitionTime: _defaultFadeDuration, delayBetweenClips: 0.0f);
             }
         }
         private void OnEnable() => _isTransitioning = false;
@@ -58,9 +70,9 @@ namespace Audio
 
         #region OverrideBackgroundMusic Overloads
 
-        public static void OverrideBackgroundMusic(AudioClip audioClip, float volume = 1.0f, float pitch = 1.0f, float transitionTime = 1.0f)
-            => OverrideBackgroundMusic(new AudioClipSettings[1] { new AudioClipSettings(audioClip, volume, pitch) }, transitionTime);
-        public static void OverrideBackgroundMusic(AudioClip[] audioClips, float volume, float pitch, float transitionTime = 1.0f)
+        public static void OverrideBackgroundMusic(AudioClip audioClip, float volume = DEFAULT_VOLUME, float pitch = DEFAULT_PITCH, float initialTransitionDelay = DEFAULT_INITIAL_TRANSITION_DELAY, float transitionTime = DEFAULT_INITIAL_TRANSITION_DURATION)
+            => OverrideBackgroundMusic(new AudioClipSettings[1] { new AudioClipSettings(audioClip, volume, pitch) }, initialTransitionDelay, transitionTime);
+        public static void OverrideBackgroundMusic(AudioClip[] audioClips, float volume, float pitch, float initialTransitionDelay = DEFAULT_INITIAL_TRANSITION_DELAY, float transitionTime = DEFAULT_INITIAL_TRANSITION_DURATION)
         {
             AudioClipSettings[] audioClipSettings = new AudioClipSettings[audioClips.Length];
             for (int i = 0; i < audioClipSettings.Length; ++i)
@@ -68,9 +80,9 @@ namespace Audio
                 audioClipSettings[i] = new AudioClipSettings(audioClips[i], volume, pitch);
             }
 
-            OverrideBackgroundMusic(audioClipSettings, transitionTime);
+            OverrideBackgroundMusic(audioClipSettings, initialTransitionDelay, transitionTime);
         }
-        public static void OverrideBackgroundMusic(AudioClip[] audioClips, float[] volume, float[] pitch, float transitionTime = 1.0f)
+        public static void OverrideBackgroundMusic(AudioClip[] audioClips, float[] volume, float[] pitch, float initialTransitionDelay = DEFAULT_INITIAL_TRANSITION_DELAY, float transitionTime = DEFAULT_INITIAL_TRANSITION_DURATION)
         {
             AudioClipSettings[] audioClipSettings = new AudioClipSettings[audioClips.Length];
             for(int i = 0; i < audioClipSettings.Length; ++i)
@@ -78,27 +90,49 @@ namespace Audio
                 audioClipSettings[i] = new AudioClipSettings(audioClips[i], volume[i], pitch[i]);
             }
 
-            OverrideBackgroundMusic(audioClipSettings, transitionTime);
+            OverrideBackgroundMusic(audioClipSettings, initialTransitionDelay, transitionTime);
         }
+        public static void OverrideBackgroundMusic(AudioClipSettings audioClip, float initialTransitionDelay = DEFAULT_INITIAL_TRANSITION_DELAY, float transitionTime = DEFAULT_INITIAL_TRANSITION_DURATION) => OverrideBackgroundMusic(new AudioClipSettings[1] { audioClip }, initialTransitionDelay, transitionTime);
 
-        public static void OverrideBackgroundMusic(AudioClipSettings[] audioClips, float transitionTime = 1.0f)
+        public static void OverrideBackgroundMusic(AudioClipSettings[] audioClips, float initialTransitionDelay = DEFAULT_INITIAL_TRANSITION_DELAY, float transitionTime = DEFAULT_INITIAL_TRANSITION_DURATION)
         {
             Instance._overridenAudioClips = audioClips;
-            Instance.SelectNewAudioClip(transitionTime, skipSameClipCheck: true);
+            Instance.SelectNewAudioClip(transitionTime, initialTransitionDelay, skipSameClipCheck: true);
         }
 
         #endregion
 
-        public static void PlaySingleClip(AudioClip audioClip, float baseVolume = 1.0f, float basePitch = 1.0f, float transitionTime = 1.0f) => PlaySingleClip(new AudioClipSettings(audioClip, baseVolume, basePitch), transitionTime);
-        public static void PlaySingleClip(AudioClipSettings audioClip, float transitionTime = 1.0f)
+        public static void PlaySingleClip(AudioClip audioClip, float baseVolume = DEFAULT_VOLUME, float basePitch = DEFAULT_PITCH, float initialTransitionDelay = DEFAULT_INITIAL_TRANSITION_DELAY, float transitionTime = DEFAULT_INITIAL_TRANSITION_DURATION) => PlaySingleClip(new AudioClipSettings(audioClip, baseVolume, basePitch), initialTransitionDelay, transitionTime);
+        public static void PlaySingleClip(AudioClipSettings audioClip, float initialTransitionDelay = DEFAULT_INITIAL_TRANSITION_DELAY, float transitionTime = DEFAULT_INITIAL_TRANSITION_DURATION)
         {
-            Instance.TransitionToNewClip(audioClip, transitionTime);
+            Instance.TransitionToNewClip(audioClip, initialTransitionDelay, transitionTime);
         }
 
-        public static void RemoveBackgroundMusicOverride(float transitionTime = 1.0f)
+        public static void RemoveBackgroundMusicOverride(float initialTransitionDelay = DEFAULT_INITIAL_TRANSITION_DELAY, float transitionTime = DEFAULT_INITIAL_TRANSITION_DURATION)
         {
             Instance._overridenAudioClips = null;
-            Instance.SelectNewAudioClip(transitionTime, skipSameClipCheck: true);
+            Instance.SelectNewAudioClip(transitionTime, initialTransitionDelay, skipSameClipCheck: true);
+        }
+
+        public static void PauseBackgroundMusicForDuration(float pauseDuration)
+        {
+            Instance.PauseBackgroundMusicForDuration_NonStatic(pauseDuration);
+        }
+        private void PauseBackgroundMusicForDuration_NonStatic(float pauseDuration)
+        {
+            StopActiveTransitions(true);
+            _currentAudioSource.Pause();
+            _handleTransitionCoroutine = StartCoroutine(TriggerAfterDelay(pauseDuration, () => _currentAudioSource.UnPause()));
+        }
+        public static void PauseBackgroundMusic()
+        {
+            Instance.StopActiveTransitions(true);
+            Instance._currentAudioSource.Pause();
+        }
+        public static void ResumeBackgroundMusic()
+        {
+            Instance.StopActiveTransitions(true);
+            Instance._currentAudioSource.UnPause();
         }
 
 
@@ -115,7 +149,7 @@ namespace Audio
         #endregion
 
 
-        private void SelectNewAudioClip(float transitionTime, bool skipSameClipCheck = false)
+        private void SelectNewAudioClip(float transitionTime, float delayBetweenClips, bool skipSameClipCheck = false)
         {
             Debug.Log("Selecting New Clip");
 
@@ -145,12 +179,14 @@ namespace Audio
             }
             
 
-            TransitionToNewClip(_currentActiveBackgroundClips[_currentAudioClipIndex], transitionTime);
+            TransitionToNewClip(_currentActiveBackgroundClips[_currentAudioClipIndex], delayBetweenClips, transitionTime);
         }
 
 
-        private void TransitionToNewClip(in AudioClipSettings audioClipSettings, float transitionTime)
+        private void TransitionToNewClip(in AudioClipSettings audioClipSettings, float delayBetweenClips, float transitionTime)
         {
+            StopActiveTransitions(false);
+
             if (transitionTime <= 0.0f)
             {
                 // Instant transition.
@@ -163,52 +199,92 @@ namespace Audio
                 _currentPitchOverride = audioClipSettings.BasePitch;
                 _currentAudioSource.pitch = GetDesiredPitch();
 
-                _currentAudioSource.Play();
+                _handleTransitionCoroutine = StartCoroutine(TriggerAfterDelay(delayBetweenClips, () => _currentAudioSource.Play()));
             }
             else
             {
                 // Gradual Transition.
-                if (_handleTransitionCoroutine != null)
-                {
-                    StopCoroutine(_handleTransitionCoroutine);
-                }
-                _handleTransitionCoroutine = StartCoroutine(HandleTransition(audioClipSettings, transitionTime));
+                _isTransitioning = true;
+                
+                _handleTransitionSecondaryCoroutine = StartCoroutine(FadeOutCurrentClip(_currentAudioSource, transitionTime));
+
+                _isCurrentSourcePrimary = !_isCurrentSourcePrimary;
+                _handleTransitionCoroutine = StartCoroutine(FadeInNewClip(_currentAudioSource, audioClipSettings, delayBetweenClips, transitionTime));
             }
         }
-        private IEnumerator HandleTransition(AudioClipSettings audioClipSettings, float transitionTime)
+
+        private IEnumerator FadeOutCurrentClip(AudioSource audioSource, float transitionTime)
         {
-            _isTransitioning = true;
-            _isCurrentSourcePrimary = !_isCurrentSourcePrimary;
-
-            // Setup the new clip.
-            _currentAudioSource.clip = audioClipSettings.AudioClip;
-
-            _currentVolumeOverride = audioClipSettings.BaseVolume;
-            _currentPitchOverride = audioClipSettings.BasePitch;
-
-            _currentAudioSource.volume = 0.0f;
-            _currentAudioSource.pitch = GetDesiredPitch();
-
-            _currentAudioSource.Play();
-
-
-            // Fade between the two clips.
-            float fadeInRate = GetDesiredVolume() / transitionTime;
-            float fadeOutRate = _otherAudioSource.volume / transitionTime;
-            while(_otherAudioSource.volume > 0.0f)
+            // Fade the clip out.
+            float fadeOutRate = audioSource.volume / transitionTime;
+            while (audioSource.volume > 0.0f)
             {
-                _currentAudioSource.volume += fadeInRate * Time.deltaTime;
-                _otherAudioSource.volume -= fadeOutRate * Time.deltaTime;
+                audioSource.volume -= fadeOutRate * Time.deltaTime;
 
                 yield return null;
             }
 
             // Ensure proper values.
-            _otherAudioSource.volume = 0.0f;
-            _currentAudioSource.volume = GetDesiredVolume();
+            audioSource.volume = 0.0f;
+            audioSource.Stop();
+        }
+        private IEnumerator FadeInNewClip(AudioSource audioSource, AudioClipSettings audioClipSettings, float transitionEntryDelay, float transitionTime)
+        {
+            // Setup the new clip.
+            audioSource.clip = audioClipSettings.AudioClip;
+
+            _currentVolumeOverride = audioClipSettings.BaseVolume;
+            _currentPitchOverride = audioClipSettings.BasePitch;
+
+            audioSource.volume = 0.0f;
+            audioSource.pitch = GetDesiredPitch();
+
+            yield return new WaitForSeconds(transitionEntryDelay);
+
+            audioSource.Play();
+
+
+            // Fade between the two clips.
+            float fadeInRate = GetDesiredVolume() / transitionTime;
+            while(audioSource.volume < GetDesiredVolume())
+            {
+                audioSource.volume += fadeInRate * Time.deltaTime;
+
+                yield return null;
+            }
+
+            // Ensure proper values.
+            audioSource.volume = GetDesiredVolume();
 
 
             _isTransitioning = false;
+        }
+        private IEnumerator TriggerAfterDelay(float delay, System.Action callback)
+        {
+            yield return new WaitForSeconds(delay);
+            callback?.Invoke();
+        }
+
+        private void StopActiveTransitions(bool updateValues)
+        {
+            if (_handleTransitionCoroutine != null)
+            {
+                StopCoroutine(_handleTransitionCoroutine);
+            }
+            if (_handleTransitionSecondaryCoroutine != null)
+            {
+                StopCoroutine(_handleTransitionSecondaryCoroutine);
+            }
+
+
+            if (updateValues)
+            {
+                _currentAudioSource.volume = GetDesiredVolume();
+                _currentAudioSource.pitch = GetDesiredPitch();
+
+                _otherAudioSource.volume = 0.0f;
+                _otherAudioSource.Stop();
+            }
         }
 
 
