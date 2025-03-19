@@ -41,12 +41,14 @@ namespace Entities.Player
         [SerializeField] private PlayerInventory _playerInventory;
 
         public CameraFocusLook CameraFocusLook { get; private set; }
+        public CameraShake CameraShake { get; private set; }
 
 
         private void Awake()
         {
             Instance = this;
             CameraFocusLook = Player.GetComponent<CameraFocusLook>();
+            CameraShake = Player.GetComponentInChildren<CameraShake>();
         }
 
 
