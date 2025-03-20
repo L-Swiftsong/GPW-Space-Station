@@ -12,7 +12,7 @@ namespace Entities
         private NavMeshAgent _agent;
         private bool _onNavMeshLink;
 
-        enum MovementState { Walking, Crouching, Crawling }
+        public enum MovementState { Walking, Crouching, Crawling }
         private MovementState _movementState;
         private NavMeshLayers _currentLayers;
 
@@ -60,21 +60,8 @@ namespace Entities
 
         [SerializeField] private AnimationCurve _ventExitCurve;
         private float _ventExitDuration => _ventExitCurve.keys[_ventExitCurve.length - 1].time;
-
-
-
-        [Header("(Temp) GFX")]
-        [SerializeField] private Transform _head;
-        [SerializeField] private float _defaultHeadHeight = 1.6f;
-        [SerializeField] private float _crouchedHeadHeight = 0.8f;
-
-        [Space(5)]
-        [SerializeField] private Transform[] _gfxContainers;
-        [SerializeField] private float _defaultGFXYScale = 1f;
-        [SerializeField] private float _crouchedGFXYScale = 0.5f;
-
-        [Space(10)]
-        [SerializeField] private AnimationCurve _crouchHeightChangeCurve;
+        private bool _isInVentTransition = false;
+        
 
 
         private void Awake()
@@ -97,7 +84,6 @@ namespace Entities
             UpdateMovementState();
             UpdateSpeed();
             _agent.stoppingDistance = _baseStoppingDistance;
-            Temp_UpdateHeight();
         }
 
 
@@ -106,7 +92,8 @@ namespace Entities
             // Determine the agent's currently occupied NavMeshLayers.
             DetermineOccupiedLayers();
             
-            if ((_currentLayers & _crawlingLayers) != 0)
+            bool isCrawling = ((_currentLayers & _crawlingLayers) != 0) || _isInVentTransition;
+            if (isCrawling)
             {
                 _movementState = MovementState.Crawling;
             }
@@ -129,25 +116,6 @@ namespace Entities
                 MovementState.Crawling => _crawlingSpeedMultiplier,
                 _ => 1.0f,
             };
-        }
-        private void Temp_UpdateHeight()
-        {
-            float headHeight = _defaultHeadHeight;
-            float yScale = _defaultGFXYScale;
-            switch (_movementState)
-            {
-                case MovementState.Crawling:
-                    headHeight = _crouchedHeadHeight;
-                    yScale = _crouchedGFXYScale;
-                    break;
-            }
-
-
-            _head.localPosition = new Vector3(0.0f, headHeight, 0.0f);
-            for(int i = 0; i < _gfxContainers.Length; ++i)
-            {
-                _gfxContainers[i].localScale = new Vector3(1.0f, yScale, 1.0f);
-            }
         }
 
 
@@ -179,6 +147,9 @@ namespace Entities
 
         private void PerformLinkMovement(NavMeshLink link)
         {
+            _isInVentTransition = true;
+            _movementState = MovementState.Crawling;
+
             bool reverseDirection = CheckIfExitingVent(link);
             Vector3 targetPos = reverseDirection ? link.gameObject.transform.TransformPoint(link.startPoint) : link.gameObject.transform.TransformPoint(link.endPoint);
 
@@ -221,28 +192,28 @@ namespace Entities
                 // Ensure that our Y-position is always at the desired level.
                 _agent.transform.position = new Vector3(_agent.transform.position.x, agentStartPosition.y, _agent.transform.position.z);
 
-
                 // Handle our GFX Changes (Would be in our animation for the Mimic proper).
-                float gfxLerpValue = _crouchHeightChangeCurve.Evaluate(reverseDirection ? 1.0f - lerpTime : lerpTime);
+                /*float gfxLerpValue = _crouchHeightChangeCurve.Evaluate(reverseDirection ? 1.0f - lerpTime : lerpTime);
                 Vector3 gfxLerpScale = new Vector3(1.0f, Mathf.Lerp(_defaultGFXYScale, _crouchedGFXYScale, gfxLerpValue), 1.0f);
                 for(int i = 0; i < _gfxContainers.Length; ++i)
                 {
                     _gfxContainers[i].localScale = gfxLerpScale;
-                }
+                }*/
 
                 yield return null;
             }
 
             // Finish our movement.
             _agent.CompleteOffMeshLink();
+            _isInVentTransition = false;
 
             // Ensure that our scale successfully reached our desired values.
-            for (int i = 0; i < _gfxContainers.Length; ++i)
+            /*for (int i = 0; i < _gfxContainers.Length; ++i)
             {
                 _gfxContainers[i].localScale = new Vector3(1.0f, reverseDirection ? _defaultGFXYScale : _crouchedGFXYScale, 1.0f);
-            }
+            }*/
 
-            // Allow ourself to enter a new NavMeshLink after a short delay.
+            // Disallow ourself from entering a new NavMeshLink for a short delay.
             yield return new WaitForSeconds(0.1f);
             _onNavMeshLink = false;
         }
@@ -285,5 +256,9 @@ namespace Entities
 
         public void RotateToDirection(Vector3 direction) => RotateToDirection(direction, _agent.angularSpeed);
         public void RotateToDirection(Vector3 direction, float angularSpeed) => _agent.transform.rotation = Quaternion.RotateTowards(from: _agent.transform.rotation, to: Quaternion.LookRotation(direction, _agent.transform.up), maxDegreesDelta: angularSpeed * Time.deltaTime);
+
+
+
+        public MovementState GetCurrentMovementState() => _movementState;
     }
 }

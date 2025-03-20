@@ -14,6 +14,7 @@ namespace Effects.Mimicry.PassiveMimicry
 
         [SerializeField] private Transform _passiveMimicryGFXRoot;
         private Renderer[] _passiveMimicryRenderers;
+        private MaterialPropertyBlock _passiveMimicryMaterialPropertyBlock;
 
 
         [Header("Rendering Camera")]
@@ -22,13 +23,16 @@ namespace Effects.Mimicry.PassiveMimicry
         private float _clipPlaneThreshold = 1.5f; // A default value of 1.5f seems to do the trick when we don't have a collider.
 
 
-        private const string PASSIVE_MIMICRY_STRENGTH_IDENTIFIER = "_PassiveMimicryStrength";
+        private static readonly int PASSIVE_MIMICRY_STRENGTH_IDENTIFIER = Shader.PropertyToID("_PassiveMimicryStrength");
 
 
         private void Awake()
         {
             // Cache our passive mimicry renderers.
             _passiveMimicryRenderers = _passiveMimicryGFXRoot.GetComponentsInChildren<Renderer>();
+            _passiveMimicryMaterialPropertyBlock = new MaterialPropertyBlock();
+            for(int i = 0; i < _passiveMimicryRenderers.Length; ++i)
+                _passiveMimicryRenderers[i].SetPropertyBlock(_passiveMimicryMaterialPropertyBlock);
 
 
             // Cache values for our mimicry render camera.
@@ -72,7 +76,9 @@ namespace Effects.Mimicry.PassiveMimicry
         {
             for (int i = 0; i < _passiveMimicryRenderers.Length; i++)
             {
-                _passiveMimicryRenderers[i].material.SetFloat(PASSIVE_MIMICRY_STRENGTH_IDENTIFIER, _currentMimicrystrength);
+                _passiveMimicryRenderers[i].GetPropertyBlock(_passiveMimicryMaterialPropertyBlock);
+                _passiveMimicryMaterialPropertyBlock.SetFloat(PASSIVE_MIMICRY_STRENGTH_IDENTIFIER, _currentMimicrystrength);
+                _passiveMimicryRenderers[i].SetPropertyBlock(_passiveMimicryMaterialPropertyBlock);
             }
         }
 

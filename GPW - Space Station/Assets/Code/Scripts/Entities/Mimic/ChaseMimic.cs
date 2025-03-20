@@ -34,13 +34,6 @@ namespace Entities.Mimic
         [SerializeField] private AudioClip _breakDoorClip;
         [SerializeField] private AudioClip _chaseEndClip;
 
-        [Header("Footstep Sounds")]
-        [SerializeField] private AudioClip _footstepSound1;
-        [SerializeField] private AudioClip _footstepSound2;
-        [SerializeField] private float _footstepInterval = 0.5f;
-        private float _footstepTimer = 0.0f;
-        private bool _useFirstFootstep = true; // Toggle flag
-
 
         private static System.Action<bool> OnPauseAllChases;
         private static System.Action OnResumeAllChases;
@@ -52,7 +45,6 @@ namespace Entities.Mimic
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(0.0f);
             _navMeshAgent.updateRotation = true;
-
         }
         private void OnEnable()
         {
@@ -82,8 +74,6 @@ namespace Entities.Mimic
                 _targetSpeed *= _stunnedMovementMultiplier;
 
             _navMeshAgent.speed = Mathf.MoveTowards(_navMeshAgent.speed, _targetSpeed, _movementLerpRate * Time.deltaTime);
-
-            HandleFootsteps();
         }
         private void LateUpdate() => _isBeingStunned = false;
 
@@ -209,25 +199,6 @@ namespace Entities.Mimic
             foreach (Keyframe key in _chaseSpeedCurve.keys)
             {
                 Gizmos.DrawWireSphere(transform.position, key.time);
-            }
-        }
-
-        private void HandleFootsteps()
-        {
-            if (_navMeshAgent.velocity.magnitude > 0.1f)
-            {
-                _footstepTimer -= Time.deltaTime;
-
-                if (_footstepTimer <= 0f)
-                {
-                    _footstepTimer = _footstepInterval;
-
-                    // Alternate between the two footstep sounds
-                    AudioClip footstepToPlay = _useFirstFootstep ? _footstepSound1 : _footstepSound2;
-                    _useFirstFootstep = !_useFirstFootstep;
-
-                    SFXManager.Instance.PlayClipAtPosition(footstepToPlay, transform.position); 
-                }
             }
         }
     }

@@ -20,6 +20,10 @@ public class MimicAttack : MonoBehaviour
     [HideInInspector] public bool _isAttacking = false;
     private bool _canAttack = true;
 
+
+    public event System.Action OnAttackPerformed;
+
+
     private void Start()
     {
         if (PlayerManager.Instance.Player.TryGetComponent<PlayerHealth>(out _playerHealth) == false)
@@ -54,6 +58,8 @@ public class MimicAttack : MonoBehaviour
 
         // Damage the Player.
         _playerHealth.TakeDamage(1);
+
+        OnAttackPerformed?.Invoke();
 
 
         // Attack Recovery.

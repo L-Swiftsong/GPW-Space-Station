@@ -19,14 +19,6 @@ namespace Entities.Mimic
         private PassiveMimicryController _passiveMimicryController;
         private MimicAttack _mimicAttack;
 
-        [Header("Sounds")]
-        [SerializeField] private AudioClip _footstepSound1;
-        [SerializeField] private AudioClip _footstepSound2;
-        [SerializeField] private float _footstepInterval = 0.5f;
-        [SerializeField] private AudioSource _audioSource;
-        private float _footstepTimer = 0.0f;
-        private bool _useFirstFootstep = true;
-
 
         [Header("States")]
         [SerializeField] [ReadOnly] private State _currentState;
@@ -39,6 +31,9 @@ namespace Entities.Mimic
         //private VentState _ventState;
         private SetTrapState _setTrapState;
         private StunnedState _stunnedState;
+
+
+        public event System.Action<State> OnStateChanged;
 
 
 
@@ -66,11 +61,6 @@ namespace Entities.Mimic
             _setTrapState = GetComponent<SetTrapState>();
             _stunnedState = GetComponent<StunnedState>();
 
-
-            _audioSource = gameObject.GetComponent<AudioSource>();
-            _audioSource.clip = _footstepSound1;
-            _audioSource.playOnAwake = false;
-
             // Start in the wander state.
             SetActiveState(_wanderState);
         }
@@ -82,8 +72,6 @@ namespace Entities.Mimic
             _currentState.OnLogic();
 
             _currentStatePath = _currentState.Name;
-
-            HandleFootsteps();
         }
 
 
@@ -226,26 +214,8 @@ namespace Entities.Mimic
 
             _currentState = newState;
             _currentState.OnEnter();
-        }
 
-        private void HandleFootsteps()
-        {
-            if (_agent.velocity.magnitude > 0.1f)
-            {
-                _footstepTimer -= Time.deltaTime;
-
-                if (_footstepTimer <= 0f)
-                {
-                    _footstepTimer = _footstepInterval;
-
-                    // Alternate between the two footstep sounds
-                    AudioClip footstepToPlay = _useFirstFootstep ? _footstepSound1 : _footstepSound2;
-                    _useFirstFootstep = !_useFirstFootstep;
-
-                    _audioSource.clip = footstepToPlay;
-                    _audioSource.PlayOneShot(footstepToPlay);
-                }
-            }
+            OnStateChanged?.Invoke(_currentState);
         }
     }
 

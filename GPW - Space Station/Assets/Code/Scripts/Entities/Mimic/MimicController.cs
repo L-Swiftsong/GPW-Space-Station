@@ -21,6 +21,8 @@ public class WaypointData
 public class MimicController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    private static readonly int MOVEMENT_SPEED_HASH = Animator.StringToHash("MovementSpeed");
+
     [SerializeField] private List<WaypointData> waypoints = new List<WaypointData>();
 
     // Enum for what type the mimic should be at end of route
@@ -56,19 +58,18 @@ public class MimicController : MonoBehaviour
     private IEnumerator HandleMovement()
     {
         isMoving = true;
-        
-        if (animator != null)
-        {
-            animator.SetBool("IsWalking", true);
-            Debug.Log("Walking animation started");
-        }
 
 
         for (int i = 0; i < waypoints.Count; i++)
         {
             var waypointData = waypoints[i];
             if (agent == null) yield break;
-           
+
+            if (animator != null)
+            {
+                animator.SetFloat(MOVEMENT_SPEED_HASH, waypointData.speed);
+            }
+
             agent.speed = waypointData.speed; // set speed for current waypoint
             agent.SetDestination(waypointData.waypoint.position);
 
@@ -105,9 +106,11 @@ public class MimicController : MonoBehaviour
 
             if (waypointData.shouldPause)
             {
-                animator.SetBool("IsWalking", false);
+                if (animator != null)
+                {
+                    animator.SetFloat(MOVEMENT_SPEED_HASH, 0.0f);
+                }
                 yield return new WaitForSeconds(waypointData.pauseDuration);
-                animator.SetBool("IsWalking", true);
             }
         }
 
@@ -117,7 +120,11 @@ public class MimicController : MonoBehaviour
             ReplaceWithMimicPrefab();
         }
 
-        animator.SetBool("IsWalking", false);
+
+        if (animator != null)
+        {
+            animator.SetFloat(MOVEMENT_SPEED_HASH, 0.0f);
+        }
         isMoving = false;
     }
 
