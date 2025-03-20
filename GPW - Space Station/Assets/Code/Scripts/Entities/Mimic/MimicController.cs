@@ -30,14 +30,6 @@ public class MimicController : MonoBehaviour
     [SerializeField] private GameObject generalMimicPrefab;
     [SerializeField] private GameObject chaseMimicPrefab;
 
-    [Header("Sounds")]
-    [SerializeField] private AudioClip _footstepSound1;
-    [SerializeField] private AudioClip _footstepSound2;
-    [SerializeField] private float _footstepInterval = 0.5f;
-    [SerializeField] private AudioSource _audioSource;
-    private float _footstepTimer = 0.0f;
-    private bool _useFirstFootstep = true;
-
     private NavMeshAgent agent;
     private bool isMoving = false;
 
@@ -45,15 +37,6 @@ public class MimicController : MonoBehaviour
     {
         gameObject.SetActive(false); // disabled by default until start movements called
         animator = GetComponent<Animator>();
-
-        _audioSource = gameObject.GetComponent<AudioSource>();
-        _audioSource.clip = _footstepSound1;
-        _audioSource.playOnAwake = false;
-    }
-
-    private void Update()
-    {
-        HandleFootsteps();
     }
 
     // Starts the movement sequence and activates the GameObject
@@ -158,26 +141,6 @@ public class MimicController : MonoBehaviour
                 case MimicType.ChaseMimic:
                     newMimic = Instantiate(chaseMimicPrefab, position, Quaternion.identity);
                     break;
-            }
-        }
-    }
-
-    private void HandleFootsteps()
-    {
-        if (agent.velocity.magnitude > 0.1f)
-        {
-            _footstepTimer -= Time.deltaTime;
-
-            if (_footstepTimer <= 0f)
-            {
-                _footstepTimer = _footstepInterval;
-
-                // Alternate between the two footstep sounds
-                AudioClip footstepToPlay = _useFirstFootstep ? _footstepSound1 : _footstepSound2;
-                _useFirstFootstep = !_useFirstFootstep;
-
-                _audioSource.clip = footstepToPlay;
-                _audioSource.PlayOneShot(footstepToPlay);
             }
         }
     }
