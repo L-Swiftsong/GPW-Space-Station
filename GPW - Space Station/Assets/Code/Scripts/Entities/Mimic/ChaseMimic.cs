@@ -27,7 +27,10 @@ namespace Entities.Mimic
 
 
         [Header("Audio Settings")]
-        [SerializeField] private AudioClip _chaseSFX;
+        [SerializeField] private Audio.BackgroundMusicManager.AudioClipSettings _chaseSFX;
+        [SerializeField] private float _defaultBGMResumeDelay = 2.0f;
+
+        [Space(5)]
         [SerializeField] private AudioClip _breakDoorClip;
         [SerializeField] private AudioClip _chaseEndClip;
 
@@ -38,8 +41,6 @@ namespace Entities.Mimic
         private float _footstepTimer = 0.0f;
         private bool _useFirstFootstep = true; // Toggle flag
 
-        private AudioSource audioSource;
-
 
         private static System.Action<bool> OnPauseAllChases;
         private static System.Action OnResumeAllChases;
@@ -48,18 +49,9 @@ namespace Entities.Mimic
 
         private void Start()
         {
-            audioSource = gameObject.GetComponent<AudioSource>();
-            audioSource.playOnAwake = false;
-
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(0.0f);
             _navMeshAgent.updateRotation = true;
-
-
-            if (_chaseSFX != null)
-            {
-                audioSource.clip = _chaseSFX;
-            }
 
         }
         private void OnEnable()
@@ -144,7 +136,7 @@ namespace Entities.Mimic
             _hasStartedChase = true;
             Debug.Log("Chase Activated!");
 
-            audioSource.Play();
+            BackgroundMusicManager.OverrideBackgroundMusic(_chaseSFX);
         }
         public void PauseChase(bool pauseMusic)
         {
@@ -158,7 +150,9 @@ namespace Entities.Mimic
             Debug.Log("Chase Paused");
 
             if (pauseMusic)
-                audioSource.Pause();
+            {
+                BackgroundMusicManager.PauseBackgroundMusic();
+            }
             _navMeshAgent.isStopped = true;
         }
         public void ResumeChase()
@@ -172,8 +166,7 @@ namespace Entities.Mimic
             isChasing = true;
             Debug.Log("Chase Resumed");
 
-            if (!audioSource.isPlaying)
-                audioSource.Play();
+            BackgroundMusicManager.ResumeBackgroundMusic();
             _navMeshAgent.isStopped = false;
         }
         public void EndChase()
@@ -184,10 +177,14 @@ namespace Entities.Mimic
                 return;
             }
 
-            audioSource.Stop();
             if (_chaseEndClip != null)
             {
-                audioSource.PlayOneShot(_chaseEndClip);
+                BackgroundMusicManager.RemoveBackgroundMusicOverride();
+                BackgroundMusicManager.PlaySingleClip(_chaseEndClip);
+            }
+            else
+            {
+                BackgroundMusicManager.RemoveBackgroundMusicOverride(initialTransitionDelay: _defaultBGMResumeDelay);
             }
 
             Debug.Log("Chase Ended");

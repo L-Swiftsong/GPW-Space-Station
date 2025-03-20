@@ -1,4 +1,3 @@
-using Entities.Player;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,26 +6,8 @@ using UnityEngine.Audio;
 
 namespace Audio
 {
-    public class SFXManager : MonoBehaviour
+    public class SFXManager : Singleton<SFXManager>
     {
-        private static SFXManager s_instance;
-        public static SFXManager Instance
-        {
-            get => s_instance;
-            set
-            {
-                if (s_instance != null)
-                {
-                    Debug.LogError($"Error: A PlayerManager instance already exists: {Instance.name}. \nDestroying {value.name} ");
-                    Destroy(value.gameObject);
-                    return;
-                }
-
-                s_instance = value;
-            }
-        }
-
-
         private ObjectPool<AudioSource> _audioSourcePool;
         private const int AUDIO_SOURCE_POOL_CAPACITY = 10;
         private const int AUDIO_SOURCE_POOL_MAX_SIZE = 30;
@@ -37,9 +18,9 @@ namespace Audio
         public static event System.Action<Vector3, float> OnDetectableSoundTriggered;
 
 
-        private void Awake()
+        protected override void Awake()
         {
-            Instance = this;
+            base.Awake();
             _audioSourcePool = new ObjectPool<AudioSource>(createFunc: CreateNewSource, actionOnGet: OnGetSource, actionOnRelease: OnReleaseSource, defaultCapacity: AUDIO_SOURCE_POOL_CAPACITY, maxSize: AUDIO_SOURCE_POOL_MAX_SIZE);
         }
 
