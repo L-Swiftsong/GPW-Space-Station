@@ -20,7 +20,7 @@ public class WaypointData
 
 public class MimicController : MonoBehaviour
 {
-    Animator animator;
+    [SerializeField] private Animator animator;
     [SerializeField] private List<WaypointData> waypoints = new List<WaypointData>();
 
     // Enum for what type the mimic should be at end of route
@@ -36,7 +36,6 @@ public class MimicController : MonoBehaviour
     private void Start()
     {
         gameObject.SetActive(false); // disabled by default until start movements called
-        animator = GetComponent<Animator>();
     }
 
     // Starts the movement sequence and activates the GameObject
