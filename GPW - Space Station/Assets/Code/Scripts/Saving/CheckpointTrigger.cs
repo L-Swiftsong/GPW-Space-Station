@@ -24,12 +24,13 @@ namespace Saving
 
             Debug.Log("Checkpoint Save");
 
-            SaveManager.SaveCheckpoint();
+            //SaveManager.SaveCheckpoint();
 
             if (_onlyTriggerOnce)
             {
                 Destroy(this.gameObject);
             }
+            throw new System.NotImplementedException();
         }
     }
 }

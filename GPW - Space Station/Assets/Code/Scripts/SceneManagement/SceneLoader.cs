@@ -376,5 +376,12 @@ namespace SceneManagement
             return sceneIndexes.ToArray();
         }
         public static int GetActiveSceneBuildIndex() => SceneManager.GetActiveScene().buildIndex;
+
+
+        #if UNITY_EDITOR
+
+        public void Editor_EditorInitialiserLoadComplete() => StartCoroutine(PerformAfterFrame(() => OnLoadFinished?.Invoke()));
+
+        #endif
     }
 }

@@ -51,20 +51,22 @@ namespace UI.GameOver
 
         private void UpdateGameOverButtons()
         {
-            _checkpointSaveButton.interactable = SaveManager.HasCheckpointSave();
-            _hubSaveButton.interactable = SaveManager.HasHubSave();
+            throw new System.NotImplementedException();
+            //_checkpointSaveButton.interactable = SaveManager.HasCheckpointSave();
+            //_hubSaveButton.interactable = SaveManager.HasHubSave();
         }
 
 
-        public void RestartFromCheckpoint()
+        public void ReloadLastSave()
         {
             HideGameOverUI();
-            SaveManager.ReloadCheckpointSave();
+            SaveManager.Instance.LoadMostRecentSave();
         }
         public void RestartFromHub()
         {
             HideGameOverUI();
-            SaveManager.ReloadHubSave();
+            throw new System.NotImplementedException();
+            //SaveManager.ReloadHubSave();
         }
         public void ExitToMainMenu()
         {

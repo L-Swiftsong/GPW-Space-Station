@@ -111,6 +111,7 @@ public class EditorInitialiser
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(originalScene));
 
         EditorUtils.EditorSpawnPoint.SetPlayerSpawn();
+        SceneManagement.SceneLoader.Instance.Editor_EditorInitialiserLoadComplete();
     }
 
 
