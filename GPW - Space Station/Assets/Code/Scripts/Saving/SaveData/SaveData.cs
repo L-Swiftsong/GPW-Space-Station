@@ -15,8 +15,15 @@ namespace Saving
 
         public PlayerData PlayerData;
         public InventorySaveData ItemSaveData;
+        public ProgressData ProgressData;
 
 
+        public void LoadData()
+        {
+            PlayerData.LoadToPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>());
+            ItemSaveData.LoadToInventory(PlayerManager.Instance.Player.GetComponent<Items.PlayerInventory>());
+            ProgressData.LoadData();
+        }
         public static SaveData FromCurrent()
         {
             return new SaveData()
@@ -29,6 +36,7 @@ namespace Saving
 
                 PlayerData = PlayerData.CreateFromPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>()),
                 ItemSaveData = InventorySaveData.CreateFromInventory(PlayerManager.Instance.Player.GetComponent<PlayerInventory>()),
+                ProgressData = ProgressData.FromCurrent(),
             };
         }
     }

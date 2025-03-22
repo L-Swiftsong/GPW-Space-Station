@@ -86,6 +86,7 @@ namespace UI.ItemDisplay
                 List<TData> collectedCodexData = CollectableManager.GetCollectablesOfType<TData>();
 
                 int codexEntryDataCount = collectedCodexData.Count;
+                Debug.Log(codexEntryDataCount);
                 int codexEntryInstanceCount = _itemDisplaySegmentUIInstances.Count;
 
                 // Disable unnecessary CodexEntryUI Instances.

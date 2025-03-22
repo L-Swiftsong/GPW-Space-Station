@@ -59,8 +59,7 @@ namespace Saving
 
         private void PerformDataLoad()
         {
-            _saveData.PlayerData.LoadToPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>());
-            _saveData.ItemSaveData.LoadToInventory(PlayerManager.Instance.Player.GetComponent<Items.PlayerInventory>());
+            _saveData.LoadData();
         }
 
         public static FileInfo[] GetAllSaveFiles(bool ordered = false)

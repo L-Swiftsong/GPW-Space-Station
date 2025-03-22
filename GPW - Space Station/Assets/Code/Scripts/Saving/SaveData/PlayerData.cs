@@ -14,9 +14,6 @@ namespace Saving
         public MovementState MovementState;
 
 
-        public CollectableSaveData CollectableSaveData;
-
-
         public void LoadToPlayer(PlayerController playerController)
         {
             playerController.transform.position = this.RootPosition;
