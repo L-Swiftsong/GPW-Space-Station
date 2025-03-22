@@ -1,5 +1,6 @@
 using UnityEngine;
-using System.Linq;
+using Entities.Player;
+using Items;
 
 namespace Saving
 {
@@ -14,5 +15,21 @@ namespace Saving
 
         public PlayerData PlayerData;
         public InventorySaveData ItemSaveData;
+
+
+        public static SaveData FromCurrent()
+        {
+            return new SaveData()
+            {
+                Exists = true,
+                SaveTime = Time.time,
+
+                LoadedSceneIndices = SceneManagement.SceneLoader.GetLoadedSceneBuildIndices(),
+                ActiveSceneIndex = SceneManagement.SceneLoader.GetActiveSceneBuildIndex(),
+
+                PlayerData = PlayerData.CreateFromPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>()),
+                ItemSaveData = InventorySaveData.CreateFromInventory(PlayerManager.Instance.Player.GetComponent<PlayerInventory>()),
+            };
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Saving
     {
         public CollectableDataType CollectableType;
         public bool[] CollectablesObtained;
-
+        
 
 
         public static CollectableSaveData[] GetCurrentSaveData()

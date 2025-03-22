@@ -26,79 +26,11 @@ namespace Saving
             base.Awake();
             NewGame();
         }
-        //private void Start() => NewGame();
-        
-        private void OnEnable()
-        {
-            SceneLoader.OnLoadFinished += SceneLoader_OnLoadFinished;
-        }
-        private void OnDisable()
-        {
-            SceneLoader.OnLoadFinished -= SceneLoader_OnLoadFinished;
-        }
-
-        void SceneLoader_OnLoadFinished()
-        {
-            _saveData.LoadedSceneIndices = SceneLoader.GetLoadedSceneBuildIndices();
-            _saveData.ActiveSceneIndex = SceneLoader.GetActiveSceneBuildIndex();
-
-            BindPlayerData(ref _saveData.PlayerData);
-        }
-
-
-        private static void BindPlayerData(ref PlayerData data)
-        {
-            IBind<PlayerData> entity = PlayerManager.Instance.Player.GetComponent<PlayerController>();
-
-            if (data == null)
-            {
-                data = new PlayerData { SaveID = entity.ID };
-            }
-
-            entity.Bind(data);
-        }
-
-
-        private static void Bind<T, TData>(TData data) where T : MonoBehaviour, IBind<TData> where TData : ISaveable, new()
-        {
-            T entity = FindObjectsByType<T>(FindObjectsSortMode.None).FirstOrDefault();
-
-            if (entity != null)
-            {
-                if (data == null)
-                {
-                    data = new TData { SaveID = entity.ID };
-                }
-
-                entity.Bind(data);
-            }
-        }
-        private static void Bind<T, TData>(List<TData> datas) where T : MonoBehaviour, IBind<TData> where TData : ISaveable, new()
-        {
-            T[] entities = FindObjectsByType<T>(FindObjectsSortMode.None);
-
-            foreach(T entity in entities)
-            {
-                var data = datas.FirstOrDefault(d => d.SaveID == entity.ID);
-                if (data == null)
-                {
-                    data = new TData { SaveID = entity.ID };
-                    datas.Add(data);
-                }
-
-                entity.Bind(data);
-            }
-        }
 
 
         public void NewGame()
         {
-            Debug.Log("New Game");
-            _saveData = new SaveData()
-            {
-                Exists = true,
-                SaveTime = 0.0f
-            };
+            Debug.Log("Starting New Game");
         }
 
         #region Saving
@@ -109,7 +41,9 @@ namespace Saving
             SaveGame(string.Concat("ManualSave-", slashlessTime));
         }
         public void SaveGameAutosave() => SaveGame("Autosave");
-        private void SaveGame(string saveDataName) => JsonDataService.Save<SaveData>(saveDataName, _saveData, USE_PRETTY_PRINT);
+        private void SaveGame(string saveDataName) => JsonDataService.Save<SaveData>(saveDataName, CreateSaveData(), USE_PRETTY_PRINT);
+
+        private SaveData CreateSaveData() => SaveData.FromCurrent();
 
         #endregion
 
@@ -120,7 +54,13 @@ namespace Saving
         public void LoadGame(string fileName)
         {
             _saveData = JsonDataService.Load<SaveData>(fileName);
-            SceneLoader.Instance.LoadFromSave(_saveData.LoadedSceneIndices, _saveData.ActiveSceneIndex, null);
+            SceneLoader.Instance.LoadFromSave(_saveData.LoadedSceneIndices, _saveData.ActiveSceneIndex, PerformDataLoad);
+        }
+
+        private void PerformDataLoad()
+        {
+            _saveData.PlayerData.LoadToPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>());
+            _saveData.ItemSaveData.LoadToInventory(PlayerManager.Instance.Player.GetComponent<Items.PlayerInventory>());
         }
 
         public static FileInfo[] GetAllSaveFiles(bool ordered = false)

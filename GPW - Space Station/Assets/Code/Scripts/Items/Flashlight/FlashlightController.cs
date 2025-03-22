@@ -135,7 +135,6 @@ namespace Items.Flashlight
             _audioSource.PlayOneShot(_flashlightClick);
 
             UpdateLedIndicator();
-
         }
 
         private void StartFocus()
@@ -291,5 +290,9 @@ namespace Items.Flashlight
         }
 
         #endregion
+
+
+        public void LoadActiveState(bool activeState) => SetActiveState(activeState);
+        public bool GetActiveState() => _isOn;
     }
 }

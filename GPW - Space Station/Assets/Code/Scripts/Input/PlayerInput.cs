@@ -153,9 +153,14 @@ public class PlayerInput : MonoBehaviour
     [ContextMenu(itemName: "Display Active Locks")]
     private void DisplayLocks()
     {
-        Debug.Log(s_typeToMovementPreventionCountDictionary.Count);
-        Debug.Log(s_typeToCameraPreventionCountDictionary.Count);
-        Debug.Log(s_typeToInteractionPreventionCountDictionary.Count);
+        string movementPreventingTypes = string.Concat(s_typeToMovementPreventionCountDictionary.Keys);
+        Debug.Log(s_typeToMovementPreventionCountDictionary.Count + "\n" + movementPreventingTypes);
+
+        string cameraPreventingTypes = string.Concat(s_typeToCameraPreventionCountDictionary.Keys);
+        Debug.Log(s_typeToCameraPreventionCountDictionary.Count + "\n" + cameraPreventingTypes);
+
+        string interactionPreventingTypes = string.Join(", ", s_typeToInteractionPreventionCountDictionary.Keys);
+        Debug.Log(s_typeToInteractionPreventionCountDictionary.Count + "\n" + interactionPreventingTypes);
     }
 
     #endif

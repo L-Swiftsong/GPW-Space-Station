@@ -60,7 +60,7 @@ namespace Entities.Player
         }
 
 
-        public InventorySaveData GetInventorySaveData() => InventorySaveData.FromInventoryData(_playerInventory);
+        /*public InventorySaveData GetInventorySaveData() => InventorySaveData.FromInventoryData(_playerInventory);
         public void LoadInventorySaveData(InventorySaveData saveData)
         {
             // Player Items.
@@ -75,9 +75,9 @@ namespace Entities.Player
             CollectableManager.PrepareForLoad();
             foreach (CollectableSaveData collectableSaveData in saveData.CollectablesSaveData)
             {
-                CollectableManager.LoadObtainedCollectables(collectableSaveData.CollectableType.ToSystemType(), collectableSaveData.CollectablesObtained);
+                CollectableManager.LoadObtainedCollectables(collectableSaveData.CollectableType.ToSystemType(), collectableSaveData.KeyItemsObtained);
             }
-        }
+        }*/
 
 
 

@@ -11,13 +11,8 @@ using Saving;
 
 namespace Entities.Player
 {
-    public class PlayerController : MonoBehaviour, IBind<PlayerData>
+    public class PlayerController : MonoBehaviour
     {
-        // Saving.
-        [field: SerializeField] public SerializableGuid ID { get; set; } = SerializableGuid.NewGuid();
-        [SerializeField] private PlayerData _data;
-
-
         [Header("General References")]
         [SerializeField] private Transform _rotationPivot;
         private PlayerHealth playerHealth;
@@ -312,7 +307,6 @@ namespace Entities.Player
                 sprintSpeed = baseSprintSpeed;
             }
         }
-        private void LateUpdate() => UpdateSaveData();
 
 
         private void CameraShake()
@@ -771,30 +765,6 @@ namespace Entities.Player
         }
         public float GetYRotation() => _rotationPivot.localEulerAngles.y;
         public void SetYRotation(float yRotation) => _rotationPivot.localRotation = Quaternion.Euler(0.0f, yRotation, 0.0f);
-
-
-        #region Saving
-
-        public void Bind(PlayerData data)
-        {
-            this._data = data;
-            this._data.SaveID = ID;
-
-            transform.position = _data.RootPosition;
-            SetYRotation(_data.YRotation);
-            SetCameraRotation(_data.CameraXRotation);
-            Physics.SyncTransforms();
-            InitialiseMovementState(_data.MovementState);
-        }
-        private void UpdateSaveData()
-        {
-            _data.RootPosition = transform.position;
-            _data.YRotation = GetYRotation();
-            _data.CameraXRotation = GetCameraRotation();
-            _data.MovementState = GetCurrentMovementState();
-        }
-
-        #endregion
 
 
         private void OnDrawGizmosSelected()
