@@ -248,6 +248,8 @@ namespace Entities
 
 
         public bool SetDestination(Vector3 destination) => _agent.SetDestination(destination);
+        public void SetPath(NavMeshPath path) => _agent.SetPath(path);
+        public bool CalculatePath(Vector3 destination, ref NavMeshPath path) => _agent.CalculatePath(destination, path);
         public void SetIsStopped(bool newValue) => _agent.isStopped = newValue;
 
         public bool HasReachedDestination() => _agent.remainingDistance <= _reachedDestinationDistance || _agent.remainingDistance < _agent.stoppingDistance;

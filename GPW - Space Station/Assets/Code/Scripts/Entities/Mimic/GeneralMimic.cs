@@ -104,15 +104,12 @@ namespace Entities.Mimic
 
                 if (_wanderState.ShouldMakeNewDecision())
                 {
+                    _wanderState.AttemptingDecision();
+
                     // We should attempt to exit the Wander State.
                     float _rndBehaviourDecision = Random.Range(0.0f, 1.0f);
 
-                    /*if (_rndBehaviourDecision <= _wanderState.VentChance && _ventState.CanEnter())
-                    {
-                        SetActiveState(_ventState);
-                        return;
-                    }
-                    else */if (_rndBehaviourDecision <= (_wanderState.VentChance + _wanderState.SetTrapChance) && _setTrapState.CanEnter())
+                    if (_rndBehaviourDecision <= _wanderState.SetTrapChance && _setTrapState.CanEnter())
                     {
                         SetActiveState(_setTrapState);
                         return;
