@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8089227509851957071}
   - component: {fileID: 4075441755986427622}
+  - component: {fileID: 2858420400408093942}
   m_Layer: 0
   m_Name: WallGrey_Window_Small
   m_TagString: Untagged
@@ -56,6 +57,27 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!65 &2858420400408093942
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4797794518266611007}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.7928076, y: 3.3282952, z: 0.5913069}
+  m_Center: {x: 0.0023187995, y: 2.3788111, z: 0.20434654}
 --- !u!1001 &950615877707448356
 PrefabInstance:
   m_ObjectHideFlags: 0
