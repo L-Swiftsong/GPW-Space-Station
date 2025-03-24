@@ -7,6 +7,7 @@ namespace Environment.Lighting
     public class LightFlicker : MonoBehaviour
     {
         [SerializeField] private Light[] _lights;
+        private LightManager _lightManager;
 
         [Space(5)]
         [SerializeField] private float _minIntensity = 0.1f;
@@ -19,16 +20,30 @@ namespace Environment.Lighting
 
 
         private Coroutine _lightFlickerCoroutine;
-        private void OnEnable()
+
+		private void Awake()
+		{
+			_lightManager = LightManager.Instance;
+		}
+
+
+		private void OnEnable()
         {
+            _lightManager?.AddFlickeringLights(this);
+
             if (_lightFlickerCoroutine == null)
             {
                 _lightFlickerCoroutine = StartCoroutine(HandleLightFlickering());
             }
         }
 
+		private void OnDisable()
+		{
+			_lightManager?.RemoveFlickeringLights(this);
+		}
 
-        private IEnumerator HandleLightFlickering()
+
+		private IEnumerator HandleLightFlickering()
         {
             while (true)
             {

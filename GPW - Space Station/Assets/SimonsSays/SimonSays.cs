@@ -304,6 +304,8 @@ public class SimonSays : MonoBehaviour
         }
         // Once the puzzle is complete, move the keycard to the target location.
         MoveKeycard();
+
+        LightManager.Instance.TurnOnLights();
     }
 
     /// <summary>
