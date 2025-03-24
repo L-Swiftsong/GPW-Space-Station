@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Entities.Mimic.States
 {
@@ -14,17 +15,14 @@ namespace Entities.Mimic.States
 
 
         [Header("Wander Settings")]
-        [SerializeField] private Vector3 _mapCentre;
-        [SerializeField] private Vector3 _mapExtents;
+        [SerializeField] private WanderBounds[] _wanderBounds;
 
         [Space(5)]
         [SerializeField] private NavMeshLayers _validWanderTargetLayers = NavMeshLayers.Walkable;
 
         [Space(5)]
-        [SerializeField] private int _maxWanderAttempts = 10;
-        [SerializeField] private float _wanderPauseDelay = 3.0f;
-        private int _currentWanderAttempts;
-        private float _pauseDelayRemaining;
+        [SerializeField] private float _wanderBoundsUpdateDelay = 5.0f;
+        private float _wanderBoundsUpdateDelayRemaining;
 
 
         [Header("Wander Decision Settings")]
@@ -46,22 +44,17 @@ namespace Entities.Mimic.States
         {
             _wanderDecisionTimeRemaining = Random.Range(_minWanderDecisionTime, _maxWanderDecisionTime);
             ChooseNewDestination();
+            UpdateWanderBounds();
         }
         public override void OnLogic()
         {
-            if (_pauseDelayRemaining > 0.0f)
+            if (_wanderBoundsUpdateDelayRemaining > 0.0f)
             {
-                _pauseDelayRemaining -= Time.deltaTime;
-
-                if (_pauseDelayRemaining <= 0.0f)
-                {
-                    _entityMovement.SetIsStopped(false);
-                    _currentWanderAttempts = 0;
-                }
-                else
-                {
-                    return;
-                }
+                _wanderBoundsUpdateDelayRemaining -= Time.deltaTime;
+            }
+            else
+            {
+                UpdateWanderBounds();
             }
 
             if (_entityMovement.HasReachedDestination())
@@ -76,38 +69,44 @@ namespace Entities.Mimic.States
 
         private void ChooseNewDestination()
         {
-            if (_entityMovement.TryFindRandomPointInBounds(_mapCentre, _mapExtents, out Vector3 result, (int)_validWanderTargetLayers))
+            WanderBounds[] validWanderBounds = _wanderBounds.Where(t => t.CanReach).ToArray();
+
+            if (validWanderBounds.Length == 0)
             {
-                UnityEngine.AI.NavMeshPath path = new UnityEngine.AI.NavMeshPath();
-                if (_entityMovement.CalculatePath(result, ref path) && path.status == UnityEngine.AI.NavMeshPathStatus.PathComplete)
-                {
-                    _entityMovement.SetPath(path);
-                    _currentWanderAttempts = 0;
-                }
-                else
-                {
-                    _currentWanderAttempts++;
-                    if (_currentWanderAttempts >= _maxWanderAttempts)
-                    {
-                        _entityMovement.SetIsStopped(true);
-                        _pauseDelayRemaining = _wanderPauseDelay;
-                    }
-                }
+                // No wander bounds can be traversed to.
+                Debug.Log("Failed to find valid bounds");
+                return;
+            }
+            int randomIndex = Random.Range(0, validWanderBounds.Length);
+            for (int i = 0; i < validWanderBounds.Length; ++i)
+            {
+                Debug.Log(validWanderBounds[i].Centre);
+            }
+
+
+            if (_entityMovement.TryFindRandomPointInBounds(validWanderBounds[randomIndex].Centre, validWanderBounds[randomIndex].Extents, out Vector3 result, (int)_validWanderTargetLayers))
+            {
+                _entityMovement.SetDestination(result);
+            }
+        }
+
+        private void UpdateWanderBounds()
+        {
+            _wanderBoundsUpdateDelayRemaining = _wanderBoundsUpdateDelay;
+
+            for (int i = 0; i < _wanderBounds.Length; ++i)
+            {
+                _wanderBounds[i].UpdateCanReach(_entityMovement);
             }
         }
 
 
         private void OnDrawGizmosSelected()
         {
-            Gizmos.DrawWireCube(_mapCentre, _mapExtents);
-
-            /*
             for(int i = 0; i < _wanderBounds.Length; ++i)
             {
-                Gizmos.Color = _wanderBounds[i].CanReach ? Color.green : Color.red;
-                Debug.DrawWireCube(_wanderBounds[i].Centre, _wanderBounds[i].Extents);
+                _wanderBounds[i].DrawGizmos();
             }
-             */
         }
 
 
@@ -117,18 +116,35 @@ namespace Entities.Mimic.States
             [SerializeField] private Vector3 _centre;
             [SerializeField] private Vector3 _extents;
 
+            [Space(5)]
+            [SerializeField] private Vector3 _testPosition;
             [SerializeField, ReadOnly] private bool _canReach;
-            private const float TRAVERSE_CHECK_RADIUS = 2.0f;
-            private const int TRAVERSE_CHECK_ATTEMPT_COUNT = 5;
+            private const float TRAVERSE_CHECK_SQR_RADIUS = 2.0f * 2.0f;
 
             public Vector3 Centre => _centre;
             public Vector3 Extents => _extents;
             public bool CanReach => _canReach;
 
 
-            public void UpdateCanReach(EntityMovement entityMovement, NavMeshLayers walkableLayers)
+            public void UpdateCanReach(EntityMovement entityMovement)
             {
-                _canReach = entityMovement.TryFindRandomPointInBounds(_centre, _extents, out Vector3 result, (int)walkableLayers, TRAVERSE_CHECK_ATTEMPT_COUNT);
+                if (entityMovement.CalculatePath(_testPosition, out UnityEngine.AI.NavMeshPath path))
+                {
+                    _canReach = (path.corners[path.corners.Length - 1] - _testPosition).sqrMagnitude < TRAVERSE_CHECK_SQR_RADIUS;
+                }
+                else
+                {
+                    _canReach = false;
+                }
+            }
+
+            public void DrawGizmos()
+            {
+                Gizmos.color = _canReach ? Color.green : Color.red;
+                Gizmos.DrawWireCube(_centre, _extents);
+
+                Gizmos.color = Color.black;
+                Gizmos.DrawSphere(_testPosition, 0.5f);
             }
         }
     }

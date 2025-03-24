@@ -359,12 +359,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _entityMovement: {fileID: 9116854351678556578}
-  _mapCentre: {x: 0, y: 0, z: 0}
-  _mapExtents: {x: 0, y: 0, z: 0}
+  _wanderBounds: []
   _validWanderTargetLayers: 1
+  _wanderBoundsUpdateDelay: 5
   _minWanderDecisionTime: 1
   _maxWanderDecisionTime: 15
-  _enterVentChance: 0.2
   _setTrapChance: 0.2
 --- !u!114 &5653812574155913496
 MonoBehaviour:

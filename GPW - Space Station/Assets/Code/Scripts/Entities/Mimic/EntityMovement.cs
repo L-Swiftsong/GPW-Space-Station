@@ -249,11 +249,16 @@ namespace Entities
 
         public bool SetDestination(Vector3 destination) => _agent.SetDestination(destination);
         public void SetPath(NavMeshPath path) => _agent.SetPath(path);
-        public bool CalculatePath(Vector3 destination, ref NavMeshPath path) => _agent.CalculatePath(destination, path);
+        public bool CalculatePath(Vector3 destination, out NavMeshPath path)
+        {
+            path = new NavMeshPath();
+            return _agent.CalculatePath(destination, path);
+        }
+
         public void SetIsStopped(bool newValue) => _agent.isStopped = newValue;
 
         public bool HasReachedDestination() => _agent.remainingDistance <= _reachedDestinationDistance || _agent.remainingDistance < _agent.stoppingDistance;
-        public bool TryFindRandomPointInBounds(Vector3 centre, Vector3 extents, out Vector3 result, int areaMask = -1, int maxAttempts = 5) => _agent.TryFindRandomPoint(centre, extents, out result, areaMask: areaMask, maxAttempts: maxAttempts);
+        public bool TryFindRandomPointInBounds(Vector3 centre, Vector3 extents, out Vector3 result, int areaMask = -1, int maxAttempts = 5, float checkRadius = 1.0f) => _agent.TryFindRandomPoint(centre, extents, out result, areaMask: areaMask, maxAttempts: maxAttempts, checkRadius: checkRadius);
 
 
         public void RotateToDirection(Vector3 direction) => RotateToDirection(direction, _agent.angularSpeed);
