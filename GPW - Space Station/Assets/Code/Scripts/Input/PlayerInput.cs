@@ -379,6 +379,10 @@ public class PlayerInput : MonoBehaviour
         Camera = 1 << 1,
         Interaction = 1 << 2,
         Global = 1 << 3,
+        
+        Custscene = ActionTypes.Movement | ActionTypes.Camera | ActionTypes.Interaction,
+        CustsceneNoCamPrevention = ActionTypes.Custscene & ~ActionTypes.Camera,
+
         Everything = ~0,
     }
     public static void PreventActions(Type lockingType, ActionTypes actionTypes)
@@ -403,6 +407,10 @@ public class PlayerInput : MonoBehaviour
         if (actionTypes.HasFlag(ActionTypes.Global))
             RemoveGlobalActionPrevention(lockingType);
     }
+
+
+    public static void PreventInputForCutscene(bool allowCameraMovement = false) => PreventActions(typeof(PlayerInput), allowCameraMovement ? ActionTypes.CustsceneNoCamPrevention : ActionTypes.Custscene);
+    public static void RemoveInputPreventionForCutscene() => RemoveActionPrevention(typeof(PlayerInput), ActionTypes.Custscene);
 
 
     // Movement Map.
