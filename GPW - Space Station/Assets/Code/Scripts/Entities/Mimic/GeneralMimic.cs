@@ -9,7 +9,7 @@ using Entities.Mimic.States;
 namespace Entities.Mimic
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(EntitySenses))]
-    public class GeneralMimic : MonoBehaviour
+    public class GeneralMimic : BaseMimic
     {
         // References.
         private NavMeshAgent _agent;

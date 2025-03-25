@@ -9,7 +9,7 @@ using Audio;
 namespace Entities.Mimic
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class ChaseMimic : MonoBehaviour, IStunnable
+    public class ChaseMimic : BaseMimic, IStunnable
     {
         private NavMeshAgent _navMeshAgent;
         private bool isChasing = false;
