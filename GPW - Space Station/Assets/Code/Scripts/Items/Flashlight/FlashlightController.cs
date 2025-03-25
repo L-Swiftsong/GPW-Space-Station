@@ -41,8 +41,8 @@ namespace Items.Flashlight
         [Tooltip("How long the flashlight's battery lasts if continuously focused")]
         [SerializeField] private float _focusedBatteryLifetime = 10.0f;
 
+
         [Header("SFX Settings")]
-        [SerializeField] private AudioSource _audioSource;
         [SerializeField] private AudioClip _flashlightClick;
 
 
@@ -94,7 +94,6 @@ namespace Items.Flashlight
 
             // The flashlight will only be enabled when we obtain it, and we set its active state to false here so that it always starts with the light off.
             SetActiveState(false);
-            _audioSource.Stop();
         }
         private void OnDisable()
         {
@@ -132,7 +131,7 @@ namespace Items.Flashlight
         {
             _isOn = newActiveState;
             _flashlightLight.enabled = newActiveState;
-            _audioSource.PlayOneShot(_flashlightClick);
+            Audio.SFXManager.Instance.PlayClipAtPosition(_flashlightClick, transform.position);
 
             UpdateLedIndicator();
 
