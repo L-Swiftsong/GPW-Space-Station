@@ -290,8 +290,13 @@ namespace Entities.Player
 
                 CameraShake();
             }
-        
+            else
+            {
+                StopCameraShake();
+            }
+
             HandleLook();
+
         
             if (playerHealth.IsHealing)
             {
@@ -321,9 +326,10 @@ namespace Entities.Player
             }
             else
             {
-                cameraShake.SetShakeState(isWalking: false, isRunning: false);
+                StopCameraShake();
             }
         }
+        private void StopCameraShake() => cameraShake.SetShakeState(isWalking: false, isRunning: false);
 
 
         private void HandleStateChange()

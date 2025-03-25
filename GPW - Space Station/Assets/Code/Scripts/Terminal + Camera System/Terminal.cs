@@ -21,10 +21,12 @@ public class Terminal : MonoBehaviour, IInteractable
     [SerializeField] private GameObject terminalUI;
     [SerializeField] private TextMeshProUGUI terminalText;
 
+
     [Header("Input Field ++ Keyboard")]
     [SerializeField] private TMP_InputField passwordInputField;
     [SerializeField] private GameObject virtualKeyboardPanel;
     [SerializeField] private Button defaultVirtualKeyboardButton; // For controller navigation
+
 
     [Header("Main Options")]
     [SerializeField] private GameObject optionsPanel;
@@ -34,6 +36,7 @@ public class Terminal : MonoBehaviour, IInteractable
     [SerializeField] private Button lockDoorButton;
     [SerializeField] private Button exitTerminalButton;
 
+
     [Header("Files UI")]
     [SerializeField] private GameObject filesPanel;
     [SerializeField] private Button file1Button;
@@ -41,26 +44,31 @@ public class Terminal : MonoBehaviour, IInteractable
     [SerializeField] private Button file3Button;
     [SerializeField] private Button returnButton;
 
+
     [Header("References to Player Movement")]
     [SerializeField] private PlayerController playerController;
-    [SerializeField] private PlayerInput playerInput;
+
 
     [Header("Reference to Camera Terminal")]
     [SerializeField] private CameraSystem cameraTerminal;
 
+
     [Header("Terminal Camera")]
     [Tooltip("Camera to activate while using the terminal.")]
     [SerializeField] private Camera terminalCamera;
+
 
     [Header("ID Settings")]
     [SerializeField] private string correctPassword = "NCT0094";
     [SerializeField] private int maxAttempts = 3;
     [SerializeField] private float lockoutDuration = 10f;
 
+
     [Header("UI Settings")]
     [Tooltip("Typing speed between each character in typed lines. makes it look more real")]
     [SerializeField] private float typeSpeed = 0.05f;
     [SerializeField] private float inputFontSize = 7f;
+
 
     [Header("Files Settings")]
     [SerializeField] private FileStory[] files;
@@ -100,6 +108,7 @@ public class Terminal : MonoBehaviour, IInteractable
 
     // Renamed the field to _isTyping to avoid ambiguity
     private bool _isTyping = false;
+
 
     private void Start()
     {
@@ -159,7 +168,6 @@ public class Terminal : MonoBehaviour, IInteractable
         if (_isUsingTerminal)
         {
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
 
         if (_isUsingTerminal && Gamepad.current != null)
@@ -257,7 +265,6 @@ public class Terminal : MonoBehaviour, IInteractable
             EventSystem.current.SetSelectedGameObject(defaultVirtualKeyboardButton.gameObject);
 
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
 
         if (terminalText != null)
             terminalText.text = "";
@@ -612,7 +619,6 @@ public class Terminal : MonoBehaviour, IInteractable
             terminalCamera.gameObject.SetActive(false);
 
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
 
         // Unsubscribe from Input Events.
         PlayerInput.OnUICancelPerformed -= CloseTerminal;
