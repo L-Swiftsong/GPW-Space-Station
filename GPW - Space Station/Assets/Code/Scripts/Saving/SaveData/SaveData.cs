@@ -1,6 +1,7 @@
 using UnityEngine;
 using Entities.Player;
 using Items;
+using System.Linq;
 
 namespace Saving
 {
@@ -16,6 +17,7 @@ namespace Saving
         public PlayerData PlayerData;
         public InventorySaveData ItemSaveData;
         public ProgressData ProgressData;
+        public LevelSaveData[] LevelSaveDatas;
 
 
         public void LoadData()
@@ -23,6 +25,7 @@ namespace Saving
             PlayerData.LoadToPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>());
             ItemSaveData.LoadToInventory(PlayerManager.Instance.Player.GetComponent<Items.PlayerInventory>());
             ProgressData.LoadData();
+            LevelDataManager.LoadLevelSaves(LevelSaveDatas);
         }
         public static SaveData FromCurrent()
         {
@@ -37,6 +40,7 @@ namespace Saving
                 PlayerData = PlayerData.CreateFromPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>()),
                 ItemSaveData = InventorySaveData.CreateFromInventory(PlayerManager.Instance.Player.GetComponent<PlayerInventory>()),
                 ProgressData = ProgressData.FromCurrent(),
+                LevelSaveDatas = LevelDataManager.GetAllExistingSaveData(),
             };
         }
     }

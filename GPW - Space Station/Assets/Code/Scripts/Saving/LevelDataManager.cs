@@ -7,10 +7,24 @@ namespace Saving
 {
     public class LevelDataManager : MonoBehaviour
     {
+        private static Dictionary<int, LevelSaveData> s_sceneIndexToSaveDataDictionary = new Dictionary<int, LevelSaveData>();
         [SerializeField] private LevelSaveData _saveData = new LevelSaveData();
+        private int _sceneBuildIndex = -1;
+
+        [SerializeField] private Component[] _saveableObjects = new Component[0];
 
 
-        [SerializeField, ReadOnly] private Component[] _saveableObjects;
+        private static event System.Action<LevelSaveData> OnLoadLevelSave;
+
+
+        public static void LoadLevelSaves(LevelSaveData[] levelSaveDatas)
+        {
+            for(int i = 0; i < levelSaveDatas.Length; ++i)
+            {
+                OnLoadLevelSave(levelSaveDatas[i]);
+            }
+        }
+        public static LevelSaveData[] GetAllExistingSaveData() => s_sceneIndexToSaveDataDictionary.Values.ToArray();
 
 
         #region Editor Only
@@ -24,6 +38,8 @@ namespace Saving
                 return;
             }
 
+            _sceneBuildIndex = this.gameObject.scene.buildIndex;
+            _saveData.SceneBuildIndex = _sceneBuildIndex;
 
             List<Component> saveableObjectsAsComponents = new List<Component>();
             foreach (GameObject rootGameObject in this.gameObject.scene.GetRootGameObjects())
@@ -46,6 +62,7 @@ namespace Saving
                 }
             }
         }
+
         public bool Editor_AreAnySaveableObjectsInvalid()
         {
             for(int i = 0; i < _saveableObjects.Length; ++i)
@@ -70,12 +87,20 @@ namespace Saving
             {
                 Debug.LogWarning("Saveable Objects not initialised");
             }
+
             SetupSaveData();
+            OnLoadLevelSave += TryLoadSaveData;
+
+            if (s_sceneIndexToSaveDataDictionary.TryAdd(_sceneBuildIndex, _saveData) == false)
+            {
+                s_sceneIndexToSaveDataDictionary[_sceneBuildIndex] = this._saveData;
+            }
         }
+        private void OnDestroy() => OnLoadLevelSave -= TryLoadSaveData;
         private void SetupSaveData()
         {
             _saveData = new LevelSaveData();
-            _saveData.SceneBuildIndex = gameObject.scene.buildIndex;
+            _saveData.SceneBuildIndex = _sceneBuildIndex;
 
             Debug.Log($"Performing initial bindings for {_saveableObjects.Length} objects.");
 
@@ -96,10 +121,16 @@ namespace Saving
 
             _saveData.ObjectSaveData = saveDatas;
         }
-        public LevelSaveData GetSaveData() => _saveData;
+        private void TryLoadSaveData(LevelSaveData levelSaveData)
+        {
+            if (levelSaveData.SceneBuildIndex == _sceneBuildIndex)
+            {
+                LoadSaveData(levelSaveData);
+            }
+        }
         public void LoadSaveData(LevelSaveData levelSaveData)
         {
-            if (levelSaveData.SceneBuildIndex != gameObject.scene.buildIndex)
+            if (levelSaveData.SceneBuildIndex != _sceneBuildIndex)
             {
                 throw new System.ArgumentException("LevelSaveData scene build index doesn't match LevelDataManager's scene index.");
             }
