@@ -141,7 +141,6 @@ namespace Saving
         public bool WasDestroyed = false;
         [Space(5)]
 
-        public bool IsLocked;
-        public bool IsOpen;
+        public bool[] SavedValues;
     }
 }
