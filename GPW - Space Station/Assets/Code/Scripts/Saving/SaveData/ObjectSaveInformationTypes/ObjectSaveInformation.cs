@@ -1,9 +1,6 @@
-using UnityEngine;
-
 namespace Saving.LevelData
 {
-    [System.Serializable]
-    public class ObjectSaveInformation
+    public abstract class ObjectSaveInformation
     {
         public ObjectSaveData ObjectSaveData;
         public SerializableGuid ID { get => ObjectSaveData.ID; set => ObjectSaveData.ID = value; }
