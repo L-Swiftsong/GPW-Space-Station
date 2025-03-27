@@ -10,7 +10,7 @@ namespace Saving
     {
         public override void OnInspectorGUI()
         {
-            string filePath = "TestSaveData";
+            string filePath = "DebugSave";
 
             DrawDefaultInspector();
 
@@ -21,7 +21,7 @@ namespace Saving
 
             if (GUILayout.Button("Save Game"))
             {
-                SaveManager.Instance.SaveGameManual();
+                SaveManager.Instance.SaveGameDebug();
             }
 
             if (GUILayout.Button("Load Game"))

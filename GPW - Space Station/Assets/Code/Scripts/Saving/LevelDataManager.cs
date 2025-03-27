@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace Saving
+namespace Saving.LevelData
 {
     public class LevelDataManager : MonoBehaviour
     {
@@ -157,21 +157,5 @@ namespace Saving
         }
 
         #endregion
-    }
-    [System.Serializable]
-    public class LevelSaveData
-    {
-        public int SceneBuildIndex = -1;
-        public ObjectSaveData[] ObjectSaveData;
-    }
-    [System.Serializable]
-    public class ObjectSaveData
-    {
-        [field: SerializeField] public SerializableGuid ID { get; set; }
-        [ReadOnly] public bool Exists = false;
-        public bool WasDestroyed = false;
-        [Space(5)]
-
-        public bool[] SavedValues;
     }
 }

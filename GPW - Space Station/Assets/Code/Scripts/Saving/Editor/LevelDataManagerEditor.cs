@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Saving
+namespace Saving.LevelData
 {
     [CustomEditor(typeof(LevelDataManager))]
     public class LevelDataManagerEditor : Editor

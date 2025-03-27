@@ -41,6 +41,7 @@ namespace Saving
             SaveGame(string.Concat("ManualSave-", slashlessTime));
         }
         public void SaveGameAutosave() => SaveGame("Autosave");
+        public void SaveGameDebug() => SaveGame("DebugSave");
         private void SaveGame(string saveDataName) => JsonDataService.Save<SaveData>(saveDataName, CreateSaveData(), USE_PRETTY_PRINT);
 
         private SaveData CreateSaveData() => SaveData.FromCurrent();

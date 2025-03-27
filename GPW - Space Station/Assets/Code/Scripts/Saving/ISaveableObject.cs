@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Saving
+namespace Saving.LevelData
 {
     public interface ISaveableObject
     {

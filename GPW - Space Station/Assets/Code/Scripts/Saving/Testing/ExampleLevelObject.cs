@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Saving
+namespace Saving.LevelData
 {
     /*public class ExampleLevelObject : MonoBehaviour, ISaveable
     {
@@ -43,7 +43,6 @@ namespace Saving
 #endregion
 
 
-        [SerializeField] private bool _isLocked;
         [SerializeField] private bool _isOpen;
 
 
@@ -57,8 +56,7 @@ namespace Saving
                 Destroy(this.gameObject);
             }
 
-            _isLocked = _saveData.SavedValues[IS_LOCKED_INDEX];
-            _isOpen = _saveData.SavedValues[IS_OPEN_INDEX];
+            _isOpen = (_saveData.SaveInformation as DoorSaveInformation).IsOpen;
         }
         public ObjectSaveData BindNew()
         {
@@ -68,26 +66,24 @@ namespace Saving
                 {
                     ID = this.ID,
                     Exists = true,
-                    SavedValues = CreateSavedBools(),
+                    SaveInformation = CreateSavedBools(),
                 };
             }
 
             return this._saveData;
 
 
-            bool[] CreateSavedBools()
+            ObjectSaveInformation CreateSavedBools()
             {
-                bool[] savedBools = new bool[2];
-                savedBools[IS_LOCKED_INDEX] = _isLocked;
-                savedBools[IS_OPEN_INDEX] = _isOpen;
-
-                return savedBools;
+                return new DoorSaveInformation()
+                {
+                    IsOpen = _isOpen,
+                };
             }
         }
         private void LateUpdate()
         {
-            _saveData.SavedValues[IS_LOCKED_INDEX] = _isLocked;
-            _saveData.SavedValues[IS_OPEN_INDEX] = _isOpen;
+            (_saveData.SaveInformation as DoorSaveInformation).IsOpen = _isOpen;
         }
         private void OnDestroy() => _saveData.WasDestroyed = true;
     }
