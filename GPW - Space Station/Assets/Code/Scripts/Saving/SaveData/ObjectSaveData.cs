@@ -10,6 +10,7 @@ namespace Saving.LevelData
         public bool WasDestroyed = false;
         [Space(5)]
 
-        [SerializeField] public ObjectSaveInformation SaveInformation;
+        public bool[] BoolValues;
+        public int[] IntValues;
     }
 }

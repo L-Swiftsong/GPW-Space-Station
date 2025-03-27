@@ -3,11 +3,15 @@ namespace Saving.LevelData
     [System.Serializable]
     public class PadlockSaveInformation : ObjectSaveInformation
     {
-        public bool IsUnlocked { get => BoolValues[0]; set => BoolValues[0] = value; }
-        public int[] CurrentSetValues { get => IntValues; set => IntValues = value; }
+        public bool IsUnlocked { get => this.ObjectSaveData.BoolValues[0]; set => this.ObjectSaveData.BoolValues[0] = value; }
+        public int[] CurrentSetValues { get => this.ObjectSaveData.IntValues; set => this.ObjectSaveData.IntValues = value; }
 
 
-        public PadlockSaveInformation(int intValuesCount) : base(boolValuesCount: 1, intValuesCount: intValuesCount)
-        { }
+        public PadlockSaveInformation(ObjectSaveData objectSaveData) : base(objectSaveData) { }
+        public PadlockSaveInformation(SerializableGuid id, bool isUnlocked, int[] intValues) : base(id, boolCount: 1, intCount: intValues.Length)
+        {
+            this.IsUnlocked = isUnlocked;
+            this.CurrentSetValues = intValues;
+        }
     }
 }

@@ -5,14 +5,25 @@ namespace Saving.LevelData
     [System.Serializable]
     public class ObjectSaveInformation
     {
-        [HideInInspector][SerializeField] protected bool[] BoolValues;
-        [HideInInspector][SerializeField] protected int[] IntValues;
+        public ObjectSaveData ObjectSaveData;
+        public SerializableGuid ID { get => ObjectSaveData.ID; set => ObjectSaveData.ID = value; }
+        public bool Exists { get => ObjectSaveData.Exists; }
+        public bool WasDestroyed { get => ObjectSaveData.WasDestroyed; set => ObjectSaveData.WasDestroyed = value; }
 
-        private ObjectSaveInformation() { }
-        protected ObjectSaveInformation(int boolValuesCount = 0, int intValuesCount = 0)
+
+        public ObjectSaveInformation(ObjectSaveData objectSaveData)
         {
-            BoolValues = new bool[boolValuesCount];
-            IntValues = new int[intValuesCount];
+            this.ObjectSaveData = objectSaveData;
+        }
+        public ObjectSaveInformation(SerializableGuid id, int boolCount = 0, int intCount = 0)
+        {
+            this.ObjectSaveData = new ObjectSaveData()
+            {
+                ID = id,
+                Exists = true,
+                BoolValues = new bool[boolCount],
+                IntValues = new int[intCount],
+            };
         }
     }
 }

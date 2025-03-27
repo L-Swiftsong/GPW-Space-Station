@@ -145,6 +145,10 @@ namespace Saving.LevelData
                 {
                     (foundSaveable as ISaveableObject).BindExisting(levelSaveData.ObjectSaveData[i]);
                 }
+                else
+                {
+                    Debug.LogError("Failed to find object for ID: " + levelSaveData.ObjectSaveData[i].ID);
+                }
             }
         }
 
