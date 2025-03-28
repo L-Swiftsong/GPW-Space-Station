@@ -12478,15 +12478,16 @@ MonoBehaviour:
     Part3: 3462156460
     Part4: 4010113221
   _saveData:
-    <ID>k__BackingField:
-      Part1: 0
-      Part2: 0
-      Part3: 0
-      Part4: 0
-    Exists: 0
-    WasDestroyed: 0
-    SavedValues: 
-  _isLocked: 0
+    ObjectSaveData:
+      <ID>k__BackingField:
+        Part1: 0
+        Part2: 0
+        Part3: 0
+        Part4: 0
+      Exists: 0
+      WasDestroyed: 0
+      BoolValues: 
+      IntValues: 
   _isOpen: 0
 --- !u!43 &991784601
 Mesh:
@@ -19768,7 +19769,8 @@ MonoBehaviour:
   _saveData:
     SceneBuildIndex: 5
     ObjectSaveData: []
-  _saveableObjects: []
+  _saveableObjects:
+  - {fileID: 987983764}
 --- !u!4 &1623902067
 Transform:
   m_ObjectHideFlags: 0

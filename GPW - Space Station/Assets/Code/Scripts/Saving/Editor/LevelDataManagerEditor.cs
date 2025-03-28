@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
 namespace Saving.LevelData
 {
@@ -64,6 +65,9 @@ namespace Saving.LevelData
                     levelDataManager.Editor_FindAllSaveableObjects(false);
                     break;
             }
+
+            // Mark the object as dirty so that our changes persist after a scene load.
+            EditorUtility.SetDirty(levelDataManager);
         }
     }
 }

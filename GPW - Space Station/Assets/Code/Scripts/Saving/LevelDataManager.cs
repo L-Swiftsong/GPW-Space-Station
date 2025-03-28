@@ -11,7 +11,7 @@ namespace Saving.LevelData
         [SerializeField] private LevelSaveData _saveData = new LevelSaveData();
         private int _sceneBuildIndex = -1;
 
-        [SerializeField] private Component[] _saveableObjects = new Component[0];
+        [SerializeField] private Component[] _saveableObjects;
 
 
         private static event System.Action<LevelSaveData> OnLoadLevelSave;
