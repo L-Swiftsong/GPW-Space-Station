@@ -8,7 +8,7 @@ namespace Saving
         public bool[] JournalsObtainedArray;
 
         public bool[] KeyItemsObtainedArray;
-        public bool[] UsedKeyItemsArray;
+        public bool[] RepairSpotStates;
 
 
         public void LoadData()
@@ -17,7 +17,7 @@ namespace Saving
             CollectableManager.LoadObtainedCollectables(CollectableDataType.Codex, JournalsObtainedArray);
 
             CollectableManager.LoadObtainedCollectables(CollectableDataType.KeyItem, KeyItemsObtainedArray);
-            // To-do: Used Key Items.
+            RepairSpotManager.LoadRepairStates(RepairSpotStates);
         }
         public static ProgressData FromCurrent()
         {
@@ -26,7 +26,7 @@ namespace Saving
                 JournalsObtainedArray = CollectableManager.GetObtainedStateArrayForType(CollectableDataType.Codex.ToSystemType()),
 
                 KeyItemsObtainedArray = CollectableManager.GetObtainedStateArrayForType(CollectableDataType.KeyItem.ToSystemType()),
-                UsedKeyItemsArray = CollectableManager.GetObtainedStateArrayForType(CollectableDataType.KeyItem.ToSystemType()), // Temp.
+                RepairSpotStates = RepairSpotManager.GetRepairStates(),
             };
         }
     }

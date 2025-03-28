@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
-using Items.KeyItem;
 using Items.Collectables;
 using Audio;
 using System;
+using UI.ItemDisplay;
 
-public class RepairSpotManager : MonoBehaviour
+public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
 {
     [Header("References")]
     [SerializeField] private List<UseKeyItem> _repairSpots;
@@ -102,5 +102,32 @@ public class RepairSpotManager : MonoBehaviour
 			Debug.Log("All repair spots completed! You win!");
             OnAllRepairsCompleted?.Invoke();
 		}
+    }
+
+
+    public static bool[] GetRepairStates() => Instance.GetRepairStates_Instance();
+    private bool[] GetRepairStates_Instance()
+    {
+        bool[] repairStates = new bool[_repairSpots.Count];
+        for(int i = 0; i < _repairSpots.Count; ++i)
+        {
+            repairStates[i] = _repairSpots[i].GetHasPlacedItem();
+        }
+        return repairStates;
+    }
+
+    public static void LoadRepairStates(bool[] currentRepairStates) => Instance.LoadRepairStates_Instance(currentRepairStates);
+    private void LoadRepairStates_Instance(bool[] currentRepairStates)
+    {
+        for (int i = 0; i < currentRepairStates.Length; ++i)
+        {
+            _repairSpots[i].SetHasPlacedItem(currentRepairStates[i]);
+            if (currentRepairStates[i] == true)
+            {
+                ++_successfulRepairs;
+            }
+        }
+
+        Debug.Log($"Loaded completed repair spots: {_successfulRepairs}");
     }
 }
