@@ -2,11 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
+using Saving.LevelData;
 
 namespace Environment.Buttons
 {
-    public class KeycardReader : MonoBehaviour, IInteractable
+    public class KeycardReader : MonoBehaviour, IInteractable, ISaveableObject
     {
+        #region Saving Properties
+
+        [field: SerializeField] public SerializableGuid ID { get; set; } = SerializableGuid.NewGuid();
+        [SerializeField] private KeycardReaderSaveInformation _saveData;
+
+        #endregion
+
+
         [Header("Keycard Reader Settings")]
         [SerializeField] private GameObject _connectedObject;
         private ITriggerable _connectedTriggerable;
@@ -37,6 +46,7 @@ namespace Environment.Buttons
 
         public static event System.EventHandler OnAnyKeycardReaderHighlighted;
         public static event System.EventHandler OnAnyKeycardReaderStopHighlighted;
+
 
         #region IInteractable Properties & Events
 
@@ -158,9 +168,42 @@ namespace Environment.Buttons
 
 
 
+        #region Saving Functions
+
+        public void BindExisting(ObjectSaveData saveData)
+        {
+            this._saveData = new KeycardReaderSaveInformation(saveData);
+            _saveData.ID = ID;
+
+            if (_saveData.WasDestroyed)
+            {
+                Destroy(this.gameObject);
+            }
+
+            this._isUnlocked = this._saveData.IsUnlocked;
+        }
+        public ObjectSaveData BindNew()
+        {
+            if (this._saveData == null || !this._saveData.Exists)
+            {
+                this._saveData = new KeycardReaderSaveInformation(this.ID, this._isUnlocked);
+            }
+
+            return this._saveData.ObjectSaveData;
+        }
+        private void LateUpdate()
+        {
+            // Transfer to where we are changing the value of '_isUnlocked'?
+            this._saveData.IsUnlocked = _isUnlocked;
+        }
+        private void OnDestroy() => _saveData.WasDestroyed = true;
+
+        #endregion
 
 
-    #if UNITY_EDITOR
+
+
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (_connectedObject != null)

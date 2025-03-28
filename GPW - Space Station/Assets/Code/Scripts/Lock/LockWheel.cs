@@ -101,5 +101,11 @@ public class LockWheel : MonoBehaviour
     }
 
 
+    /// <remarks>Does not check for completion after setting the value of '_wheelDigit'.</remarks>
+    public void SetWheelDigit(int newValue)
+    {
+        _wheelDigit = newValue;
+        this.transform.localEulerAngles = new Vector3(0.0f, _wheelDigit * (360f / (_maxDigit + 1)), 0.0f);
+    }
     public int GetWheelDigit() => _wheelDigit;
 }

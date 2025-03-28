@@ -2,12 +2,14 @@ using Interaction;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
+using Saving.LevelData;
 
 namespace Items
 {
-    public abstract class ItemPickup : MonoBehaviour, IInteractable
+    public abstract class ItemPickup : MonoBehaviour, IInteractable, ISaveableObject
     {
+        #region Interaction
+
         #region IInteractable Properties & Events
 
         private int _previousLayer;
@@ -17,6 +19,7 @@ namespace Items
 
         #endregion
 
+        #region Interaction Functions
 
         public void Interact(PlayerInteraction interactingScript)
         {
@@ -34,5 +37,51 @@ namespace Items
         public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
 
         protected abstract bool PerformInteraction(PlayerInteraction interactingScript);
+
+        #endregion
+
+        #endregion
+
+
+        #region Saving
+
+        #region Saving Variables & References
+
+        [field: SerializeField] public SerializableGuid ID { get; set; } = SerializableGuid.NewGuid();
+        [SerializeField] private ObjectSaveData _saveData;
+
+        #endregion
+
+        #region Saving Functions
+
+        public void BindExisting(ObjectSaveData saveData)
+        {
+            this._saveData = saveData;
+            _saveData.ID = ID;
+
+            if (_saveData.WasDestroyed)
+            {
+                Destroy(this.gameObject);
+            }
+        }
+        public ObjectSaveData BindNew()
+        {
+            if (this._saveData == null || !this._saveData.Exists)
+            {
+                this._saveData = new ObjectSaveData()
+                {
+                    ID = this.ID,
+                    Exists = true,
+                    WasDestroyed = false
+                };
+            }
+
+            return this._saveData;
+        }
+        private void OnDestroy() => _saveData.WasDestroyed = true;
+
+        #endregion
+
+        #endregion
     }
 }
