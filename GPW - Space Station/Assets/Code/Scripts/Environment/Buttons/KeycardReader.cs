@@ -118,11 +118,7 @@ namespace Environment.Buttons
             
             if (!_isUnlocked)
             {
-                _isUnlocked = true;
-
-                _renderer.GetPropertyBlock(_materialPropertyBlock);
-                _materialPropertyBlock.SetInteger(IS_UNLOCKED_IDENTIFIER, 1);
-                _renderer.SetPropertyBlock(_materialPropertyBlock);
+                SetUnlocked(true);
 
                 if (!_alsoTriggerWhenFirstUnlocked)
                 {
@@ -164,6 +160,15 @@ namespace Environment.Buttons
 
 
         public int GetSecurityLevel() => _securityLevel;
+
+        private void SetUnlocked(bool newValue)
+        {
+            _isUnlocked = newValue;
+
+            _renderer.GetPropertyBlock(_materialPropertyBlock);
+            _materialPropertyBlock.SetInteger(IS_UNLOCKED_IDENTIFIER, _isUnlocked ? 1 : 0);
+            _renderer.SetPropertyBlock(_materialPropertyBlock);
+        }
         public bool GetIsUnlocked() => _isUnlocked;
 
 
@@ -180,7 +185,7 @@ namespace Environment.Buttons
                 Destroy(this.gameObject);
             }
 
-            this._isUnlocked = this._saveData.IsUnlocked;
+            SetUnlocked(this._saveData.IsUnlocked);
         }
         public ObjectSaveData BindNew()
         {

@@ -55,7 +55,7 @@ namespace Saving
         public void LoadGame(string fileName)
         {
             _saveData = JsonDataService.Load<SaveData>(fileName);
-            SceneLoader.Instance.LoadFromSave(_saveData.LoadedSceneIndices, _saveData.ActiveSceneIndex, PerformDataLoad);
+            SceneLoader.Instance.LoadFromSave(_saveData.LoadedSceneIndices, _saveData.ActiveSceneIndex, onScenesLoadedCallback: PerformDataLoad);
         }
 
         private void PerformDataLoad()
