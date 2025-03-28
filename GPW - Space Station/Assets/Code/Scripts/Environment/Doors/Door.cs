@@ -96,7 +96,8 @@ namespace Environment.Doors
                 Destroy(this.gameObject);
             }
 
-            IsOpen = _saveData.IsOpen;
+            m_isOpen = _saveData.IsOpen;
+            OnOpenStateInstantChange?.Invoke(m_isOpen);
         }
         public ObjectSaveData BindNew()
         {
