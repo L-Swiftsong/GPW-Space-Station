@@ -323,6 +323,11 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 
     private void OnValidate()
     {
+        if (_lockWheels == null || _correctDigits == null)
+        {
+            return;
+        }
+
         if (_lockWheels.Length != _correctDigits.Length)
         {
             // Alter size of Correct Digits array.

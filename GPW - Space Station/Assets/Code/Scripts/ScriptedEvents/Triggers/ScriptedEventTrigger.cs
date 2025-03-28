@@ -40,7 +40,8 @@ namespace ScriptedEvents.Triggers
         public UltEvent OnDelayedTriggerActivated;
 
 
-        protected virtual void ActivateTrigger(bool forceDestruction = false)
+        protected void ActivateTrigger() => ActivateTrigger(false);
+        protected void ActivateTrigger(bool forceDestruction)
         {
             if (!_canTriggerWhileAwaitingDelay && _activateTriggerAfterDelayCoroutine != null)
             {

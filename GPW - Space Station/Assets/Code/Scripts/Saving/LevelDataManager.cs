@@ -16,7 +16,6 @@ namespace Saving.LevelData
 
         private static event System.Action<LevelSaveData> OnLoadLevelSave;
 
-
         public static void LoadLevelSaves(LevelSaveData[] levelSaveDatas)
         {
             for(int i = 0; i < levelSaveDatas.Length; ++i)
@@ -87,13 +86,17 @@ namespace Saving.LevelData
             {
                 Debug.LogWarning("Saveable Objects not initialised");
             }
-
-            SetupSaveData();
+            
             OnLoadLevelSave += TryLoadSaveData;
 
-            if (s_sceneIndexToSaveDataDictionary.TryAdd(_sceneBuildIndex, _saveData) == false)
+            if (s_sceneIndexToSaveDataDictionary.ContainsKey(_sceneBuildIndex) == false)
             {
-                s_sceneIndexToSaveDataDictionary[_sceneBuildIndex] = this._saveData;
+                SetupSaveData();
+                s_sceneIndexToSaveDataDictionary.Add(_sceneBuildIndex, _saveData);
+            }
+            else
+            {
+                this._saveData = s_sceneIndexToSaveDataDictionary[_sceneBuildIndex];
             }
         }
         private void OnDestroy() => OnLoadLevelSave -= TryLoadSaveData;

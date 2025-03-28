@@ -38,8 +38,7 @@ namespace Environment.Doors
 
         private void Start()
         {
-            m_isOpen = _startOpen;
-            OnOpenStateInstantChange?.Invoke(m_isOpen);
+
 		}
 
 
@@ -103,8 +102,10 @@ namespace Environment.Doors
         {
             if (this._saveData == null || !this._saveData.Exists)
             {
-                this._saveData = new DoorSaveInformation(this.ID, IsOpen);
+                this._saveData = new DoorSaveInformation(this.ID, _startOpen);
             }
+            m_isOpen = _startOpen;
+            OnOpenStateInstantChange?.Invoke(m_isOpen);
 
             return this._saveData.ObjectSaveData;
         }

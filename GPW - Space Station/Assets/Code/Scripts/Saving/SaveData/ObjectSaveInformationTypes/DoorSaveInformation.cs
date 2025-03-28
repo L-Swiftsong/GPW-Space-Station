@@ -3,7 +3,20 @@ namespace Saving.LevelData
     [System.Serializable]
     public class DoorSaveInformation : ObjectSaveInformation
     {
-        public bool IsOpen { get => this.ObjectSaveData.BoolValues[0]; set => this.ObjectSaveData.BoolValues[0] = value; }
+        // We are using try...catch as a fallback as during the period between a scene finishing loading and the data being bound there is a period where we can get a nullreferenceexception from trying to fetch/set values.
+        public bool IsOpen
+        {
+            get
+            {
+                try     { return this.ObjectSaveData.BoolValues[0]; }
+                catch   { return false; }
+            }
+            set
+            {
+                try     { this.ObjectSaveData.BoolValues[0] = value; }
+                catch   { this.ObjectSaveData.BoolValues = new bool[1] { value }; }
+            }
+        }
 
 
         public DoorSaveInformation(ObjectSaveData objectSaveData) : base(objectSaveData) { }
