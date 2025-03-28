@@ -5,7 +5,7 @@ namespace Saving.LevelData
     [System.Serializable]
     public class ObjectSaveData
     {
-        [field: SerializeField] public SerializableGuid ID { get; set; }
+        [field: SerializeField] public SerializableInstanceGuid ID { get; set; }
         [ReadOnly] public bool Exists = false;
         public bool WasDestroyed = false;
         [Space(5)]

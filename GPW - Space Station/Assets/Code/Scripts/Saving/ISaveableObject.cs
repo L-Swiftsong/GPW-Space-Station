@@ -6,9 +6,10 @@ namespace Saving.LevelData
 {
     public interface ISaveableObject
     {
-        SerializableGuid ID { get; set; }
+        SerializableInstanceGuid ID { get; set; }
 
         public void BindExisting(ObjectSaveData saveData);
         public ObjectSaveData BindNew();
+        public void InitialiseID();
     }
 }

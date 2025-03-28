@@ -10,7 +10,7 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 {
     #region Saving Properties
 
-    [field: SerializeField] public SerializableGuid ID { get; set; } = SerializableGuid.NewGuid();
+    [field: SerializeField] public SerializableInstanceGuid ID { get; set; } = SerializableInstanceGuid.NewUnlinkedGuid();
     [SerializeField] private PadlockSaveInformation _saveData;
 
     #endregion
@@ -316,6 +316,8 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
     }
     private void OnDestroy() => _saveData.WasDestroyed = true;
 
+    public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
+
     #endregion
 
 
@@ -346,6 +348,13 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
             }
 
             _correctDigits = newValues;
+        }
+
+
+        // Saving - Initialise our Guid ID.
+        if (ID.IsUnlinked())
+        {
+            InitialiseID();
         }
     }
 

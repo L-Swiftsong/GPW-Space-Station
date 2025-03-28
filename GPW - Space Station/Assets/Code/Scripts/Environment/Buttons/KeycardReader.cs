@@ -10,7 +10,7 @@ namespace Environment.Buttons
     {
         #region Saving Properties
 
-        [field: SerializeField] public SerializableGuid ID { get; set; } = SerializableGuid.NewGuid();
+        [field: SerializeField] public SerializableInstanceGuid ID { get; set; } = SerializableInstanceGuid.NewUnlinkedGuid();
         [SerializeField] private KeycardReaderSaveInformation _saveData;
 
         #endregion
@@ -179,6 +179,7 @@ namespace Environment.Buttons
         {
             this._saveData = new KeycardReaderSaveInformation(saveData);
             _saveData.ID = ID;
+            Debug.Log("Bind Existing");
 
             if (_saveData.WasDestroyed)
             {
@@ -202,6 +203,7 @@ namespace Environment.Buttons
             this._saveData.IsUnlocked = _isUnlocked;
         }
         private void OnDestroy() => _saveData.WasDestroyed = true;
+        public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
 
         #endregion
 
@@ -231,7 +233,14 @@ namespace Environment.Buttons
                 // Setup the Keycard Screen.
                 _renderer.SetPropertyBlock(materialPropertyBlock);
             }
+
+
+            // Saving - Initialise our Guid ID.
+            if (ID.IsUnlinked())
+            {
+                InitialiseID();
+            }
         }
-    #endif
+#endif
     }
 }

@@ -9,7 +9,7 @@ namespace Environment.Doors
     {
         #region Saving Properties
 
-        [field: SerializeField] public SerializableGuid ID { get; set; } = SerializableGuid.NewGuid();
+        [field: SerializeField] public SerializableInstanceGuid ID { get; set; } = SerializableInstanceGuid.NewUnlinkedGuid();
         [SerializeField] private DoorSaveInformation _saveData;
 
         #endregion
@@ -34,12 +34,6 @@ namespace Environment.Doors
 
         public event System.Action<bool> OnOpenStateChanged;
         public event System.Action<bool> OnOpenStateInstantChange;
-
-
-        private void Start()
-        {
-
-		}
 
 
         protected virtual void ToggleOpen()
@@ -110,6 +104,22 @@ namespace Environment.Doors
             return this._saveData.ObjectSaveData;
         }
         private void OnDestroy() => _saveData.WasDestroyed = true;
+
+        public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
+
+
+#if UNITY_EDITOR
+
+        private void OnValidate()
+        {
+            // Initialise our Guid ID.
+            if (ID.IsUnlinked())
+            {
+                InitialiseID();
+            }
+        }
+
+#endif
 
         #endregion
     }

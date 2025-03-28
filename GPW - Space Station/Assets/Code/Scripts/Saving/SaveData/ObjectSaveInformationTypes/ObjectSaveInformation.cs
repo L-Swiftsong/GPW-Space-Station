@@ -3,7 +3,7 @@ namespace Saving.LevelData
     public abstract class ObjectSaveInformation
     {
         public ObjectSaveData ObjectSaveData;
-        public SerializableGuid ID { get => ObjectSaveData.ID; set => ObjectSaveData.ID = value; }
+        public SerializableInstanceGuid ID { get => ObjectSaveData.ID; set => ObjectSaveData.ID = value; }
         public bool Exists { get => ObjectSaveData.Exists; }
         public bool WasDestroyed { get => ObjectSaveData.WasDestroyed; set => ObjectSaveData.WasDestroyed = value; }
 
@@ -12,7 +12,7 @@ namespace Saving.LevelData
         {
             this.ObjectSaveData = objectSaveData;
         }
-        public ObjectSaveInformation(SerializableGuid id, int boolCount = 0, int intCount = 0)
+        public ObjectSaveInformation(SerializableInstanceGuid id, int boolCount = 0, int intCount = 0)
         {
             this.ObjectSaveData = new ObjectSaveData()
             {

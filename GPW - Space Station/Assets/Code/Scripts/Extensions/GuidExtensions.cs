@@ -14,7 +14,6 @@ public static class GuidExtensions
             BitConverter.ToUInt32(bytes, 12)
         );
     }
-
     public static Guid ToSystemGuid(this SerializableGuid serializableGuid)
     {
         byte[] bytes = new byte[16];

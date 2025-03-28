@@ -9,7 +9,7 @@ namespace Saving.LevelData
     {
         private static Dictionary<int, LevelSaveData> s_sceneIndexToSaveDataDictionary = new Dictionary<int, LevelSaveData>();
         [SerializeField] private LevelSaveData _saveData = new LevelSaveData();
-        private int _sceneBuildIndex = -1;
+        private int _sceneBuildIndex => gameObject.scene.buildIndex;
 
         [SerializeField] private Component[] _saveableObjects;
 
@@ -37,7 +37,6 @@ namespace Saving.LevelData
                 return;
             }
 
-            _sceneBuildIndex = this.gameObject.scene.buildIndex;
             _saveData.SceneBuildIndex = _sceneBuildIndex;
 
             List<Component> saveableObjectsAsComponents = new List<Component>();
@@ -146,6 +145,7 @@ namespace Saving.LevelData
                 Component foundSaveable = _saveableObjects.Where(s => (s as ISaveableObject).ID == levelSaveData.ObjectSaveData[i].ID).FirstOrDefault();
                 if (foundSaveable != null)
                 {
+                    Debug.Log($"Binding for Object with ID {levelSaveData.ObjectSaveData[i].ID.ToString()}", foundSaveable);
                     (foundSaveable as ISaveableObject).BindExisting(levelSaveData.ObjectSaveData[i]);
                 }
                 else
@@ -155,12 +155,33 @@ namespace Saving.LevelData
             }
         }
 
-        #region Testing
+        #region Testing and Editor Utility
 
         [ContextMenu("Tests/Load")]
         private void LoadTestSaveData()
         {
             LoadSaveData(_saveData);
+        }
+        [ContextMenu("Utility/Initialise ISaveableObject IDs")]
+        private void InitialiseAllISaveableInstanceIDs()
+        {
+            foreach(GameObject rootObject in gameObject.scene.GetRootGameObjects())
+            {
+                InitialiseISaveableObjectsRecursively(rootObject.transform);
+            }
+            Debug.Log("Finished Initialising IDs");
+        }
+        private void InitialiseISaveableObjectsRecursively(Transform parent)
+        {
+            foreach(var saveableObject in parent.GetComponents<ISaveableObject>())
+            {
+                saveableObject.InitialiseID();
+            }
+
+            foreach(Transform child in parent)
+            {
+                InitialiseISaveableObjectsRecursively(child);
+            }
         }
 
         #endregion
