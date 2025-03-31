@@ -289,12 +289,9 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
         this._saveData = new PadlockSaveInformation(saveData);
         _saveData.ID = ID;
 
-        if (_saveData.WasDestroyed)
-        {
-            Destroy(this.gameObject);
-        }
+        ISaveableObject.PerformBindingChecks(this._saveData.ObjectSaveData, this);
 
-        for(int i = 0; i < _lockWheels.Length; ++i)
+        for (int i = 0; i < _lockWheels.Length; ++i)
         {
             _lockWheels[i].SetWheelDigit(_saveData.CurrentSetValues[i]);
         }
@@ -314,8 +311,10 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 
         return this._saveData.ObjectSaveData;
     }
-    private void OnDestroy() => _saveData.WasDestroyed = true;
 
+    private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
+    private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+    private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
     public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
 
     #endregion

@@ -7,7 +7,7 @@ namespace Saving.LevelData
     {
         [field: SerializeField] public SerializableInstanceGuid ID { get; set; }
         [ReadOnly] public bool Exists = false;
-        public bool WasDestroyed = false;
+        public DisabledState DisabledState = DisabledState.None;
         [Space(5)]
 
         public bool[] BoolValues;

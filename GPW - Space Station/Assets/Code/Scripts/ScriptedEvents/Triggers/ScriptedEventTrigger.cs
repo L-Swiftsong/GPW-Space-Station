@@ -95,17 +95,10 @@ namespace ScriptedEvents.Triggers
             this._saveData = saveData;
             _saveData.ID = ID;
 
-            if (_saveData.WasDestroyed)
-            {
-                if (_triggerEventIfDestroyedOnLoad)
-                {
-                    ActivateTrigger(forceDestruction: true);
-                }
-                else
-                {
-                    Destroy(this.gameObject);
-                }
-            }
+            ISaveableObject.PerformBindingChecks(this._saveData, this, () => {
+                if (_triggerEventIfDestroyedOnLoad) { ActivateTrigger(forceDestruction: true); }
+                else { Destroy(this.gameObject); }
+                });
         }
         public ObjectSaveData BindNew()
         {
@@ -114,14 +107,16 @@ namespace ScriptedEvents.Triggers
                 this._saveData = new ObjectSaveData()
                 {
                     ID = this.ID,
-                    Exists = true,
-                    WasDestroyed = false
+                    Exists = true
                 };
             }
 
             return this._saveData;
         }
-        private void OnDestroy() => _saveData.WasDestroyed = true;
+
+        private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
+        private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
         public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
 
 #if UNITY_EDITOR

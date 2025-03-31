@@ -84,10 +84,7 @@ namespace Environment.Doors
             this._saveData = new DoorSaveInformation(saveData);
             _saveData.ID = ID;
 
-            if (_saveData.WasDestroyed)
-            {
-                Destroy(this.gameObject);
-            }
+            ISaveableObject.PerformBindingChecks(this._saveData.ObjectSaveData, this);
 
             m_isOpen = _saveData.IsOpen;
             OnOpenStateInstantChange?.Invoke(m_isOpen);
@@ -103,8 +100,10 @@ namespace Environment.Doors
 
             return this._saveData.ObjectSaveData;
         }
-        private void OnDestroy() => _saveData.WasDestroyed = true;
 
+        private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
+        private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
         public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
 
 

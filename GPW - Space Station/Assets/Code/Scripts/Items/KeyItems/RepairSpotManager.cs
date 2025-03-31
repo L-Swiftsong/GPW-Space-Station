@@ -105,7 +105,7 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
     }
 
 
-    public static bool[] GetRepairStates() => Instance.GetRepairStates_Instance();
+    public static bool[] GetRepairStates() => HasInstance ? Instance.GetRepairStates_Instance() : new bool[0];
     private bool[] GetRepairStates_Instance()
     {
         bool[] repairStates = new bool[_repairSpots.Count];
@@ -116,7 +116,13 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
         return repairStates;
     }
 
-    public static void LoadRepairStates(bool[] currentRepairStates) => Instance.LoadRepairStates_Instance(currentRepairStates);
+    public static void LoadRepairStates(bool[] currentRepairStates)
+    {
+        if (HasInstance)
+        {
+            Instance.LoadRepairStates_Instance(currentRepairStates);
+        }
+    }
     private void LoadRepairStates_Instance(bool[] currentRepairStates)
     {
         for (int i = 0; i < currentRepairStates.Length; ++i)

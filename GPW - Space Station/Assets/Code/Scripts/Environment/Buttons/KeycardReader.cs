@@ -181,7 +181,7 @@ namespace Environment.Buttons
             _saveData.ID = ID;
             Debug.Log("Bind Existing");
 
-            if (_saveData.WasDestroyed)
+            if (_saveData.DisabledState.HasFlag(DisabledState.Destroyed))
             {
                 Destroy(this.gameObject);
             }
@@ -202,7 +202,14 @@ namespace Environment.Buttons
             // Transfer to where we are changing the value of '_isUnlocked'?
             this._saveData.IsUnlocked = _isUnlocked;
         }
-        private void OnDestroy() => _saveData.WasDestroyed = true;
+
+        private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        private void OnDisable()
+        {
+            _saveData.DisabledState |= DisabledState.EntityDisabled;
+            if (!this.gameObject.activeSelf)
+                _saveData.DisabledState |= DisabledState.ComponentDisabled;
+        }
         public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
 
         #endregion
