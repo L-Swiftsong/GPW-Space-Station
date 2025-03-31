@@ -177,7 +177,7 @@ namespace Environment.Buttons
 
         public void BindExisting(ObjectSaveData saveData)
         {
-            this._saveData = new KeycardReaderSaveInformation(saveData);
+            this._saveData = new KeycardReaderSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this));
             _saveData.ID = ID;
             Debug.Log("Bind Existing");
 
@@ -192,24 +192,22 @@ namespace Environment.Buttons
         {
             if (this._saveData == null || !this._saveData.Exists)
             {
-                this._saveData = new KeycardReaderSaveInformation(this.ID, this._isUnlocked);
+                this._saveData = new KeycardReaderSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), this._isUnlocked);
             }
 
             return this._saveData.ObjectSaveData;
         }
+
+        protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
+        protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
         private void LateUpdate()
         {
             // Transfer to where we are changing the value of '_isUnlocked'?
             this._saveData.IsUnlocked = _isUnlocked;
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
         }
 
-        private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
-        private void OnDisable()
-        {
-            _saveData.DisabledState |= DisabledState.EntityDisabled;
-            if (!this.gameObject.activeSelf)
-                _saveData.DisabledState |= DisabledState.ComponentDisabled;
-        }
         public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
 
         #endregion

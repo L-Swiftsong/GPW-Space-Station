@@ -75,9 +75,11 @@ namespace Items
             return this._saveData;
         }
 
-        private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
-        private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
-        private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
+        protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
+        protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
+        protected virtual void LateUpdate() => ISaveableObject.UpdatePositionAndRotationInformation(this._saveData, this);
+
         public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
 
 #if UNITY_EDITOR

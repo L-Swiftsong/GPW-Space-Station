@@ -6,8 +6,8 @@ namespace Saving.LevelData
         public bool IsOpen { get => this.ObjectSaveData.BoolValues[0]; set => this.ObjectSaveData.BoolValues[0] = value; }
 
 
-        public DoorSaveInformation(ObjectSaveData objectSaveData) : base(objectSaveData) { }
-        public DoorSaveInformation(SerializableInstanceGuid id, bool isOpen) : base(id, boolCount: 1)
+        public DoorSaveInformation(ObjectSaveData objectSaveData, DisabledState disabledState) : base(objectSaveData, disabledState) { }
+        public DoorSaveInformation(SerializableInstanceGuid id, DisabledState disabledState, bool isOpen) : base(id, disabledState, boolCount: 1)
         {
             this.IsOpen = isOpen;
         }

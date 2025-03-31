@@ -9,7 +9,7 @@ using Audio;
 namespace Entities.Mimic
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    public class ChaseMimic : MonoBehaviour, IStunnable
+    public class ChaseMimic : BaseMimic, IStunnable
     {
         private NavMeshAgent _navMeshAgent;
         private bool isChasing = false;
@@ -46,14 +46,18 @@ namespace Entities.Mimic
             _navMeshAgent.speed = _chaseSpeedCurve.Evaluate(0.0f);
             _navMeshAgent.updateRotation = true;
         }
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+
             ChaseMimic.OnPauseAllChases += PauseChase;
             ChaseMimic.OnResumeAllChases += ResumeChase;
             ChaseMimic.OnEndAllChases += EndChase;
         }
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
+
             ChaseMimic.OnPauseAllChases -= PauseChase;
             ChaseMimic.OnResumeAllChases -= ResumeChase;
             ChaseMimic.OnEndAllChases -= EndChase;
@@ -75,7 +79,11 @@ namespace Entities.Mimic
 
             _navMeshAgent.speed = Mathf.MoveTowards(_navMeshAgent.speed, _targetSpeed, _movementLerpRate * Time.deltaTime);
         }
-        private void LateUpdate() => _isBeingStunned = false;
+        protected override void LateUpdate()
+        {
+            base.LateUpdate();
+            _isBeingStunned = false;
+        }
 
 
         private void OnCollisionEnter(Collision collision)
@@ -201,5 +209,8 @@ namespace Entities.Mimic
                 Gizmos.DrawWireSphere(transform.position, key.time);
             }
         }
+
+
+        protected override Saving.LevelData.MimicSavableState GetSavableState() => Saving.LevelData.MimicSavableState.Idle;
     }
 }

@@ -68,6 +68,7 @@ public class SerializableInstanceGuidDrawer : PropertyDrawer
     {
         GenericMenu menu = new GenericMenu();
         menu.AddItem(new GUIContent("Copy GUID"), false, () => CopyGuid(property));
+        menu.AddItem(new GUIContent("Copy Instance ID"), false, () => CopyInstanceID(property));
         menu.AddItem(new GUIContent("Reset GUID"), false, () => ResetGuid(property));
         menu.AddItem(new GUIContent("Regenerate GUID"), false, () => RegenerateGuid(property));
         menu.ShowAsContext();
@@ -83,6 +84,18 @@ public class SerializableInstanceGuidDrawer : PropertyDrawer
         string guid = BuildGuidStringForCopying(GetAllGuidParts(property));
         EditorGUIUtility.systemCopyBuffer = guid;
         Debug.Log($"GUID copied to clipboard: {guid}");
+    }
+    private void CopyInstanceID(SerializedProperty property)
+    {
+        SerializedProperty instanceIDProperty = GetAllGuidParts(property)[0];
+        if (instanceIDProperty == null)
+        {
+            return;
+        }
+
+        string instanceIDString = Mathf.Abs(instanceIDProperty.objectReferenceValue.GetInstanceID()).ToString();
+        EditorGUIUtility.systemCopyBuffer = instanceIDString;
+        Debug.Log($"Instance ID copied to clipboard: {instanceIDString}");
     }
     private void ResetGuid(SerializedProperty property)
     {
@@ -128,7 +141,7 @@ public class SerializableInstanceGuidDrawer : PropertyDrawer
 
     private static string BuildGuidStringForCopying(SerializedProperty[] guidParts)
         => new StringBuilder()
-            .AppendFormat("{0:X8}", guidParts[0].intValue)
+            .AppendFormat("{0:X8}", UnityEngine.Mathf.Abs(guidParts[0].objectReferenceValue.GetInstanceID()))
             .AppendFormat("{0:X8}", guidParts[1].uintValue)
             .AppendFormat("{0:X8}", guidParts[2].uintValue)
             .AppendFormat("{0:X8}", guidParts[3].uintValue)

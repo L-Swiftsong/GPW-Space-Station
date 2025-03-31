@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using System.Collections.Generic;
+using Entities.Mimic;
 
 [System.Serializable]
 
@@ -18,7 +19,7 @@ public class WaypointData
     [System.Serializable] public enum ShowLogType { None, Warning, Error }
 }
 
-public class MimicController : MonoBehaviour
+public class MimicController : BaseMimic
 {
     [SerializeField] private Animator animator;
     private static readonly int MOVEMENT_SPEED_HASH = Animator.StringToHash("MovementSpeed");
@@ -150,13 +151,7 @@ public class MimicController : MonoBehaviour
             }
         }
     }
+
+
+    protected override Saving.LevelData.MimicSavableState GetSavableState() => Saving.LevelData.MimicSavableState.Idle;
 }
-
-
-
-
-
-
-
-
-

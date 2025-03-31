@@ -286,7 +286,7 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 
     public void BindExisting(ObjectSaveData saveData)
     {
-        this._saveData = new PadlockSaveInformation(saveData);
+        this._saveData = new PadlockSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this));
         _saveData.ID = ID;
 
         ISaveableObject.PerformBindingChecks(this._saveData.ObjectSaveData, this);
@@ -306,15 +306,17 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
                 currentDigits[i] = _lockWheels[i].GetWheelDigit();
             }
 
-            this._saveData = new PadlockSaveInformation(this.ID, false, currentDigits);
+            this._saveData = new PadlockSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), false, currentDigits);
         }
 
         return this._saveData.ObjectSaveData;
     }
 
-    private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
-    private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
-    private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
+    protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
+    protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+    protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
+    protected virtual void LateUpdate() => ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+
     public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
 
     #endregion
