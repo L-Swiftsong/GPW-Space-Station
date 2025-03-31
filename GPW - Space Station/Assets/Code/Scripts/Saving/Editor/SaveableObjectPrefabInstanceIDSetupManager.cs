@@ -16,6 +16,9 @@ namespace Saving.LevelData
 
         static void ChangesPublished(ref ObjectChangeEventStream stream)
         {
+            if (Application.isPlaying)
+                return;
+
             for(int i = 0; i < stream.length; ++i)
             {
                 if (stream.GetEventType(i) == ObjectChangeKind.CreateGameObjectHierarchy)

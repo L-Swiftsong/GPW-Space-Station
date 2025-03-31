@@ -6,9 +6,9 @@ namespace Saving.LevelData
 {
     public class ExampleLevelObject : MonoBehaviour, ISaveableObject
     {
-#region Saving Information
+        #region Saving Information
 
-        [field: SerializeField] public SerializableInstanceGuid ID { get; set; } = SerializableInstanceGuid.NewUnlinkedGuid();
+        [field: SerializeField] public SerializableGuid ID { get; set; }
         [SerializeField] private DoorSaveInformation _saveData;
 
 #endregion
@@ -44,20 +44,5 @@ namespace Saving.LevelData
         private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
         private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
         private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
-
-        public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
-
-#if UNITY_EDITOR
-
-        private void OnValidate()
-        {
-            // Initialise our Guid ID.
-            if (ID.IsUnlinked())
-            {
-                InitialiseID();
-            }
-        }
-
-#endif
     }
 }

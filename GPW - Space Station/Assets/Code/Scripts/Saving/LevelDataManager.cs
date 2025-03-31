@@ -154,36 +154,5 @@ namespace Saving.LevelData
                 }
             }
         }
-
-        #region Testing and Editor Utility
-
-        [ContextMenu("Tests/Load")]
-        private void LoadTestSaveData()
-        {
-            LoadSaveData(_saveData);
-        }
-        [ContextMenu("Utility/Initialise ISaveableObject IDs")]
-        private void InitialiseAllISaveableInstanceIDs()
-        {
-            foreach(GameObject rootObject in gameObject.scene.GetRootGameObjects())
-            {
-                InitialiseISaveableObjectsRecursively(rootObject.transform);
-            }
-            Debug.Log("Finished Initialising IDs");
-        }
-        private void InitialiseISaveableObjectsRecursively(Transform parent)
-        {
-            foreach(var saveableObject in parent.GetComponents<ISaveableObject>())
-            {
-                saveableObject.InitialiseID();
-            }
-
-            foreach(Transform child in parent)
-            {
-                InitialiseISaveableObjectsRecursively(child);
-            }
-        }
-
-        #endregion
     }
 }

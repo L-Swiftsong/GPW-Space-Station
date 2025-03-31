@@ -10,7 +10,7 @@ namespace Saving.LevelData
 
 
         public MimicSaveInformation(ObjectSaveData objectSaveData, DisabledState disabledState) : base(objectSaveData, disabledState) { }
-        public MimicSaveInformation(SerializableInstanceGuid id, DisabledState disabledState, MimicSavableState mimicSavableState) : base(id, disabledState, intCount: 1)
+        public MimicSaveInformation(SerializableGuid id, DisabledState disabledState, MimicSavableState mimicSavableState) : base(id, disabledState, intCount: 1)
         {
             this.MimicSavableState = mimicSavableState;
         }

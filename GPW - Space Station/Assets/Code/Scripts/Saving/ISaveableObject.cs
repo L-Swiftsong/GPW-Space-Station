@@ -6,11 +6,15 @@ namespace Saving.LevelData
 {
     public interface ISaveableObject
     {
-        SerializableInstanceGuid ID { get; set; }
+        SerializableGuid ID { get; set; }
 
         public void BindExisting(ObjectSaveData saveData);
         public ObjectSaveData BindNew();
-        public void InitialiseID();
+        public void InitialiseID()
+        {
+            ID = SerializableGuid.NewGuid();
+            Debug.Log(ID);
+        }
 
 
         #region Static Functions

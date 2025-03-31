@@ -10,7 +10,7 @@ namespace Environment.Buttons
     {
         #region Saving Properties
 
-        [field: SerializeField] public SerializableInstanceGuid ID { get; set; } = SerializableInstanceGuid.NewUnlinkedGuid();
+        [field: SerializeField] public SerializableGuid ID { get; set; }
         [SerializeField] private KeycardReaderSaveInformation _saveData;
 
         #endregion
@@ -208,8 +208,6 @@ namespace Environment.Buttons
             ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
         }
 
-        public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
-
         #endregion
 
 
@@ -237,13 +235,6 @@ namespace Environment.Buttons
 
                 // Setup the Keycard Screen.
                 _renderer.SetPropertyBlock(materialPropertyBlock);
-            }
-
-
-            // Saving - Initialise our Guid ID.
-            if (ID.IsUnlinked())
-            {
-                InitialiseID();
             }
         }
 #endif

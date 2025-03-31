@@ -10,7 +10,7 @@ namespace ScriptedEvents.Triggers
     {
         #region Saving Variables & References
 
-        [field: SerializeField] public SerializableInstanceGuid ID { get; set; } = SerializableInstanceGuid.NewUnlinkedGuid();
+        [field: SerializeField] public SerializableGuid ID { get; set; }
         [SerializeField] private ObjectSaveData _saveData;
         [SerializeField] private bool _triggerEventIfDestroyedOnLoad = false;
 
@@ -117,20 +117,6 @@ namespace ScriptedEvents.Triggers
         private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
         private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
         private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
-        public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
-
-#if UNITY_EDITOR
-
-        private void OnValidate()
-        {
-            // Initialise our Guid ID.
-            if (ID.IsUnlinked())
-            {
-                InitialiseID();
-            }
-        }
-
-#endif
 
         #endregion
 

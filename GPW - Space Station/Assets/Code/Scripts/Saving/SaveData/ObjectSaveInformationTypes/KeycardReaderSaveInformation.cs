@@ -7,7 +7,7 @@ namespace Saving.LevelData
 
 
         public KeycardReaderSaveInformation(ObjectSaveData objectSaveData, DisabledState disabledState) : base(objectSaveData, disabledState) { }
-        public KeycardReaderSaveInformation(SerializableInstanceGuid id, DisabledState disabledState, bool isUnlocked) : base(id, disabledState, boolCount: 1)
+        public KeycardReaderSaveInformation(SerializableGuid id, DisabledState disabledState, bool isUnlocked) : base(id, disabledState, boolCount: 1)
         {
             this.IsUnlocked = isUnlocked;
         }

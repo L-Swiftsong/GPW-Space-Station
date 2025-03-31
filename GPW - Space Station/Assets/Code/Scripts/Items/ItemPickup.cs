@@ -47,7 +47,7 @@ namespace Items
 
         #region Saving Variables & References
 
-        [field: SerializeField] public SerializableInstanceGuid ID { get; set; } = SerializableInstanceGuid.NewUnlinkedGuid();
+        [field: SerializeField] public SerializableGuid ID { get; set; }
         [SerializeField] private ObjectSaveData _saveData;
 
         #endregion
@@ -74,26 +74,16 @@ namespace Items
 
             return this._saveData;
         }
+        public void InitialiseID()
+        {
+            ID = SerializableGuid.NewGuid();
+            Debug.Log(ID);
+        }
 
         protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
         protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
         protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
         protected virtual void LateUpdate() => ISaveableObject.UpdatePositionAndRotationInformation(this._saveData, this);
-
-        public void InitialiseID() => ID.LinkGuidToGameObject(this.gameObject);
-
-#if UNITY_EDITOR
-
-        private void OnValidate()
-        {
-            // Initialise our Guid ID.
-            if (ID.IsUnlinked())
-            {
-                InitialiseID();
-            }
-        }
-
-#endif
 
         #endregion
 
