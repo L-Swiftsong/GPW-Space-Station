@@ -121,7 +121,6 @@ MonoBehaviour:
   _crawlingFootstepDetectionRadius: 0
   _drawDetectionRadiusGizmos: 1
   _detectionRadiusDebugState: 4
-  targetSpeed: 0
 --- !u!114 &8693319973723978382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -622,10 +621,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkShakeIntensity: 0.05
   walkShakeSpeed: 8
-  isWalking: 0
   runShakeIntensity: 0.09
   runShakeSpeed: 12
-  isRunning: 0
 --- !u!1 &3645470235324770101
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,8 +982,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.1
-  m_Range: 7.5
+  m_Intensity: 0.25
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -1603,13 +1600,17 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4702301607209290532, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
-      propertyPath: m_AnchorMax.x
+    - target: {fileID: 3976247420829178102, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4702301607209290532, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4702301607209290532, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4749188429126174680, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
       propertyPath: m_SizeDelta.y
