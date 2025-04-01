@@ -63,6 +63,11 @@ namespace Saving.LevelData
 
         public bool Editor_AreAnySaveableObjectsInvalid()
         {
+            if (_saveableObjects == null)
+            {
+                return true;
+            }
+
             for(int i = 0; i < _saveableObjects.Length; ++i)
             {
                 if (_saveableObjects[i] == null || _saveableObjects[i] is not ISaveableObject)
