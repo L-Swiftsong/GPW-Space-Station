@@ -5,6 +5,9 @@ namespace Interaction
         protected const int INTERACTION_OUTLINE_LAYER = 11;
 
 
+        public bool IsInteractable { get; set; }
+
+
         public event System.Action OnSuccessfulInteraction;
         public event System.Action OnFailedInteraction;
         public void Interact(PlayerInteraction interactingScript);

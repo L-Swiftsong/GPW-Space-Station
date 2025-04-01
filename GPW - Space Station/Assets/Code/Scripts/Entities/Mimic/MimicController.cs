@@ -123,15 +123,12 @@ namespace Entities.Mimic
             {
                 _linkedMimic.Activate();
                 if (_overridePositionAndRotation)
+                {
                     _linkedMimic.SetPositionAndRotation(transform.position, transform.rotation);
+                }
             }
 
-
-            if (animator != null)
-            {
-                animator.SetFloat(MOVEMENT_SPEED_HASH, 0.0f);
-            }
-            isMoving = false;
+            Destroy(this.gameObject);
         }
 
 

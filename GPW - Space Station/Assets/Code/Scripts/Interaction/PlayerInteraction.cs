@@ -76,7 +76,7 @@ namespace Interaction
             {
                 // We found a potential interactable.
 
-                if (hit.collider.TryGetComponentThroughParents<IInteractable>(out IInteractable interactableScript))
+                if (hit.collider.TryFindFirstWithCondition<IInteractable>((interactable) => interactable.IsInteractable, out IInteractable interactableScript))
                 {
                     // This is an interactable.
                     _currentInteractable = interactableScript;

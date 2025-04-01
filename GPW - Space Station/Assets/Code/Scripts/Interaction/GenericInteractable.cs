@@ -24,6 +24,8 @@ namespace Interaction
 
         #region IInteractable Properties
 
+        [field: SerializeField] public bool IsInteractable { get; set; } = true;
+
         private int _previousLayer;
 
         public event Action OnSuccessfulInteraction;

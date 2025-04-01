@@ -14,6 +14,8 @@ public class SimonButton : MonoBehaviour, IInteractable
 
     private Renderer _renderer;
 
+    [field: SerializeField] public bool IsInteractable { get; set; } = true;
+
     public event Action OnSuccessfulInteraction;
     public event Action OnFailedInteraction;
 

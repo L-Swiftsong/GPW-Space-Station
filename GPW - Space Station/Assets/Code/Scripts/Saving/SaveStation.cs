@@ -9,6 +9,8 @@ namespace Saving
     {
         #region IInteractable Properties & Events
 
+        [field: SerializeField] public bool IsInteractable { get; set; } = true;
+
         private int _previousLayer;
 
         public event System.Action OnSuccessfulInteraction;
