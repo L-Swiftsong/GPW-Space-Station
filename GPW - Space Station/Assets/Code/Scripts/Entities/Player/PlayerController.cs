@@ -295,6 +295,7 @@ namespace Entities.Player
             }
             else
             {
+                _verticalVelocity = 0.0f;
                 StopCameraShake();
             }
 
@@ -417,8 +418,8 @@ namespace Entities.Player
                 MovementState.Crawling => _crawlingHeight,
                 _ => normalHeight,
             };
-            _controller.height = Mathf.MoveTowards(_controller.height, targetHeight, _heightSpeedChange * Time.deltaTime);
 
+            _controller.height = Mathf.MoveTowards(_controller.height, targetHeight, _heightSpeedChange * Time.deltaTime);
             _controller.center = new Vector3(0.0f, _controller.height / 2.0f, 0.0f);
         }
         private void UpdateCharacterHeightInstant()
