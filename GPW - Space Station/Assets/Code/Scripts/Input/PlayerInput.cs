@@ -15,6 +15,8 @@ public class PlayerInput : MonoBehaviour
 
     public static event Action OnPauseGamePerformed;
 
+    public static event Action OnOpenJournalPerformed;
+
 
     public static event Action OnSelectNextTabPerformed;
     public static event Action OnSelectPreviousTabPerformed;
@@ -169,6 +171,8 @@ public class PlayerInput : MonoBehaviour
         // Subscribe to events (Global).
         s_playerInput.Global.PauseGame.performed += PauseGame_performed;
 
+        s_playerInput.Global.OpenJournal.performed += OpenJournal_performed;
+
 
         // Subscribe to events (UI).
         s_playerInput.UI.SelectNextTab.performed += SelectNextTab_performed;
@@ -234,6 +238,8 @@ public class PlayerInput : MonoBehaviour
         // Unsubscribe from events (Global).
         s_playerInput.Global.PauseGame.performed -= PauseGame_performed;
 
+        s_playerInput.Global.OpenJournal.performed -= OpenJournal_performed;
+
 
         // Unsubscribe from events (UI).
         s_playerInput.UI.SelectNextTab.performed -= SelectNextTab_performed;
@@ -281,6 +287,8 @@ public class PlayerInput : MonoBehaviour
     #region Input Functions
 
     private void PauseGame_performed(InputAction.CallbackContext context) => OnPauseGamePerformed?.Invoke();
+
+    private void OpenJournal_performed(InputAction.CallbackContext context) => OnOpenJournalPerformed?.Invoke();
 
 
     private void SelectNextTab_performed(InputAction.CallbackContext context) => OnSelectNextTabPerformed?.Invoke();

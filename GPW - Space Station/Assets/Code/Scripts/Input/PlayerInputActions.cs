@@ -35,6 +35,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenJournal"",
+                    ""type"": ""Button"",
+                    ""id"": ""a591826f-fb61-4525-a46a-58edf754ee57"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -57,6 +66,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""PauseGame"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5239548c-4801-40b9-bfc2-554f3884f2d2"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""OpenJournal"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -904,6 +924,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Global
         m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
         m_Global_PauseGame = m_Global.FindAction("PauseGame", throwIfNotFound: true);
+        m_Global_OpenJournal = m_Global.FindAction("OpenJournal", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_SelectNextTab = m_UI.FindAction("SelectNextTab", throwIfNotFound: true);
@@ -993,11 +1014,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Global;
     private List<IGlobalActions> m_GlobalActionsCallbackInterfaces = new List<IGlobalActions>();
     private readonly InputAction m_Global_PauseGame;
+    private readonly InputAction m_Global_OpenJournal;
     public struct GlobalActions
     {
         private @PlayerInputActions m_Wrapper;
         public GlobalActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @PauseGame => m_Wrapper.m_Global_PauseGame;
+        public InputAction @OpenJournal => m_Wrapper.m_Global_OpenJournal;
         public InputActionMap Get() { return m_Wrapper.m_Global; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1010,6 +1033,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PauseGame.started += instance.OnPauseGame;
             @PauseGame.performed += instance.OnPauseGame;
             @PauseGame.canceled += instance.OnPauseGame;
+            @OpenJournal.started += instance.OnOpenJournal;
+            @OpenJournal.performed += instance.OnOpenJournal;
+            @OpenJournal.canceled += instance.OnOpenJournal;
         }
 
         private void UnregisterCallbacks(IGlobalActions instance)
@@ -1017,6 +1043,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @PauseGame.started -= instance.OnPauseGame;
             @PauseGame.performed -= instance.OnPauseGame;
             @PauseGame.canceled -= instance.OnPauseGame;
+            @OpenJournal.started -= instance.OnOpenJournal;
+            @OpenJournal.performed -= instance.OnOpenJournal;
+            @OpenJournal.canceled -= instance.OnOpenJournal;
         }
 
         public void RemoveCallbacks(IGlobalActions instance)
@@ -1359,6 +1388,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IGlobalActions
     {
         void OnPauseGame(InputAction.CallbackContext context);
+        void OnOpenJournal(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

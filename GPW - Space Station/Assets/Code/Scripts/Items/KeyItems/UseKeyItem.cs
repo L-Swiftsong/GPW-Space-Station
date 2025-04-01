@@ -115,7 +115,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 
 		if (_hasPlacedItem) return;
 
-		_playerTablet.Equip();
+		_playerTablet.Equip(PlayerTabletMenu.Items);
 		//_itemsTab.SetActive(true);
 
 		var repairSpotManager = FindObjectOfType<RepairSpotManager>();

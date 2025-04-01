@@ -1,4 +1,3 @@
-using Items;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,6 +25,16 @@ public class PlayerTablet : MonoBehaviour
     [SerializeField] private Transform _sectionRootsContainer;
 
 
+    [System.Serializable]
+    private struct MenuTypeTransformPair
+    {
+        public PlayerTabletMenu MenuType;
+        public UI.TabGroup.TabButton CorrespondingTabButton;
+    }
+    [SerializeField] [ReadOnlyWhenPlaying] private MenuTypeTransformPair[] _tabletMenus;
+    private Dictionary<PlayerTabletMenu, UI.TabGroup.TabButton> _menuTypeToTabButtonDictionary;
+
+
     private void Awake()
     {
         // Start unequipped, but without performing things like cursor lock or input prevention removal.
@@ -33,6 +42,11 @@ public class PlayerTablet : MonoBehaviour
         _worldCanvasGO.SetActive(false);
         _animationController.SetBool(EQUIP_ANIMATION_VARIABLE_IDENTIFIER, false);
 
+        _menuTypeToTabButtonDictionary = new Dictionary<PlayerTabletMenu, UI.TabGroup.TabButton>();
+        for (int i = 0; i < _tabletMenus.Length; ++i)
+        {
+            _menuTypeToTabButtonDictionary.Add(_tabletMenus[i].MenuType, _tabletMenus[i].CorrespondingTabButton);
+        }
 
         SubscribeToInput();
     }
@@ -41,17 +55,27 @@ public class PlayerTablet : MonoBehaviour
 
     #region Input
 
-    private void SubscribeToInput() => PlayerInput.OnPauseGamePerformed += PlayerInput_OnPauseGamePerformed;
-    private void UnsubscribeFromInput() => PlayerInput.OnPauseGamePerformed -= PlayerInput_OnPauseGamePerformed;
+    private void SubscribeToInput()
+    {
+        PlayerInput.OnPauseGamePerformed += PlayerInput_OnPauseGamePerformed;
+        PlayerInput.OnOpenJournalPerformed += PlayerInput_OnOpenJournalPerformed;
+    }
+    private void UnsubscribeFromInput()
+    {
+        PlayerInput.OnPauseGamePerformed -= PlayerInput_OnPauseGamePerformed;
+        PlayerInput.OnOpenJournalPerformed -= PlayerInput_OnOpenJournalPerformed;
+    }
 
     private void PlayerInput_OnPauseGamePerformed() => ToggleEquip();
+    private void PlayerInput_OnOpenJournalPerformed() => ToggleEquip(PlayerTabletMenu.Journal);
 
     #endregion
 
 
     #region Equipping & Unequipping
 
-    private void ToggleEquip()
+    private void ToggleEquip() => ToggleEquip(PlayerTabletMenu.Objective);
+    private void ToggleEquip(PlayerTabletMenu selectedMenu)
     {
         if (_isEquipped)
         {
@@ -59,10 +83,11 @@ public class PlayerTablet : MonoBehaviour
         }
         else
         {
-            Equip();
+            Equip(selectedMenu);
         }
     }
-    public void Equip()
+    public void Equip() => Equip(PlayerTabletMenu.Objective);
+    public void Equip(PlayerTabletMenu selectedMenu)
     {
 		_rootGO.SetActive(true);
         if (_disableSelfCoroutine != null)
@@ -82,6 +107,13 @@ public class PlayerTablet : MonoBehaviour
 
         // Unlock the cursor.
         Cursor.lockState = CursorLockMode.None;
+
+
+        // Select the desired menu (If it exists).
+        if (_menuTypeToTabButtonDictionary.TryGetValue(selectedMenu, out UI.TabGroup.TabButton tabButton))
+        {
+            tabButton.OnPointerClick(null);
+        }
     }
     public void Unequip()
     {
@@ -116,4 +148,12 @@ public class PlayerTablet : MonoBehaviour
             sectionRoot.gameObject.SetActive(sectionRoot.gameObject == sectionGO);
         }
     }
+}
+
+[System.Serializable]
+public enum PlayerTabletMenu
+{
+    Objective = 0,
+    Journal = 1,
+    Items = 2
 }
