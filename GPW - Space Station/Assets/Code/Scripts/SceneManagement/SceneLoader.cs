@@ -227,10 +227,10 @@ namespace SceneManagement
             UI.Menus.MainMenuUI.SetEntryFromOtherScene();
             StartCoroutine(PerformLoadFromBuildIndices(new int[1] { _mainMenuScene.BuildIndex }, 0, transitionType: TransitionType.Menu));
         }
-        public void LoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback) => StartCoroutine(PerformLoadFromBuildIndices(buildIndices, activeSceneBuildIndex, onCompleteCallback));
+        public void LoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onScenesLoadedCallback = null, System.Action onFullyCompleteCallback = null) => StartCoroutine(PerformLoadFromBuildIndices(buildIndices, activeSceneBuildIndex, onScenesLoadedCallback: onScenesLoadedCallback, onFullyCompleteCallback: onFullyCompleteCallback));
         
         private enum TransitionType { Default, Hub, Menu };
-        private IEnumerator PerformLoadFromBuildIndices(int[] buildIndices, int activeSceneBuildIndex, System.Action onCompleteCallback = null, TransitionType transitionType = TransitionType.Default)
+        private IEnumerator PerformLoadFromBuildIndices(int[] buildIndices, int activeSceneBuildIndex, System.Action onScenesLoadedCallback = null, System.Action onFullyCompleteCallback = null, TransitionType transitionType = TransitionType.Default)
         {
             // Notify listeners that a foreground load has started.
             OnHardLoadStarted?.Invoke();
@@ -264,12 +264,13 @@ namespace SceneManagement
             _previousTimeScale = Time.timeScale;
             Time.timeScale = 0.0f;
 
+            onScenesLoadedCallback?.Invoke();
 
             // Wait for script inialisation.
             yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
 
 
-            onCompleteCallback?.Invoke();
+            onFullyCompleteCallback?.Invoke();
 
 
             // Once we recieve player input, continue and perform our 'Finish Loading' function based on the type of transition this is.
@@ -376,5 +377,12 @@ namespace SceneManagement
             return sceneIndexes.ToArray();
         }
         public static int GetActiveSceneBuildIndex() => SceneManager.GetActiveScene().buildIndex;
+
+
+        #if UNITY_EDITOR
+
+        public void Editor_EditorInitialiserLoadComplete() => StartCoroutine(PerformAfterFrame(() => OnLoadFinished?.Invoke()));
+
+        #endif
     }
 }

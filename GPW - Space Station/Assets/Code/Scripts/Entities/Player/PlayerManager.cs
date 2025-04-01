@@ -58,54 +58,9 @@ namespace Entities.Player
             _player.GetComponent<PlayerController>().SetYRotation(desiredRotation);
             Physics.SyncTransforms();
         }
-        public void LoadFromPlayerData(PlayerSaveData setupData)
-        {
-            PlayerController playerController = _player.GetComponent<PlayerController>();
-
-            // Root Position.
-            _player.position = setupData.RootPosition;
-            playerController.SetYRotation(setupData.YRotation);
-            Physics.SyncTransforms();
-
-            // Camera Rotation.
-            playerController.SetCameraRotation(setupData.CameraXRotation);
 
 
-            // Standing State.
-            MovementState startingMovementState = setupData.PlayerStandingState switch {
-                PlayerSaveData.StandingState.Crouching => MovementState.Crouching,
-                PlayerSaveData.StandingState.Crawling => MovementState.Crawling,
-                _ => MovementState.Walking,
-            };
-            playerController.InitialiseMovementState(startingMovementState);
-        }
-        public PlayerSaveData GetCurrentPlayerData()
-        {
-            PlayerSaveData setupData = new PlayerSaveData();
-            PlayerController playerController = _player.GetComponent<PlayerController>();
-
-            // Root Position.
-            setupData.RootPosition = _player.position;
-            setupData.YRotation = playerController.GetYRotation();
-
-            // Camera Rotation.
-            setupData.CameraXRotation = playerController.GetCameraRotation();
-
-
-            // Standing State.
-            setupData.PlayerStandingState = playerController.GetCurrentMovementState() switch {
-                MovementState.Crouching => PlayerSaveData.StandingState.Crouching,
-                MovementState.Crawling => PlayerSaveData.StandingState.Crawling,
-                _ => PlayerSaveData.StandingState.Standing,
-            };
-
-
-            // Return the filled PlayerSetupData.
-            return setupData;
-        }
-
-
-        public InventorySaveData GetInventorySaveData() => InventorySaveData.FromInventoryData(_playerInventory);
+        /*public InventorySaveData GetInventorySaveData() => InventorySaveData.FromInventoryData(_playerInventory);
         public void LoadInventorySaveData(InventorySaveData saveData)
         {
             // Player Items.
@@ -120,9 +75,9 @@ namespace Entities.Player
             CollectableManager.PrepareForLoad();
             foreach (CollectableSaveData collectableSaveData in saveData.CollectablesSaveData)
             {
-                CollectableManager.LoadObtainedCollectables(collectableSaveData.CollectableType.ToSystemType(), collectableSaveData.CollectablesObtained);
+                CollectableManager.LoadObtainedCollectables(collectableSaveData.CollectableType.ToSystemType(), collectableSaveData.KeyItemsObtained);
             }
-        }
+        }*/
 
 
 

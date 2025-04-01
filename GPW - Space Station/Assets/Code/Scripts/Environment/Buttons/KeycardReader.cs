@@ -2,11 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
+using Saving.LevelData;
 
 namespace Environment.Buttons
 {
-    public class KeycardReader : MonoBehaviour, IInteractable
+    public class KeycardReader : MonoBehaviour, IInteractable, ISaveableObject
     {
+        #region Saving Properties
+
+        [field: SerializeField] public SerializableGuid ID { get; set; }
+        [SerializeField] private KeycardReaderSaveInformation _saveData;
+
+        #endregion
+
+
         [Header("Keycard Reader Settings")]
         [SerializeField] private GameObject _connectedObject;
         private ITriggerable _connectedTriggerable;
@@ -37,6 +46,7 @@ namespace Environment.Buttons
 
         public static event System.EventHandler OnAnyKeycardReaderHighlighted;
         public static event System.EventHandler OnAnyKeycardReaderStopHighlighted;
+
 
         #region IInteractable Properties & Events
 
@@ -108,11 +118,7 @@ namespace Environment.Buttons
             
             if (!_isUnlocked)
             {
-                _isUnlocked = true;
-
-                _renderer.GetPropertyBlock(_materialPropertyBlock);
-                _materialPropertyBlock.SetInteger(IS_UNLOCKED_IDENTIFIER, 1);
-                _renderer.SetPropertyBlock(_materialPropertyBlock);
+                SetUnlocked(true);
 
                 if (!_alsoTriggerWhenFirstUnlocked)
                 {
@@ -154,13 +160,60 @@ namespace Environment.Buttons
 
 
         public int GetSecurityLevel() => _securityLevel;
+
+        private void SetUnlocked(bool newValue)
+        {
+            _isUnlocked = newValue;
+
+            _renderer.GetPropertyBlock(_materialPropertyBlock);
+            _materialPropertyBlock.SetInteger(IS_UNLOCKED_IDENTIFIER, _isUnlocked ? 1 : 0);
+            _renderer.SetPropertyBlock(_materialPropertyBlock);
+        }
         public bool GetIsUnlocked() => _isUnlocked;
 
 
 
+        #region Saving Functions
+
+        public void BindExisting(ObjectSaveData saveData)
+        {
+            this._saveData = new KeycardReaderSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this));
+            _saveData.ID = ID;
+            Debug.Log("Bind Existing");
+
+            if (_saveData.DisabledState.HasFlag(DisabledState.Destroyed))
+            {
+                Destroy(this.gameObject);
+            }
+
+            SetUnlocked(this._saveData.IsUnlocked);
+        }
+        public ObjectSaveData BindNew()
+        {
+            if (this._saveData == null || !this._saveData.Exists)
+            {
+                this._saveData = new KeycardReaderSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), this._isUnlocked);
+            }
+
+            return this._saveData.ObjectSaveData;
+        }
+
+        protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
+        protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
+        private void LateUpdate()
+        {
+            // Transfer to where we are changing the value of '_isUnlocked'?
+            this._saveData.IsUnlocked = _isUnlocked;
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+        }
+
+        #endregion
 
 
-    #if UNITY_EDITOR
+
+
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (_connectedObject != null)
@@ -184,6 +237,6 @@ namespace Environment.Buttons
                 _renderer.SetPropertyBlock(materialPropertyBlock);
             }
         }
-    #endif
+#endif
     }
 }

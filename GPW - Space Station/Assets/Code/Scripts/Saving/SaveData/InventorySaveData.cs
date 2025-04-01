@@ -9,53 +9,46 @@ namespace Saving
     public class InventorySaveData
     {
         // Flashlight.
-        public bool FlashlightObtained;
+        public bool HasFlashlight;
         public float FlashlightBattery;
+        public bool FlashlightActiveState;
 
         // Keycard Decoder.
-        public bool DecoderObtained;
+        public bool HasDecoder;
         public int DecoderSecurityLevel;
 
         // Medkits.
         public int MedkitCount;
 
-        // Key Items.
-        public bool[] KeyItemsObtained;
 
-        // Collectables.
-        public CollectableSaveData[] CollectablesSaveData;
-
-
-
-        public static InventorySaveData Default = new InventorySaveData()
+        public void LoadToInventory(PlayerInventory playerInventory)
         {
-            FlashlightObtained = false,
-            FlashlightBattery = 0.0f,
+            playerInventory.SetHasObtainedFlashlight(this.HasFlashlight, this.FlashlightBattery);
+            playerInventory.LoadFlashlightActiveState(this.FlashlightActiveState);
 
-            DecoderObtained = false,
-            DecoderSecurityLevel = 0,
+            playerInventory.SetHasObtainedKeycardDecoder(this.HasDecoder, this.DecoderSecurityLevel);
 
-            MedkitCount = 0,
-
-            KeyItemsObtained = new bool[0],//[KeyItemManager.KeyItemCount],
-
-            CollectablesSaveData = new CollectableSaveData[0],
-        };
-
-
-        public static InventorySaveData FromInventoryData(PlayerInventory playerInventory) => new InventorySaveData()
+            playerInventory.SetMedkits(this.MedkitCount);
+        }
+        public static InventorySaveData CreateFromInventory(PlayerInventory playerInventory)
         {
-            FlashlightObtained = playerInventory.HasFlashlight(),
-            FlashlightBattery = playerInventory.GetFlashlightBattery(),
+            InventorySaveData inventorySaveData = new InventorySaveData();
 
-            DecoderObtained = playerInventory.HasKeycardDecoder(),
-            DecoderSecurityLevel = playerInventory.GetDecoderSecurityLevel(),
 
-            MedkitCount = playerInventory.GetMedkitCount(),
+            // Flashlight.
+            inventorySaveData.HasFlashlight = playerInventory.HasFlashlight();
+            inventorySaveData.FlashlightBattery = playerInventory.GetFlashlightBattery();
+            inventorySaveData.FlashlightActiveState = playerInventory.GetFlashlightActiveState();
 
-            KeyItemsObtained = new bool[0],
+            // Keycard Decoder.
+            inventorySaveData.HasDecoder = playerInventory.HasKeycardDecoder();
+            inventorySaveData.DecoderSecurityLevel = playerInventory.GetDecoderSecurityLevel();
 
-            CollectablesSaveData = CollectableSaveData.GetCurrentSaveData(),
-        };
+            // Medkit Count.
+            inventorySaveData.MedkitCount = playerInventory.GetMedkitCount();
+
+
+            return inventorySaveData;
+        }
     }
 }

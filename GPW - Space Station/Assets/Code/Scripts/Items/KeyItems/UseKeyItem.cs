@@ -83,16 +83,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 			OnSuccessfulInteraction?.Invoke();
 			_hasPlacedItem = true;
 
-			KeyItemEntryUI[] allUIEntries = FindObjectsOfType<KeyItemEntryUI>();
-
-			foreach (var uiEntry in allUIEntries)
-			{
-				if (uiEntry._currentKeyItem == selectedKeyItem)
-				{ 
-					uiEntry.RemoveItemFromUI(selectedKeyItem);
-					break;
-				}
-			}
+            UpdateUsedKeyItems();
 
 			_playerTablet.Unequip();
 		}
@@ -153,6 +144,24 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 
 		Destroy(feedbackInstance, duration);
 	}
+
+	private void UpdateUsedKeyItems()
+	{
+        if (KeyItemEntryUI.s_KeyItemDataUsedState.TryAdd(_requiredKeyItem, _hasPlacedItem) == false)
+		{
+            // Failed to add (There is already an instance).
+            KeyItemEntryUI.s_KeyItemDataUsedState[_requiredKeyItem] = _hasPlacedItem;
+        }
+    }
+
+
+
+	public void SetHasPlacedItem(bool newValue)
+	{
+		_hasPlacedItem = newValue;
+		UpdateUsedKeyItems();
+	}
+	public bool GetHasPlacedItem() => _hasPlacedItem;
+
+	public KeyItemData GetKeyItemData() => _requiredKeyItem;
 }
-
-

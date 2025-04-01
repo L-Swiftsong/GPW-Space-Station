@@ -1,16 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Items.Collectables;
-using Items;
-using Items.KeyItem;
 using System.Collections.Generic;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace UI.ItemDisplay
 {
     public class KeyItemEntryUI : ItemDisplaySegmentUI
     {
         private static List<KeyItemEntryUI> _allKeyItemEntryUIs = new List<KeyItemEntryUI>();
+        public static Dictionary<KeyItemData, bool> s_KeyItemDataUsedState = new Dictionary<KeyItemData, bool>(); // Find a new place for this that isn't in UI?
+
 
         [SerializeField] private Image _keyItemImage;
         [SerializeField] private Button _UseButton;
@@ -27,8 +26,12 @@ namespace UI.ItemDisplay
 
             _repairSpotManager = FindObjectOfType<RepairSpotManager>();
 		}
+        private void OnEnable()
+        {
+            CheckIsUsed();
+        }
 
-		public override void SetupCollectableEntry(CollectableData collectableData)
+        public override void SetupCollectableEntry(CollectableData collectableData)
         {
             try
             {
@@ -50,6 +53,8 @@ namespace UI.ItemDisplay
             _currentKeyItem = keyItemData;
             _UseButton.onClick.RemoveAllListeners();
             _UseButton.onClick.AddListener(() => OnUseButtonClicked());
+
+            CheckIsUsed();
         }
 
         private void OnUseButtonClicked()
@@ -63,19 +68,16 @@ namespace UI.ItemDisplay
                 _repairSpotManager.TryUseKeyItem(_currentKeyItem);
             }
         }
-
-        public void RemoveItemFromUI(KeyItemData keyItemData)
+        private void CheckIsUsed()
         {
-            if (_currentKeyItem == keyItemData)
+            if (_currentKeyItem != null && s_KeyItemDataUsedState.TryGetValue(_currentKeyItem, out bool hasBeenUsed) && hasBeenUsed)
             {
                 _isUsed = true;
                 _UseButton.interactable = false;
                 _keyItemImage.color = new Color(1, 1, 1, 0.5f);
                 _currentKeyItem = null;
-                
-                UnregisterKeyItemEntry(this);
             }
-		}     
+        }
 
 		public void UnregisterKeyItemEntry(KeyItemEntryUI entryUI)
 		{

@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
 using UI;
-using System.Runtime.InteropServices;
 using Environment.Doors;
+using Saving.LevelData;
 
-public class Lock : MonoBehaviour, IInteractable
+public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 {
+    #region Saving Properties
+
+    [field: SerializeField] public SerializableGuid ID { get; set; }
+    [SerializeField] private PadlockSaveInformation _saveData;
+
+    #endregion
+
+
     private Vector3 originPosition;
     private Quaternion originRotation;
 
@@ -112,8 +120,6 @@ public class Lock : MonoBehaviour, IInteractable
             bool positiveIncrement = Vector3.Dot(hit.point - hit.transform.position, this.transform.right) < 0;
             lockWheel.IncrementWheel(positiveIncrement);
         }
-
-
     }
 
 
@@ -205,16 +211,25 @@ public class Lock : MonoBehaviour, IInteractable
     // Checks if wheel digits match the correct digits.
     public void DetectCompletion()
     {
+        bool allCorrect = true;
         for(int i = 0; i < _lockWheels.Length; ++i)
         {
+            _saveData.CurrentSetValues[i] = _lockWheels[i].GetWheelDigit();
             if (_lockWheels[i].GetWheelDigit() != _correctDigits[i])
             {
                 // This LockWheel is set to an incorrect value.
-                return;
+                allCorrect = false;
             }
         }
 
-        // None of our LockWheels were set to incorrect digits.
+        if (allCorrect)
+        {
+            // All of our LockWheels were set to the correct digits.
+            LockDigitsCorrect();
+        }
+    }
+    private void LockDigitsCorrect()
+    {
         StopInteraction();
         connectedDoor.Activate();
         Destroy(this.gameObject);
@@ -266,10 +281,54 @@ public class Lock : MonoBehaviour, IInteractable
     public int GetSelectedWheelIndex() => _selectedWheelIndex;
 
 
+
+    #region Saving Functions
+
+    public void BindExisting(ObjectSaveData saveData)
+    {
+        this._saveData = new PadlockSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this));
+        _saveData.ID = ID;
+
+        ISaveableObject.PerformBindingChecks(this._saveData.ObjectSaveData, this);
+
+        for (int i = 0; i < _lockWheels.Length; ++i)
+        {
+            _lockWheels[i].SetWheelDigit(_saveData.CurrentSetValues[i]);
+        }
+    }
+    public ObjectSaveData BindNew()
+    {
+        if (this._saveData == null || !this._saveData.Exists)
+        {
+            int[] currentDigits = new int[this._lockWheels.Length];
+            for(int i = 0; i < this._lockWheels.Length; ++i)
+            {
+                currentDigits[i] = _lockWheels[i].GetWheelDigit();
+            }
+
+            this._saveData = new PadlockSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), false, currentDigits);
+        }
+
+        return this._saveData.ObjectSaveData;
+    }
+
+    protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
+    protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+    protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
+    protected virtual void LateUpdate() => ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+
+    #endregion
+
+
 #if UNITY_EDITOR
 
     private void OnValidate()
     {
+        if (_lockWheels == null || _correctDigits == null)
+        {
+            return;
+        }
+
         if (_lockWheels.Length != _correctDigits.Length)
         {
             // Alter size of Correct Digits array.

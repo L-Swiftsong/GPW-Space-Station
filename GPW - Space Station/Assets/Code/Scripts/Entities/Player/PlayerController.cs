@@ -1,8 +1,8 @@
-﻿using Audio.Footsteps;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
+using Audio.Footsteps;
+using Saving;
 /*
  * CONTEXT:
  * 
@@ -120,7 +120,8 @@ namespace Entities.Player
         private float healMoveSpeed = 2f;
         private float healSprintSpeed = 3f;
 
-        private void Start()
+
+        private void Awake()
         {
             // Get references.
             _controller = GetComponent<CharacterController>();
@@ -130,7 +131,9 @@ namespace Entities.Player
 
             // Start walking.
             _currentMovementState = MovementState.Walking;
-
+        }
+        private void Start()
+        {
             // Ensure that the cursor starts locked.
             Cursor.lockState = CursorLockMode.Locked;
 
@@ -309,7 +312,7 @@ namespace Entities.Player
                 sprintSpeed = baseSprintSpeed;
             }
         }
-        
+
 
         private void CameraShake()
         {

@@ -5,7 +5,6 @@ using UnityEngine.AI;
 using Effects.Mimicry.PassiveMimicry;
 using Entities.Mimic.States;
 
-
 namespace Entities.Mimic
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(EntitySenses))]
@@ -213,7 +212,20 @@ namespace Entities.Mimic
             _currentState.OnEnter();
 
             OnStateChanged?.Invoke(_currentState);
+            UpdateSaveableState();
+        }
+
+
+        protected override Saving.LevelData.MimicSavableState GetSavableState()
+        {
+            if (_currentState.GetType() == typeof(ChaseState) || _currentState.GetType() == typeof(PreparingToChaseState))
+            {
+                return Saving.LevelData.MimicSavableState.Chasing;
+            }
+            else
+            {
+                return Saving.LevelData.MimicSavableState.Idle;
+            }
         }
     }
-
 }

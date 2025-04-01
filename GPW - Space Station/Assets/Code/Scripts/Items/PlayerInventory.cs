@@ -4,13 +4,11 @@ using Items.Flashlight;
 using Items.Keycards;
 using Items.Healing;
 using Items.KeyItem;
-using Items.Collectables;
 
 namespace Items
 {
     public class PlayerInventory : MonoBehaviour
     {
-
         [Header("Flashlight")]
         [SerializeField] private FlashlightController _flashlightController;
 
@@ -33,6 +31,8 @@ namespace Items
         [Header("KeyItems")]
         [SerializeField] private KeyItemManager _keyItemManager;
 
+
+
         private void Awake()
         {
             // Set Starting Items.
@@ -45,6 +45,8 @@ namespace Items
 
             AddKeycardDecoder(0);
         }
+
+
         public void SetHasObtainedFlashlight(bool hasFlashlight, float flashlightBattery)
         {
             if (hasFlashlight)
@@ -90,6 +92,10 @@ namespace Items
         public float GetFlashlightBattery() => _flashlightController.GetCurrentBattery();
         public bool HasFlashlight() => _hasFlashlight;
 
+        public void LoadFlashlightActiveState(bool activeState) => _flashlightController.LoadActiveState(activeState);
+        public bool GetFlashlightActiveState() => _flashlightController.GetActiveState();
+
+
         #endregion
 
 
@@ -122,12 +128,6 @@ namespace Items
         public void RemoveMedkits(int numberToRemove) => _medkit.RemoveMedkits(numberToRemove);
         public int GetMedkitCount() => _medkit.GetCurrentCount();
 
-		#endregion
-
-		#region KeyItems
-
-
-
-		#endregion
-	}
+        #endregion
+    }
 }

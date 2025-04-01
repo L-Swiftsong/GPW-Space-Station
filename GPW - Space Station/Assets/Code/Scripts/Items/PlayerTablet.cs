@@ -50,7 +50,11 @@ public class PlayerTablet : MonoBehaviour
 
         SubscribeToInput();
     }
-    private void OnDestroy() => UnsubscribeFromInput();
+    private void OnDestroy()
+    {
+        UnsubscribeFromInput();
+        AllowInput();
+    }
 
 
     #region Input
@@ -68,6 +72,19 @@ public class PlayerTablet : MonoBehaviour
 
     private void PlayerInput_OnPauseGamePerformed() => ToggleEquip();
     private void PlayerInput_OnOpenJournalPerformed() => ToggleEquip(PlayerTabletMenu.Journal);
+
+    private void PreventInput()
+    {
+        PlayerInput.PreventMovementActions(this.GetType());
+        PlayerInput.PreventCameraActions(this.GetType());
+        PlayerInput.PreventInteractionActions(this.GetType());
+    }
+    private void AllowInput()
+    {
+        PlayerInput.RemoveMovementActionPrevention(this.GetType());
+        PlayerInput.RemoveCameraActionPrevention(this.GetType());
+        PlayerInput.RemoveInteractionActionPrevention(this.GetType());
+    }
 
     #endregion
 
@@ -101,9 +118,7 @@ public class PlayerTablet : MonoBehaviour
         _animationController.SetBool(EQUIP_ANIMATION_VARIABLE_IDENTIFIER, true);
 
         // Prevent unwanted input.
-        PlayerInput.PreventMovementActions(this.GetType());
-        PlayerInput.PreventCameraActions(this.GetType());
-        PlayerInput.PreventInteractionActions(this.GetType());
+        PreventInput();
 
         // Unlock the cursor.
         Cursor.lockState = CursorLockMode.None;
@@ -122,9 +137,7 @@ public class PlayerTablet : MonoBehaviour
 
         _animationController.SetBool(EQUIP_ANIMATION_VARIABLE_IDENTIFIER, false);
 
-        PlayerInput.RemoveMovementActionPrevention(this.GetType());
-        PlayerInput.RemoveCameraActionPrevention(this.GetType());
-        PlayerInput.RemoveInteractionActionPrevention(this.GetType());
+        AllowInput();
 
         // Lock the cursor.
         Cursor.lockState = CursorLockMode.Locked;

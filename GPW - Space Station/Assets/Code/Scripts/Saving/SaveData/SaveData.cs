@@ -1,7 +1,12 @@
+using UnityEngine;
+using Entities.Player;
+using Items;
+using Saving.LevelData;
+
 namespace Saving
 {
     [System.Serializable]
-    public struct SaveData
+    public class SaveData
     {
         public bool Exists;
         public float SaveTime;
@@ -9,21 +14,34 @@ namespace Saving
         public int[] LoadedSceneIndices;
         public int ActiveSceneIndex;
 
-
-        public PlayerSaveData PlayerData;
+        public PlayerData PlayerData;
         public InventorySaveData ItemSaveData;
+        public ProgressData ProgressData;
+        public LevelSaveData[] LevelSaveDatas;
 
 
-        public static SaveData Empty = new SaveData()
+        public void LoadData()
         {
-            Exists = false,
-            SaveTime = 0.0f,
+            PlayerData.LoadToPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>());
+            ItemSaveData.LoadToInventory(PlayerManager.Instance.Player.GetComponent<Items.PlayerInventory>());
+            ProgressData.LoadData();
+            LevelDataManager.LoadLevelSaves(LevelSaveDatas);
+        }
+        public static SaveData FromCurrent()
+        {
+            return new SaveData()
+            {
+                Exists = true,
+                SaveTime = Time.time,
 
-            LoadedSceneIndices = null,
-            ActiveSceneIndex = -1,
+                LoadedSceneIndices = SceneManagement.SceneLoader.GetLoadedSceneBuildIndices(),
+                ActiveSceneIndex = SceneManagement.SceneLoader.GetActiveSceneBuildIndex(),
 
-            PlayerData = PlayerSaveData.Default,
-            ItemSaveData = InventorySaveData.Default,
-        };
+                PlayerData = PlayerData.CreateFromPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>()),
+                ItemSaveData = InventorySaveData.CreateFromInventory(PlayerManager.Instance.Player.GetComponent<PlayerInventory>()),
+                ProgressData = ProgressData.FromCurrent(),
+                LevelSaveDatas = LevelDataManager.GetAllExistingSaveData(),
+            };
+        }
     }
 }

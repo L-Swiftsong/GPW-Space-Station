@@ -56,23 +56,21 @@ namespace Items.Collectables
 
 
         public static void PrepareForLoad() => _obtainedCollectableData.Clear();
-        public static void LoadObtainedCollectables(CollectableDataType type, bool[] obtainedValues) => LoadObtainedCollectables(type.ToSystemType(), obtainedValues);
-        public static void LoadObtainedCollectables(System.Type type, bool[] obtainedValues)
+        public static void LoadObtainedCollectables(CollectableDataType type, bool[] collectableObtainedStates) => LoadObtainedCollectables(type.ToSystemType(), collectableObtainedStates);
+        public static void LoadObtainedCollectables(System.Type type, bool[] collectableObtainedStates)
         {
-            // Get the number of obtained collectables of this type;
-            int obtainedCollectablesCount = obtainedValues.Where(t => t == true).Count();
-
-            if (obtainedCollectablesCount == 0)
+            if (collectableObtainedStates.Any(t => t == true) == false)
             {
                 // We haven't obtained any collectables of this type.
                 return;
             }
 
             // Construct a list of our obtained collectable instances.
-            List<CollectableData> obtainedCollectables = new List<CollectableData>(obtainedCollectablesCount);
-            for (int i = 0; i < obtainedCollectablesCount; ++i)
+            int collectableObtainedStatesCount = collectableObtainedStates.Length;
+            List<CollectableData> obtainedCollectables = new List<CollectableData>(collectableObtainedStatesCount);
+            for (int i = 0; i < collectableObtainedStatesCount; ++i)
             {
-                if (obtainedValues[i] == true)
+                if (collectableObtainedStates[i] == true)
                 {
                     obtainedCollectables.Add(CollectableDataOrderManager.s_AllCollectableOrdersList[type].GetDataAtIndex(i));
                 }

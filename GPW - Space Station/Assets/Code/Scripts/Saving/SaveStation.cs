@@ -20,8 +20,8 @@ namespace Saving
         public void Interact(PlayerInteraction interactingScript)
         {
             Debug.Log("Manual Save");
-            SaveManager.ManualSave();
 
+            SaveManager.Instance.SaveGameManual();
             OnSuccessfulInteraction?.Invoke();
         }
         public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);

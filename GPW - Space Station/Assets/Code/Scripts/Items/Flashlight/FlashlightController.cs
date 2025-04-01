@@ -134,7 +134,6 @@ namespace Items.Flashlight
             Audio.SFXManager.Instance.PlayClipAtPosition(_flashlightClick, transform.position);
 
             UpdateLedIndicator();
-
         }
 
         private void StartFocus()
@@ -290,5 +289,9 @@ namespace Items.Flashlight
         }
 
         #endregion
+
+
+        public void LoadActiveState(bool activeState) => SetActiveState(activeState);
+        public bool GetActiveState() => _isOn;
     }
 }

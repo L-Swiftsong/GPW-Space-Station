@@ -2,11 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UltEvents;
+using Saving.LevelData;
 
 namespace ScriptedEvents.Triggers
 {
-    public abstract class ScriptedEventTrigger : MonoBehaviour
+    public abstract class ScriptedEventTrigger : MonoBehaviour, ISaveableObject
     {
+        #region Saving Variables & References
+
+        [field: SerializeField] public SerializableGuid ID { get; set; }
+        [SerializeField] private ObjectSaveData _saveData;
+        [SerializeField] private bool _triggerEventIfDestroyedOnLoad = false;
+
+        #endregion
+
+
         [Header("Trigger Settings")]
         [SerializeField] private bool _onlyTriggerOnce = true;
         [SerializeField] private bool _destroyObjectOnTrigger = false;
@@ -30,8 +40,8 @@ namespace ScriptedEvents.Triggers
         public UltEvent OnDelayedTriggerActivated;
 
 
-
-        protected virtual void ActivateTrigger()
+        protected void ActivateTrigger() => ActivateTrigger(false);
+        protected void ActivateTrigger(bool forceDestruction)
         {
             if (!_canTriggerWhileAwaitingDelay && _activateTriggerAfterDelayCoroutine != null)
             {
@@ -53,7 +63,7 @@ namespace ScriptedEvents.Triggers
                 if (_overridePreviousDelay && _activateTriggerAfterDelayCoroutine != null)
                     StopCoroutine(_activateTriggerAfterDelayCoroutine);
 
-                _activateTriggerAfterDelayCoroutine = StartCoroutine(ActivateTriggerAfterDelay());
+                _activateTriggerAfterDelayCoroutine = StartCoroutine(ActivateTriggerAfterDelay(forceDestruction));
             }
             else if (_onlyTriggerOnce)
             {
@@ -63,12 +73,12 @@ namespace ScriptedEvents.Triggers
                     Destroy(this);
             }
         }
-        private IEnumerator ActivateTriggerAfterDelay()
+        private IEnumerator ActivateTriggerAfterDelay(bool forceDestruction)
         {
             yield return new WaitForSeconds(_delayedTriggerDelayTime);
             OnDelayedTriggerActivated?.Invoke();
 
-            if (_onlyTriggerOnce)
+            if (_onlyTriggerOnce || forceDestruction)
             {
                 if (_destroyObjectOnTrigger)
                     Destroy(this.gameObject);
@@ -78,8 +88,41 @@ namespace ScriptedEvents.Triggers
         }
 
 
+        #region Saving Functions
 
-#region Call Presets
+        public void BindExisting(ObjectSaveData saveData)
+        {
+            this._saveData = saveData;
+            _saveData.ID = ID;
+
+            ISaveableObject.PerformBindingChecks(this._saveData, this, () => {
+                if (_triggerEventIfDestroyedOnLoad) { ActivateTrigger(forceDestruction: true); }
+                else { Destroy(this.gameObject); }
+                });
+        }
+        public ObjectSaveData BindNew()
+        {
+            if (this._saveData == null || !this._saveData.Exists)
+            {
+                this._saveData = new ObjectSaveData()
+                {
+                    ID = this.ID,
+                    Exists = true
+                };
+            }
+
+            return this._saveData;
+        }
+
+        private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
+        private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
+
+        #endregion
+
+
+
+        #region Call Presets
 #if UNITY_EDITOR
         [ContextMenu("Presets/Immediate/Add Chase End")]
         private void ImmediatePreset_TriggerChaseEnd() => OnTriggerActivated.AddPersistentCall((System.Action)Entities.Mimic.ChaseMimic.EndAllChases);

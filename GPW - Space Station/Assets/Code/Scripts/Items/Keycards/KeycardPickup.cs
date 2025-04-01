@@ -8,11 +8,6 @@ namespace Items.Keycards
     {
         [SerializeField] private int m_securityLevel;
 
-        private void Awake()
-        {
-            //audioSource.playOnAwake = false; // Prevent unintended playback
-        }
-
         public void SetupKeycard(int securityLevel) => m_securityLevel = securityLevel;
 
 
