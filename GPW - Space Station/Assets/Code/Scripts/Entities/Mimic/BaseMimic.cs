@@ -30,12 +30,26 @@ namespace Entities.Mimic
         }
 
         protected abstract MimicSavableState GetSavableState();
-        protected void UpdateSaveableState() => this._saveData.MimicSavableState = GetSavableState();
+        protected void UpdateSaveableState()
+        {
+            if (this._saveData != null)
+                this._saveData.MimicSavableState = GetSavableState();
+        }
 
         protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
         protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
         protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
-        protected virtual void LateUpdate() => ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+        protected virtual void LateUpdate()
+        {
+            try
+            {
+                ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+            }
+            catch
+            {
+                Debug.Log("Mimic", this);
+            }
+        }
 
 
 

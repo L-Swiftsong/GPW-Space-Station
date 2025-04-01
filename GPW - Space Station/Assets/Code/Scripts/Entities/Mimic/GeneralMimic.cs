@@ -218,7 +218,7 @@ namespace Entities.Mimic
 
         protected override Saving.LevelData.MimicSavableState GetSavableState()
         {
-            if (_currentState.GetType() == typeof(ChaseState) || _currentState.GetType() == typeof(PreparingToChaseState))
+            if (_currentState != null && (_currentState.GetType() == typeof(ChaseState) || _currentState.GetType() == typeof(PreparingToChaseState)))
             {
                 return Saving.LevelData.MimicSavableState.Chasing;
             }

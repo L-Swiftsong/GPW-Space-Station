@@ -119,9 +119,13 @@ namespace Saving.LevelData
                 {
                     saveDatas[i] = (saveable as ISaveableObject).BindNew();
                 }
-                catch
+                catch(System.InvalidCastException e)
                 {
                     Debug.LogError("Error encountered when trying to bind ISaveable.\nEnsure that you haven't deleted a GameObject with an ISaveable component without regenerating the list in the LevelDataManager.");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError(e);
                 }
                 ++i;
             }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Saving.LevelData
 {
+    [System.Serializable]
     public class MimicSaveInformation : ObjectSaveInformation
     {
         public MimicSavableState MimicSavableState { get => (MimicSavableState)this.ObjectSaveData.IntValues[0]; set => this.ObjectSaveData.IntValues[0] = (int)value; }
