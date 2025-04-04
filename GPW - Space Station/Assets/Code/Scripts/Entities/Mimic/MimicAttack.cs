@@ -7,15 +7,15 @@ using Entities.Player;
 public class MimicAttack : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private NavMeshAgent _agent;
+    [SerializeField] private NavMeshAgent _navMeshAgent;
     private PlayerHealth _playerHealth;
 
     [Header("Settings")]
     [SerializeField] private float _attackCooldown = 2f;
     [SerializeField] private float _attackRadius = 1.0f;
+    [SerializeField] private float _mimicKnockbackStrength = 2f;
+    [SerializeField] private float _mimicKnockbackDuration = 0.5f;
 
-    [Space(5)]
-    [SerializeField] private float _mimicSpeedAfterAttack;
 
     [HideInInspector] public bool _isAttacking = false;
     private bool _canAttack = true;
@@ -31,12 +31,19 @@ public class MimicAttack : MonoBehaviour
             // Failed to get PlayerHealth reference.
             Debug.LogError("Error: Chase Mimic initialised without PlayerHealth reference");
         }
+
+        _navMeshAgent = GetComponent<NavMeshAgent>();
     }
     void Update()
     {
         if (_isAttacking || !_canAttack)
         {
+            _navMeshAgent.isStopped = true;
             return;
+        }
+        else
+        {
+            _navMeshAgent.isStopped = false;
         }
 
         // Start attack if general/chase mimic catches player and isnt currently attacking.
@@ -55,27 +62,41 @@ public class MimicAttack : MonoBehaviour
         }
         _isAttacking = true;
 
-
         // Damage the Player.
         _playerHealth.TakeDamage(1);
 
         OnAttackPerformed?.Invoke();
 
-
         // Attack Recovery.
-        StartCoroutine(AttackRecovery());
+        StartCoroutine(AttackCooldown());
+        StartCoroutine(PerformKnockback());
     }
-    IEnumerator AttackRecovery()
+
+    private IEnumerator AttackCooldown()
     {
-        // Temporarily reduce mimic speed after attack.
-        float originalSpeed = _agent.speed;
-        _agent.speed = _mimicSpeedAfterAttack;
-
         yield return new WaitForSeconds(_attackCooldown);
-
-        // Restore mimic state.
-        _agent.speed = originalSpeed;
         _isAttacking = false;
+    }
+
+    private IEnumerator PerformKnockback()
+    {
+        // Calculate the mimic knockback after attack
+        Vector3 knockbackDirection = (transform.position - PlayerManager.Instance.Player.position).normalized;
+        Vector3 knockbackAmount = knockbackDirection * _mimicKnockbackStrength;
+
+        float elapsedTime = 0f;
+
+        Vector3 startPosition = transform.position;
+        Vector3 targetPosition = startPosition + knockbackAmount;
+
+        while (elapsedTime < _mimicKnockbackDuration)
+        {
+            transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / _mimicKnockbackDuration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = targetPosition;
     }
 
 

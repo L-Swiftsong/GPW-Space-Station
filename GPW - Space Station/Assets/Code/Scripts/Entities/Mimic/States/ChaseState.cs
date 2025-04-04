@@ -45,8 +45,9 @@ namespace Entities.Mimic.States
             }
             // The player is still in our LOS.
 
-            // Move towards the player.
+            // Move towards player.
             _entityMovement.SetDestination(_entitySenses.TargetPosition);
+            
         }
         public override void OnExit()
         {

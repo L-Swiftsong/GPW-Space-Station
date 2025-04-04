@@ -166,6 +166,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa1aa9664c09b9140a771b3c19377769, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    ObjectSaveData:
+      <ID>k__BackingField:
+        Part1: 0
+        Part2: 0
+        Part3: 0
+        Part4: 0
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: 0, y: 0, z: 0, w: 0}
+      Exists: 0
+      DisabledState: 0
+      BoolValues: 
+      IntValues: 
   _currentState: {fileID: 0}
   _currentStatePath: 
 --- !u!114 &9116854351678556578
@@ -341,10 +359,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62c9fda9427f0e241bec1013931648c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _agent: {fileID: 3181101255938940964}
+  _navMeshAgent: {fileID: 0}
+  _entityMovement: {fileID: 0}
   _attackCooldown: 3
   _attackRadius: 1
-  _mimicSpeedAfterAttack: 2
+  _mimicKnockbackStrength: 1.75
+  _mimicKnockbackSpeed: 0.5
+  _mimicSpeedAfterAttack: 0
   _isAttacking: 0
 --- !u!114 &5446247313011897447
 MonoBehaviour:
