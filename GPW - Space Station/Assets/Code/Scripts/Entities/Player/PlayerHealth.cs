@@ -8,7 +8,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("Health")]
     [SerializeField] private int _maxHealth = 4;
     [SerializeField, ReadOnly] private int _currentHealth;
-    private bool _isDead;
+    public bool _isDead;
 
 
     [Header("Damage")]
@@ -28,7 +28,6 @@ public class PlayerHealth : MonoBehaviour
 
     public bool IsHealing => _isHealing;
     public event System.Action OnUsedHealthKit;
-
 
     void Awake()
     {
@@ -58,17 +57,16 @@ public class PlayerHealth : MonoBehaviour
         else if (_currentHealth <= 0 && !_isDead)
         {
             // We have just died.
-            Die();
             _isDead = true;
         }
     }
 
     //Function to call player damage from external scripts
-    public void TakeDamage(int damage)
+    public bool TakeDamage(int damage)
     {
         if (_isOnDamageCooldown) //Only take damage if enemies attack cooldown is finished
         {
-            return;
+            return false;
         }
         
         _currentHealth -= damage;
@@ -76,6 +74,14 @@ public class PlayerHealth : MonoBehaviour
 
         _isOnDamageCooldown = true;
         StartCoroutine(StartDamageCooldown());
+
+        if (_currentHealth <= 0 && !_isDead)
+        {
+            _isDead = true;
+            return true; // Player just died
+        }
+
+        return false; // Player is still alive
     }
 
     // (Temp Implementation) Show the game over UI once the player dies.
@@ -131,5 +137,26 @@ public class PlayerHealth : MonoBehaviour
         _isHealing = false;
         _currentHealth += healingAmount;
         OnUsedHealthKit?.Invoke();
+    }
+
+    public IEnumerator DeathCutscene(GameObject mimic)
+    {
+        Transform mimicLookAt = mimic.transform.Find("MimicLookAt");
+
+        // Trigger focus on the Mimic that killed the player
+        if (mimicLookAt != null)
+        {
+            CameraFocusLook.TriggerFocusLookStatic(mimicLookAt.gameObject, 3f, 3f, PlayerInput.ActionTypes.Movement | PlayerInput.ActionTypes.Camera);
+        }
+
+        yield return new WaitForSeconds(1.5f);
+
+        // Disable health visors
+        _threeQuartersHealthVisor.SetActive(false);
+        _lowHealthVisor.SetActive(false);
+        _criticalHealthVisor.SetActive(false);
+
+        // Game Over Menu
+        UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
     }
 }

@@ -23,6 +23,7 @@ public class MimicAttack : MonoBehaviour
 
     public event System.Action OnAttackPerformed;
 
+    private bool playerDied = false;
 
     private void Start()
     {
@@ -62,10 +63,15 @@ public class MimicAttack : MonoBehaviour
         }
         _isAttacking = true;
 
-        // Damage the Player.
-        _playerHealth.TakeDamage(1);
+        // Damage the Player and check if they died
+        playerDied = _playerHealth.TakeDamage(1);
 
         OnAttackPerformed?.Invoke();
+
+        if (playerDied) // If Player is dead play cutscene
+        {
+            _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
+        }
 
         // Attack Recovery.
         StartCoroutine(AttackCooldown());
@@ -80,6 +86,11 @@ public class MimicAttack : MonoBehaviour
 
     private IEnumerator PerformKnockback()
     {
+        if (playerDied)
+        {
+            _mimicKnockbackStrength = _mimicKnockbackStrength / 2;
+        }
+
         // Calculate the mimic knockback after attack
         Vector3 knockbackDirection = (transform.position - PlayerManager.Instance.Player.position).normalized;
         Vector3 knockbackAmount = knockbackDirection * _mimicKnockbackStrength;
