@@ -23,6 +23,9 @@ public static class PlayerSettings
         // General.
         ToggleCrouch = PlayerPrefs.GetInt("ToggleCrouch", 0) == 1;
         ToggleSprint = PlayerPrefs.GetInt("ToggleSprint", 0) == 1;
+
+        CameraShakeStrength = PlayerPrefs.GetFloat("CameraShakeStrength", 1.0f);
+        CutsceneCameraShakeStrength = PlayerPrefs.GetFloat("CutsceneCameraShakeStrength", 1.0f);
     }
     /// <summary> Save our current settings to PlayerPrefs.</summary>
     public static void SaveSettingsToPlayerPrefs()
@@ -40,6 +43,9 @@ public static class PlayerSettings
         // General.
         PlayerPrefs.SetInt("ToggleCrouch", ToggleCrouch ? 1 : 0);
         PlayerPrefs.SetInt("ToggleSprint", ToggleSprint ? 1 : 0);
+
+        PlayerPrefs.SetFloat("CameraShakeStrength", CameraShakeStrength);
+        PlayerPrefs.SetFloat("CutsceneCameraShakeStrength", CutsceneCameraShakeStrength);
 
 
         // Perform a PlayerPrefs save.
@@ -67,4 +73,7 @@ public static class PlayerSettings
     // Assorted.
     public static bool ToggleCrouch { get; set; }
     public static bool ToggleSprint { get; set; }
+
+    public static float CameraShakeStrength { get; set; }
+    public static float CutsceneCameraShakeStrength { get; set; }
 }

@@ -10,6 +10,8 @@ namespace UI.Menus.Settings
         [Header("Controls Settings")]
         [SerializeField] private Toggle _toggleCrouchToggle;
         [SerializeField] private Toggle _toggleSprintToggle;
+        [SerializeField] private Slider _cameraShakeStrengthSlider;
+        [SerializeField] private Slider _cutsceneCameraShakeStrengthSlider;
 
         [Space(5)]
         [SerializeField] private Toggle _mouseInvertYAxisToggle;
@@ -32,6 +34,14 @@ namespace UI.Menus.Settings
 
         private void SetupSensitivitySliders()
         {
+            // Camera Shake.
+            _cameraShakeStrengthSlider.minValue = 0.0f;
+            _cameraShakeStrengthSlider.maxValue = 1.0f;
+
+            _cutsceneCameraShakeStrengthSlider.minValue = 0.0f;
+            _cutsceneCameraShakeStrengthSlider.maxValue = 1.0f;
+
+
             // Mouse.
             _mouseHorizontalSensitivitySlider.minValue = PlayerSettings.MouseSensitivityRange.Min.x;
             _mouseHorizontalSensitivitySlider.maxValue = PlayerSettings.MouseSensitivityRange.Max.x;
@@ -52,6 +62,9 @@ namespace UI.Menus.Settings
             _toggleCrouchToggle.onValueChanged.AddListener(OnToggleCrouchChanged);
             _toggleSprintToggle.onValueChanged.AddListener(OnToggleSprintChanged);
 
+            _cameraShakeStrengthSlider.onValueChanged.AddListener(OnCameraShakeStrengthChanged);
+            _cutsceneCameraShakeStrengthSlider.onValueChanged.AddListener(OnCutsceneCameraShakeStrengthChanged);
+
             _mouseInvertYAxisToggle.onValueChanged.AddListener(OnMouseInvertYAxisChanged);
             _mouseHorizontalSensitivitySlider.onValueChanged.AddListener(OnMouseHorizontalSensitivityChanged);
             _mouseVerticalSensitivitySlider.onValueChanged.AddListener(OnMouseVerticalSensitivityChanged);
@@ -64,6 +77,9 @@ namespace UI.Menus.Settings
         {
             _toggleCrouchToggle.onValueChanged.RemoveListener(OnToggleCrouchChanged);
             _toggleSprintToggle.onValueChanged.RemoveListener(OnToggleSprintChanged);
+
+            _cameraShakeStrengthSlider.onValueChanged.RemoveListener(OnCameraShakeStrengthChanged);
+            _cutsceneCameraShakeStrengthSlider.onValueChanged.RemoveListener(OnCutsceneCameraShakeStrengthChanged);
 
             _mouseInvertYAxisToggle.onValueChanged.RemoveListener(OnMouseInvertYAxisChanged);
             _mouseHorizontalSensitivitySlider.onValueChanged.RemoveListener(OnMouseHorizontalSensitivityChanged);
@@ -80,6 +96,9 @@ namespace UI.Menus.Settings
             _toggleCrouchToggle.isOn = PlayerSettings.ToggleCrouch;
             _toggleSprintToggle.isOn = PlayerSettings.ToggleSprint;
 
+            _cameraShakeStrengthSlider.value = PlayerSettings.CameraShakeStrength;
+            _cutsceneCameraShakeStrengthSlider.value = PlayerSettings.CutsceneCameraShakeStrength;
+
             _mouseInvertYAxisToggle.isOn = PlayerSettings.MouseInvertY;
             _mouseHorizontalSensitivitySlider.value = PlayerSettings.MouseHorizontalSensititvity;
             _mouseVerticalSensitivitySlider.value = PlayerSettings.MouseVerticalSensititvity;
@@ -94,6 +113,9 @@ namespace UI.Menus.Settings
 
         private void OnToggleCrouchChanged(bool value) => PlayerSettings.ToggleCrouch = value;
         private void OnToggleSprintChanged(bool value) => PlayerSettings.ToggleSprint = value;
+
+        private void OnCameraShakeStrengthChanged(float value) => PlayerSettings.CameraShakeStrength = value;
+        private void OnCutsceneCameraShakeStrengthChanged(float value) => PlayerSettings.CutsceneCameraShakeStrength = value;
 
         private void OnMouseInvertYAxisChanged(bool value) => PlayerSettings.MouseInvertY = value;
         private void OnMouseHorizontalSensitivityChanged(float value) => PlayerSettings.MouseHorizontalSensititvity = Mathf.RoundToInt(value);

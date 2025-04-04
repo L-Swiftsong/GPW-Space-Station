@@ -26,6 +26,10 @@ public class CameraShake : MonoBehaviour
 
     private bool eventInProgress = false;
 
+
+    private Coroutine _cameraShakeCoroutine;
+
+
     void Start()
     {
         originalPosition = transform.localPosition;
@@ -35,7 +39,7 @@ public class CameraShake : MonoBehaviour
     void Update()
     {
         if (IsShaking && cameraSwayToggled && !eventInProgress) //If walking/running, camera sway is toggled & no event occuring, apply camera sway.
-            ApplyShake(shakeIntensity, shakeSpeed);
+            ApplyShake(shakeIntensity, shakeSpeed, isEvent: false);
         else if (!eventInProgress)
             ResetPosition();
     }
@@ -65,11 +69,11 @@ public class CameraShake : MonoBehaviour
     }
 
 
-    private void ApplyShake(float intensity, float speed) //whats moving da camera.
+    private void ApplyShake(float intensity, float speed, bool isEvent) //whats moving da camera.
     {
         timeCounter += Time.deltaTime * speed;
-        float shakeX = Mathf.Sin(timeCounter) * intensity;
-        float shakeY = Mathf.Cos(timeCounter * 1.5f) * intensity;
+        float shakeX = Mathf.Sin(timeCounter) * intensity * (isEvent ? PlayerSettings.CutsceneCameraShakeStrength : PlayerSettings.CameraShakeStrength);
+        float shakeY = Mathf.Cos(timeCounter * 1.5f) * intensity * (isEvent ? PlayerSettings.CutsceneCameraShakeStrength : PlayerSettings.CameraShakeStrength);
 
         transform.localPosition = originalPosition + new Vector3(shakeX, shakeY, 0);
     }
@@ -89,21 +93,21 @@ public class CameraShake : MonoBehaviour
 
         if (playerInstance.CameraShake)
         {
-            playerInstance.CameraShake.StartShakeCoroutine(intensity, speed, duration);
+            playerInstance.CameraShake.StartShakeCoroutine(intensity, speed, duration, isEvent: true);
         }
     }
 
 
-    private void StartShakeCoroutine(float intensity, float speed, float duration)
+    private void StartShakeCoroutine(float intensity, float speed, float duration, bool isEvent)
     {
-        if (!eventInProgress)
-        {
-            StartCoroutine(ShakeCoroutine(intensity, speed, duration));
-        }
+        if (_cameraShakeCoroutine != null)
+            StopCoroutine(_cameraShakeCoroutine);
+
+        _cameraShakeCoroutine = StartCoroutine(ShakeCoroutine(intensity, speed, duration, isEvent));
     }
 
 
-    public IEnumerator ShakeCoroutine(float intensity, float speed, float duration)
+    public IEnumerator ShakeCoroutine(float intensity, float speed, float duration, bool isEvent)
     {
         if (eventSwayToggled)
         {
@@ -115,7 +119,7 @@ public class CameraShake : MonoBehaviour
 
             while (elapsedTime < duration)
             {
-                ApplyShake(intensity, speed);
+                ApplyShake(intensity, speed, isEvent);
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
