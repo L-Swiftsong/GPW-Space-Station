@@ -10,7 +10,7 @@ namespace UI
         private System.Action _onCancelCallback;
         private System.Action _onConfirmCallback;
 
-        private const string QUERY_PREFIX = "Are you sure you want to ";
+        private const string QUERY_PREFIX = "Are you sure you want to\n";
         private const string QUERY_SUFFIX = "?";
 
 

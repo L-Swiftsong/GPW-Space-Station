@@ -9,6 +9,9 @@ namespace UI.Menus
 {
     public class PauseMenuUI : MonoBehaviour
     {
+        [SerializeField] private GameObject _mainButtonsContainer;
+
+        [Space(5)]
         [SerializeField] private ConfirmationUI _confirmationUI;
         private GameObject _lastUsedButtonGO;
 
@@ -19,17 +22,28 @@ namespace UI.Menus
 
 
         private void Awake() => _loadSaveUI.SetCallbacks(onSaveCountChanged: UpdateMainSaveButtons, onLoadButtonPressed: LoadSpecificSave);
-        private void OnEnable() => _loadSaveUI.UpdateSavedGames();
+        private void OnEnable()
+        {
+            _loadSaveUI.UpdateSavedGames();
+            _loadSaveUI.gameObject.SetActive(false);
+            _confirmationUI.gameObject.SetActive(false);
+        }
 
 
 
+        private void HideUIForConfirmation()
+        {
+            _mainButtonsContainer.SetActive(false);
+            _loadSaveUI.gameObject.SetActive(false);
+            _confirmationUI.gameObject.SetActive(true);
+        }
         private void OnConfirmationCancelled()
         {
             ShowSelf();
             EventSystem.current.SetSelectedGameObject(_lastUsedButtonGO);
         }
-        private void ShowSelf() => this.gameObject.SetActive(true);
-        private void HideSelf() => this.gameObject.SetActive(false);
+        private void ShowSelf() => _mainButtonsContainer.SetActive(true);
+        private void HideSelf() => _mainButtonsContainer.SetActive(false);
 
 
         private void UpdateMainSaveButtons(bool hasSaves)
@@ -59,7 +73,9 @@ namespace UI.Menus
         {
             _lastUsedButtonGO = button;
 
-            _confirmationUI.RequestConfirmation("Load Last Save",
+            HideUIForConfirmation();
+
+            _confirmationUI.RequestConfirmation("Load the Last Save",
                 onCancelCallback: OnConfirmationCancelled,
                 onConfirmCallback: () => _loadSaveUI.LoadMostRecentSave());
 
@@ -69,7 +85,9 @@ namespace UI.Menus
         {
             _lastUsedButtonGO = button;
 
-            _confirmationUI.RequestConfirmation("Load Save",
+            HideUIForConfirmation();
+
+            _confirmationUI.RequestConfirmation("Load this Save",
                 onCancelCallback: OnConfirmationCancelled,
                 onConfirmCallback: () => _loadSaveUI.LoadSaveFromFile(fileInfo));
 
@@ -79,7 +97,7 @@ namespace UI.Menus
         {
             _lastUsedButtonGO = button;
 
-            _confirmationUI.RequestConfirmation("Quit",
+            _confirmationUI.RequestConfirmation("Quit to the Main Menu",
                 onCancelCallback: OnConfirmationCancelled,
                 onConfirmCallback: () => SceneLoader.Instance.ReloadToMainMenu());
 
@@ -89,7 +107,7 @@ namespace UI.Menus
         {
             _lastUsedButtonGO = button;
 
-            _confirmationUI.RequestConfirmation("Quit",
+            _confirmationUI.RequestConfirmation("Quit to the Desktop",
                 onCancelCallback: OnConfirmationCancelled,
                 onConfirmCallback: () => Application.Quit());
 
