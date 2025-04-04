@@ -121,11 +121,13 @@ namespace Saving.LevelData
                 }
                 catch(System.InvalidCastException e)
                 {
-                    Debug.LogError("Error encountered when trying to bind ISaveable.\nEnsure that you haven't deleted a GameObject with an ISaveable component without regenerating the list in the LevelDataManager.");
+                    Debug.LogError("Invalid cast occured when trying to bind ISaveable.", saveable);
+                    Debug.LogError(e, saveable);
                 }
                 catch (System.Exception e)
                 {
-                    Debug.LogError(e);
+                    Debug.LogError("Error encountered when trying to bind ISaveable.\nEnsure that you haven't deleted a GameObject with an ISaveable component without regenerating the list in the LevelDataManager.", saveable);
+                    Debug.LogError(e, saveable);
                 }
                 ++i;
             }
@@ -151,15 +153,23 @@ namespace Saving.LevelData
 
             for (int i = 0; i < levelSaveData.ObjectSaveData.Length; ++i)
             {
-                Component foundSaveable = _saveableObjects.Where(s => (s as ISaveableObject).ID == levelSaveData.ObjectSaveData[i].ID).FirstOrDefault();
-                if (foundSaveable != null)
+                try
                 {
-                    Debug.Log($"Binding for Object with ID {levelSaveData.ObjectSaveData[i].ID.ToString()}", foundSaveable);
-                    (foundSaveable as ISaveableObject).BindExisting(levelSaveData.ObjectSaveData[i]);
+                    Component foundSaveable = _saveableObjects.Where(s => (s as ISaveableObject).ID == levelSaveData.ObjectSaveData[i].ID).FirstOrDefault();
+                    if (foundSaveable != null)
+                    {
+                        Debug.Log($"Binding for Object with ID {levelSaveData.ObjectSaveData[i].ID.ToString()}", foundSaveable);
+                        (foundSaveable as ISaveableObject).BindExisting(levelSaveData.ObjectSaveData[i]);
+                    }
+                    else
+                    {
+                        Debug.LogError("Failed to find object for ID: " + levelSaveData.ObjectSaveData[i].ID);
+                    }
                 }
-                else
+                catch (System.Exception e)
                 {
-                    Debug.LogError("Failed to find object for ID: " + levelSaveData.ObjectSaveData[i].ID);
+                    Debug.LogError($"Failed to Bind Data for Saveable Data Entry: {i}. (ID: {levelSaveData.ObjectSaveData[i].ID})");
+                    Debug.LogError(e);
                 }
             }
         }
