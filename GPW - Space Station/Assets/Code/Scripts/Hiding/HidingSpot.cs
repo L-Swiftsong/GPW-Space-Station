@@ -25,7 +25,7 @@ namespace Hiding
 
         [Space(5)]
         [SerializeField] private bool _automaticallyRemoveObstructedSpots = false;
-        [SerializeField] private LayerMask _exitSpotObstructionLayers = 1 << 0 | 1 << 7;
+        [SerializeField] private LayerMask _exitSpotObstructionLayers = 1 << 0 | 1 << 7 | 1 << 8 | 1 << 9;
 
 
         #region Properties
@@ -78,7 +78,7 @@ namespace Hiding
         {
             for(int i = 0; i < _exitSpots.Count; ++i)
             {
-                if (Physics.Linecast(transform.position, GetExitSpot(i)))
+                if (Physics.Linecast(transform.position, GetExitSpot(i), _exitSpotObstructionLayers, QueryTriggerInteraction.Ignore))
                 {
                     // There is an obstruction leading to this spot.
                     Debug.Log($"Exit Spot {i} {_exitSpots[i]} was obstructed. Removing");
