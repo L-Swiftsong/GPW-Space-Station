@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Environment.Partitioning
 {
@@ -7,6 +8,10 @@ namespace Environment.Partitioning
         [SerializeField] private LevelSection _levelSection;
         [Tooltip("If true, then this root hides when the level section is enabled and shows when it is to be disabled.")]
             [SerializeField] private bool _invertToggleState = false;
+
+        [SerializeField] private GameObject[] _toggledRoots = new GameObject[0];
+
+
         private static bool s_hasPerformedInitialCheck = false;
 
 
@@ -19,6 +24,7 @@ namespace Environment.Partitioning
         {
             if (!s_hasPerformedInitialCheck)
             {
+                // Perform our initial enabled check (Rather than only disabling when the player has entered then left a trigger).
                 LevelPartitionManager.InitialiseCheck();
                 s_hasPerformedInitialCheck = true;
             }
@@ -34,14 +40,32 @@ namespace Environment.Partitioning
         {
             if (toggledSectionType == this._levelSection)
             {
-                this.gameObject.SetActive(!_invertToggleState ? true : false);
+                // Enable if we aren't inverting our toggle state, otherwise disable.
+                ToggleChildren(!_invertToggleState ? true : false);
             }
         }
         private void LevelPartitionManager_OnLevelSectionDisabled(LevelSection toggledSectionType)
         {
             if (toggledSectionType == this._levelSection)
             {
-                this.gameObject.SetActive(!_invertToggleState ? false : true);
+                // Disable if we aren't inverting our toggle state, otherwise enable.
+                ToggleChildren(!_invertToggleState ? false : true);
+            }
+        }
+
+        private void ToggleChildren(bool desiredToggleState)
+        {
+            bool hasToggled = false;
+            foreach (GameObject root in _toggledRoots)
+            {
+                root.SetActive(desiredToggleState);
+                hasToggled = true;
+            }
+
+            if (!hasToggled)
+            {
+                // We didn't toggle any roots, so as a fallback toggle ourself.
+                this.gameObject.SetActive(desiredToggleState);
             }
         }
     }

@@ -9,6 +9,16 @@ namespace Environment.Partitioning
         private int _selfPlayerCounts = 0;
 
 
+        private void OnDestroy()
+        {
+            // Ensure that we don't accidentally cause the level section to persist if we end up getting destroyed (E.g. By a level reload).
+            if (_selfPlayerCounts > 0)
+            {
+                LevelPartitionManager.SubtractFromEnabledCount(_associatedSection);
+            }
+        }
+
+
         private void OnTriggerEnter(Collider other)
         {
             if (!_playerLayers.Contains(other.gameObject.layer))
