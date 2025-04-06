@@ -5,6 +5,8 @@ namespace Environment.Partitioning
     public class LevelPartitionRoot : MonoBehaviour
     {
         [SerializeField] private LevelSection _levelSection;
+        [Tooltip("If true, then this root hides when the level section is enabled and shows when it is to be disabled.")]
+            [SerializeField] private bool _invertToggleState = false;
         private static bool s_hasPerformedInitialCheck = false;
 
 
@@ -32,14 +34,14 @@ namespace Environment.Partitioning
         {
             if (toggledSectionType == this._levelSection)
             {
-                this.gameObject.SetActive(true);
+                this.gameObject.SetActive(!_invertToggleState ? true : false);
             }
         }
         private void LevelPartitionManager_OnLevelSectionDisabled(LevelSection toggledSectionType)
         {
             if (toggledSectionType == this._levelSection)
             {
-                this.gameObject.SetActive(false);
+                this.gameObject.SetActive(!_invertToggleState ? false : true);
             }
         }
     }

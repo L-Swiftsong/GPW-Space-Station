@@ -38,7 +38,6 @@ namespace Environment.Partitioning
                 collider.isTrigger = true;
             }
         }
-
 #endif
     }
 }
