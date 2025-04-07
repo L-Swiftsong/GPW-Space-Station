@@ -23,21 +23,21 @@ namespace Items.Healing
         private void OnEnable()
         {
             PlayerInput.OnUseHealingItemStarted += PlayerInput_OnUseHealingItemStarted;
-            PlayerInput.OnUseHealingItemCancelled += PlayerInput_OnUseHealingItemCancelled;
+            //PlayerInput.OnUseHealingItemCancelled += PlayerInput_OnUseHealingItemCancelled;
 
             _playerHealth.OnUsedHealthKit += PlayerHealth_OnHealthKitUsed;
         }
         private void OnDisable()
         {
             PlayerInput.OnUseHealingItemStarted -= PlayerInput_OnUseHealingItemStarted;
-            PlayerInput.OnUseHealingItemCancelled -= PlayerInput_OnUseHealingItemCancelled;
+            //PlayerInput.OnUseHealingItemCancelled -= PlayerInput_OnUseHealingItemCancelled;
 
             _playerHealth.OnUsedHealthKit -= PlayerHealth_OnHealthKitUsed;
         }
 
 
         private void PlayerInput_OnUseHealingItemStarted() => StartHealing();
-        private void PlayerInput_OnUseHealingItemCancelled() => CancelHealing();
+        //private void PlayerInput_OnUseHealingItemCancelled() => CancelHealing();
         private void PlayerHealth_OnHealthKitUsed() => RemoveMedkits(1);
 
 

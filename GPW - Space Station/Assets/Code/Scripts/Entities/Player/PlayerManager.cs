@@ -38,7 +38,7 @@ namespace Entities.Player
         [SerializeField] private Camera _playerMainCamera;
 
         [Space(5)]
-        [SerializeField] private PlayerInventory _playerInventory;
+        public PlayerInventory _playerInventory;
 
         public CameraFocusLook CameraFocusLook { get; private set; }
         public CameraShake CameraShake { get; private set; }
