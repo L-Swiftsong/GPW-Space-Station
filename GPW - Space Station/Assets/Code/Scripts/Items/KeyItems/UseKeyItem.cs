@@ -38,6 +38,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 
 	[Header("Audio")]
 	[SerializeField] private AudioClip correctItemSound;
+	[SerializeField] private AudioClip incorrectItemSound;
 	[SerializeField] private AudioSource audioSource;
 
 	private bool _hasPlacedItem;
@@ -131,6 +132,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 	{
 		OnFailedInteraction?.Invoke();
 		ShowErrorMessage("Incorrect item", 1f);
+		SFXManager.Instance.PlayClipAtPosition(incorrectItemSound, transform.position, 1f, 1f, 2f);
 	}
 
 	private void ShowErrorMessage(string message, float duration)

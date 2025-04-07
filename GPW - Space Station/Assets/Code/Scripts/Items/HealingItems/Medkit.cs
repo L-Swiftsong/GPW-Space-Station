@@ -1,3 +1,4 @@
+using Audio;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,12 +20,27 @@ namespace Items.Healing
         [SerializeField] [ReadOnly] private int _currentMedkitCount;
         [SerializeField] private int _maxMedkitCount;
 
+		[Header("Animation")]
+		private Animator _animator;
+		private const string ANIMATOR_EQUIPPED_IDENTIFIER = "IsEquipped";
 
-        private void OnEnable()
+		[Header("Audio")]
+		[SerializeField] private AudioClip _healSound;
+		[SerializeField] private AudioSource _audioSource;
+
+        [Header("VFX")]
+        [SerializeField] private ParticleSystem _particleSystem;
+
+		private void Awake()
+		{
+			_animator = GetComponent<Animator>();
+		}
+
+		private void OnEnable()
         {
             PlayerInput.OnUseHealingItemStarted += PlayerInput_OnUseHealingItemStarted;
             //PlayerInput.OnUseHealingItemCancelled += PlayerInput_OnUseHealingItemCancelled;
-
+            
             _playerHealth.OnUsedHealthKit += PlayerHealth_OnHealthKitUsed;
         }
         private void OnDisable()
@@ -36,10 +52,17 @@ namespace Items.Healing
         }
 
 
-        private void PlayerInput_OnUseHealingItemStarted() => StartHealing();
+        private void PlayerInput_OnUseHealingItemStarted()
+        {
+            StartHealing();
+        }
         //private void PlayerInput_OnUseHealingItemCancelled() => CancelHealing();
-        private void PlayerHealth_OnHealthKitUsed() => RemoveMedkits(1);
-
+        private void PlayerHealth_OnHealthKitUsed()
+        {
+            Unequip();
+            RemoveMedkits(1);
+            _particleSystem.Stop();
+        }
 
         public int AddMedkits(int numberToAdd)
         {
@@ -72,7 +95,24 @@ namespace Items.Healing
         public int GetCurrentCount() => _currentMedkitCount;
 
 
-        private void StartHealing() => _playerHealth.StartHealing(_healingAmount, _healingDelay);
+        private void StartHealing()
+        {
+            Equip();
+            _playerHealth.StartHealing(_healingAmount, _healingDelay);
+            SFXManager.Instance.PlayClipAtPosition(_healSound, transform.position, 1, 1, 2);
+            _particleSystem.Play();
+        }
+
         private void CancelHealing() => _playerHealth.CancelHealing();
-    }
+
+		private void Equip()
+		{
+			Debug.Log("Equip");
+			_animator.SetBool(ANIMATOR_EQUIPPED_IDENTIFIER, true);
+		}
+		private void Unequip()
+		{
+			_animator.SetBool(ANIMATOR_EQUIPPED_IDENTIFIER, false);
+		}
+	}
 }
