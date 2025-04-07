@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8383854488252258371}
   - component: {fileID: 8693745001455641720}
   - component: {fileID: 8540833462637668316}
+  - component: {fileID: 4244903140711574374}
   m_Layer: 0
   m_Name: ChaseMimic
   m_TagString: Mimic
@@ -228,6 +229,24 @@ MonoBehaviour:
   _mimicKnockbackStrength: 1.75
   _mimicKnockbackDuration: 0.5
   _isAttacking: 0
+--- !u!114 &4244903140711574374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7319193291588237927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf7a7590a5fcb240b9cc1bb75aa522c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animators:
+  - {fileID: 2237560669028085520}
+  _generalMimic: {fileID: 0}
+  _entityMovement: {fileID: 0}
+  _mimicAttack: {fileID: 8540833462637668316}
+  _agent: {fileID: 8383854488252258371}
 --- !u!1 &8321677659480635656
 GameObject:
   m_ObjectHideFlags: 0

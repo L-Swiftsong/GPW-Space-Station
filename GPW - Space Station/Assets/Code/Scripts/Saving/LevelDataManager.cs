@@ -92,7 +92,10 @@ namespace Saving.LevelData
             }
             
             OnLoadLevelSave += TryLoadSaveData;
+        }
 
+        private void Start()
+        {
             if (s_sceneIndexToSaveDataDictionary.ContainsKey(_sceneBuildIndex) == false)
             {
                 SetupSaveData();
