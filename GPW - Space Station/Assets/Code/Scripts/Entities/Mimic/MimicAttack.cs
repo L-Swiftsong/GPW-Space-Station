@@ -20,10 +20,7 @@ public class MimicAttack : MonoBehaviour
     [HideInInspector] public bool _isAttacking = false;
     private bool _canAttack = true;
 
-
     public event System.Action OnAttackPerformed;
-
-    private bool playerDied = false;
 
     private void Start()
     {
@@ -54,8 +51,16 @@ public class MimicAttack : MonoBehaviour
     {
         if (_isAttacking)
             return;
-
         _isAttacking = true;
+
+        // Player is dead, skip attack sequence & start death cutscene.
+        if (_playerHealth._currentHealth <= 1)
+        {
+            _playerHealth.TakeDamage(1);
+            _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
+            return;
+        }
+
         StartCoroutine(AttackSequence());
     }
 
@@ -71,20 +76,17 @@ public class MimicAttack : MonoBehaviour
         _navMeshAgent.isStopped = true;
 
         // Deal damage
-        playerDied = _playerHealth.TakeDamage(1);
-
-        if (playerDied)
-        {
-            _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
-            yield break; // exit coroutine early
-        }
+        _playerHealth.TakeDamage(1);
 
         // Perform knockback
         yield return StartCoroutine(PerformKnockback());
 
+        
+
         // Finish cooldown
         yield return new WaitForSeconds(_attackCooldown);
 
+        // Return movement & attack to mimic.
         _navMeshAgent.isStopped = false;
         _isAttacking = false;
     }
