@@ -7,7 +7,7 @@ public class PlayerHealth : MonoBehaviour
 {
     [Header("Health")]
     [SerializeField] private int _maxHealth = 4;
-    [SerializeField, ReadOnly] private int _currentHealth;
+    [SerializeField, ReadOnly] public int _currentHealth;
     public bool _isDead;
 
 
