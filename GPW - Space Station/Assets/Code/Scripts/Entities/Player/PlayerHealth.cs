@@ -146,7 +146,7 @@ public class PlayerHealth : MonoBehaviour
         // Trigger focus on the Mimic that killed the player
         if (mimicLookAt != null)
         {
-            CameraFocusLook.TriggerFocusLookStatic(mimicLookAt.gameObject, 3f, 3f, PlayerInput.ActionTypes.Movement | PlayerInput.ActionTypes.Camera);
+            CameraFocusLook.TriggerFocusLookStatic(mimicLookAt.gameObject, 3f, 7.5f, PlayerInput.ActionTypes.Movement | PlayerInput.ActionTypes.Camera);
         }
 
         yield return new WaitForSeconds(1.5f);

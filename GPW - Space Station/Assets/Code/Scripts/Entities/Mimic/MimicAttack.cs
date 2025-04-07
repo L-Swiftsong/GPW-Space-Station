@@ -37,14 +37,9 @@ public class MimicAttack : MonoBehaviour
     }
     void Update()
     {
-        if (_isAttacking || !_canAttack)
+        if (_isAttacking)
         {
-            _navMeshAgent.isStopped = true;
-            return;
-        }
-        else
-        {
-            _navMeshAgent.isStopped = false;
+            FacePlayer();
         }
 
         // Start attack if general/chase mimic catches player and isnt currently attacking.
@@ -58,39 +53,44 @@ public class MimicAttack : MonoBehaviour
     private void PerformAttack()
     {
         if (_isAttacking)
-        {
             return;
-        }
+
         _isAttacking = true;
-
-        // Damage the Player and check if they died
-        playerDied = _playerHealth.TakeDamage(1);
-
-        OnAttackPerformed?.Invoke();
-
-        if (playerDied) // If Player is dead play cutscene
-        {
-            _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
-        }
-
-        // Attack Recovery.
-        StartCoroutine(AttackCooldown());
-        StartCoroutine(PerformKnockback());
+        StartCoroutine(AttackSequence());
     }
 
-    private IEnumerator AttackCooldown()
+    private IEnumerator AttackSequence()
     {
+        // trigger animation.
+        OnAttackPerformed?.Invoke();
+
+        // Continue chasing player until 'hit' part of animation happens.
+        yield return new WaitForSeconds(1.2f);
+
+        // Stop movement.
+        _navMeshAgent.isStopped = true;
+
+        // Deal damage
+        playerDied = _playerHealth.TakeDamage(1);
+
+        if (playerDied)
+        {
+            _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
+            yield break; // exit coroutine early
+        }
+
+        // Perform knockback
+        yield return StartCoroutine(PerformKnockback());
+
+        // Finish cooldown
         yield return new WaitForSeconds(_attackCooldown);
+
+        _navMeshAgent.isStopped = false;
         _isAttacking = false;
     }
 
     private IEnumerator PerformKnockback()
     {
-        if (playerDied)
-        {
-            _mimicKnockbackStrength = _mimicKnockbackStrength / 2;
-        }
-
         // Calculate the mimic knockback after attack
         Vector3 knockbackDirection = (transform.position - PlayerManager.Instance.Player.position).normalized;
         Vector3 knockbackAmount = knockbackDirection * _mimicKnockbackStrength;
@@ -110,6 +110,17 @@ public class MimicAttack : MonoBehaviour
         transform.position = targetPosition;
     }
 
+    private void FacePlayer()
+    {
+        Vector3 direction = PlayerManager.Instance.Player.position - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = targetRotation;
+        }
+    }
 
     public void SetCanAttack(bool newValue) => _canAttack = newValue;
 
