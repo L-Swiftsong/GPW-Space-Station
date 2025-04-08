@@ -88,6 +88,7 @@ namespace Computers
                 {
                     if (_worldCanvasGO.activeSelf)
                     {
+                        DisableTerminal();
                         _worldCanvasGO.SetActive(false);
                     }
                 }
