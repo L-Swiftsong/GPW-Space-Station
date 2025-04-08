@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Entities.Player;
+using Audio;
 
 public class MimicAttack : MonoBehaviour
 {
@@ -15,7 +16,21 @@ public class MimicAttack : MonoBehaviour
     [SerializeField] private float _attackRadius = 1.0f;
     [SerializeField] private float _mimicKnockbackStrength = 2f;
     [SerializeField] private float _mimicKnockbackDuration = 0.5f;
+    [SerializeField] private float _mimicJumpScareDuration = 0.5f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip _attackRecoverySoundClip;
+    [SerializeField] [Range(0f, 2f)] private float _attackRecoverySoundVolume = 1f;
+    [SerializeField] private float _attackRecoverySoundDelay = 1f;
+    [SerializeField] private AudioClip _attackSoundClip;
+    [SerializeField] [Range(0f, 2f)] private float _attackSoundVolume = 1f;
+    [SerializeField] private float _attackSoundDelay = 1f;
+    [SerializeField] public AudioClip _deathSoundClip;
+    [SerializeField] [Range(0f, 2f)] public float _deathSoundVolume = 1f;
+    [SerializeField] public float _deathSoundDelay = 1f;
+    [SerializeField] public AudioClip _biteSoundClip;
+    [SerializeField] [Range(0f, 2f)] public float _biteSoundVolume = 1f;
+    [SerializeField] public float _biteSoundDelay = 1f;
 
     [HideInInspector] public bool _isAttacking = false;
     private bool _canAttack = true;
@@ -56,8 +71,7 @@ public class MimicAttack : MonoBehaviour
         // Player is dead, skip attack sequence & start death cutscene.
         if (_playerHealth._currentHealth <= 1)
         {
-            _playerHealth.TakeDamage(1);
-            _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
+            SetJumpscareSettings();
             return;
         }
 
@@ -66,29 +80,37 @@ public class MimicAttack : MonoBehaviour
 
     private IEnumerator AttackSequence()
     {
-        // trigger animation.
+        // Trigger attack animation and audio
         OnAttackPerformed?.Invoke();
+        StartCoroutine(PlaySound(_attackSoundClip, _attackSoundDelay, _attackSoundVolume));
 
-        // Continue chasing player until 'hit' part of animation happens.
+        // Wait until the attack animation reaches the 'hit' part
         yield return new WaitForSeconds(1.2f);
 
-        // Stop movement.
-        _navMeshAgent.isStopped = true;
+        // Stop movement, deal damage, apply camera shake & push mimic away from player.
+        HandleAttackImpact();
 
-        // Deal damage
-        _playerHealth.TakeDamage(1);
+        // Trigger recovery audio.
+        StartCoroutine(PlaySound(_attackRecoverySoundClip, _attackRecoverySoundDelay, _attackRecoverySoundVolume));
 
-        // Perform knockback
-        yield return StartCoroutine(PerformKnockback());
-
-        
-
-        // Finish cooldown
+        // Wait for cooldown and reset attack state.
         yield return new WaitForSeconds(_attackCooldown);
-
-        // Return movement & attack to mimic.
         _navMeshAgent.isStopped = false;
         _isAttacking = false;
+    }
+
+    public IEnumerator PlaySound(AudioClip clip, float delay, float volume)
+    {
+        yield return new WaitForSeconds(delay);
+        SFXManager.Instance.PlayClipAtPosition(clip, transform.position, minPitch: 1f, maxPitch: 1f, volume: volume, minDistance: 6.5f, maxDistance: 15f);
+    }
+
+    private void HandleAttackImpact()
+    {
+        _navMeshAgent.isStopped = true;
+        _playerHealth.TakeDamage(1);
+        CameraShake.StartEventShake(intensity: 0.115f, speed: 25f, duration: 0.65f);
+        StartCoroutine(PerformKnockback());
     }
 
     private IEnumerator PerformKnockback()
@@ -110,6 +132,43 @@ public class MimicAttack : MonoBehaviour
         }
 
         transform.position = targetPosition;
+    }
+
+    public IEnumerator JumpScare()
+    {
+        var collider = GetComponent<CapsuleCollider>();
+        collider.enabled = false;
+
+        Transform cam = Camera.main.transform;
+
+        // Move towards camera but keep mimic grounded
+        Vector3 targetPosition = cam.position + cam.forward * -0.1f;
+        targetPosition.y = transform.position.y;
+
+        float elapsedTime = 0f;
+        float duration = _mimicJumpScareDuration;
+
+        Vector3 startPosition = transform.position;
+
+        while (elapsedTime < duration)
+        {
+            Vector3 pos = Vector3.Lerp(startPosition, targetPosition, elapsedTime / duration);
+            pos.y = startPosition.y;
+            transform.position = pos;
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = targetPosition;
+    }
+
+    private void SetJumpscareSettings()
+    {
+        _navMeshAgent.isStopped = true;
+
+        _playerHealth.TakeDamage(1);
+        _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
     }
 
     private void FacePlayer()

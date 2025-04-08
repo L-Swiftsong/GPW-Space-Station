@@ -141,22 +141,43 @@ public class PlayerHealth : MonoBehaviour
 
     public IEnumerator DeathCutscene(GameObject mimic)
     {
+        // Get necessary references from the Mimic object.
+        MimicAttack mimicAttack = mimic.GetComponent<MimicAttack>();
         Transform mimicLookAt = mimic.transform.Find("MimicLookAt");
 
-        // Trigger focus on the Mimic that killed the player
+        // Trigger focus on the Mimic that killed the player.
         if (mimicLookAt != null)
         {
             CameraFocusLook.TriggerFocusLookStatic(mimicLookAt.gameObject, 3f, 7.5f, PlayerInput.ActionTypes.Movement | PlayerInput.ActionTypes.Camera);
         }
 
-        yield return new WaitForSeconds(1.5f);
+        // Play death jumpscare audio.
+        mimicAttack.StartCoroutine(mimicAttack.PlaySound(mimicAttack._deathSoundClip, mimicAttack._deathSoundDelay, mimicAttack._deathSoundVolume));
 
-        // Disable health visors
+        // Wait before applying other effects.
+        yield return new WaitForSeconds(1f);
+
+        // Play final audio cue.
+        mimicAttack.StartCoroutine(mimicAttack.PlaySound(mimicAttack._biteSoundClip, mimicAttack._biteSoundDelay, mimicAttack._biteSoundVolume));
+
+        //delay to sync audio.
+        yield return new WaitForSeconds(0.5f);
+
+        //Move mimic towrds player.
+        yield return mimicAttack.StartCoroutine(mimicAttack.JumpScare());
+
+        // Disable health visors.
+        DisableHealthVisors();
+
+        // Show Game Over Menu.
+        UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
+    }
+
+    private void DisableHealthVisors()
+    {
+        // Disable the health visors (for UI effects)
         _threeQuartersHealthVisor.SetActive(false);
         _lowHealthVisor.SetActive(false);
         _criticalHealthVisor.SetActive(false);
-
-        // Game Over Menu
-        UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
     }
 }
