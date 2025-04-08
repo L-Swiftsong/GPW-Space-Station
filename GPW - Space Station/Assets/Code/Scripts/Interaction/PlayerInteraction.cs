@@ -6,7 +6,7 @@ using Items;
 
 namespace Interaction
 {
-    public class PlayerInteraction : MonoBehaviour
+    public class PlayerInteraction : ProtectedSingleton<PlayerInteraction>
     {
         [Header("References")]
         [SerializeField] private Camera _playerCamera;
@@ -47,7 +47,7 @@ namespace Interaction
         [Header("Settings")]
         [SerializeField] private float _interactionRange = 3.0f;
         [SerializeField] private LayerMask _interactableObstructionLayers = 1 << 0 | 1 << 6 | 1 << 7;
-        [SerializeField] private LayerMask _interactableLayers = 1 << 9 | 1 << 11;
+        [SerializeField] private LayerMask _interactableLayers = 1 << 9 | 1 << 10 | 1 << 11;
 
 
         [Header("Temp")]
@@ -129,14 +129,30 @@ namespace Interaction
             }
         }
 
-        public void SetCurrentInteractableOverride(IInteractable interactableOverride)
+
+        public static void SetCurrentInteractableOverride(IInteractable interactableOverride)
+        {
+            if (PlayerInteraction.HasInstance)
+            {
+                PlayerInteraction.Instance.SetCurrentInteractableOverride_Local(interactableOverride);
+            }
+        }
+        public static void ResetCurrentInteractableOverride()
+        {
+            if (PlayerInteraction.HasInstance)
+            {
+                PlayerInteraction.Instance.ResetCurrentInteractableOverride_Local();
+            }
+        }
+
+        private void SetCurrentInteractableOverride_Local(IInteractable interactableOverride)
         {
             _currentInteractableOverride = interactableOverride;
 
             OnHighlightedInteractableObject?.Invoke();
             _currentInteractableOverride.Highlight();
         }
-        public void ResetCurrentInteractableOverride()
+        private void ResetCurrentInteractableOverride_Local()
         {
             _currentInteractableOverride.StopHighlighting();
             _currentInteractableOverride = null;

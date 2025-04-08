@@ -64,7 +64,7 @@ namespace Hiding
             _currentHidingSpot = hidingSpot;
 
             // Override the player's currently selected interactable so that when they next interact they'll stop hiding.
-            _playerInteraction.SetCurrentInteractableOverride(_currentHidingSpot);
+            PlayerInteraction.SetCurrentInteractableOverride(_currentHidingSpot);
 
             // Start hiding.
             _hidingCoroutine = StartCoroutine(HideCoroutine(_currentHidingSpot));
@@ -85,7 +85,7 @@ namespace Hiding
             }
 
             // Now that we're exiting the hiding spot, stop overriding the player's current interactable so that they can interact again.
-            _playerInteraction.ResetCurrentInteractableOverride();
+            PlayerInteraction.ResetCurrentInteractableOverride();
 
             // Add our skin width as a vertical offset to prevent accidentally clipping with the ground and falling through.
             exitPosition += Vector3.up * _controller.skinWidth;
