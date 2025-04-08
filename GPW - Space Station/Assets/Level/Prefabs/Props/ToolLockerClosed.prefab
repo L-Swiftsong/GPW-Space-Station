@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4829279030360185247}
-  - component: {fileID: 1640496764481508657}
+  - component: {fileID: 7955213833158735132}
   m_Layer: 0
   m_Name: ToolLockerClosed
   m_TagString: Untagged
@@ -33,8 +33,8 @@ Transform:
   - {fileID: 986815558204092341}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &1640496764481508657
-MeshCollider:
+--- !u!65 &7955213833158735132
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -51,10 +51,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  serializedVersion: 3
+  m_Size: {x: 1.5, y: 2.5, z: 0.75}
+  m_Center: {x: 0, y: 1.25, z: -0.025}
 --- !u!1001 &737296183288399966
 PrefabInstance:
   m_ObjectHideFlags: 0

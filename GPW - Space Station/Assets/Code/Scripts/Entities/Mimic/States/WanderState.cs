@@ -15,6 +15,7 @@ namespace Entities.Mimic.States
 
 
         [Header("Wander Settings")]
+        [SerializeField] private Transform _wanderBoundsReference;
         [SerializeField] private WanderBounds[] _wanderBounds;
 
         [Space(5)]
@@ -80,11 +81,11 @@ namespace Entities.Mimic.States
             int randomIndex = Random.Range(0, validWanderBounds.Length);
             for (int i = 0; i < validWanderBounds.Length; ++i)
             {
-                Debug.Log(validWanderBounds[i].Centre);
+                Debug.Log(validWanderBounds[i].GetCentre(_wanderBoundsReference));
             }
 
 
-            if (_entityMovement.TryFindRandomPointInBounds(validWanderBounds[randomIndex].Centre, validWanderBounds[randomIndex].Extents, out Vector3 result, (int)_validWanderTargetLayers))
+            if (_entityMovement.TryFindRandomPointInBounds(validWanderBounds[randomIndex].GetCentre(_wanderBoundsReference), validWanderBounds[randomIndex].GetExtents(), out Vector3 result, (int)_validWanderTargetLayers))
             {
                 _entityMovement.SetDestination(result);
             }
@@ -96,16 +97,19 @@ namespace Entities.Mimic.States
 
             for (int i = 0; i < _wanderBounds.Length; ++i)
             {
-                _wanderBounds[i].UpdateCanReach(_entityMovement);
+                _wanderBounds[i].UpdateCanReach(_wanderBoundsReference, _entityMovement);
             }
         }
 
 
         private void OnDrawGizmosSelected()
         {
+            if (_wanderBoundsReference == null)
+                return;
+
             for(int i = 0; i < _wanderBounds.Length; ++i)
             {
-                _wanderBounds[i].DrawGizmos();
+                _wanderBounds[i].DrawGizmos(_wanderBoundsReference);
             }
         }
 
@@ -121,16 +125,18 @@ namespace Entities.Mimic.States
             [SerializeField, ReadOnly] private bool _canReach;
             private const float TRAVERSE_CHECK_SQR_RADIUS = 2.0f * 2.0f;
 
-            public Vector3 Centre => _centre;
-            public Vector3 Extents => _extents;
+            public Vector3 GetCentre(Transform parent) => parent.TransformPoint(_centre);
+            public Vector3 GetExtents() => _extents;
             public bool CanReach => _canReach;
 
+            private Vector3 GetTestPosition(Transform parent) => parent.TransformPoint(_testPosition);
 
-            public void UpdateCanReach(EntityMovement entityMovement)
+            public void UpdateCanReach(Transform parent, EntityMovement entityMovement)
             {
-                if (entityMovement.CalculatePath(_testPosition, out UnityEngine.AI.NavMeshPath path))
+                Vector3 worldTestPosition = GetTestPosition(parent);
+                if (entityMovement.CalculatePath(worldTestPosition, out UnityEngine.AI.NavMeshPath path))
                 {
-                    _canReach = (path.corners[path.corners.Length - 1] - _testPosition).sqrMagnitude < TRAVERSE_CHECK_SQR_RADIUS;
+                    _canReach = (path.corners[path.corners.Length - 1] - worldTestPosition).sqrMagnitude < TRAVERSE_CHECK_SQR_RADIUS;
                 }
                 else
                 {
@@ -138,13 +144,13 @@ namespace Entities.Mimic.States
                 }
             }
 
-            public void DrawGizmos()
+            public void DrawGizmos(Transform parent)
             {
                 Gizmos.color = _canReach ? Color.green : Color.red;
-                Gizmos.DrawWireCube(_centre, _extents);
+                Gizmos.DrawWireCube(GetCentre(parent), GetExtents());
 
                 Gizmos.color = Color.black;
-                Gizmos.DrawSphere(_testPosition, 0.5f);
+                Gizmos.DrawSphere(GetTestPosition(parent), 0.5f);
             }
         }
     }
