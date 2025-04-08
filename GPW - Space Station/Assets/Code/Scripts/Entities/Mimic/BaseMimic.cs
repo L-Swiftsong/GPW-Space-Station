@@ -32,7 +32,7 @@ namespace Entities.Mimic
         protected abstract MimicSavableState GetSavableState();
         protected void UpdateSaveableState()
         {
-            if (this._saveData != null)
+            if (this._saveData != null && this._saveData.ObjectSaveData.IntValues.Length >= 1)
                 this._saveData.MimicSavableState = GetSavableState();
         }
 

@@ -14,10 +14,15 @@ namespace Saving.LevelData
         public DisabledState DisabledState { get => ObjectSaveData.DisabledState; set => ObjectSaveData.DisabledState = value; }
 
 
-        public ObjectSaveInformation(ObjectSaveData objectSaveData, DisabledState disabledState)
+        public ObjectSaveInformation(ObjectSaveData objectSaveData, DisabledState disabledState, int boolCount = 0, int intCount = 0)
         {
             this.ObjectSaveData = objectSaveData;
             this.DisabledState = disabledState;
+
+            if (objectSaveData.BoolValues.Length != boolCount)
+                objectSaveData.BoolValues = new bool[boolCount];
+            if (objectSaveData.IntValues.Length != intCount)
+                objectSaveData.IntValues = new int[intCount];
         }
         public ObjectSaveInformation(SerializableGuid id, DisabledState disabledState, int boolCount = 0, int intCount = 0)
         {
