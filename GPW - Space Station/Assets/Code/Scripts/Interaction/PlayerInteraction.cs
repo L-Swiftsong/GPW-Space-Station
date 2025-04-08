@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,8 +44,10 @@ namespace Interaction
         private IInteractable _currentInteractableOverride = null;
 
 
-        [Header("Layers")]
-        public LayerMask interactableLayer;
+        [Header("Settings")]
+        [SerializeField] private float _interactionRange = 3.0f;
+        [SerializeField] private LayerMask _interactableObstructionLayers = 1 << 0 | 1 << 6 | 1 << 7;
+        [SerializeField] private LayerMask _interactableLayers = 1 << 9 | 1 << 11;
 
 
         [Header("Temp")]
@@ -72,24 +75,31 @@ namespace Interaction
 
         private void UpdateCurrentInteractable()
         {
-            if (Physics.Raycast(_playerCamera.transform.position, _playerCamera.transform.forward, out RaycastHit hit, 3f, interactableLayer))
+            // Find all potential interactables, and order them based on their distance to the player camera (Ascending).
+            IEnumerable<RaycastHit> potentialInteractables = Physics.RaycastAll(_playerCamera.transform.position, _playerCamera.transform.forward, _interactionRange, _interactableLayers, QueryTriggerInteraction.Collide).OrderBy(t => (t.transform.position - _playerCamera.transform.position).sqrMagnitude);
+            for (int i = 0; i < potentialInteractables.Count(); ++i)
             {
-                // We found a potential interactable.
+                if (potentialInteractables.ElementAt(i).collider.TryFindFirstWithCondition<IInteractable>((interactable) => interactable.IsInteractable, out IInteractable interactableScript))
+                {
+                    // This is an active interactable.
+                    if (Physics.Linecast(_playerCamera.transform.position, potentialInteractables.ElementAt(i).point, _interactableObstructionLayers, QueryTriggerInteraction.Ignore))
+                    {
+                        // There is an obstruction between this and the player.
+                        break;
+                    }
 
-                if (hit.collider.TryFindFirstWithCondition<IInteractable>((interactable) => interactable.IsInteractable, out IInteractable interactableScript))
-                {
-                    // This is an interactable.
                     _currentInteractable = interactableScript;
+                    return;
                 }
-                else
+                else if (potentialInteractables.ElementAt(i).collider.isTrigger == false)
                 {
-                    _currentInteractable = null;
+                    // This object's collider is not a trigger, and therefore we shouldn't be able to interact through it.
+                    break;
                 }
             }
-            else
-            {
-                _currentInteractable = null;
-            }
+
+            // There were no valid interactables.
+            _currentInteractable = null;
         }
         private void AttemptInteraction()
         {
