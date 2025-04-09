@@ -3,18 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Interaction;
 
+[RequireComponent(typeof(FocusableObject))]
 public class MapInteraction : MonoBehaviour, IInteractable
 {
-    private Vector3 originPosition;
-    private Quaternion originRotation;
-
-    private Vector3 targetPosition;
-    private Quaternion targetRotation;
-
-    private bool isMovingToCamera = false;
-    private float moveSpeed = 3f;
-
-    [SerializeField] private float _cameraOffsetDistance = 1f;
+    #region IInteractable Properties
 
     [field: SerializeField] public bool IsInteractable { get; set; } = true;
 
@@ -23,27 +15,41 @@ public class MapInteraction : MonoBehaviour, IInteractable
     public event System.Action OnSuccessfulInteraction;
     public event System.Action OnFailedInteraction;
 
-    void Start()
+    #endregion
+
+
+    private FocusableObject _focusableObjectScript;
+
+
+    [Header("Focus Position")]
+    [SerializeField] private float _maxHorizontalDistanceMultiplier = 0.8f;
+    [SerializeField] private float _maxVerticalDistanceMultiplier = 0.8f;
+    private Vector2 _mapBounds;
+
+    private float _maxHorizontalDistance => _mapBounds.x * _maxHorizontalDistanceMultiplier * _focusableObjectScript.CameraOffsetMultiplier;
+    private float _maxVerticalDistance => _mapBounds.y * _maxVerticalDistanceMultiplier * _focusableObjectScript.CameraOffsetMultiplier;
+
+
+
+    private void Awake() => _focusableObjectScript ??= GetComponent<FocusableObject>();
+    void Start() => _mapBounds = new Vector2(transform.localScale.z, transform.localScale.y);
+    
+
+    private void Update()
     {
-        originPosition = transform.position;
-        originRotation = transform.rotation;
+        if (!_focusableObjectScript.IsFocused)
+        {
+            return;
+        }
+
+        Vector2 currentPositionOffset = new Vector2(_focusableObjectScript.GetPositionOffset().z, _focusableObjectScript.GetPositionOffset().y); // Due to quirks with how the map is set up, the x position offset is actually z.
+        currentPositionOffset = currentPositionOffset + (PlayerInput.UINavigate * Time.deltaTime);
+        currentPositionOffset.x = Mathf.Clamp(currentPositionOffset.x, -_maxHorizontalDistance, _maxHorizontalDistance);
+        currentPositionOffset.y = Mathf.Clamp(currentPositionOffset.y, -_maxVerticalDistance, _maxVerticalDistance);
+
+        _focusableObjectScript.SetPositionOffset(new Vector3(0.0f, currentPositionOffset.y, currentPositionOffset.x));
     }
 
-    void Update()
-    {
-        if (isMovingToCamera)
-        {
-            SetTargetPosition();
-
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * moveSpeed);
-        }
-        else
-        {
-            transform.position = Vector3.Lerp(transform.position, originPosition, Time.deltaTime * moveSpeed);
-            transform.rotation = Quaternion.Lerp(transform.rotation, originRotation, Time.deltaTime * moveSpeed);
-        }
-    }
 
     public void Interact(PlayerInteraction player)
     {
@@ -57,30 +63,22 @@ public class MapInteraction : MonoBehaviour, IInteractable
 
     public void StartInteraction()
     {
-        isMovingToCamera = true;
-        PlayerInput.PreventAllActions(typeof(Lock), disableGlobalMaps: true);
+        _focusableObjectScript.StartFocus();
 
+        // Prevent Input.
+        PlayerInput.PreventAllActions(typeof(MapInteraction), disableGlobalMaps: true);
+
+        // Subscribe to cancel event.
         PlayerInput.OnUICancelPerformed += StopInteraction;
     }
-
-
     public void StopInteraction()
     {
-        isMovingToCamera = false;
-        PlayerInput.RemoveAllActionPrevention(typeof(Lock));
+        _focusableObjectScript.StopFocus();
 
-        PlayerInput.OnUICancelPerformed += StopInteraction;
-    }
+        // Remove Input Prevention.
+        PlayerInput.RemoveAllActionPrevention(typeof(MapInteraction));
 
-
-    private void SetTargetPosition()
-    {
-        Camera cam = Camera.main;
-        if (cam == null) return;
-
-        targetPosition = cam.transform.position + cam.transform.forward * _cameraOffsetDistance;
-
-        Vector3 directionToCamera = cam.transform.position - transform.position;
-        targetRotation = Quaternion.LookRotation(directionToCamera) * Quaternion.Euler(0, -90, 0);
+        // Unsubscribe from cancel event.
+        PlayerInput.OnUICancelPerformed -= StopInteraction;
     }
 }

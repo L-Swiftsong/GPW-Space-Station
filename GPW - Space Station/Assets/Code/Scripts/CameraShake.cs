@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class CameraShake : MonoBehaviour
 {
+    [SerializeField] private Camera _camera;
+
     private float shakeIntensity; //Store current intensity.
     private float shakeSpeed; //Store current speed.
 
@@ -28,6 +30,9 @@ public class CameraShake : MonoBehaviour
 
 
     private Coroutine _cameraShakeCoroutine;
+
+
+    public Vector3 CameraOriginalPosition => transform.parent.TransformPoint(originalPosition) + _camera.transform.localPosition;
 
 
     void Start()

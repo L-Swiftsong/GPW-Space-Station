@@ -6,6 +6,8 @@ using UI;
 using Environment.Doors;
 using Saving.LevelData;
 
+
+[RequireComponent(typeof(FocusableObject))]
 public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 {
     #region Saving Properties
@@ -15,19 +17,20 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 
     #endregion
 
+    #region IInteractable Properties & Events
 
-    private Vector3 originPosition;
-    private Quaternion originRotation;
+    [field: SerializeField] public bool IsInteractable { get; set; } = true;
 
-    private Vector3 targetPosition;
-    private Quaternion targetRotation;
+    private int _previousLayer;
 
-    private bool isMoving = false;
-    private float moveSpeed = 3f;
+    public event System.Action OnSuccessfulInteraction;
+    public event System.Action OnFailedInteraction;
 
-    public bool lockInteraction = false;
+    #endregion
 
-    [SerializeField] private float _cameraOffsetDistance = 0.75f;
+
+    private FocusableObject _focusableObjectScript;
+    public bool IsFocused { get; private set; }
 
 
     [Header("Wheels")]
@@ -45,25 +48,22 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
     public ExternalInputDoor connectedDoor;
 
 
-    #region IInteractable Properties & Events
-
-    [field: SerializeField] public bool IsInteractable { get; set; } = true;
-
-    private int _previousLayer;
-
-    public event System.Action OnSuccessfulInteraction;
-    public event System.Action OnFailedInteraction;
-
-    #endregion
-
-
-    void Start()
+    private void Awake()
     {
-        // stores locks orignial position so that it can return when not interacting
-        originPosition = transform.position;
-        originRotation = transform.rotation;
+        _focusableObjectScript ??= GetComponent<FocusableObject>();
+        IsFocused = false;
     }
-    
+    protected virtual void OnDestroy()
+    {
+        // Remove input preventions if we were still in use when we were destroyed.
+        if (IsFocused)
+            PlayerInput.RemoveAllActionPrevention(typeof(Lock));
+
+        // Saving.
+        _saveData.DisabledState = DisabledState.Destroyed;
+    }
+
+
 
     private void PlayerInput_OnUILeftClickPerformed()
     {
@@ -124,20 +124,6 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
         }
     }
 
-
-    void Update()
-    {
-        if (isMoving && lockInteraction)
-        {
-            // Update the target position.
-            SetTargetPosition();
-
-            // Move the lock towards the camera.
-            transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * moveSpeed);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * moveSpeed);
-        }
-    }
-
     public void Interact(PlayerInteraction player)
     {
         StartInteraction();
@@ -145,35 +131,6 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
     }
     public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
     public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
-
-
-    public void SetTargetPosition()
-    {
-        Transform playerCameraTransform = Entities.Player.PlayerManager.Instance.GetPlayerCameraTransform();
-
-        // Offsets the lock infront of the camera.
-        targetPosition = GetLockPositionForWheelIndex(playerCameraTransform, _selectedWheelIndex);
-
-        // Lock faces camera.
-        targetRotation = Quaternion.LookRotation(-playerCameraTransform.forward);
-    }
-    private Vector3 GetLockPositionForWheelIndex(Transform playerCamTransform, int wheelIndex)
-    {
-        Vector3 wheelLocalPosition = transform.InverseTransformPoint(_lockWheels[wheelIndex].transform.position);
-
-        Vector3 desiredLockPosition = playerCamTransform.position + (playerCamTransform.forward * _cameraOffsetDistance);
-        desiredLockPosition += (playerCamTransform.right * wheelLocalPosition.x) + (playerCamTransform.up * -wheelLocalPosition.y);
-
-        return desiredLockPosition;
-    }
-
-    public void ResetLockPosition()
-    {
-        lockInteraction = false;
-
-        transform.position = originPosition;
-        transform.rotation = originRotation;
-    }
 
 
 
@@ -207,7 +164,12 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 
         // Select our selected wheel;
         _lockWheels[_selectedWheelIndex].Select();
+
+        // Focus on our selected wheel.
+        FocusOnSelectedWheel();
     }
+
+    private void FocusOnSelectedWheel() => _focusableObjectScript.SetPositionOffset(transform.InverseTransformPoint(_lockWheels[_selectedWheelIndex].transform.position));
 
 
     // Checks if wheel digits match the correct digits.
@@ -240,37 +202,44 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 
     private void StartInteraction()
     {
-        // Input.
+        IsFocused = true;
+
+        // Subscribe to Input Events.
         PlayerInput.OnUILeftClickPerformed += PlayerInput_OnUILeftClickPerformed;
         PlayerInput.OnUICancelPerformed += StopInteraction;
         PlayerInput.OnUINavigateCancelled += ResetInteractTime;
 
+        // Prevent non-UI Input.
         PlayerInput.PreventAllActions(typeof(Lock), disableGlobalMaps: true);
 
-
-        // gets position infront of camera for lock to move to
-        SetTargetPosition();
-
-        isMoving = true;
-        lockInteraction = true;
+        // Set our selected wheel.
         UpdateSelectedWheel();
 
+        // Start the lock focus.
+        FocusOnSelectedWheel();
+        _focusableObjectScript.StartFocus();
+
+        // Hide the interaction UI and unlock our cursor.
         PlayerUIManager.Instance.HideInteractionUI();
         Cursor.lockState = CursorLockMode.Confined;
     }
     private void StopInteraction()
     {
-        // Input.
+        IsFocused = false;
+
+        // Unsubscribe to Input Events.
         PlayerInput.OnUILeftClickPerformed -= PlayerInput_OnUILeftClickPerformed;
         PlayerInput.OnUICancelPerformed -= StopInteraction;
         PlayerInput.OnUINavigateCancelled -= ResetInteractTime;
 
+        // Remove input prevention.
         PlayerInput.RemoveAllActionPrevention(typeof(Lock));
 
 
-        // Reset the lock's position.
-        ResetLockPosition();
+        // Stop the lock focus.
+        _focusableObjectScript.StopFocus();
 
+        // Show the interaction UI and lock our cursor.
         PlayerUIManager.Instance.ShowInteractionUI();
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -315,7 +284,6 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
     }
 
     protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
-    protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
     protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
     protected virtual void LateUpdate() => ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
 

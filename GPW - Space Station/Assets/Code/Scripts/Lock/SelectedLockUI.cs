@@ -29,7 +29,7 @@ public class SelectedLockUI : MonoBehaviour
     
     private void Update()
     {
-        if (!_lock.lockInteraction)
+        if (!_lock.IsFocused)
         {
             OnLockDisabled();
             return;

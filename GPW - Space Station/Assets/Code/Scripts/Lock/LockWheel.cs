@@ -42,7 +42,7 @@ public class LockWheel : MonoBehaviour
 
     private void DetectInput()
     {
-        if (!_lock.CanInteract() || !_lock.lockInteraction)
+        if (!_lock.CanInteract() || !_lock.IsFocused)
         {
             return;
         }

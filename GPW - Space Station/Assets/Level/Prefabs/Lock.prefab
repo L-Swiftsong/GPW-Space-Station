@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2350249944624918857}
   - component: {fileID: 3087150752889369632}
   - component: {fileID: 1459543985970338301}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Wheel3
   m_TagString: Wheel
   m_Icon: {fileID: 0}
@@ -1010,11 +1010,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2, y: 0.04, z: 0.1}
+  m_Size: {x: 0.25, y: 0.04, z: 0.25}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1459543985970338301
 MonoBehaviour:
@@ -1555,7 +1555,7 @@ GameObject:
   - component: {fileID: 7374090346081314334}
   - component: {fileID: 279054407315973876}
   - component: {fileID: 1428688434130836605}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2147,7 +2147,7 @@ GameObject:
   - component: {fileID: 7590586385861908232}
   - component: {fileID: 6851315499718690064}
   - component: {fileID: 8947405012824377006}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Wheel2
   m_TagString: Wheel
   m_Icon: {fileID: 0}
@@ -3142,11 +3142,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2, y: 0.04, z: 0.1}
+  m_Size: {x: 0.25, y: 0.04, z: 0.25}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8947405012824377006
 MonoBehaviour:
@@ -4884,7 +4884,7 @@ GameObject:
   - component: {fileID: 1885998226791186225}
   - component: {fileID: 6413300725416102372}
   - component: {fileID: 2427638957597628917}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: RightArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5131,7 +5131,7 @@ GameObject:
   - component: {fileID: 9208080311857900807}
   - component: {fileID: 7081882582427719166}
   - component: {fileID: 4663552524076875658}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: LeftArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5724,7 +5724,7 @@ GameObject:
   - component: {fileID: 4272652115695641310}
   - component: {fileID: 3422969612627358742}
   - component: {fileID: 8837010117728422585}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Wheel1
   m_TagString: Wheel
   m_Icon: {fileID: 0}
@@ -6719,11 +6719,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2, y: 0.04, z: 0.1}
+  m_Size: {x: 0.25, y: 0.04, z: 0.25}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8837010117728422585
 MonoBehaviour:
@@ -8462,7 +8462,7 @@ GameObject:
   - component: {fileID: 8892454751584829460}
   - component: {fileID: 1628778717829249373}
   - component: {fileID: 360170440211208176}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PadlockCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8907,8 +8907,7 @@ GameObject:
   - component: {fileID: 6802387585955240754}
   - component: {fileID: 3407648801244045122}
   - component: {fileID: 6060713395189469442}
-  - component: {fileID: 3547262473640621254}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Arch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10550,28 +10549,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6985478011717626199}
   m_Mesh: {fileID: 0}
---- !u!64 &3547262473640621254
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6985478011717626199}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &7230049895610308444
 GameObject:
   m_ObjectHideFlags: 0
@@ -11267,7 +11244,7 @@ GameObject:
   - component: {fileID: 1622539974827678798}
   - component: {fileID: 2997784911866115225}
   - component: {fileID: 2712158156825687663}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12025,7 +12002,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5899228522162847607}
   - component: {fileID: 5481770401224863894}
-  m_Layer: 0
+  - component: {fileID: 5029028892816628353}
+  - component: {fileID: 3399397728473853524}
+  m_Layer: 9
   m_Name: Lock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12084,8 +12063,7 @@ MonoBehaviour:
       DisabledState: 0
       BoolValues: 
       IntValues: 
-  lockInteraction: 0
-  _cameraOffsetDistance: 0.75
+  <IsInteractable>k__BackingField: 1
   _lockWheels:
   - {fileID: 8837010117728422585}
   - {fileID: 8947405012824377006}
@@ -12095,6 +12073,66 @@ MonoBehaviour:
   _interactionMinDelay: 0.1
   _correctDigits: 03000000070000000500000001000000
   connectedDoor: {fileID: 0}
+--- !u!114 &5029028892816628353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8681395773937429578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 625a44a060e05224795ea30ca4c115f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraOffsetDistance: 0.5
+  _cameraOffsetMultiplier: 0.25
+  _movementAndScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _eulerRotationOffset: {x: 0, y: 0, z: 0}
+--- !u!65 &3399397728473853524
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8681395773937429578}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35, y: 0.4, z: 0.1}
+  m_Center: {x: 0, y: 0.05, z: 0}
 --- !u!1 &8766782284026523775
 GameObject:
   m_ObjectHideFlags: 0
@@ -12108,8 +12146,7 @@ GameObject:
   - component: {fileID: 677226578543539993}
   - component: {fileID: 5238138282553163685}
   - component: {fileID: 8743795552712892727}
-  - component: {fileID: 4628111853393403136}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12426,28 +12463,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8766782284026523775}
   m_Mesh: {fileID: 0}
---- !u!64 &4628111853393403136
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8766782284026523775}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &8791539647750071184
 GameObject:
   m_ObjectHideFlags: 0
@@ -12458,7 +12473,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9203360364685263090}
   - component: {fileID: 6406280966193975911}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CurrentSelectedWheelCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12521,7 +12536,7 @@ GameObject:
   - component: {fileID: 1335094916197660711}
   - component: {fileID: 9024798373184885426}
   - component: {fileID: 4050790097482608128}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Wheel4
   m_TagString: Wheel
   m_Icon: {fileID: 0}
@@ -13516,11 +13531,11 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.2, y: 0.04, z: 0.1}
+  m_Size: {x: 0.25, y: 0.04, z: 0.25}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4050790097482608128
 MonoBehaviour:

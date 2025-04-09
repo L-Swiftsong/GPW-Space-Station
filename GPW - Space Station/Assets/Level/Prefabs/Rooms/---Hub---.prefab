@@ -2687,6 +2687,7 @@ GameObject:
   - component: {fileID: 5956674063724685881}
   - component: {fileID: 726960708551042311}
   - component: {fileID: 8299565036258311490}
+  - component: {fileID: 6484796410713411829}
   m_Layer: 9
   m_Name: Hub Map_1
   m_TagString: Untagged
@@ -2792,8 +2793,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1854947f706e8449c98473738007b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraOffsetDistance: 1
   <IsInteractable>k__BackingField: 1
+  _maxHorizontalDistanceMultiplier: 1
+  _maxVerticalDistanceMultiplier: 1
+--- !u!114 &6484796410713411829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8517192391682253310}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 625a44a060e05224795ea30ca4c115f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraOffsetDistance: 1.25
+  _cameraOffsetMultiplier: 0.25
+  _movementAndScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _eulerRotationOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &8637257793849375512
 GameObject:
   m_ObjectHideFlags: 0
@@ -2997,6 +3038,7 @@ GameObject:
   - component: {fileID: 6316386869959446337}
   - component: {fileID: 5966790423379938342}
   - component: {fileID: 4635539633827276460}
+  - component: {fileID: 5274141024438239988}
   m_Layer: 9
   m_Name: Hub Map
   m_TagString: Untagged
@@ -3081,8 +3123,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1854947f706e8449c98473738007b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraOffsetDistance: 1
   <IsInteractable>k__BackingField: 1
+  _maxHorizontalDistanceMultiplier: 1
+  _maxVerticalDistanceMultiplier: 1
 --- !u!65 &4635539633827276460
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3104,6 +3147,45 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5274141024438239988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9151654005495655988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 625a44a060e05224795ea30ca4c115f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cameraOffsetDistance: 1.25
+  _cameraOffsetMultiplier: 0.25
+  _movementAndScaleCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _eulerRotationOffset: {x: 0, y: 0, z: 0}
 --- !u!1001 &180169411282580412
 PrefabInstance:
   m_ObjectHideFlags: 0
