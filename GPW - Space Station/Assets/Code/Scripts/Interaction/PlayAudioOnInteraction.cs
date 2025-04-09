@@ -16,6 +16,7 @@ namespace Interaction
         [SerializeField] private float _volume = 1.0f;
         [SerializeField] private float _minPitch = 1.0f;
         [SerializeField] private float _maxPitch = 1.0f;
+        [SerializeField] private float _minDistance = 1.0f;
 
 
         private void Awake() => _interactableScript = GetComponent<IInteractable>();
@@ -33,8 +34,8 @@ namespace Interaction
         }
 
 
-        private void PlaySuccessAudioClip() => SFXManager.Instance.PlayClipAtPosition(_successAudioClip, Vector3.zero, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume);
-        private void PlayFailedAudioClip() => SFXManager.Instance.PlayClipAtPosition(_failedAudioClip, Vector3.zero, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume);
+        private void PlaySuccessAudioClip() => SFXManager.Instance.PlayClipAtPosition(_successAudioClip, Vector3.zero, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume, minDistance: _minDistance);
+        private void PlayFailedAudioClip() => SFXManager.Instance.PlayClipAtPosition(_failedAudioClip, Vector3.zero, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume, minDistance: _minDistance);
 
 
 

@@ -29,9 +29,15 @@ namespace Environment.Doors
             Vector3 directionToInteractor = (interactingScript.transform.position - transform.position).normalized;
             _wasOpenedFromFacingDirection = Vector3.Dot(directionToInteractor, transform.forward) > 0.0f;
             
-            ToggleOpen();
-
-            OnSuccessfulInteraction?.Invoke();
+            if (GetComponent<DoorOpener>())
+            {
+                ToggleOpen();
+                OnSuccessfulInteraction?.Invoke();
+            }
+            else
+            {
+                OnFailedInteraction?.Invoke();
+            }
         }
         public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
         public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
