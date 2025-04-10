@@ -1,11 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using SceneManagement;
 using JSONSerialisation;
 using System.IO;
-using Entities.Player;
+using System.Linq;
 
 namespace Saving
 {
@@ -13,40 +12,83 @@ namespace Saving
     public class SaveManager : Singleton<SaveManager>
     {
         [SerializeField] private SaveData _saveData;
+        private int _currentSaveID;
 
 
         private const bool USE_PRETTY_PRINT = true;
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         private const bool ALLOW_AUTOSAVE_IN_EDITOR = true;
-        #endif
-
-
-        protected override void Awake()
-        {
-            base.Awake();
-            NewGame();
-        }
+#endif
 
 
         public void NewGame()
         {
             Debug.Log("Starting New Game");
+            _currentSaveID = GetUnusedSaveID();
+            Debug.Log("Starting New Game. ID: " + _currentSaveID);
         }
 
         #region Saving
 
-        public void SaveGameManual()
-        {
-            string slashlessTime = System.DateTime.Now.ToString().Replace('/', '_').Replace(':', '_').Replace(' ', '-');
-            SaveGame(string.Concat("ManualSave-", slashlessTime));
-        }
-        public void SaveGameAutosave() => SaveGame("Autosave");
+        public void SaveGameManual() => SaveGame(CreateSaveName("Manual"));
+        public void SaveGameAutosave() => SaveGame(CreateSaveName("Autosave"));
         public void SaveGameDebug() => SaveGame("DebugSave");
-        private void SaveGame(string saveDataName) => JsonDataService.Save<SaveData>(saveDataName, CreateSaveData(), USE_PRETTY_PRINT);
+        private void SaveGame(string saveDataName) => JsonDataService.Save<SaveData>(saveDataName, CreateSaveData(), USE_PRETTY_PRINT, overwrite: true);
 
-        private SaveData CreateSaveData() => SaveData.FromCurrent();
+        // To-Do: Find a better way to do this.
+        private int GetUnusedSaveID()
+        {
+            // Find all existing save IDs and put them into a HashSet for checking later (Scales better for searching than a list does).
+            HashSet<int> existingIDs;
+            int fileCount;
+            {
+                string[] fileNames = JsonDataService.GetSaveNames().ToArray();
+                fileCount = fileNames.Length;
+                existingIDs = new HashSet<int>(fileCount); // We know our capacity won't exceed fileCount. Initialise our capacity so that we don't need to resize when adding the elements.
+
+                // Simplify our fileNames.
+                for (int i = 0; i < fileCount; ++i)
+                {
+                    // Save Data in the form 'Playthrough-X_Autosave'/'Playthrough-Manual', where 'X' is the SaveID and should be an integer.
+                    try
+                    {
+                        if (fileNames[i].StartsWith("Playthrough-"))
+                        {
+                            if (int.TryParse(fileNames[i].Remove(0, 12).Split('_')[0], out int result))
+                            {
+                                // Successful parse - This Save is setup properly for our IDs.
+                                existingIDs.Add(result);
+                                continue;
+                            }
+                        }
+                    }
+                    catch { } // Catch any exceptions (Such as the fileName being in the wrong format)and just continue.
+
+                    // Failed to parse.
+                    // This save isn't named in the way we are expecting, so it's value doesn't matter.
+                    // We use '-1' to represent this so that we can still have saves of ID 0 (Int Default). 
+                    existingIDs.Add(-1);
+                }
+            }
+
+            // Try to find the first free ID.
+            for (int potentialID = 0; potentialID < fileCount; ++potentialID)
+            {
+                if (!existingIDs.Contains(potentialID))
+                {
+                    // We have no save of this ID, so use it.
+                    return potentialID;
+                }
+            }
+
+            // All our existing saves have sequential IDs from '0' to 'fileCount - 1', so use 'fileCount' as our Save ID.
+            return fileCount;
+        }
+        private string CreateSaveName(string saveTypeIdentifier) => string.Concat("Playthrough-", _currentSaveID, "_", saveTypeIdentifier);
+        private SaveData CreateSaveData() => SaveData.FromCurrent(_currentSaveID);
 
         #endregion
+
 
         #region Loading
 
@@ -55,6 +97,8 @@ namespace Saving
         public void LoadGame(string fileName)
         {
             _saveData = JsonDataService.Load<SaveData>(fileName);
+            _currentSaveID = _saveData.SaveID;
+
             SceneLoader.Instance.LoadFromSave(_saveData.LoadedSceneIndices, _saveData.ActiveSceneIndex, onScenesLoadedCallback: PerformDataLoad);
         }
 

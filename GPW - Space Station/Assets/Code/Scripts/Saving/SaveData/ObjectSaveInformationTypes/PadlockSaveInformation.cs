@@ -7,7 +7,7 @@ namespace Saving.LevelData
         public int[] CurrentSetValues { get => this.ObjectSaveData.IntValues; set => this.ObjectSaveData.IntValues = value; }
 
 
-        public PadlockSaveInformation(ObjectSaveData objectSaveData, DisabledState disabledState) : base(objectSaveData, disabledState) { }
+        public PadlockSaveInformation(ObjectSaveData objectSaveData, DisabledState disabledState, int lockCount) : base(objectSaveData, disabledState, boolCount: 1, intCount: lockCount) { }
         public PadlockSaveInformation(SerializableGuid id, DisabledState disabledState, bool isUnlocked, int[] intValues) : base(id, disabledState, boolCount: 1, intCount: intValues.Length)
         {
             this.IsUnlocked = isUnlocked;

@@ -9,7 +9,8 @@ namespace Saving
     public class SaveData
     {
         public bool Exists;
-        public float SaveTime;
+        public int SaveTime;
+        public int SaveID;
 
         public int[] LoadedSceneIndices;
         public int ActiveSceneIndex;
@@ -27,12 +28,13 @@ namespace Saving
             ProgressData.LoadData();
             LevelDataManager.LoadLevelSaves(LevelSaveDatas);
         }
-        public static SaveData FromCurrent()
+        public static SaveData FromCurrent(int saveID)
         {
             return new SaveData()
             {
                 Exists = true,
-                SaveTime = Time.time,
+                SaveTime = Mathf.FloorToInt(Time.time),
+                SaveID = saveID,
 
                 LoadedSceneIndices = SceneManagement.SceneLoader.GetLoadedSceneBuildIndices(),
                 ActiveSceneIndex = SceneManagement.SceneLoader.GetActiveSceneBuildIndex(),

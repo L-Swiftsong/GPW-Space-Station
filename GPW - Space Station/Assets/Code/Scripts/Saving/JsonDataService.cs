@@ -82,9 +82,9 @@ namespace JSONSerialisation
 
         public static IEnumerable<string> GetSaveNames()
         {
-            foreach(string path in Directory.EnumerateFiles(DATA_PATH))
+            foreach(string path in Directory.GetFiles(DATA_PATH))
             {
-                if (Path.GetExtension(path) == FILE_EXTENSION)
+                if (Path.GetExtension(path).EndsWith(FILE_EXTENSION))
                 {
                     yield return Path.GetFileNameWithoutExtension(path);
                 }

@@ -65,7 +65,7 @@ namespace UI.Menus
 
         public void StartNewGame()
         {
-            Debug.Log("Start New Game");
+            SaveManager.Instance.NewGame();
             SceneLoader.Instance.PerformTransition(_firstSceneTransition);
         }
 
