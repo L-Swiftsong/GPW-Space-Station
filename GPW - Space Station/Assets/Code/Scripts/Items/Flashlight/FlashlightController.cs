@@ -328,6 +328,11 @@ namespace Items.Flashlight
             }
         }
 
+        public void AddBattery(float amount)
+        {
+            _currentBattery = Mathf.Clamp(_currentBattery + amount, 0f, 100f);
+        }
+
         public void LoadActiveState(bool activeState) => SetActiveState(activeState);
         public bool GetActiveState() => _isOn;
     }
