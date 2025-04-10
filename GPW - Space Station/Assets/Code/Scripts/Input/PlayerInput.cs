@@ -16,6 +16,7 @@ public class PlayerInput : MonoBehaviour
     public static event Action OnPauseGamePerformed;
 
     public static event Action OnOpenJournalPerformed;
+    public static event Action OnOpenItemsPerformed;
 
 
     public static event Action OnSelectNextTabPerformed;
@@ -177,7 +178,7 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Global.PauseGame.performed += PauseGame_performed;
 
         s_playerInput.Global.OpenJournal.performed += OpenJournal_performed;
-
+        s_playerInput.Global.OpenItems.performed += OpenItems_performed;
 
         // Subscribe to events (UI).
         s_playerInput.UI.SelectNextTab.performed += SelectNextTab_performed;
@@ -244,6 +245,7 @@ public class PlayerInput : MonoBehaviour
         s_playerInput.Global.PauseGame.performed -= PauseGame_performed;
 
         s_playerInput.Global.OpenJournal.performed -= OpenJournal_performed;
+        s_playerInput.Global.OpenItems.performed -= OpenItems_performed;
 
 
         // Unsubscribe from events (UI).
@@ -294,7 +296,7 @@ public class PlayerInput : MonoBehaviour
     private void PauseGame_performed(InputAction.CallbackContext context) => OnPauseGamePerformed?.Invoke();
 
     private void OpenJournal_performed(InputAction.CallbackContext context) => OnOpenJournalPerformed?.Invoke();
-
+    private void OpenItems_performed(InputAction.CallbackContext context) => OnOpenItemsPerformed?.Invoke();
 
     private void SelectNextTab_performed(InputAction.CallbackContext context) => OnSelectNextTabPerformed?.Invoke();
     private void SelectPreviousTab_performed(InputAction.CallbackContext context) => OnSelectPreviousTabPerformed?.Invoke();
