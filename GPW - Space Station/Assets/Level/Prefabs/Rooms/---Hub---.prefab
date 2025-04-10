@@ -253,6 +253,75 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1758307831293933530
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8649990552324593374}
+  - component: {fileID: 5449129379064692162}
+  m_Layer: 9
+  m_Name: Interaction Popup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8649990552324593374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758307831293933530}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.5, y: -0.5, z: -0.49999982, w: 0.50000024}
+  m_LocalPosition: {x: 0.5, y: 2.0279999, z: -10.922}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4903211677342081513}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5449129379064692162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758307831293933530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0463f937fa2a2444a1ceb5e195dfb50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupSetupInformation:
+    PopupPreText: Press
+    InteractionType: 0
+    PopupPostText: to Pick Up
+    FontSize: 72
+    IconSize: 100
+    DisplayOnMultipleLines: 0
+    KeepIconCentred: 0
+    UseCustomText: 0
+    CustomPreText: 
+    CustomSprite: {fileID: 0}
+    CustomPostText: 
+    ShowBackground: 0
+    PopupLifetime: -1
+    LinkedInteractable: {fileID: 1640603804086378364}
+    LinkToSuccess: 1
+    LinkToFailure: 1
+    MaxDistance: -1
+    OnlyFadeIfOutwithMaxDistance: 1
+    DisableIfObstructed: 1
+    OnlyFadeIfObstructed: 1
+    DisableIfPivotDestroyed: 1
+    PivotTransform: {fileID: 8649990552324593374}
+    PopupOffset: {x: 0, y: 0, z: 0}
+    RotateInPlace: 0
 --- !u!1 &2770330064955874655
 GameObject:
   m_ObjectHideFlags: 0
@@ -927,6 +996,138 @@ Transform:
   - {fileID: 501601685847145186}
   m_Father: {fileID: 3155613630471612590}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4056961229183689179
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 539363762364115234}
+  - component: {fileID: 2681673509701108445}
+  - component: {fileID: 3744316358118482886}
+  - component: {fileID: 2901236707623286037}
+  m_Layer: 0
+  m_Name: Movement Popup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &539363762364115234
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4056961229183689179}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 6.852, y: 0.504, z: 1.212}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5350389583730707545}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &2681673509701108445
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4056961229183689179}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.0824962, y: 1.1935312, z: 1.5078808}
+  m_Center: {x: -0.30590224, y: 0.09676564, z: -0.2539404}
+--- !u!114 &3744316358118482886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4056961229183689179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 1202059484
+    Part2: 1167005106
+    Part3: 1074518973
+    Part4: 3840932034
+  _saveData:
+    <ID>k__BackingField:
+      Part1: 0
+      Part2: 0
+      Part3: 0
+      Part4: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Exists: 0
+    DisabledState: 0
+    BoolValues: 
+    IntValues: 
+  _triggerEventIfDestroyedOnLoad: 0
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 2901236707623286037}
+      _MemberName: Trigger
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
+--- !u!114 &2901236707623286037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4056961229183689179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupSetupInformation:
+    PopupPreText: Press
+    InteractionType: 4
+    PopupPostText: to Move
+    FontSize: 36
+    IconSize: 50
+    DisplayOnMultipleLines: 0
+    KeepIconCentred: 1
+    UseCustomText: 0
+    CustomPreText: 
+    CustomSprite: {fileID: 0}
+    CustomPostText: 
+    ShowBackground: 1
+    PopupLifetime: 3
+    LinkedInteractable: {fileID: 0}
+    LinkToSuccess: 1
+    LinkToFailure: 1
+    AnchoredPosition: {x: 0, y: -100}
+    Pivot: {x: 1, y: 1}
+    AnchorMin: {x: 1, y: 1}
+    AnchorMax: {x: 1, y: 1}
 --- !u!1 &4071246439915470368
 GameObject:
   m_ObjectHideFlags: 0
@@ -1963,6 +2164,7 @@ Transform:
   - {fileID: 311285644797991311}
   - {fileID: 9096441199632867005}
   - {fileID: 4729282321377766213}
+  - {fileID: 8649990552324593374}
   - {fileID: 3544349602517484567}
   - {fileID: 1898683405304805338}
   m_Father: {fileID: 5350389583730707545}
@@ -2327,6 +2529,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 539363762364115234}
   - {fileID: 4903211677342081513}
   - {fileID: 4891923786441598198}
   - {fileID: 3155613630471612590}
@@ -10832,8 +11035,66 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8393542029877967486, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2024177608409240764}
   m_SourcePrefab: {fileID: 100100000, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
+--- !u!1 &1640603804086378364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8393542029877967486, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
+  m_PrefabInstance: {fileID: 7115479014962554114}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2024177608409240764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1640603804086378364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f50142aea40b34944a7a28b58fd2d637, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    <ID>k__BackingField:
+      Part1: 0
+      Part2: 0
+      Part3: 0
+      Part4: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Exists: 0
+    DisabledState: 0
+    BoolValues: 
+    IntValues: 
+  _triggerEventIfDestroyedOnLoad: 0
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 5449129379064692162}
+      _MemberName: Trigger
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _horizontalScreenActivationBounds: 0.75
+  _verticalScreenActivationBounds: 0.75
+  _maxActivationDistance: 10
+  _onlyActivateIfUnobstructed: 1
+  _obstructionLayers:
+    serializedVersion: 2
+    m_Bits: 192
 --- !u!4 &3544349602517484567 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6021116274624225557, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
