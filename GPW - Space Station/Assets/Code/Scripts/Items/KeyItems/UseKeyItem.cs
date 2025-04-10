@@ -9,6 +9,7 @@ using TMPro;
 using Audio;
 using UnityEngine.InputSystem;
 using Entities.Player;
+using UnityEditor.ShaderKeywordFilter;
 
 public class UseKeyItem : MonoBehaviour, IInteractable
 {
@@ -55,23 +56,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 			if (PlayerManager.Instance != null && PlayerManager.Instance.Player != null)
 			{
 				_playerTablet = PlayerManager.Instance.Player.GetComponentInChildren<PlayerTablet>(true);
-				if (_playerTablet == null)
-				{
-					Debug.LogError("PlayerTablet is still NULL after attempting to find it!");
-				}
-				else
-				{
-					Debug.Log("Successfully found PlayerTablet in children!");
-				}
 			}
-			else
-			{
-				Debug.LogError("PlayerManager or Player is null!");
-			}
-		}
-		else
-		{
-			Debug.Log("PlayerTablet is NOT NULL in build!");
 		}
 	}
 
@@ -82,7 +67,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 		if (IsKeyItemCorrect(selectedKeyItem))
 		{
 			SFXManager.Instance.PlayClipAtPosition(correctItemSound, transform.position, 1, 1, 2f);
-			KeyItemManager.Instance.PlaceItemAtLocation(_keyItemPlacement);
+			//KeyItemManager.Instance.PlaceItemAtLocation(_requiredKeyItem, _keyItemPlacement);
 			OnSuccessfulInteraction?.Invoke();
 			_hasPlacedItem = true;
 
