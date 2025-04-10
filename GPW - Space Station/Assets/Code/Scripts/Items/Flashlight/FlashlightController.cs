@@ -35,6 +35,14 @@ namespace Items.Flashlight
         [SerializeField] private float _focusedRange = 22.5f;
 
 
+        [Header("Flicker Settings")]
+        [SerializeField] private float _flickerThreshold = 20f; // Below this battery % it starts flickering
+        [SerializeField] private float _flickerMinTime = 0.05f;
+        [SerializeField] private float _flickerMaxTime = 0.2f;
+        private float _flickerTimer = 0f;
+        private bool _isFlickering = false;
+
+
         [Header("Battery Settings")]
         [Tooltip("How long the flashlight's battery lasts if continuously left on")]
         [SerializeField] private float _defaultBatteryLifetime = 120.0f;
@@ -164,6 +172,23 @@ namespace Items.Flashlight
             {
                 HandleFocusModeDamage();
             }
+
+            if (_isOn && _currentBattery <= _flickerThreshold && !_isFocused)
+            {
+                HandleFlicker();
+            }
+            else
+            {
+                if (_isFlickering)
+                {
+                    _isFlickering = false;
+                }
+
+                if (_isOn)
+                {
+                    _flashlightLight.enabled = true;
+                }
+            }
         }
 
 
@@ -290,6 +315,18 @@ namespace Items.Flashlight
 
         #endregion
 
+        private void HandleFlicker()
+        {
+            _flickerTimer -= Time.deltaTime;
+
+            if (_flickerTimer <= 0f)
+            {
+                _isFlickering = !_isFlickering;
+                _flashlightLight.enabled = _isFlickering;
+
+                _flickerTimer = Random.Range(_flickerMinTime, _flickerMaxTime);
+            }
+        }
 
         public void LoadActiveState(bool activeState) => SetActiveState(activeState);
         public bool GetActiveState() => _isOn;
