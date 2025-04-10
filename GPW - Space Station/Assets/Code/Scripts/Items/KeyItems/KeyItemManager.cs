@@ -99,13 +99,24 @@ namespace Items.KeyItem
 
 		public UseKeyItem GetActiveRepairSpot() { return _activeRepairSpot; }
 
-		public void PlaceItemAtLocation(Transform location)
+		public void PlaceItemAtLocation(KeyItemData keyItemData, Transform location)
 		{
-			if (_currentItem != null)
+			if (keyItemData == null || keyItemData.KeyItemPrefab == null)
 			{
-				_currentItem.transform.SetParent(null);
-				_currentItem.transform.SetPositionAndRotation(location.position, location.rotation);
+				Debug.LogError("Key item data or prefab is missing!");
+				return;
 			}
+
+			GameObject placedItem = Instantiate(keyItemData.KeyItemPrefab, location.position, location.rotation);
+			placedItem.transform.localScale = location.localScale;
+
+			if (placedItem.TryGetComponent(out Collider col))
+			{
+				col.enabled = false;
+			}
+
+			_currentItem = null;
+			_currentKeyItem = null;
 
 			ResetKeyItemEquip();
 		}

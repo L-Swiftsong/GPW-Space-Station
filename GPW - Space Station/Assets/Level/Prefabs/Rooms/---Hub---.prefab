@@ -2559,6 +2559,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4891923786441598198}
     m_Modifications:
+    - target: {fileID: 1268558942659181756, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1877867649220873741, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2322889639883375888, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: m_Name
+      value: Shields Spot
+      objectReference: {fileID: 0}
     - target: {fileID: 3026968923438808042, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.size
       value: 2
@@ -2571,9 +2583,29 @@ PrefabInstance:
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._MemberName
       value: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null.SetNextObjective
       objectReference: {fileID: 0}
+    - target: {fileID: 3269278557474968619, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3800632052559092306, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: m_Name
+      value: Engine Spot
+      objectReference: {fileID: 0}
+    - target: {fileID: 4642517673323861590, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: incorrectItemSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d745b0cecf7569c4d83b40d108e44d55, type: 3}
+    - target: {fileID: 5804155388331306030, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: incorrectItemSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d745b0cecf7569c4d83b40d108e44d55, type: 3}
     - target: {fileID: 6210122935115495373, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
       propertyPath: m_Name
       value: Escape Pod
+      objectReference: {fileID: 0}
+    - target: {fileID: 8041960862760948544, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: m_Name
+      value: Thrusters Spot
       objectReference: {fileID: 0}
     - target: {fileID: 8078293651687986108, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2615,11 +2647,64 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8916755494990287036, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: incorrectItemSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d745b0cecf7569c4d83b40d108e44d55, type: 3}
+    - target: {fileID: 9183605360777223654, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: _repairSpots.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9183605360777223654, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: _repairSpots.Array.data[0]
+      value: 
+      objectReference: {fileID: 8500477644394726310}
+    - target: {fileID: 9183605360777223654, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: _repairSpots.Array.data[1]
+      value: 
+      objectReference: {fileID: 6829126173504356148}
+    - target: {fileID: 9183605360777223654, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: _repairSpots.Array.data[2]
+      value: 
+      objectReference: {fileID: 5630880222071326028}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+--- !u!114 &5630880222071326028 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4642517673323861590, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+  m_PrefabInstance: {fileID: 1029475487956898586}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f07ca1a14f981c84589c3a73895e31b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6829126173504356148 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5804155388331306030, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+  m_PrefabInstance: {fileID: 1029475487956898586}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f07ca1a14f981c84589c3a73895e31b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8500477644394726310 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8916755494990287036, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+  m_PrefabInstance: {fileID: 1029475487956898586}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f07ca1a14f981c84589c3a73895e31b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9102535463889223846 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8078293651687986108, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
