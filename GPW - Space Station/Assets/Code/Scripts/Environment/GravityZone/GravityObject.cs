@@ -124,7 +124,7 @@ namespace Environment.GravityZone
         {
             if (GetComponent<Rigidbody>() == null && GetComponent<CharacterController>() == null)
             {
-                Debug.LogError($"Error: The GravityObject instance on {this.name} requires it to have either a Rigidbody or CharacterController component");
+                Debug.LogError($"Error: The GravityObject instance on {this.name} requires it to have either a Rigidbody or CharacterController component", this);
             }
         }
 #endif

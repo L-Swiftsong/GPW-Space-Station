@@ -22,7 +22,7 @@ namespace Environment.Doors
             // Assign door reference.
             if (!this.TryGetComponentThroughParents<Door>(out _door))
             {
-                Debug.LogError("Error: Failed to get Door reference for the DoorOpener: " + this + ". Ensure that a parent object contains a 'Door' instance.");
+                Debug.LogError("Error: Failed to get Door reference for the DoorOpener: " + this + ". Ensure that a parent object contains a 'Door' instance.", this);
             }
 
             // Subscribe to Door Events.
