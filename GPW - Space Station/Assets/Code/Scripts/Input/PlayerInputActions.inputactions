@@ -22,6 +22,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "OpenItems",
+                    "type": "Button",
+                    "id": "9ff1fec3-c10d-4e90-8798-c972b0eaaf13",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -55,6 +64,17 @@
                     "processors": "",
                     "groups": "MnK",
                     "action": "OpenJournal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "456cd4b3-38a8-4226-953b-0436d0bda0e9",
+                    "path": "<Keyboard>/i",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "MnK",
+                    "action": "OpenItems",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

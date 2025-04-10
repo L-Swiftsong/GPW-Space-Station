@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3102165376946693843}
   - component: {fileID: 2989508262259838870}
   - component: {fileID: 4131794453732076676}
+  - component: {fileID: 2499493326052491605}
   m_Layer: 9
   m_Name: Engine
   m_TagString: Untagged
@@ -33,6 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4525022022428935473}
+  - {fileID: 8096268113410554608}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3102165376946693843
@@ -83,6 +85,7 @@ MonoBehaviour:
   _volume: 1
   _minPitch: 1
   _maxPitch: 1
+  _minDistance: 1
 --- !u!136 &4131794453732076676
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -106,6 +109,116 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 0
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2499493326052491605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4346389407098289585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a17c9df550fc4848b546c1e7b26a014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    <ID>k__BackingField:
+      Part1: 0
+      Part2: 0
+      Part3: 0
+      Part4: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Exists: 0
+    DisabledState: 0
+    BoolValues: 
+    IntValues: 
+  _triggerEventIfDestroyedOnLoad: 0
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 2631945928116637378}
+      _MemberName: Trigger
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerOnSuccess: 1
+  _triggerOnFailure: 0
+--- !u!1 &9203998275119429574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8096268113410554608}
+  - component: {fileID: 2631945928116637378}
+  m_Layer: 9
+  m_Name: 'New Item Popup '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8096268113410554608
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9203998275119429574}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3580517306396518816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2631945928116637378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9203998275119429574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupSetupInformation:
+    PopupPreText: Press
+    InteractionType: 0
+    PopupPostText: to Interact
+    FontSize: 36
+    IconSize: 50
+    DisplayOnMultipleLines: 0
+    KeepIconCentred: 0
+    UseCustomText: 1
+    CustomPreText: New Item
+    CustomSprite: {fileID: 21300000, guid: a1d4036786fb1094e9cafec4d25b10e1, type: 3}
+    CustomPostText: to Open Items
+    ShowBackground: 1
+    PopupLifetime: 3
+    LinkedInteractable: {fileID: 0}
+    LinkToSuccess: 1
+    LinkToFailure: 1
+    AnchoredPosition: {x: 0, y: -100}
+    Pivot: {x: 1, y: 1}
+    AnchorMin: {x: 1, y: 1}
+    AnchorMax: {x: 1, y: 1}
 --- !u!1001 &4127165275123426010
 PrefabInstance:
   m_ObjectHideFlags: 0

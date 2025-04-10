@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8817987554342045749}
   - component: {fileID: 62400807894371193}
   - component: {fileID: 4692713811189702320}
+  - component: {fileID: 7843835383641074574}
   m_Layer: 9
   m_Name: Shields
   m_TagString: Untagged
@@ -32,6 +33,7 @@ Transform:
   m_LocalScale: {x: 1.7, y: 1.7, z: 1.7}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 8139793992273161027}
   - {fileID: 5021201668709319156}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -83,6 +85,7 @@ MonoBehaviour:
   _volume: 1
   _minPitch: 1
   _maxPitch: 1
+  _minDistance: 1
 --- !u!135 &4692713811189702320
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -104,6 +107,116 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.19
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7843835383641074574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7229391543177297369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a17c9df550fc4848b546c1e7b26a014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    <ID>k__BackingField:
+      Part1: 0
+      Part2: 0
+      Part3: 0
+      Part4: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Exists: 0
+    DisabledState: 0
+    BoolValues: 
+    IntValues: 
+  _triggerEventIfDestroyedOnLoad: 0
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 7464669357824846047}
+      _MemberName: Trigger
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerOnSuccess: 1
+  _triggerOnFailure: 0
+--- !u!1 &7952479327523972061
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8139793992273161027}
+  - component: {fileID: 7464669357824846047}
+  m_Layer: 9
+  m_Name: 'New Item Popup '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8139793992273161027
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7952479327523972061}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.8823529, y: 0.8823529, z: 0.8823529}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7649315311436675459}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7464669357824846047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7952479327523972061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupSetupInformation:
+    PopupPreText: Press
+    InteractionType: 0
+    PopupPostText: to Interact
+    FontSize: 36
+    IconSize: 50
+    DisplayOnMultipleLines: 0
+    KeepIconCentred: 0
+    UseCustomText: 1
+    CustomPreText: New Item
+    CustomSprite: {fileID: 21300000, guid: a1d4036786fb1094e9cafec4d25b10e1, type: 3}
+    CustomPostText: to Open Items
+    ShowBackground: 1
+    PopupLifetime: 3
+    LinkedInteractable: {fileID: 0}
+    LinkToSuccess: 1
+    LinkToFailure: 1
+    AnchoredPosition: {x: 0, y: -100}
+    Pivot: {x: 1, y: 1}
+    AnchorMin: {x: 1, y: 1}
+    AnchorMax: {x: 1, y: 1}
 --- !u!1001 &4766036753783580191
 PrefabInstance:
   m_ObjectHideFlags: 0

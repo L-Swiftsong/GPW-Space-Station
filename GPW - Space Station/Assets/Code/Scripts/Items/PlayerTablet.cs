@@ -63,15 +63,18 @@ public class PlayerTablet : MonoBehaviour
     {
         PlayerInput.OnPauseGamePerformed += PlayerInput_OnPauseGamePerformed;
         PlayerInput.OnOpenJournalPerformed += PlayerInput_OnOpenJournalPerformed;
+        PlayerInput.OnOpenItemsPerformed += PlayerInput_OnOpenItemsPerformed;
     }
     private void UnsubscribeFromInput()
     {
         PlayerInput.OnPauseGamePerformed -= PlayerInput_OnPauseGamePerformed;
         PlayerInput.OnOpenJournalPerformed -= PlayerInput_OnOpenJournalPerformed;
+        PlayerInput.OnOpenItemsPerformed -= PlayerInput_OnOpenItemsPerformed;
     }
 
     private void PlayerInput_OnPauseGamePerformed() => ToggleEquip();
     private void PlayerInput_OnOpenJournalPerformed() => ToggleEquip(PlayerTabletMenu.Journal);
+    private void PlayerInput_OnOpenItemsPerformed() => ToggleEquip(PlayerTabletMenu.Items);
 
     private void PreventInput()
     {

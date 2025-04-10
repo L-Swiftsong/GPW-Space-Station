@@ -44,6 +44,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenItems"",
+                    ""type"": ""Button"",
+                    ""id"": ""9ff1fec3-c10d-4e90-8798-c972b0eaaf13"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -77,6 +86,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""MnK"",
                     ""action"": ""OpenJournal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""456cd4b3-38a8-4226-953b-0436d0bda0e9"",
+                    ""path"": ""<Keyboard>/i"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MnK"",
+                    ""action"": ""OpenItems"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -925,6 +945,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Global = asset.FindActionMap("Global", throwIfNotFound: true);
         m_Global_PauseGame = m_Global.FindAction("PauseGame", throwIfNotFound: true);
         m_Global_OpenJournal = m_Global.FindAction("OpenJournal", throwIfNotFound: true);
+        m_Global_OpenItems = m_Global.FindAction("OpenItems", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_SelectNextTab = m_UI.FindAction("SelectNextTab", throwIfNotFound: true);
@@ -1015,12 +1036,14 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IGlobalActions> m_GlobalActionsCallbackInterfaces = new List<IGlobalActions>();
     private readonly InputAction m_Global_PauseGame;
     private readonly InputAction m_Global_OpenJournal;
+    private readonly InputAction m_Global_OpenItems;
     public struct GlobalActions
     {
         private @PlayerInputActions m_Wrapper;
         public GlobalActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @PauseGame => m_Wrapper.m_Global_PauseGame;
         public InputAction @OpenJournal => m_Wrapper.m_Global_OpenJournal;
+        public InputAction @OpenItems => m_Wrapper.m_Global_OpenItems;
         public InputActionMap Get() { return m_Wrapper.m_Global; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1036,6 +1059,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @OpenJournal.started += instance.OnOpenJournal;
             @OpenJournal.performed += instance.OnOpenJournal;
             @OpenJournal.canceled += instance.OnOpenJournal;
+            @OpenItems.started += instance.OnOpenItems;
+            @OpenItems.performed += instance.OnOpenItems;
+            @OpenItems.canceled += instance.OnOpenItems;
         }
 
         private void UnregisterCallbacks(IGlobalActions instance)
@@ -1046,6 +1072,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @OpenJournal.started -= instance.OnOpenJournal;
             @OpenJournal.performed -= instance.OnOpenJournal;
             @OpenJournal.canceled -= instance.OnOpenJournal;
+            @OpenItems.started -= instance.OnOpenItems;
+            @OpenItems.performed -= instance.OnOpenItems;
+            @OpenItems.canceled -= instance.OnOpenItems;
         }
 
         public void RemoveCallbacks(IGlobalActions instance)
@@ -1389,6 +1418,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnPauseGame(InputAction.CallbackContext context);
         void OnOpenJournal(InputAction.CallbackContext context);
+        void OnOpenItems(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

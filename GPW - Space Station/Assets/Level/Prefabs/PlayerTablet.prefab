@@ -1215,6 +1215,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2057121710655561579}
+  - component: {fileID: 3789801281589856837}
   m_Layer: 5
   m_Name: ObjectiveRoot
   m_TagString: Untagged
@@ -1242,6 +1243,28 @@ Transform:
   - {fileID: 6247078727243141681}
   m_Father: {fileID: 6020777605198993996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3789801281589856837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497023208402850465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f51261ebaca63843b1e3452825c99a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectiveText: {fileID: 4731429647991675634}
+  objectives:
+  - Repair Escape Pod
+  - Find Engine In Engineering
+  - Repair Engine
+  - Find Thrusters in Medical
+  - Repair Thrusters
+  - Find Shields in Crew Bunks
+  - Repair Shields
+  - Escape
 --- !u!1 &1533830132020432623
 GameObject:
   m_ObjectHideFlags: 0
