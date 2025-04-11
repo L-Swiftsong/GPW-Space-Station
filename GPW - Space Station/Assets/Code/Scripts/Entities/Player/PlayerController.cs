@@ -711,7 +711,7 @@ namespace Entities.Player
         private void PlayFootstep()
         {
             // Retrieve the values for our footstep clip based on our current material & movement state..
-            (AudioClip FootstepClip, Vector2 PitchRange) footstepClipValues = _footstepClips.GetAudioSettings(_currentMovementState);
+            FootstepClipInformation footstepClipValues = _footstepClips.GetAudioSettings(_currentMovementState);
 
             // Determine our detectable radius based on our movement state.
             float detectionRadius = _currentMovementState switch {
@@ -723,7 +723,7 @@ namespace Entities.Player
             };
 
             // Play our FootstepClip via the SFXManager.
-            Audio.SFXManager.Instance.PlayDetectableClipAtPosition(footstepClipValues.FootstepClip, transform.position, detectionRadius, minPitch: footstepClipValues.PitchRange.x, maxPitch: footstepClipValues.PitchRange.y);
+            Audio.SFXManager.Instance.PlayDetectableClipAtPosition(footstepClipValues.FootstepClip, transform.position, detectionRadius, minPitch: footstepClipValues.PitchRange.x, maxPitch: footstepClipValues.PitchRange.y, volume: footstepClipValues.VolumeMultiplier);
         }
 
         private float GetCurrentFootstepRate()
