@@ -17,9 +17,14 @@ public class PlayerHealth : MonoBehaviour
 
 
     [Header("VFX")]
-    [SerializeField] private GameObject _threeQuartersHealthVisor; // <75%.
-    [SerializeField] private GameObject _lowHealthVisor; // <50%.
-    [SerializeField] private GameObject _criticalHealthVisor; // <25%.
+    [SerializeField] private HealthValueToVFX[] _healthValueToVFXReferences;
+
+    [System.Serializable]
+    private struct HealthValueToVFX
+    {
+        public int HealthValue;
+        public GameObject HealthVisorUI;
+    }
 
 
     [Header("Healing")]
@@ -90,9 +95,10 @@ public class PlayerHealth : MonoBehaviour
     void UpdateHealthUI()
     {
         // Changes visor state depending on current health.
-        _threeQuartersHealthVisor.SetActive(_currentHealth == 3);
-        _lowHealthVisor.SetActive(_currentHealth == 2);
-        _criticalHealthVisor.SetActive(_currentHealth == 1);
+        for(int i = 0; i < _healthValueToVFXReferences.Length; ++i)
+        {
+            _healthValueToVFXReferences[i].HealthVisorUI.SetActive(_healthValueToVFXReferences[i].HealthValue == _currentHealth);
+        }
     }
 
     IEnumerator StartDamageCooldown()
@@ -176,8 +182,7 @@ public class PlayerHealth : MonoBehaviour
     private void DisableHealthVisors()
     {
         // Disable the health visors (for UI effects)
-        _threeQuartersHealthVisor.SetActive(false);
-        _lowHealthVisor.SetActive(false);
-        _criticalHealthVisor.SetActive(false);
+        for(int i = 0; i < _healthValueToVFXReferences.Length; ++i)
+            _healthValueToVFXReferences[i].HealthVisorUI.SetActive(false);
     }
 }
