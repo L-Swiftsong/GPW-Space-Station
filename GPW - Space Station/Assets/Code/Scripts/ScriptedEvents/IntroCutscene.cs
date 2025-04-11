@@ -11,7 +11,6 @@ namespace ScriptedEvents
     {
         #if UNITY_EDITOR
         [SerializeField] private bool _disableInEditor;
-        [Space(10)]
         #endif
         
 
