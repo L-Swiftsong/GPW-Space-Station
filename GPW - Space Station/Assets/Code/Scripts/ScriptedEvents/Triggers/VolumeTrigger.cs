@@ -51,6 +51,10 @@ namespace ScriptedEvents.Triggers
                 {
                     return true;
                 }
+                if (collider.GetComponent<MimicController>())
+                {
+                    return true;
+                }
             }
 
             if (_triggerTypes.HasFlag(TriggerTypes.Object))

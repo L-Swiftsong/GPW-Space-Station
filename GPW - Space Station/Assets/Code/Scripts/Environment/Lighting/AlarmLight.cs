@@ -33,6 +33,11 @@ namespace Environment.Lighting
                 alarmInProgress = true;
                 StartCoroutine(AlarmSequence());
             }
+
+            if (!activateAlarms.alarmStarted)
+            {
+                alarmInProgress = false;
+            }
         }
 
         IEnumerator AlarmSequence()

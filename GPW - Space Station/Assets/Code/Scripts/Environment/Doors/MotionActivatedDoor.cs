@@ -13,6 +13,8 @@ namespace Environment.Doors
         [SerializeField] private float _openDuration = 2.0f;
         private float _openTimeRemaining = 0.0f;
 
+        public bool _isLocked = false;
+
 
         private void Update()
         {
@@ -24,8 +26,27 @@ namespace Environment.Doors
                     Close();
                 }
             }
+
+            if (_openCount < 0)
+            {
+                _openCount = 0;
+            }
         }
 
+        public void LockDoor()
+        {
+            _isLocked = true;
+            _openCount = 0;
+            _openTimeRemaining = 0f;
+            Close();
+        }
+
+        public void CloseDoor()
+        {
+            _openCount = 0;
+            _openTimeRemaining = 0f;
+            Close();
+        }
 
         private void OnTriggerEnter(Collider other)
         {
@@ -34,6 +55,13 @@ namespace Environment.Doors
                 Debug.Log(other.name + " was invalid");
                 return;
             }
+
+            if (_isLocked)
+            {
+                Debug.Log(other.name + " was valid but door is locked");
+                return;
+            }
+
             Debug.Log(other.name + " was valid");
 
             _openCount++;

@@ -74,25 +74,25 @@ public class CameraFocusLook : MonoBehaviour
 
     public void TriggerFocusLook(GameObject target, float duration = 3f, float strength = 3f, PlayerInput.ActionTypes preventedActionTypes = PlayerInput.ActionTypes.Movement)
     {
+        if (isFocusLookActive)
+        {
+            StopFocusLook();
+        }
+
         focusLookTarget = target;
         focusLookDuration = duration;
         lookStrength = strength;
         focusLookTimer = 0f;
         isFocusLookActive = true;
 
-
         if (focusLookDuration <= _cameraInputPreventionDefaultTime)
         {
-            // Our camera focus duration is less than our default camera prevention time.
-            // Treat it as if we wanted to prevent camera input by default.
             preventedActionTypes |= PlayerInput.ActionTypes.Camera;
         }
+
         _preventedActionTypes = preventedActionTypes;
 
-        // Note: We're including Camera input in the prevention here so that the camera input isn't registered for the first '_cameraInputPreventionDefaultTime' seconds.
-        //      This effectively does nothing if we are already disabling camera input.
         PlayerInput.PreventActions(this.GetType(), preventedActionTypes | PlayerInput.ActionTypes.Camera);
-
     }
 
     private bool ShouldStopFocusLook(bool allowInputToCancel)

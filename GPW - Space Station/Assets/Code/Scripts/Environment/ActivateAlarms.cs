@@ -7,9 +7,6 @@ namespace Environment
     {
         public bool alarmStarted = false;
 
-        [Header("Alarm Trigger")]
-        [SerializeField] GameObject keyCard;
-
         private AudioSource audioSource;
         public bool colliderTriggered = false;
 
@@ -23,6 +20,13 @@ namespace Environment
             alarmStarted = true;
 
             audioSource.Play();
+        }
+
+        public void StopAlarms()
+        {
+            alarmStarted = false;
+
+            audioSource.loop = false;
         }
 
         private void OnTriggerEnter(Collider other)
