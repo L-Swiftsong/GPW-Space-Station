@@ -27342,10 +27342,52 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 4302494106266571, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
     - {fileID: 5685282861593617390, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
+    - {fileID: 8817031469028200855, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
+    - {fileID: 1794482196743752492, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6516421081717169975, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7125440207890410203}
   m_SourcePrefab: {fileID: 100100000, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
+--- !u!1 &1221070660152621316 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6516421081717169975, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
+  m_PrefabInstance: {fileID: 5376426287282923059}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7125440207890410203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221070660152621316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9893ebfb172001b4c89fa1b7ba107da2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    ObjectSaveData:
+      <ID>k__BackingField:
+        Part1: 0
+        Part2: 0
+        Part3: 0
+        Part4: 0
+      Position: {x: 0, y: 0, z: 0}
+      Rotation: {x: 0, y: 0, z: 0, w: 0}
+      Exists: 0
+      DisabledState: 0
+      BoolValues: 
+      IntValues: 
+  _startOpen: 0
+  _minToggleDelay: 0.2
 --- !u!4 &1472252454021723096 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6841701171644290539, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
@@ -27974,7 +28016,7 @@ PrefabInstance:
     - target: {fileID: 5481770401224863894, guid: 6434977ab6e9a57448099c3e98708e08, type: 3}
       propertyPath: connectedDoor
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 7125440207890410203}
     - target: {fileID: 5481770401224863894, guid: 6434977ab6e9a57448099c3e98708e08, type: 3}
       propertyPath: correctFirstDigit
       value: 1
