@@ -71,6 +71,14 @@ namespace JSONSerialisation
                 File.Delete(filePath);
             }
         }
+        public static void Delete(FileInfo fileInfo)
+        {
+            if (File.Exists(fileInfo.FullName))
+            {
+                Debug.Log("Deleting File: " + fileInfo.FullName);
+                File.Delete(fileInfo.FullName);
+            }
+        }
         public static void DeleteAll()
         {
             foreach(string filePath in Directory.GetFiles(DATA_PATH))

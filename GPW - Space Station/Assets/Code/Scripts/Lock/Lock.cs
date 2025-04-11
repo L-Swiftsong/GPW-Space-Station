@@ -280,6 +280,8 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
             this._saveData = new PadlockSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), false, currentDigits);
         }
 
+        ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+        
         return this._saveData.ObjectSaveData;
     }
 

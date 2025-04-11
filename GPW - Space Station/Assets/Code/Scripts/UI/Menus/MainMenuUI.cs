@@ -49,7 +49,7 @@ namespace UI.Menus
             Debug.Log("Set Lock State");
             Cursor.lockState = CursorLockMode.None;
 
-            _loadSavesMenu.SetCallbacks(onSaveCountChanged: UpdateMainSaveButtons, onLoadButtonPressed: (GameObject button, System.IO.FileInfo fileInfo) => _loadSavesMenu.LoadSaveFromFile(fileInfo));
+            _loadSavesMenu.SetCallbacks(onSaveCountChanged: UpdateMainSaveButtons);
             _loadSavesMenu.UpdateSavedGames();
 
             // Start with only the main menu enabled.

@@ -31,7 +31,7 @@ namespace Saving
 
             if (GUILayout.Button("Delete Game"))
             {
-                SaveManager.DeleteGame(filePath);
+                SaveManager.DeleteSave(filePath);
             }
         }
     }

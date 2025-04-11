@@ -74,6 +74,8 @@ namespace Items
                 };
             }
 
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData, this);
+
             return this._saveData;
         }
         public void InitialiseID()

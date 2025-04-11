@@ -142,9 +142,8 @@ namespace Saving
 
         #endregion
 
-        public static void DeleteGame(string fileName)
-        {
-            JsonDataService.Delete(fileName);
-        }
+        public static void DeleteSave(string fileName) => JsonDataService.Delete(fileName);
+        public static void DeleteSave(FileInfo fileInfo) => JsonDataService.Delete(fileInfo);
+        public static void DeleteAllSaves() => JsonDataService.DeleteAll();
     }
 }

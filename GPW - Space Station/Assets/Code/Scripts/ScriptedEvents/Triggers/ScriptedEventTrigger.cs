@@ -107,6 +107,8 @@ namespace ScriptedEvents.Triggers
                 };
             }
 
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData, this);
+
             return this._saveData;
         }
 

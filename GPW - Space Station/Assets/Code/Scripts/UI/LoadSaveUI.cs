@@ -14,7 +14,8 @@ namespace UI
         private FileInfo[] _saveGameFiles = null;
 
         private System.Action<bool> _onSaveCountChangedCallback;
-        private System.Action<GameObject, FileInfo> _onLoadButtonPressedCallback;
+        private System.Action _onConfirmationQueryOpenedCallback;
+        private System.Action _onConfirmationQueryCancelledCallback;
 
 
         [Header("References")]
@@ -22,17 +23,21 @@ namespace UI
 
         [Space(5)]
         [SerializeField] private Transform _loadSaveOptionsContainer;
-        [SerializeField] private Button _loadSaveGameButtonPrefab;
+        [SerializeField] private LoadOrDeleteSaveButton _loadSaveGameButtonPrefab;
 
         [Space(5)]
         [SerializeField] private Button _loadSavesBackButton;
-        
+
+        [Space(5)]
+        [SerializeField] private ConfirmationUI _confirmationUI;
 
 
-        public void SetCallbacks(System.Action<bool> onSaveCountChanged, System.Action<GameObject, FileInfo> onLoadButtonPressed)
+
+        public void SetCallbacks(System.Action<bool> onSaveCountChanged, System.Action onConfirmationQueryOpenedCallback = null, System.Action onConfirmationQueryCancelledCallback = null)
         {
             this._onSaveCountChangedCallback = onSaveCountChanged;
-            this._onLoadButtonPressedCallback = onLoadButtonPressed;
+            this._onConfirmationQueryOpenedCallback = onConfirmationQueryOpenedCallback;
+            this._onConfirmationQueryCancelledCallback = onConfirmationQueryCancelledCallback;
         }
         public bool HasSaves() => _saveGameFiles != null && _saveGameFiles.Length > 0;
 
@@ -42,10 +47,7 @@ namespace UI
             _loadSaveUIContainer.SetActive(true);
             EventSystem.current.SetSelectedGameObject(_loadSavesBackButton.gameObject);
         }
-        public void Hide()
-        {
-            _loadSaveUIContainer.SetActive(false);
-        }
+        public void Hide() => _loadSaveUIContainer.SetActive(false);
 
 
         public void UpdateSavedGames()
@@ -60,39 +62,44 @@ namespace UI
             else
             {
                 _onSaveCountChangedCallback?.Invoke(false);
+                DeleteOldSaveUI();
+            }
+        }
+
+        private void DeleteOldSaveUI()
+        {
+            for (int i = 0; i < _loadSaveOptionsContainer.childCount; i++)
+            {
+                Destroy(_loadSaveOptionsContainer.GetChild(i).gameObject);
             }
         }
         private void RegenerateLoadSaveUI()
         {
             // Remove the old UI elements.
-            for (int i = 0; i < _loadSaveOptionsContainer.childCount; i++)
-            {
-                // Unsubscribe from the button's events.
-                Button loadSaveButton = _loadSaveOptionsContainer.GetChild(i).GetComponent<Button>();
-                loadSaveButton.onClick.RemoveAllListeners();
+            DeleteOldSaveUI();
 
-                // Destroy the button.
-                Destroy(loadSaveButton.gameObject);
-            }
-
-            // Add in the new UI elements.
-            List<Button> loadSaveButtons = new List<Button>();
+            // Create the new UI elements.
+            List<LoadOrDeleteSaveButton> loadSaveButtons = new List<LoadOrDeleteSaveButton>();
             for (int i = 0; i < _saveGameFiles.Length; i++)
             {
                 // Instantiate the button instance.
-                Button loadSaveButtonInstance = Instantiate(_loadSaveGameButtonPrefab, _loadSaveOptionsContainer);
+                LoadOrDeleteSaveButton loadSaveButtonInstance = Instantiate(_loadSaveGameButtonPrefab, _loadSaveOptionsContainer);
                 loadSaveButtons.Add(loadSaveButtonInstance);
 
                 // Assign this button to load the corresponding save file when clicked.
                 System.IO.FileInfo fileInfoRef = _saveGameFiles[i];
-                loadSaveButtonInstance.onClick.AddListener(() => _onLoadButtonPressedCallback?.Invoke(loadSaveButtonInstance.gameObject, fileInfoRef));
+                loadSaveButtonInstance.OnLoadSaveCallback += () => LoadSaveFromFile(fileInfoRef);
+                loadSaveButtonInstance.OnDeleteSaveCallback += () => DeleteSaveFile(fileInfoRef);
+
+                loadSaveButtonInstance.OnConfirmationStartedCallback += _onConfirmationQueryOpenedCallback;
+                loadSaveButtonInstance.OnConfirmationCancelledCallback += _onConfirmationQueryCancelledCallback;
+
 
                 // Set the button's text to match its corresponding save file's name.
-                TMP_Text loadSaveButtonText = loadSaveButtonInstance.GetComponentInChildren<TMP_Text>();
-                loadSaveButtonText.text = _saveGameFiles[i].Name;
+                loadSaveButtonInstance.Setup(_confirmationUI, fileInfoRef.Name);
             }
 
-            // Setup navigation.
+            // Setup navigation for the new elements.
             if (loadSaveButtons.Count > 1)
             {
                 for (int i = 0; i < loadSaveButtons.Count; i++)
@@ -100,30 +107,47 @@ namespace UI
                     if (i == 0)
                     {
                         // This is the first button.
-                        loadSaveButtons[i].SetupNavigation(selectOnUp: _loadSavesBackButton, selectOnDown: loadSaveButtons[i + 1]);
+                        loadSaveButtons[i].SetupNavigation(upLeft: _loadSavesBackButton, upRight: _loadSavesBackButton, belowLoadOrDeleteButton: loadSaveButtons[i + 1]);
                     }
                     else if (i == loadSaveButtons.Count - 1)
                     {
                         // This is the last button.
-                        loadSaveButtons[i].SetupNavigation(selectOnUp: loadSaveButtons[i - 1], selectOnDown: _loadSavesBackButton);
-                        _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[i], selectOnDown: loadSaveButtons[0]);
+                        loadSaveButtons[i].SetupNavigation(aboveLoadOrDeleteButton: loadSaveButtons[i - 1], downLeft: _loadSavesBackButton, downRight: _loadSavesBackButton);
+                        _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[i].GetDefaultSelectable(), selectOnDown: loadSaveButtons[0].GetDefaultSelectable());
                     }
                     else
                     {
                         // This is a middle button.
-                        loadSaveButtons[i].SetupNavigation(selectOnUp: loadSaveButtons[i - 1], selectOnDown: loadSaveButtons[i + 1]);
+                        loadSaveButtons[i].SetupNavigation(aboveLoadOrDeleteButton: loadSaveButtons[i - 1], belowLoadOrDeleteButton: loadSaveButtons[i + 1]);
                     }
                 }
             }
             else if (loadSaveButtons.Count == 1)
             {
-                loadSaveButtons[0].SetupNavigation(selectOnUp: _loadSavesBackButton, selectOnDown: _loadSavesBackButton);
-                _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[0], selectOnDown: loadSaveButtons[0]);
+                loadSaveButtons[0].SetupNavigation(upLeft: _loadSavesBackButton, upRight: _loadSavesBackButton, downLeft: _loadSavesBackButton, downRight: _loadSavesBackButton);
+                _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[0].GetDefaultSelectable(), selectOnDown: loadSaveButtons[0].GetDefaultSelectable());
             }
+        }
+
+
+        public void RequestAllSaveDeletion()
+        {
+            _onConfirmationQueryOpenedCallback?.Invoke();
+            _confirmationUI.RequestConfirmation("Are you sure you wish to\nDelete All Existing Saves?", onCancelCallback: _onConfirmationQueryCancelledCallback, onConfirmCallback: DeleteAllSaves);
         }
 
 
         public void LoadMostRecentSave() => SaveManager.Instance.LoadMostRecentSave();
         public void LoadSaveFromFile(FileInfo fileInfo) => SaveManager.Instance.LoadGame(fileInfo);
+        public void DeleteSaveFile(FileInfo fileInfo)
+        {
+            SaveManager.DeleteSave(fileInfo);
+            UpdateSavedGames();
+        }
+        private void DeleteAllSaves()
+        {
+            SaveManager.DeleteAllSaves();
+            UpdateSavedGames();
+        }
     }
 }

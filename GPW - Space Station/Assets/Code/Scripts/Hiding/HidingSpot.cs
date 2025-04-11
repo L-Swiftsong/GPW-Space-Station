@@ -27,6 +27,11 @@ namespace Hiding
         [SerializeField] private bool _automaticallyRemoveObstructedSpots = false;
         [SerializeField] private LayerMask _exitSpotObstructionLayers = 1 << 0 | 1 << 7 | 1 << 8 | 1 << 9;
 
+        #if UNITY_EDITOR
+        [Header("Debug")]
+        [SerializeField] private bool _showExitSpotRemovalLogs = false;
+        #endif
+
 
         #region Properties
 
@@ -81,7 +86,11 @@ namespace Hiding
                 if (Physics.Linecast(transform.position, GetExitSpot(i), _exitSpotObstructionLayers, QueryTriggerInteraction.Ignore))
                 {
                     // There is an obstruction leading to this spot.
-                    Debug.Log($"Exit Spot {i} {_exitSpots[i]} was obstructed. Removing");
+                    #if UNITY_EDITOR
+                    if (_showExitSpotRemovalLogs)
+                        Debug.Log($"Exit Spot {i} {_exitSpots[i]} was obstructed. Removing");
+                    #endif
+
                     _exitSpots.RemoveAt(i);
                     --i;
                 }

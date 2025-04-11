@@ -43,7 +43,10 @@ namespace Items
             }
             #endif
 
-            AddKeycardDecoder(0);
+            if (!_hasKeycardDecoder)
+            {
+                AddKeycardDecoder(0);
+            }
         }
 
 

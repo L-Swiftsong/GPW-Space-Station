@@ -25,29 +25,12 @@ namespace Items.Keycards
 
             KeycardReader.OnAnyKeycardReaderHighlighted += KeycardReader_OnAnyKeycardReaderHighlighted;
             KeycardReader.OnAnyKeycardReaderStopHighlighted += KeycardReader_OnAnyKeycardReaderStopHighlighted;
-
-            SceneManagement.SceneLoader.OnLoadFinished += SceneLoader_OnLoadFinished;
         }
         private void OnDestroy()
         {
             KeycardReader.OnAnyKeycardReaderHighlighted -= KeycardReader_OnAnyKeycardReaderHighlighted;
             KeycardReader.OnAnyKeycardReaderStopHighlighted -= KeycardReader_OnAnyKeycardReaderStopHighlighted;
-
-            SceneManagement.SceneLoader.OnLoadFinished -= SceneLoader_OnLoadFinished;
         }
-
-
-        #region Temp
-
-        private void SceneLoader_OnLoadFinished()
-        {
-            if (_resetSecurityLevelOnSceneLoad)
-            {
-                SetSecurityLevel(0, allowReduction: true);
-            }
-        }
-
-        #endregion
 
 
         private void KeycardReader_OnAnyKeycardReaderHighlighted(object sender, System.EventArgs e) => Equip();

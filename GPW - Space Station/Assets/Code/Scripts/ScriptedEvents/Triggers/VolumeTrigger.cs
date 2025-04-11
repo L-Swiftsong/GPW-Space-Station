@@ -17,6 +17,7 @@ namespace ScriptedEvents.Triggers
 
         protected virtual void OnTriggerEnter(Collider other)
         {
+            Debug.Log(other.name);
             if (IsValidCollider(other))
             {
                 // The collider is valid.

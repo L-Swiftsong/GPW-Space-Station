@@ -10,9 +10,6 @@ namespace UI
         private System.Action _onCancelCallback;
         private System.Action _onConfirmCallback;
 
-        private const string QUERY_PREFIX = "Are you sure you want to\n";
-        private const string QUERY_SUFFIX = "?";
-
 
         private void OnDisable()
         {
@@ -24,14 +21,13 @@ namespace UI
 
         public void RequestConfirmation(string queryStatement, System.Action onCancelCallback, System.Action onConfirmCallback)
         {
-            _confirmationQueryText.text = AssembleQuery(queryStatement);
+            _confirmationQueryText.text = queryStatement;
 
             _onCancelCallback = onCancelCallback;
             _onConfirmCallback = onConfirmCallback;
 
             ShowConfirmationUI();
         }
-        private string AssembleQuery(string queryStatement) => string.Concat(QUERY_PREFIX, queryStatement, QUERY_SUFFIX);
 
 
         public void Cancel()
