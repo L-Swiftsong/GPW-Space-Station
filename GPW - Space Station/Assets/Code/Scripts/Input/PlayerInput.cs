@@ -23,8 +23,6 @@ public class PlayerInput : MonoBehaviour
     public static event Action OnSelectPreviousTabPerformed;
 
 
-    public static event Action OnJumpPerformed;
-
     public static event Action OnCrouchPerformed;
     public static event Action OnCrouchStarted;
     public static event Action OnCrouchCancelled;
@@ -192,8 +190,6 @@ public class PlayerInput : MonoBehaviour
 
 
         // Subscribe to events (Movement).
-        s_playerInput.Movement.Jump.performed += Jump_performed;
-
         s_playerInput.Movement.Crouch.performed += Crouch_performed;
         s_playerInput.Movement.Crouch.started += Crouch_started;
         s_playerInput.Movement.Crouch.canceled += Crouch_cancelled;
@@ -258,8 +254,6 @@ public class PlayerInput : MonoBehaviour
 
 
         // Unsubscribe from events (Movement).
-        s_playerInput.Movement.Jump.performed -= Jump_performed;
-
         s_playerInput.Movement.Crouch.performed -= Crouch_performed;
         s_playerInput.Movement.Crouch.started -= Crouch_started;
         s_playerInput.Movement.Crouch.canceled -= Crouch_cancelled;
@@ -300,9 +294,6 @@ public class PlayerInput : MonoBehaviour
 
     private void SelectNextTab_performed(InputAction.CallbackContext context) => OnSelectNextTabPerformed?.Invoke();
     private void SelectPreviousTab_performed(InputAction.CallbackContext context) => OnSelectPreviousTabPerformed?.Invoke();
-
-
-    private void Jump_performed(InputAction.CallbackContext context) => OnJumpPerformed?.Invoke();
 
 
     private void Crouch_performed(InputAction.CallbackContext context) => OnCrouchPerformed?.Invoke();
