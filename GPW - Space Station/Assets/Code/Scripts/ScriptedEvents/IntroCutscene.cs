@@ -4,12 +4,17 @@ using UnityEngine;
 using SceneManagement;
 using Entities.Player;
 using Saving.LevelData;
-using Saving;
 
 namespace ScriptedEvents
 {
     public class IntroCutscene : MonoBehaviour, ISaveableObject
     {
+        #if UNITY_EDITOR
+        [SerializeField] private bool _disableInEditor;
+        [Space(10)]
+        #endif
+        
+
         #region Saving Variables & References
 
         [field: SerializeField] public SerializableGuid ID { get; set; }
@@ -25,6 +30,14 @@ namespace ScriptedEvents
 
         private void Awake()
         {
+            #if UNITY_EDITOR
+            if (_disableInEditor)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+            #endif
+
             SceneLoader.OnLoadFinished += SceneLoader_OnLoadFinished;
         }
         private void OnDestroy()
