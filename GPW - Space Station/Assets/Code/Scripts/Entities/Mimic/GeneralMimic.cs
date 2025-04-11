@@ -34,7 +34,8 @@ namespace Entities.Mimic
 
         public event System.Action<State> OnStateChanged;
 
-
+        public State GetCurrentState() => _currentState;
+        public PreparingToChaseState GetPreparingToChaseState() => _preparingToChaseState;
 
         private void Awake()
         {

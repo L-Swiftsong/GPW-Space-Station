@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Entities.Player;
+using Entities.Mimic;
 using Audio;
 
 public class MimicAttack : MonoBehaviour
@@ -10,6 +11,8 @@ public class MimicAttack : MonoBehaviour
     [Header("References")]
     [SerializeField] private NavMeshAgent _navMeshAgent;
     private PlayerHealth _playerHealth;
+    private PlayerController _playerController;
+    private GeneralMimic _generalMimic;
 
     [Header("Settings")]
     [SerializeField] private float _attackCooldown = 2f;
@@ -41,9 +44,15 @@ public class MimicAttack : MonoBehaviour
     {
         if (PlayerManager.Instance.Player.TryGetComponent<PlayerHealth>(out _playerHealth) == false)
         {
-            // Failed to get PlayerHealth reference.
             Debug.LogError("Error: Chase Mimic initialised without PlayerHealth reference");
         }
+
+        if (PlayerManager.Instance.Player.TryGetComponent<PlayerController>(out _playerController) == false)
+        {
+            Debug.LogError("Error: Mimic initialised without PlayerController reference");
+        }
+
+        TryGetComponent<GeneralMimic>(out _generalMimic);
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
     }
@@ -57,6 +66,12 @@ public class MimicAttack : MonoBehaviour
         // Start attack if general/chase mimic catches player and isnt currently attacking.
         if ((transform.position - PlayerManager.Instance.Player.position).sqrMagnitude <= _attackRadius * _attackRadius)
         {
+
+            if (_generalMimic != null && _generalMimic.GetCurrentState() == _generalMimic.GetPreparingToChaseState())
+            {
+                return;
+            }
+
             PerformAttack();
         }
     }
@@ -64,6 +79,11 @@ public class MimicAttack : MonoBehaviour
 
     private void PerformAttack()
     {
+        if (_playerController.GetHiding() == true)
+        {
+            return;
+        }
+
         if (_isAttacking)
             return;
         _isAttacking = true;
@@ -108,7 +128,14 @@ public class MimicAttack : MonoBehaviour
     private void HandleAttackImpact()
     {
         _navMeshAgent.isStopped = true;
+
+        if (_playerController.GetHiding())
+        {
+            return;
+        }
+
         _playerHealth.TakeDamage(1);
+
         CameraShake.StartEventShake(intensity: 0.115f, speed: 25f, duration: 0.65f);
         StartCoroutine(PerformKnockback());
     }
