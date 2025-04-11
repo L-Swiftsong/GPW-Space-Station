@@ -145,8 +145,6 @@ namespace Entities.Player
         private void OnEnable()
         {
             // Subscribe to PlayerInput events.
-            PlayerInput.OnJumpPerformed += PlayerInput_OnJumpPerformed;
-
             PlayerInput.OnCrouchPerformed += PlayerInput_OnCrouchPerformed;
             PlayerInput.OnCrouchStarted += PlayerInput_OnCrouchStarted;
             PlayerInput.OnCrouchCancelled += PlayerInput_OnCrouchCancelled;
@@ -163,8 +161,6 @@ namespace Entities.Player
         private void OnDisable()
         {
             // Unsubscribe from PlayerInput events.
-            PlayerInput.OnJumpPerformed -= PlayerInput_OnJumpPerformed;
-
             PlayerInput.OnCrouchPerformed -= PlayerInput_OnCrouchPerformed;
             PlayerInput.OnCrouchStarted -= PlayerInput_OnCrouchStarted;
             PlayerInput.OnCrouchCancelled -= PlayerInput_OnCrouchCancelled;
@@ -181,8 +177,6 @@ namespace Entities.Player
 
 
         #region Input Functions
-
-        private void PlayerInput_OnJumpPerformed() => PerformJump();
 
         private void PlayerInput_OnCrouchPerformed()
         {

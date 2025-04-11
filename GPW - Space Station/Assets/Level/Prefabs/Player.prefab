@@ -204,9 +204,7 @@ MonoBehaviour:
   _currentHealth: 0
   _isDead: 0
   _damageCooldown: 0.25
-  _threeQuartersHealthVisor: {fileID: 0}
-  _lowHealthVisor: {fileID: 0}
-  _criticalHealthVisor: {fileID: 0}
+  _healthValueToVFXReferences: []
   _isHealing: 0
 --- !u!114 &7720648379847384992
 MonoBehaviour:
@@ -1643,7 +1641,7 @@ PrefabInstance:
       objectReference: {fileID: 6197061550710832611}
     - target: {fileID: 1808597283584560106, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
       propertyPath: m_Size
-      value: 0.44999915
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1808597283584560106, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
       propertyPath: m_Value
@@ -1719,6 +1717,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2630578455241642160, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2630578455241642160, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2975986407051859611, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
