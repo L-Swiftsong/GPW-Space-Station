@@ -19,10 +19,10 @@ namespace Audio
 
         public void PlayFootstep()
         {
-            (AudioClip FootstepClip, Vector2 PitchRange) footstepClipValues = _footstepClips.GetAudioSettings(MovementState.Walking);
+            FootstepClipInformation footstepClipValues = _footstepClips.GetAudioSettings(MovementState.Walking);
             footstepClipValues.PitchRange *= _basePitch;
 
-            SFXManager.Instance.PlayClipAtPosition(footstepClipValues.FootstepClip, transform.position, minPitch: footstepClipValues.PitchRange.x, maxPitch: footstepClipValues.PitchRange.y, volume: _baseVolume, minDistance: _minDistance, maxDistance: _maxDistance, falloffCurve: _falloffCurve);
+            SFXManager.Instance.PlayClipAtPosition(footstepClipValues.FootstepClip, transform.position, minPitch: footstepClipValues.PitchRange.x, maxPitch: footstepClipValues.PitchRange.y, volume: _baseVolume * footstepClipValues.VolumeMultiplier, minDistance: _minDistance, maxDistance: _maxDistance, falloffCurve: _falloffCurve);
         }
     }
 }

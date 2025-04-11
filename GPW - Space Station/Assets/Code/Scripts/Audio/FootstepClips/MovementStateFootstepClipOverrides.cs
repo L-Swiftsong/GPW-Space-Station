@@ -17,7 +17,7 @@ namespace Audio.Footsteps
 
 
 
-        public (AudioClip AudioClip, Vector2 PitchRange) GetAudioValues(MovementState movementState)
+        public FootstepClipInformation GetAudioValues(MovementState movementState)
         {
             FootstepClipContainer footstepClipContainer = _defaultFootstepClips;
             for(int i = 0; i < _movementStateClipOverridesArray.Length; ++i)
@@ -30,7 +30,12 @@ namespace Audio.Footsteps
             }
 
             int randomClipIndex = Random.Range(0, footstepClipContainer.FootstepClips.Length);
-            return (footstepClipContainer.FootstepClips[randomClipIndex], new Vector2(footstepClipContainer.MinPitch, footstepClipContainer.MaxPitch));
+            return new FootstepClipInformation()
+            {
+                FootstepClip = footstepClipContainer.FootstepClips[randomClipIndex],
+                VolumeMultiplier = footstepClipContainer.VolumeMultiplier,
+                PitchRange = new Vector2(footstepClipContainer.MinPitch, footstepClipContainer.MaxPitch)
+            };
         }
 
 
