@@ -98,6 +98,8 @@ namespace Environment.Doors
             m_isOpen = _startOpen;
             OnOpenStateInstantChange?.Invoke(m_isOpen);
 
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+
             return this._saveData.ObjectSaveData;
         }
 

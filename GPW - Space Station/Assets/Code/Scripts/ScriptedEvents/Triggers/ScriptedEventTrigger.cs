@@ -12,7 +12,6 @@ namespace ScriptedEvents.Triggers
 
         [field: SerializeField] public SerializableGuid ID { get; set; }
         [SerializeField] private ObjectSaveData _saveData;
-        [SerializeField] private bool _triggerEventIfDestroyedOnLoad = false;
 
         #endregion
 
@@ -54,7 +53,7 @@ namespace ScriptedEvents.Triggers
                 return;
             }
 
-            Debug.Log("Activate Trigger");
+            Debug.Log("Activate Trigger", this);
             OnTriggerActivated?.Invoke();
 
 
@@ -95,10 +94,7 @@ namespace ScriptedEvents.Triggers
             this._saveData = saveData;
             _saveData.ID = ID;
 
-            ISaveableObject.PerformBindingChecks(this._saveData, this, () => {
-                if (_triggerEventIfDestroyedOnLoad) { ActivateTrigger(forceDestruction: true); }
-                else { Destroy(this.gameObject); }
-                });
+            ISaveableObject.PerformBindingChecks(this._saveData, this, () => { Destroy(this.gameObject); });
         }
         public ObjectSaveData BindNew()
         {
@@ -110,6 +106,8 @@ namespace ScriptedEvents.Triggers
                     Exists = true
                 };
             }
+
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData, this);
 
             return this._saveData;
         }

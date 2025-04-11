@@ -14,6 +14,7 @@ namespace UI.GameOver
 
 
         [SerializeField] private GameObject _container;
+        [SerializeField] private GameObject[] _initiallyActiveObjects;
         [SerializeField] private GameObject _firstSelectedElement;
 
 
@@ -32,7 +33,14 @@ namespace UI.GameOver
             Cursor.lockState = CursorLockMode.Confined;
             UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(_firstSelectedElement);
 
+
             _container.SetActive(true);
+            foreach (Transform child in _container.transform)
+                child.gameObject.SetActive(false);
+            foreach (GameObject initiallyActiveObject in _initiallyActiveObjects)
+                initiallyActiveObject.SetActive(true);
+
+
             PlayerInput.PreventAllActions(typeof(GameOverUI));
         }
         public void HideGameOverUI()

@@ -197,6 +197,8 @@ namespace Environment.Buttons
                 this._saveData = new KeycardReaderSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), this._isUnlocked);
             }
 
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+
             return this._saveData.ObjectSaveData;
         }
 

@@ -33,6 +33,8 @@ namespace Saving.LevelData
                 this._saveData = new DoorSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), _isOpen);
             }
 
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+
             return this._saveData.ObjectSaveData;
         }
         private void LateUpdate()

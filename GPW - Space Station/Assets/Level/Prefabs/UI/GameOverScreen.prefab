@@ -563,6 +563,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _container: {fileID: 3085624090966145428}
+  _initiallyActiveObjects:
+  - {fileID: 1826039064716996843}
+  - {fileID: 7966831774993634917}
   _firstSelectedElement: {fileID: 7994699956143026604}
 --- !u!114 &8410306995041385374
 MonoBehaviour:
@@ -1752,8 +1755,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _loadSaveUIContainer: {fileID: 7558150585839275087}
   _loadSaveOptionsContainer: {fileID: 2478900570580380520}
-  _loadSaveGameButtonPrefab: {fileID: 9068098002454374338, guid: d6279971ed7f1f34a88889c14e080136, type: 3}
+  _loadSaveGameButtonPrefab: {fileID: 4160219125745798978, guid: d6279971ed7f1f34a88889c14e080136, type: 3}
   _loadSavesBackButton: {fileID: 322595988350323564}
+  _confirmationUI: {fileID: 5654214192725891060}
 --- !u!1 &7901937280025691643
 GameObject:
   m_ObjectHideFlags: 0
@@ -1871,7 +1875,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3981134753103519529
 RectTransform:
   m_ObjectHideFlags: 0

@@ -26,6 +26,8 @@ namespace Entities.Mimic
                 this._saveData = new MimicSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), GetSavableState());
             }
 
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+
             return this._saveData.ObjectSaveData;
         }
 

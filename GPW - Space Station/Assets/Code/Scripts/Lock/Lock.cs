@@ -257,7 +257,7 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 
     public void BindExisting(ObjectSaveData saveData)
     {
-        this._saveData = new PadlockSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this));
+        this._saveData = new PadlockSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this), _lockWheels.Length);
         _saveData.ID = ID;
 
         ISaveableObject.PerformBindingChecks(this._saveData.ObjectSaveData, this);
@@ -280,6 +280,8 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
             this._saveData = new PadlockSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), false, currentDigits);
         }
 
+        ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+        
         return this._saveData.ObjectSaveData;
     }
 

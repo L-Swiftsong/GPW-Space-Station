@@ -71,6 +71,14 @@ namespace JSONSerialisation
                 File.Delete(filePath);
             }
         }
+        public static void Delete(FileInfo fileInfo)
+        {
+            if (File.Exists(fileInfo.FullName))
+            {
+                Debug.Log("Deleting File: " + fileInfo.FullName);
+                File.Delete(fileInfo.FullName);
+            }
+        }
         public static void DeleteAll()
         {
             foreach(string filePath in Directory.GetFiles(DATA_PATH))
@@ -82,9 +90,9 @@ namespace JSONSerialisation
 
         public static IEnumerable<string> GetSaveNames()
         {
-            foreach(string path in Directory.EnumerateFiles(DATA_PATH))
+            foreach(string path in Directory.GetFiles(DATA_PATH))
             {
-                if (Path.GetExtension(path) == FILE_EXTENSION)
+                if (Path.GetExtension(path).EndsWith(FILE_EXTENSION))
                 {
                     yield return Path.GetFileNameWithoutExtension(path);
                 }
