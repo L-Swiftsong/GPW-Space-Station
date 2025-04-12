@@ -97,6 +97,9 @@ namespace Items.Healing
 
         private void StartHealing()
         {
+            if (_currentMedkitCount <= 0)
+                return;
+
             Equip();
             _playerHealth.StartHealing(_healingAmount, _healingDelay);
             SFXManager.Instance.PlayClipAtPosition(_healSound, transform.position, 1, 1, 2);
