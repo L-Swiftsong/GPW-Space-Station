@@ -38,14 +38,14 @@ namespace Items.Healing
 
 		private void OnEnable()
         {
-            PlayerInput.OnUseHealingItemStarted += PlayerInput_OnUseHealingItemStarted;
+            //PlayerInput.OnUseHealingItemStarted += PlayerInput_OnUseHealingItemStarted;
             //PlayerInput.OnUseHealingItemCancelled += PlayerInput_OnUseHealingItemCancelled;
             
             _playerHealth.OnUsedHealthKit += PlayerHealth_OnHealthKitUsed;
         }
         private void OnDisable()
         {
-            PlayerInput.OnUseHealingItemStarted -= PlayerInput_OnUseHealingItemStarted;
+            //PlayerInput.OnUseHealingItemStarted -= PlayerInput_OnUseHealingItemStarted;
             //PlayerInput.OnUseHealingItemCancelled -= PlayerInput_OnUseHealingItemCancelled;
 
             _playerHealth.OnUsedHealthKit -= PlayerHealth_OnHealthKitUsed;
@@ -95,7 +95,7 @@ namespace Items.Healing
         public int GetCurrentCount() => _currentMedkitCount;
 
 
-        private void StartHealing()
+        public void StartHealing()
         {
             if (_currentMedkitCount <= 0)
                 return;
