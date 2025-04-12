@@ -1,5 +1,70 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &148315730363564162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3853207275047086678}
+  - component: {fileID: 1024715631750294629}
+  m_Layer: 0
+  m_Name: Tablet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3853207275047086678
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148315730363564162}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 539363762364115234}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1024715631750294629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148315730363564162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupSetupInformation:
+    PopupPreText: Press
+    InteractionType: 4
+    PopupPostText: to Move
+    FontSize: 36
+    IconSize: 50
+    DisplayOnMultipleLines: 0
+    KeepIconCentred: 1
+    UseCustomText: 1
+    CustomPreText: Press
+    CustomSprite: {fileID: 21300000, guid: 0f4f245794530354099be277f95f1f48, type: 3}
+    CustomPostText: to Open Tablet
+    ShowBackground: 1
+    PopupLifetime: 3
+    LinkedInteractable: {fileID: 0}
+    LinkToSuccess: 1
+    LinkToFailure: 1
+    AnchoredPosition: {x: 0, y: -100}
+    Pivot: {x: 1, y: 1}
+    AnchorMin: {x: 1, y: 1}
+    AnchorMax: {x: 1, y: 1}
 --- !u!1 &1073989459836234512
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,9 +699,8 @@ GameObject:
   - component: {fileID: 539363762364115234}
   - component: {fileID: 2681673509701108445}
   - component: {fileID: 3744316358118482886}
-  - component: {fileID: 2901236707623286037}
   m_Layer: 0
-  m_Name: Movement Popup
+  m_Name: Initial Popup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -651,10 +715,12 @@ Transform:
   m_GameObject: {fileID: 4056961229183689179}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.852, y: 0.504, z: 1.212}
+  m_LocalPosition: {x: -1.76, y: 0.35, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7763273942017999399}
+  - {fileID: 3853207275047086678}
   m_Father: {fileID: 4710366362252875455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &2681673509701108445
@@ -711,49 +777,19 @@ MonoBehaviour:
   _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
-    - _Target: {fileID: 2901236707623286037}
+    - _Target: {fileID: 3705924941875008989}
       _MemberName: Trigger
       _PersistentArguments: []
-  _useDelayedTrigger: 0
-  _canTriggerWhileAwaitingDelay: 0
+  _useDelayedTrigger: 1
+  _canTriggerWhileAwaitingDelay: 1
   _overridePreviousDelay: 1
-  _delayedTriggerDelayTime: 1
+  _delayedTriggerDelayTime: 3
   OnDelayedTriggerActivated:
-    _PersistentCalls: []
+    _PersistentCalls:
+    - _Target: {fileID: 1024715631750294629}
+      _MemberName: Trigger
+      _PersistentArguments: []
   _triggerTypes: 1
---- !u!114 &2901236707623286037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4056961229183689179}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _popupSetupInformation:
-    PopupPreText: Press
-    InteractionType: 4
-    PopupPostText: to Move
-    FontSize: 36
-    IconSize: 50
-    DisplayOnMultipleLines: 0
-    KeepIconCentred: 1
-    UseCustomText: 0
-    CustomPreText: 
-    CustomSprite: {fileID: 0}
-    CustomPostText: 
-    ShowBackground: 1
-    PopupLifetime: 3
-    LinkedInteractable: {fileID: 0}
-    LinkToSuccess: 1
-    LinkToFailure: 1
-    AnchoredPosition: {x: 0, y: -100}
-    Pivot: {x: 1, y: 1}
-    AnchorMin: {x: 1, y: 1}
-    AnchorMax: {x: 1, y: 1}
 --- !u!1 &4071246439915470368
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,6 +1313,71 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &7161600957770698116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7763273942017999399}
+  - component: {fileID: 3705924941875008989}
+  m_Layer: 0
+  m_Name: Movement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7763273942017999399
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7161600957770698116}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 539363762364115234}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3705924941875008989
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7161600957770698116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupSetupInformation:
+    PopupPreText: Press
+    InteractionType: 4
+    PopupPostText: to Move
+    FontSize: 36
+    IconSize: 50
+    DisplayOnMultipleLines: 0
+    KeepIconCentred: 1
+    UseCustomText: 0
+    CustomPreText: 
+    CustomSprite: {fileID: 0}
+    CustomPostText: 
+    ShowBackground: 1
+    PopupLifetime: 3
+    LinkedInteractable: {fileID: 0}
+    LinkToSuccess: 1
+    LinkToFailure: 1
+    AnchoredPosition: {x: 0, y: -100}
+    Pivot: {x: 1, y: 1}
+    AnchorMin: {x: 1, y: 1}
+    AnchorMax: {x: 1, y: 1}
 --- !u!1 &7734073996933150087
 GameObject:
   m_ObjectHideFlags: 0
