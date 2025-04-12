@@ -28,6 +28,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
     [Header("Key Item")]
 	[SerializeField] private KeyItemData _requiredKeyItem;
 	[SerializeField] private Transform _keyItemPlacement;
+	[SerializeField] private GameObject _ghostModel;
 
 	[Header("Player Tablet")]
 	[SerializeField] private PlayerTablet _playerTablet;
@@ -58,6 +59,8 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 				_playerTablet = PlayerManager.Instance.Player.GetComponentInChildren<PlayerTablet>(true);
 			}
 		}
+
+		_ghostModel.SetActive(false);
 	}
 
 	public void TryUseKeyItem(KeyItemData selectedKeyItem)
@@ -70,6 +73,8 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 			//KeyItemManager.Instance.PlaceItemAtLocation(_requiredKeyItem, _keyItemPlacement);
 			OnSuccessfulInteraction?.Invoke();
 			_hasPlacedItem = true;
+
+			_ghostModel.SetActive(false);
 
             UpdateUsedKeyItems();
 
@@ -110,8 +115,20 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 		}
 	}
 
-    public void Highlight() => IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
-    public void StopHighlighting() => IInteractable.StopHighlight(this.gameObject, _previousLayer);
+	public void Highlight()
+	{
+		IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
+
+		if (!_hasPlacedItem && _ghostModel != null)
+			_ghostModel.SetActive(true);
+	}
+	public void StopHighlighting()
+	{
+		IInteractable.StopHighlight(this.gameObject, _previousLayer);
+
+		if (_ghostModel != null)
+			_ghostModel.SetActive(false);
+	}
 
     public void FailInteraction()
 	{
