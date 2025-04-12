@@ -699,6 +699,7 @@ GameObject:
   - component: {fileID: 539363762364115234}
   - component: {fileID: 2681673509701108445}
   - component: {fileID: 3744316358118482886}
+  - component: {fileID: 4716364530807617904}
   m_Layer: 0
   m_Name: Initial Popup
   m_TagString: Untagged
@@ -780,6 +781,9 @@ MonoBehaviour:
     - _Target: {fileID: 3705924941875008989}
       _MemberName: Trigger
       _PersistentArguments: []
+    - _Target: {fileID: 4716364530807617904}
+      _MemberName: PlaySound
+      _PersistentArguments: []
   _useDelayedTrigger: 1
   _canTriggerWhileAwaitingDelay: 1
   _overridePreviousDelay: 1
@@ -789,7 +793,26 @@ MonoBehaviour:
     - _Target: {fileID: 1024715631750294629}
       _MemberName: Trigger
       _PersistentArguments: []
+    - _Target: {fileID: 4716364530807617904}
+      _MemberName: PlaySound
+      _PersistentArguments: []
   _triggerTypes: 1
+--- !u!114 &4716364530807617904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4056961229183689179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34940b893cd54004091b50ec5e85b30c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioClip: {fileID: 8300000, guid: 2e777745088d38345a86b2860a95d8eb, type: 3}
+  _volume: 1
+  _minPitch: 1
+  _maxPitch: 1
 --- !u!1 &4071246439915470368
 GameObject:
   m_ObjectHideFlags: 0

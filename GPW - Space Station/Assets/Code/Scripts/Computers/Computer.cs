@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UI.World;
 using Interaction;
+using UI.Popups;
 
 namespace Computers
 {
@@ -14,6 +15,8 @@ namespace Computers
 
         [Space(5)]
         [SerializeField] private WorldSpaceButton _saveGameButton;
+        [SerializeField] private ScreenSpacePopupTrigger _popupTrigger;
+        [SerializeField] private AudioTrigger _audioTrigger;
 
         [Space(5)]
         [SerializeField] private WorldSpaceButton _enableTerminalButton;
@@ -133,7 +136,13 @@ namespace Computers
             _logsUIRoot.SetActive(false);
         }
 
-        public void SaveGame() => Saving.SaveManager.Instance.SaveGameManual();
+        public void SaveGame()
+        {
+            Saving.SaveManager.Instance.SaveGameManual();
+
+            _popupTrigger.Trigger();
+            _audioTrigger.PlaySound();
+        }
 
         public void DisplayLog(TerminalLogSO terminalLogSO)
         {

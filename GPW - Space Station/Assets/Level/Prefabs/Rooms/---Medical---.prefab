@@ -28439,6 +28439,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6516421081717169975, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7125440207890410203}
+    - targetCorrespondingSourceObject: {fileID: 6516421081717169975, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6408638353112362075}
   m_SourcePrefab: {fileID: 100100000, guid: c004c0f5671b26e48af32b775ab61303, type: 3}
 --- !u!1 &1221070660152621316 stripped
 GameObject:
@@ -28477,6 +28480,32 @@ MonoBehaviour:
       IntValues: 
   _startOpen: 0
   _minToggleDelay: 0.2
+--- !u!114 &6408638353112362075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221070660152621316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f7944dfb8d8a0b48a6e59da5172f12d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _doorOpenClip: {fileID: 8300000, guid: 794ee1940059a484faa06d2ac39f68a3, type: 3}
+  _doorCloseClip: {fileID: 8300000, guid: ad199320fee944a4b9a91276a6e3e5c2, type: 3}
+  _volume: 1
+  _minPitch: 0.95
+  _maxPitch: 1.05
+  _minDistance: 3
+  _maxDistance: 40
+  _useCustomCurve: 0
+  _falloffCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &1472252454021723096 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6841701171644290539, guid: c004c0f5671b26e48af32b775ab61303, type: 3}

@@ -842,6 +842,8 @@ GameObject:
   - component: {fileID: 2467078335128044277}
   - component: {fileID: 6847120944027631144}
   - component: {fileID: 1275399875589751337}
+  - component: {fileID: 956508117185241501}
+  - component: {fileID: 8855271850618234960}
   m_Layer: 2
   m_Name: Computer
   m_TagString: Untagged
@@ -881,6 +883,8 @@ MonoBehaviour:
   _openLogsButton: {fileID: 876087802038970909}
   _closeLogsButton: {fileID: 675384460960190608}
   _saveGameButton: {fileID: 8468222815239759699}
+  _popupTrigger: {fileID: 956508117185241501}
+  _audioTrigger: {fileID: 8855271850618234960}
   _enableTerminalButton: {fileID: 209398615830106393}
   _disableTerminalButton: {fileID: 6181072146453213463}
   _enabledUIRoot: {fileID: 6605846888685436670}
@@ -914,6 +918,55 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 0.9, z: 0.37}
   m_Center: {x: 0, y: 0.45, z: 0.035}
+--- !u!114 &956508117185241501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4093559501361467340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _popupSetupInformation:
+    PopupPreText: Press
+    InteractionType: 0
+    PopupPostText: to Interact
+    FontSize: 36
+    IconSize: 50
+    DisplayOnMultipleLines: 0
+    KeepIconCentred: 0
+    UseCustomText: 1
+    CustomPreText: Game Saved
+    CustomSprite: {fileID: 0}
+    CustomPostText: 
+    ShowBackground: 1
+    PopupLifetime: 3
+    LinkedInteractable: {fileID: 0}
+    LinkToSuccess: 1
+    LinkToFailure: 1
+    AnchoredPosition: {x: 0, y: -100}
+    Pivot: {x: 1, y: 1}
+    AnchorMin: {x: 1, y: 1}
+    AnchorMax: {x: 1, y: 1}
+--- !u!114 &8855271850618234960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4093559501361467340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34940b893cd54004091b50ec5e85b30c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioClip: {fileID: 8300000, guid: 2e777745088d38345a86b2860a95d8eb, type: 3}
+  _volume: 1
+  _minPitch: 1
+  _maxPitch: 1
 --- !u!1 &4339709085073602655
 GameObject:
   m_ObjectHideFlags: 0
