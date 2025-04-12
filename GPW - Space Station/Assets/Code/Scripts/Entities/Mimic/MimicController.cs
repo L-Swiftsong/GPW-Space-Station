@@ -34,6 +34,9 @@ namespace Entities.Mimic
         private NavMeshAgent agent;
         private bool isMoving = false;
 
+        public bool _cancelOnAttack = false;
+        private GeneralMimic _generalMimic;
+
         private void Start()
         {
             gameObject.SetActive(false); // disabled by default until start movements called
@@ -55,7 +58,6 @@ namespace Entities.Mimic
             if (agent != null)
             {
                 StartCoroutine(HandleMovement());
-
             }
         }
 
@@ -66,6 +68,7 @@ namespace Entities.Mimic
 
             for (int i = 0; i < waypoints.Count; i++)
             {
+
                 var waypointData = waypoints[i];
                 if (agent == null) yield break;
 
@@ -118,19 +121,25 @@ namespace Entities.Mimic
                 }
             }
 
-            // Replaces the agent with chosen mimic prefab in inspector or do nothing if None is selected
+            ReplaceMimic();
+        }
+
+        public void ReplaceMimic()
+        {
             if (_linkedMimic != null)
             {
-                _linkedMimic.Activate();
                 if (_overridePositionAndRotation)
                 {
                     _linkedMimic.SetPositionAndRotation(transform.position, transform.rotation);
                 }
+
+                _linkedMimic.Activate();
+                _linkedMimic.TryGetComponent<GeneralMimic>(out _generalMimic);
+                _generalMimic.SkipPrepareStateOnce();
             }
 
             Destroy(this.gameObject);
         }
-
 
         protected override Saving.LevelData.MimicSavableState GetSavableState() => Saving.LevelData.MimicSavableState.Idle;
     }

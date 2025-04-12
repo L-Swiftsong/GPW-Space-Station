@@ -37,6 +37,8 @@ namespace Entities.Mimic
         public State GetCurrentState() => _currentState;
         public PreparingToChaseState GetPreparingToChaseState() => _preparingToChaseState;
 
+        private bool _skipPrepareStateOnce = false;
+
         private void Awake()
         {
             // Get Component References.
@@ -90,8 +92,15 @@ namespace Entities.Mimic
             {
                 if (_entitySenses.HasTarget)
                 {
-                    // We can see the player.
-                    SetActiveState(_preparingToChaseState);
+                    if (_skipPrepareStateOnce)
+                    {
+                        _skipPrepareStateOnce = false;
+                        SetActiveState(_chaseState);
+                    }
+                    else
+                    {
+                        SetActiveState(_preparingToChaseState);
+                    }
                     return;
                 }
                 if (_entitySenses.CurrentPointOfInterest.HasValue)
@@ -227,6 +236,17 @@ namespace Entities.Mimic
             {
                 return Saving.LevelData.MimicSavableState.Idle;
             }
+        }
+
+        public void SkipPrepareStateOnce()
+        {
+            _skipPrepareStateOnce = true;
+
+            if (_entityMovement != null)
+                _entityMovement.SetIsStopped(true);
+
+            if (_passiveMimicryController != null)
+                _passiveMimicryController.SetMimicryStrengthTarget(0.0f);
         }
     }
 }

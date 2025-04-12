@@ -13,6 +13,7 @@ public class MimicAttack : MonoBehaviour
     private PlayerHealth _playerHealth;
     private PlayerController _playerController;
     private GeneralMimic _generalMimic;
+    private MimicController _mimicController;
 
     [Header("Settings")]
     [SerializeField] private float _attackCooldown = 2f;
@@ -66,6 +67,15 @@ public class MimicAttack : MonoBehaviour
         // Start attack if general/chase mimic catches player and isnt currently attacking.
         if ((transform.position - PlayerManager.Instance.Player.position).sqrMagnitude <= _attackRadius * _attackRadius)
         {
+            if (TryGetComponent<MimicController>(out _mimicController))
+            {
+                if (_mimicController._cancelOnAttack)
+                {
+                    _navMeshAgent.isStopped = true;
+                    _mimicController.ReplaceMimic();
+                    return;
+                }
+            }
 
             if (_generalMimic != null && _generalMimic.GetCurrentState() == _generalMimic.GetPreparingToChaseState())
             {
@@ -136,7 +146,7 @@ public class MimicAttack : MonoBehaviour
 
         _playerHealth.TakeDamage(1);
 
-        CameraShake.StartEventShake(intensity: 0.115f, speed: 25f, duration: 0.65f);
+        CameraShake.StartEventShake(intensity: 0.125f, speed: 25f, duration: 0.65f);
         StartCoroutine(PerformKnockback());
     }
 

@@ -28,6 +28,8 @@ namespace Entities.Mimic.States
 
         public override void OnEnter()
         {
+            _entityMovement.SetIsStopped(false);
+
             // Override movement values with chase-specific values.
             _entityMovement.SetSpeedOverride(_chaseMovementSpeed);
             _entityMovement.SetAccelerationOverride(_chaseAcceleration);
