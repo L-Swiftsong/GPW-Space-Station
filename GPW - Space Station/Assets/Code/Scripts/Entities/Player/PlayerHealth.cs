@@ -18,6 +18,9 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("VFX")]
     [SerializeField] private HealthValueToVFX[] _healthValueToVFXReferences;
+    private bool _updatHealthUI = true;
+
+    private bool _hasTriggeredDeathCutscene = false;
 
     [System.Serializable]
     private struct HealthValueToVFX
@@ -94,10 +97,13 @@ public class PlayerHealth : MonoBehaviour
 
     void UpdateHealthUI()
     {
-        // Changes visor state depending on current health.
-        for(int i = 0; i < _healthValueToVFXReferences.Length; ++i)
+        if (_updatHealthUI)
         {
-            _healthValueToVFXReferences[i].HealthVisorUI.SetActive(_healthValueToVFXReferences[i].HealthValue == _currentHealth);
+            // Changes visor state depending on current health.
+            for (int i = 0; i < _healthValueToVFXReferences.Length; ++i)
+            {
+                _healthValueToVFXReferences[i].HealthVisorUI.SetActive(_healthValueToVFXReferences[i].HealthValue == _currentHealth);
+            }
         }
     }
 
@@ -147,9 +153,20 @@ public class PlayerHealth : MonoBehaviour
 
     public IEnumerator DeathCutscene(GameObject mimic)
     {
+        if (_hasTriggeredDeathCutscene)
+            yield break;
+
+        _hasTriggeredDeathCutscene = true;
+
         // Get necessary references from the Mimic object.
         MimicAttack mimicAttack = mimic.GetComponent<MimicAttack>();
         Transform mimicLookAt = mimic.transform.Find("MimicLookAt");
+
+        if (mimicAttack.SkipVisorDamageOnKill)
+        {
+            _updatHealthUI = false;
+            DisableHealthVisors();
+        }
 
         // Trigger focus on the Mimic that killed the player.
         if (mimicLookAt != null)

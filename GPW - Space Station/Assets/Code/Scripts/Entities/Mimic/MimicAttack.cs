@@ -41,6 +41,10 @@ public class MimicAttack : MonoBehaviour
 
     public event System.Action OnAttackPerformed;
 
+    private bool _hasTriggeredJumpscare = false;
+
+    public bool SkipVisorDamageOnKill = false;
+
     private void Start()
     {
         if (PlayerManager.Instance.Player.TryGetComponent<PlayerHealth>(out _playerHealth) == false)
@@ -75,6 +79,12 @@ public class MimicAttack : MonoBehaviour
                     _mimicController.ReplaceMimic();
                     return;
                 }
+            }
+
+            if (GetComponent<ChaseMimic>())
+            {
+                SetJumpscareSettings();
+                return;
             }
 
             if (_generalMimic != null && _generalMimic.GetCurrentState() == _generalMimic.GetPreparingToChaseState())
@@ -202,8 +212,12 @@ public class MimicAttack : MonoBehaviour
 
     private void SetJumpscareSettings()
     {
-        _navMeshAgent.isStopped = true;
+        if (_hasTriggeredJumpscare)
+            return;
 
+        _hasTriggeredJumpscare = true;
+
+        _navMeshAgent.isStopped = true;
         _playerHealth.TakeDamage(1);
         _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
     }
