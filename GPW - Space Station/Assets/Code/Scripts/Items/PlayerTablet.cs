@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UI.Popups;
 using UnityEngine;
 
 public class PlayerTablet : MonoBehaviour
@@ -10,6 +11,8 @@ public class PlayerTablet : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject _rootGO;
     [SerializeField] private GameObject _worldCanvasGO;
+    [SerializeField] private ScreenSpacePopupTrigger _popupTrigger;
+    [SerializeField] private AudioTrigger _audioTrigger;
 
     [Space(5)]
     [SerializeField] private Animator _animationController;
@@ -23,6 +26,8 @@ public class PlayerTablet : MonoBehaviour
 
     [Header("UI Sections")]
     [SerializeField] private Transform _sectionRootsContainer;
+
+    private bool _hasOpenItemTab = false;
 
 
     [System.Serializable]
@@ -74,7 +79,18 @@ public class PlayerTablet : MonoBehaviour
 
     private void PlayerInput_OnPauseGamePerformed() => ToggleEquip();
     private void PlayerInput_OnOpenJournalPerformed() => ToggleEquip(PlayerTabletMenu.Journal);
-    private void PlayerInput_OnOpenItemsPerformed() => ToggleEquip(PlayerTabletMenu.Items);
+    private void PlayerInput_OnOpenItemsPerformed()
+    {
+        if (!_hasOpenItemTab)
+        {
+            _popupTrigger.Trigger();
+            _audioTrigger.PlaySound();
+            _hasOpenItemTab = true;
+        }
+
+        ToggleEquip(PlayerTabletMenu.Items);
+    }
+
 
     private void PreventInput()
     {
