@@ -31,13 +31,15 @@ namespace Environment.GravityZone
                     // The zone has been enabled.
                     // Notify the gravity objects currently occupying this zone so that they experience the gravity change.
                     AddToAllGravityObjects();
-                }
+					Debug.Log($"{gameObject.name} gravity zone ENABLED.");
+				}
                 else
                 {
                     // The zone has been disabled.
                     // Notify the gravity objects currently occupying this zone so that they no longer experience the gravity change.
                     RemoveFromAllGravityObjects();
-                }
+					Debug.Log($"{gameObject.name} gravity zone DISABLED.");
+				}
             }
         }
 
