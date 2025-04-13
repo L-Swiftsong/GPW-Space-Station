@@ -218,6 +218,8 @@ MonoBehaviour:
       IntValues: 
   _currentState: {fileID: 0}
   _currentStatePath: 
+  _prepareToChaseSound: {fileID: 8300000, guid: 873d4c30409b3e746bb484b15dd09bf3, type: 3}
+  _prepareToChaseVolume: 1.2
 --- !u!114 &9116854351678556578
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -462,7 +464,7 @@ MonoBehaviour:
   _entitySenses: {fileID: 4856519383059337709}
   _attackScript: {fileID: 5634940376478433513}
   _passiveMimicryController: {fileID: 5011720308764694068}
-  _chaseMovementSpeed: 4.5
+  _chaseMovementSpeed: 5
   _chaseAcceleration: 36
   _chaseAngularSpeed: 720
   _chaseStoppingDistance: 1

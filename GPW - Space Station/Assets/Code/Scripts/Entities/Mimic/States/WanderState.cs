@@ -46,6 +46,7 @@ namespace Entities.Mimic.States
             _wanderDecisionTimeRemaining = Random.Range(_minWanderDecisionTime, _maxWanderDecisionTime);
             ChooseNewDestination();
             UpdateWanderBounds();
+            _entityMovement.SetSpeed(2f);
         }
         public override void OnLogic()
         {

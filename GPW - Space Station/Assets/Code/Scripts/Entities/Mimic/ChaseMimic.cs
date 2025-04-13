@@ -25,11 +25,6 @@ namespace Entities.Mimic
         [SerializeField] [Range(0.0f, 1.0f)] private float _stunnedMovementMultiplier = 0.7f;
         private bool _isBeingStunned = false;
 
-
-        [Header("Audio Settings")]
-        [SerializeField] private Audio.BackgroundMusicManager.AudioClipSettings _chaseSFX;
-        [SerializeField] private float _defaultBGMResumeDelay = 2.0f;
-
         [Space(5)]
         [SerializeField] private AudioClip _breakDoorClip;
         [SerializeField] private AudioClip _chaseEndClip;
@@ -133,8 +128,6 @@ namespace Entities.Mimic
             isChasing = true;
             _hasStartedChase = true;
             Debug.Log("Chase Activated!");
-
-            BackgroundMusicManager.OverrideBackgroundMusic(_chaseSFX);
         }
         public void PauseChase(bool pauseMusic)
         {
@@ -147,10 +140,6 @@ namespace Entities.Mimic
             isChasing = false;
             Debug.Log("Chase Paused");
 
-            if (pauseMusic)
-            {
-                BackgroundMusicManager.PauseBackgroundMusic();
-            }
             _navMeshAgent.isStopped = true;
         }
         public void ResumeChase()
@@ -164,7 +153,6 @@ namespace Entities.Mimic
             isChasing = true;
             Debug.Log("Chase Resumed");
 
-            BackgroundMusicManager.ResumeBackgroundMusic();
             _navMeshAgent.isStopped = false;
         }
         public void EndChase()
@@ -177,12 +165,7 @@ namespace Entities.Mimic
 
             if (_chaseEndClip != null)
             {
-                BackgroundMusicManager.RemoveBackgroundMusicOverride();
                 BackgroundMusicManager.PlaySingleClip(_chaseEndClip);
-            }
-            else
-            {
-                BackgroundMusicManager.RemoveBackgroundMusicOverride(initialTransitionDelay: _defaultBGMResumeDelay);
             }
 
             Debug.Log("Chase Ended");

@@ -60,6 +60,16 @@ namespace Effects.Mimicry.PassiveMimicry
             _mimicryStrengthChangeCoroutine = StartCoroutine(MoveToTargetStrength());
         }
 
+        public void InstantlySetMimicryStrength(float strength)
+        {
+            if (_mimicryStrengthChangeCoroutine != null)
+                StopCoroutine(_mimicryStrengthChangeCoroutine);
+
+            _currentMimicrystrength = Mathf.Clamp01(strength);
+            _targetMimicryStrength = _currentMimicrystrength;
+            UpdateMimicryRenderers();
+        }
+
         private IEnumerator MoveToTargetStrength()
         {
             while(_currentMimicrystrength != _targetMimicryStrength)

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Effects.Mimicry.PassiveMimicry;
 using Entities.Mimic.States;
+using Audio;
 
 namespace Entities.Mimic
 {
@@ -38,6 +39,9 @@ namespace Entities.Mimic
         public PreparingToChaseState GetPreparingToChaseState() => _preparingToChaseState;
 
         private bool _skipPrepareStateOnce = false;
+
+        [SerializeField] private AudioClip _prepareToChaseSound;
+        [SerializeField] [Range(0f, 2f)] private float _prepareToChaseVolume = 1f;
 
         private void Awake()
         {
@@ -95,6 +99,7 @@ namespace Entities.Mimic
                     if (_skipPrepareStateOnce)
                     {
                         _skipPrepareStateOnce = false;
+                        _passiveMimicryController.InstantlySetMimicryStrength(0f);
                         SetActiveState(_chaseState);
                     }
                     else
@@ -140,6 +145,7 @@ namespace Entities.Mimic
                 {
                     // We can see the player.
                     SetActiveState(_preparingToChaseState);
+                    SFXManager.Instance.PlayClipAtPosition(_prepareToChaseSound, transform.position, minPitch: 1f, maxPitch: 1f, volume: _prepareToChaseVolume, minDistance: 6.5f, maxDistance: 15f);
                     return;
                 }
 
@@ -156,6 +162,7 @@ namespace Entities.Mimic
                 {
                     // Start the chase.
                     SetActiveState(_chaseState);
+                    _passiveMimicryController.SetMimicryStrengthTarget(0.0f);
                     return;
                 }
             }
@@ -241,9 +248,6 @@ namespace Entities.Mimic
         public void SkipPrepareStateOnce()
         {
             _skipPrepareStateOnce = true;
-
-            if (_entityMovement != null)
-                _entityMovement.SetIsStopped(true);
 
             if (_passiveMimicryController != null)
                 _passiveMimicryController.SetMimicryStrengthTarget(0.0f);

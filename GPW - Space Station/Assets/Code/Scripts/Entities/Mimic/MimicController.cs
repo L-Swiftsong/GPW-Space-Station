@@ -37,6 +37,8 @@ namespace Entities.Mimic
         public bool _cancelOnAttack = false;
         private GeneralMimic _generalMimic;
 
+        [SerializeField] private bool _skipPrepareState = false;
+
         private void Start()
         {
             gameObject.SetActive(false); // disabled by default until start movements called
@@ -134,8 +136,12 @@ namespace Entities.Mimic
                 }
 
                 _linkedMimic.Activate();
-                _linkedMimic.TryGetComponent<GeneralMimic>(out _generalMimic);
-                _generalMimic.SkipPrepareStateOnce();
+
+                if (_skipPrepareState)
+                {
+                    _linkedMimic.TryGetComponent<GeneralMimic>(out _generalMimic);
+                    _generalMimic.SkipPrepareStateOnce();
+                }
             }
 
             Destroy(this.gameObject);

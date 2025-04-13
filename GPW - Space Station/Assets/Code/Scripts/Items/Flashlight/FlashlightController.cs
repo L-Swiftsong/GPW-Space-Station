@@ -53,7 +53,6 @@ namespace Items.Flashlight
         [Header("SFX Settings")]
         [SerializeField] private AudioClip _flashlightClick;
 
-
         private float m_currentBattery;
         private float _currentBattery
         {
@@ -94,6 +93,9 @@ namespace Items.Flashlight
 
         [SerializeField] private Color _barOnColour = Color.green;
         [SerializeField] private Color _barOffColour = Color.black;
+
+        private bool _isEventFlickering = false;
+        private bool _eventFlickerState = false;
 
         private void OnEnable()
         {
@@ -173,21 +175,25 @@ namespace Items.Flashlight
                 HandleFocusModeDamage();
             }
 
-            if (_isOn && _currentBattery <= _flickerThreshold && !_isFocused)
+            if (_isOn)
             {
-                HandleFlicker();
-            }
-            else
-            {
-                if (_isFlickering)
+                if (_isEventFlickering)
                 {
-                    _isFlickering = false;
+                    _flashlightLight.enabled = _eventFlickerState;
                 }
-
-                if (_isOn)
+                else if (_currentBattery <= _flickerThreshold && !_isFocused)
+                {
+                    HandleFlicker();
+                    _flashlightLight.enabled = _isFlickering;
+                }
+                else
                 {
                     _flashlightLight.enabled = true;
                 }
+            }
+            else
+            {
+                _flashlightLight.enabled = false;
             }
         }
 
@@ -326,6 +332,50 @@ namespace Items.Flashlight
 
                 _flickerTimer = Random.Range(_flickerMinTime, _flickerMaxTime);
             }
+        }
+
+        public static void TriggerFlickerStatic(float duration)
+        {
+            var player = Entities.Player.PlayerManager.Instance?.Player;
+
+            if (player != null)
+            {
+                var flashlight = player.GetComponentInChildren<FlashlightController>();
+                if (flashlight != null)
+                {
+                    flashlight.TriggerFlicker(duration);
+                }
+            }
+        }
+
+        public void TriggerFlicker(float duration)
+        {
+            StartCoroutine(FlickerForDuration(duration));
+        }
+
+        private IEnumerator FlickerForDuration(float duration)
+        {
+            _isEventFlickering = true;
+            float timer = 0f;
+            float totalFlickerTime = 0f;
+
+            while (timer < duration)
+            {
+                _eventFlickerState = !_eventFlickerState;
+
+                float flickerDelay = Random.Range(_flickerMinTime, _flickerMaxTime);
+                totalFlickerTime += flickerDelay;
+                if (totalFlickerTime > duration)
+                {
+                    flickerDelay -= (totalFlickerTime - duration);
+                }
+
+                yield return new WaitForSeconds(flickerDelay);
+                timer += flickerDelay;
+            }
+
+            _isEventFlickering = false;
+            _eventFlickerState = false;
         }
 
         public void AddBattery(float amount)

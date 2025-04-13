@@ -156,7 +156,7 @@ public class MimicAttack : MonoBehaviour
 
         _playerHealth.TakeDamage(1);
 
-        CameraShake.StartEventShake(intensity: 0.125f, speed: 25f, duration: 0.65f);
+        CameraShake.StartEventShake(intensity: 0.135f, speed: 26f, duration: 0.65f);
         StartCoroutine(PerformKnockback());
     }
 
