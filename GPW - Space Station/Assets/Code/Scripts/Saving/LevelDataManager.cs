@@ -24,6 +24,7 @@ namespace Saving.LevelData
             }
         }
         public static LevelSaveData[] GetAllExistingSaveData() => s_sceneIndexToSaveDataDictionary.Values.ToArray();
+        public static void ClearSaveDataForNewGame() => s_sceneIndexToSaveDataDictionary = new Dictionary<int, LevelSaveData>();
 
 
         #region Editor Only
@@ -152,6 +153,12 @@ namespace Saving.LevelData
             }
 
             this._saveData = levelSaveData;
+            if (s_sceneIndexToSaveDataDictionary.TryAdd(_sceneBuildIndex, _saveData) == false)
+            {
+                // Entry for this Scene ID already exists.
+                s_sceneIndexToSaveDataDictionary[_sceneBuildIndex] = this._saveData;
+            }
+
             Debug.Log($"Loading data for {_saveableObjects.Length} objects.");
 
             for (int i = 0; i < levelSaveData.ObjectSaveData.Length; ++i)

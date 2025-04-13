@@ -49,6 +49,7 @@ public class SerializableGuidDrawer : PropertyDrawer
     {
         GenericMenu menu = new GenericMenu();
         menu.AddItem(new GUIContent("Copy GUID"), false, () => CopyGuid(property));
+        menu.AddItem(new GUIContent("Copy Int GUID"), false, () => CopyIntGuid(property));
         menu.AddItem(new GUIContent("Reset GUID"), false, () => ResetGuid(property));
         menu.AddItem(new GUIContent("Regenerate GUID"), false, () => RegenerateGuid(property));
         menu.ShowAsContext();
@@ -62,6 +63,18 @@ public class SerializableGuidDrawer : PropertyDrawer
         }
 
         string guid = BuildGuidString(GetGuidParts(property));
+        EditorGUIUtility.systemCopyBuffer = guid;
+        Debug.Log($"GUID copied to clipboard: {guid}");
+    }
+    private void CopyIntGuid(SerializedProperty property)
+    {
+        if (GetGuidParts(property).Any(x => x == null))
+        {
+            return;
+        }
+
+        SerializedProperty[] guidParts = GetGuidParts(property);
+        string guid = string.Join('-', guidParts[0].uintValue, guidParts[1].uintValue, guidParts[2].uintValue, guidParts[3].uintValue);;
         EditorGUIUtility.systemCopyBuffer = guid;
         Debug.Log($"GUID copied to clipboard: {guid}");
     }

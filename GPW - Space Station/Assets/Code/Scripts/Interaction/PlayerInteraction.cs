@@ -154,7 +154,11 @@ namespace Interaction
         }
         private void ResetCurrentInteractableOverride_Local()
         {
-            _currentInteractableOverride.StopHighlighting();
+            if (_currentInteractableOverride != null)
+            {
+                _currentInteractableOverride.StopHighlighting();
+            }
+
             _currentInteractableOverride = null;
         }
     }

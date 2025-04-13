@@ -138,6 +138,13 @@ namespace UI.Popups
         }
         private void SetupPosition(WorldSpacePopupSetupInformation popupSetupInformation)
         {
+            if (popupSetupInformation.PivotTransform == null)
+            {
+                Debug.LogWarning("WARNING: You are trying to create a WorldSpacePopup without assigning a pivot transform.\nEnsure the pivot transform is not null or missing.");
+                Destroy(this.gameObject);
+                return;
+            }
+
             if (popupSetupInformation.RotateInPlace)
             {
                 _pivotTransform.position = popupSetupInformation.PivotTransform.position + popupSetupInformation.PopupOffset;

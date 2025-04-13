@@ -43,6 +43,7 @@ namespace Saving.LevelData
         {
             if (saveData.DisabledState.HasFlag(DisabledState.Destroyed))
             {
+                Debug.Log("Destroy: " + monoBehaviour.gameObject.name, monoBehaviour);
                 onDestroyCallback?.Invoke();
             }
             PerformSharedBindingChecks(saveData, monoBehaviour);

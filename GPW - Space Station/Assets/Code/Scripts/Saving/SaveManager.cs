@@ -5,6 +5,7 @@ using SceneManagement;
 using JSONSerialisation;
 using System.IO;
 using System.Linq;
+using Saving.LevelData;
 
 namespace Saving
 {
@@ -25,6 +26,7 @@ namespace Saving
         {
             Debug.Log("Starting New Game");
             _currentSaveID = GetUnusedSaveID();
+            LevelDataManager.ClearSaveDataForNewGame(); // Ensure that we're not using old save data in the LevelDataManager.
             Debug.Log("Starting New Game. ID: " + _currentSaveID);
         }
 

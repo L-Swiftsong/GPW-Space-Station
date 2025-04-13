@@ -94,7 +94,17 @@ namespace ScriptedEvents.Triggers
             this._saveData = saveData;
             _saveData.ID = ID;
 
-            ISaveableObject.PerformBindingChecks(this._saveData, this, () => { Destroy(this.gameObject); });
+            ISaveableObject.PerformBindingChecks(this._saveData, this, () =>
+            {
+                if (_destroyObjectOnTrigger)
+                {
+                    Destroy(this.gameObject);
+                }
+                else
+                {
+                    Destroy(this);
+                }
+            });
         }
         public ObjectSaveData BindNew()
         {
@@ -112,9 +122,9 @@ namespace ScriptedEvents.Triggers
             return this._saveData;
         }
 
-        private void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
-        private void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
-        private void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
+        protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
+        protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
 
         #endregion
 

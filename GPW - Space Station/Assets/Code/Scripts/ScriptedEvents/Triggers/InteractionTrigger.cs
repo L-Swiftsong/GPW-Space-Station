@@ -23,14 +23,16 @@ namespace ScriptedEvents.Triggers
                     interactable.OnFailedInteraction += ActivateTrigger;
             }
         }
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+
             foreach (IInteractable interactable in GetComponents<IInteractable>())
             {
                 if (_triggerOnSuccess)
-                    interactable.OnSuccessfulInteraction += ActivateTrigger;
+                    interactable.OnSuccessfulInteraction -= ActivateTrigger;
                 if (_triggerOnFailure)
-                    interactable.OnFailedInteraction += ActivateTrigger;
+                    interactable.OnFailedInteraction -= ActivateTrigger;
             }
         }
     }
