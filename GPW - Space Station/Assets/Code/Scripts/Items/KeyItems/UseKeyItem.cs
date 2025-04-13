@@ -29,6 +29,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 	[SerializeField] private KeyItemData _requiredKeyItem;
 	[SerializeField] private Transform _keyItemPlacement;
 	[SerializeField] private GameObject _ghostModel;
+	[SerializeField] private GameObject _completeModel;
 
 	[Header("Player Tablet")]
 	[SerializeField] private PlayerTablet _playerTablet;
@@ -50,7 +51,12 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 		return _requiredKeyItem == selectedKeyItem;
 	}
 
-	private void Start()
+    private void Awake()
+    {
+        _completeModel.SetActive(false);
+		_ghostModel.SetActive(false);
+    }
+    private void Start()
 	{
 		if (_playerTablet == null)
 		{
@@ -59,8 +65,6 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 				_playerTablet = PlayerManager.Instance.Player.GetComponentInChildren<PlayerTablet>(true);
 			}
 		}
-
-		_ghostModel.SetActive(false);
 	}
 
 	public void TryUseKeyItem(KeyItemData selectedKeyItem)
@@ -75,10 +79,11 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 			_hasPlacedItem = true;
 
 			_ghostModel.SetActive(false);
+            _completeModel.SetActive(true);
 
             UpdateUsedKeyItems();
 
-			_playerTablet.Unequip();
+            _playerTablet.Unequip();
 		}
 		else
 		{

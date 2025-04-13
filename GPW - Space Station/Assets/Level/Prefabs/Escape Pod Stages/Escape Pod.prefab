@@ -101,37 +101,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!1 &1756554586601283658
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2798696251488756856}
-  m_Layer: 0
-  m_Name: Spawn Point 2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2798696251488756856
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1756554586601283658}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3, y: 2.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4942687565016882404}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2322889639883375888
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +116,7 @@ GameObject:
   - component: {fileID: 5804155388331306030}
   - component: {fileID: 9060414822624259119}
   m_Layer: 9
-  m_Name: Fix escape pod_1
+  m_Name: Shields Spot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -162,7 +131,7 @@ Transform:
   m_GameObject: {fileID: 2322889639883375888}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.303, y: 3.037, z: 2.04}
+  m_LocalPosition: {x: 12.5529995, y: 3.037, z: 0.52999973}
   m_LocalScale: {x: 0.9, y: 0.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -256,12 +225,13 @@ MonoBehaviour:
   _requiredKeyItem: {fileID: 11400000, guid: 3f16dff5994ab2840bf00e13a2b24387, type: 2}
   _keyItemPlacement: {fileID: 7095681818181427083}
   _ghostModel: {fileID: 2470408591168738377}
+  _completeModel: {fileID: 6119330498449565527}
   _playerTablet: {fileID: 0}
   _itemsTab: {fileID: 8819605608850163609, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
   _feedbackText: {fileID: 8692001882062001102, guid: 649ba30491aad914db50dc24feacea42, type: 3}
   _feedbackTransform: {fileID: 5248990859589822704}
   correctItemSound: {fileID: 8300000, guid: 3a9ede86536ea0f42915c3f8a675d110, type: 3}
-  incorrectItemSound: {fileID: 0}
+  incorrectItemSound: {fileID: 8300000, guid: d745b0cecf7569c4d83b40d108e44d55, type: 3}
   audioSource: {fileID: 9060414822624259119}
 --- !u!82 &9060414822624259119
 AudioSource:
@@ -375,7 +345,7 @@ GameObject:
   - component: {fileID: 7406684698098157915}
   - component: {fileID: 3026968923438808042}
   m_Layer: 9
-  m_Name: Fix escape pod
+  m_Name: Engine Spot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -390,7 +360,7 @@ Transform:
   m_GameObject: {fileID: 3800632052559092306}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.78, y: 2.549, z: 2.16}
+  m_LocalPosition: {x: 9.47, y: 2.549, z: 0.64999986}
   m_LocalScale: {x: 1.9, y: 1.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -484,12 +454,13 @@ MonoBehaviour:
   _requiredKeyItem: {fileID: 11400000, guid: 4606876f6052c5b4db8cc682ae527cd2, type: 2}
   _keyItemPlacement: {fileID: 2845917755346724681}
   _ghostModel: {fileID: 480733672255079449}
+  _completeModel: {fileID: 9197196996642529506}
   _playerTablet: {fileID: 0}
   _itemsTab: {fileID: 8819605608850163609, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
   _feedbackText: {fileID: 8692001882062001102, guid: 649ba30491aad914db50dc24feacea42, type: 3}
   _feedbackTransform: {fileID: 5248990859589822704}
   correctItemSound: {fileID: 8300000, guid: 3a9ede86536ea0f42915c3f8a675d110, type: 3}
-  incorrectItemSound: {fileID: 0}
+  incorrectItemSound: {fileID: 8300000, guid: d745b0cecf7569c4d83b40d108e44d55, type: 3}
   audioSource: {fileID: 7406684698098157915}
 --- !u!82 &7406684698098157915
 AudioSource:
@@ -623,6 +594,10 @@ MonoBehaviour:
     - _Target: {fileID: 3026968923438808042}
       _MemberName: 
       _PersistentArguments: []
+    - _Target: {fileID: 0}
+      _MemberName: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.SetNextObjective
+      _PersistentArguments: []
   _useDelayedTrigger: 0
   _canTriggerWhileAwaitingDelay: 0
   _overridePreviousDelay: 1
@@ -631,37 +606,6 @@ MonoBehaviour:
     _PersistentCalls: []
   _triggerOnSuccess: 1
   _triggerOnFailure: 0
---- !u!1 &5165844923637840076
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8608943267610437971}
-  m_Layer: 0
-  m_Name: Spawn Point 1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8608943267610437971
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5165844923637840076}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 2.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4942687565016882404}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6210122935115495373
 GameObject:
   m_ObjectHideFlags: 0
@@ -687,12 +631,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6210122935115495373}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4942687565016882404}
+  - {fileID: 8060861240470480958}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &9183605360777223654
@@ -708,7 +653,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <IsInteractable>k__BackingField: 1
-  _repairSpots: []
+  _repairSpots:
+  - {fileID: 8916755494990287036}
+  - {fileID: 5804155388331306030}
+  - {fileID: 4642517673323861590}
 --- !u!1 &8041960862760948544
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,7 +672,7 @@ GameObject:
   - component: {fileID: 4642517673323861590}
   - component: {fileID: 295799738886041849}
   m_Layer: 9
-  m_Name: Fix escape pod_2
+  m_Name: Thrusters Spot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -739,7 +687,7 @@ Transform:
   m_GameObject: {fileID: 8041960862760948544}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.14, y: 2.5, z: 0.144}
+  m_LocalPosition: {x: 6.1100006, y: 2.5, z: -1.3660002}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -833,12 +781,13 @@ MonoBehaviour:
   _requiredKeyItem: {fileID: 11400000, guid: b055401b3b26f0d47bd19d8a814aaf5e, type: 2}
   _keyItemPlacement: {fileID: 5202387196805040928}
   _ghostModel: {fileID: 4756477095811522576}
+  _completeModel: {fileID: 923005400331580190}
   _playerTablet: {fileID: 0}
   _itemsTab: {fileID: 8819605608850163609, guid: e10ae4f503741184e822a90c86cd7508, type: 3}
   _feedbackText: {fileID: 8692001882062001102, guid: 649ba30491aad914db50dc24feacea42, type: 3}
   _feedbackTransform: {fileID: 5248990859589822704}
   correctItemSound: {fileID: 8300000, guid: 3a9ede86536ea0f42915c3f8a675d110, type: 3}
-  incorrectItemSound: {fileID: 0}
+  incorrectItemSound: {fileID: 8300000, guid: d745b0cecf7569c4d83b40d108e44d55, type: 3}
   audioSource: {fileID: 295799738886041849}
 --- !u!82 &295799738886041849
 AudioSource:
@@ -971,8 +920,6 @@ Transform:
   - {fileID: 7095681818181427083}
   - {fileID: 5202387196805040928}
   - {fileID: 5248990859589822704}
-  - {fileID: 8608943267610437971}
-  - {fileID: 2798696251488756856}
   m_Father: {fileID: 8078293651687986108}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8475384903608523113
@@ -991,12 +938,6 @@ MonoBehaviour:
   - {fileID: 8916755494990287036}
   - {fileID: 5804155388331306030}
   - {fileID: 4642517673323861590}
-  _stagePrefabs:
-  - {fileID: 3065754725425990191, guid: 0418a3dcd94f90e499797fa62abc3cbd, type: 3}
-  - {fileID: 8044555639256613934, guid: 53cdef72b66446647a36839dd6655bf9, type: 3}
-  - {fileID: 5207276805323287684, guid: 03686afead5322d459cf1ad42720f024, type: 3}
-  - {fileID: 5632669323301914777, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
-  _spawnPoint: {fileID: 8608943267610437971}
   incorrectItemSound: {fileID: 8300000, guid: d745b0cecf7569c4d83b40d108e44d55, type: 3}
   audioSource: {fileID: 2203113625686212971}
 --- !u!82 &2203113625686212971
@@ -1178,6 +1119,99 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 188895474739540887, guid: b5ff2472ccb1415469b5983ee220c8c3, type: 3}
   m_PrefabInstance: {fileID: 1993996686172492752}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3079754968419531293
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 8078293651687986108}
+    m_Modifications:
+    - target: {fileID: 2770365054898669827, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_Name
+      value: EscapePodThrusters
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5632669323301914777, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_Name
+      value: EscapePod_3_Part_(Completed)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6133477332302240511, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_Name
+      value: EscapePodEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7351406982657769706, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_Name
+      value: EscapePodHull
+      objectReference: {fileID: 0}
+    - target: {fileID: 9102133808348470602, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+      propertyPath: m_Name
+      value: EscapePodShields
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+--- !u!1 &923005400331580190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2770365054898669827, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+  m_PrefabInstance: {fileID: 3079754968419531293}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6119330498449565527 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9102133808348470602, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+  m_PrefabInstance: {fileID: 3079754968419531293}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8060861240470480958 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4999156409587651107, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+  m_PrefabInstance: {fileID: 3079754968419531293}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &9197196996642529506 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6133477332302240511, guid: 5bd8c00378ca4f542a6c73e4401d745e, type: 3}
+  m_PrefabInstance: {fileID: 3079754968419531293}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7984120257174295944
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1320,6 +1354,10 @@ PrefabInstance:
     - target: {fileID: 4001492366076796802, guid: db9ecef79e5819140b18793a54b1f7b6, type: 3}
       propertyPath: m_Name
       value: Ghost Thrusters
+      objectReference: {fileID: 0}
+    - target: {fileID: 4001492366076796802, guid: db9ecef79e5819140b18793a54b1f7b6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

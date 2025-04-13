@@ -13,13 +13,6 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
     [SerializeField] private List<UseKeyItem> _repairSpots;
     private UseKeyItem _activeRepairSpot;
 
-    [Header("Repair Stages")]
-    [SerializeField] private GameObject[] _stagePrefabs;
-    [SerializeField] private Transform _spawnPoint;
-
-    private GameObject _currentStageModel;
-    private int _currentStage = 0;
-
     [Header("Audio")]
 	[SerializeField] private AudioClip incorrectItemSound;
 	[SerializeField] private AudioSource audioSource;
@@ -32,14 +25,7 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
 
 	void Start()
     {
-        if (_stagePrefabs.Length > 0)
-        {
-            _currentStageModel = Instantiate(_stagePrefabs[0], _spawnPoint.position, _spawnPoint.rotation, _spawnPoint);
-
-            _currentStage = 1;
-        }
-
-        //_totalRepairsNeeded = _repairSpots.Count;
+        _totalRepairsNeeded = _repairSpots.Count;
 
         foreach (var repairSpot in _repairSpots)
         {
@@ -92,8 +78,6 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
     private void HandleSuccessfulInteraction()
 	{
 		Debug.Log("Repair spot interaction succeeded. " + _successfulRepairs);
-		AdvanceStage();
-
 		CheckForWinCondition();
     }
     private void HandleFailedInteraction()
@@ -118,23 +102,6 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
             OnAllRepairsCompleted?.Invoke();
 		}
     }
-
-    public void AdvanceStage()
-    {
-        if (_currentStageModel != null)
-        {
-            Destroy(_currentStageModel);
-        }
-
-        if (_currentStage < _stagePrefabs.Length)
-        {
-            _currentStageModel = Instantiate(_stagePrefabs[_currentStage], _spawnPoint.position, _spawnPoint.rotation, _spawnPoint);
-        }
-
-        _currentStage++;
-    }
-
-    public int GetCurrentStage() => _currentStage;
 
     public static bool[] GetRepairStates() => HasInstance ? Instance.GetRepairStates_Instance() : new bool[0];
     private bool[] GetRepairStates_Instance()
