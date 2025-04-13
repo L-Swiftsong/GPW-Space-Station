@@ -1889,6 +1889,7 @@ Transform:
   - {fileID: 2521081278451923576}
   - {fileID: 3193537282656611938}
   - {fileID: 890685830448386070}
+  - {fileID: 2599845217062867262}
   - {fileID: 6835279555724608588}
   m_Father: {fileID: 7744580340045861879}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5196,7 +5197,7 @@ MonoBehaviour:
           _Y: 0
           _Z: 0
           _W: 0
-          _Object: {fileID: 8528973361608806133}
+          _Object: {fileID: 9084228138718866037}
         - _Type: 13
           _Int: 0
           _String: UnityEngine.AudioClip, UnityEngine.AudioModule, Version=0.0.0.0,
@@ -5205,7 +5206,7 @@ MonoBehaviour:
           _Y: 0
           _Z: 0
           _W: 0
-          _Object: {fileID: 8300000, guid: 02392b63228324c4e9b68ade4a2ed764, type: 3}
+          _Object: {fileID: 8300000, guid: 4a7af1de22457094bb7d941e8fc415d9, type: 3}
         - _Type: 5
           _Int: 0
           _String: 
@@ -5217,6 +5218,123 @@ MonoBehaviour:
   - TriggerTime: 4.5
     OnTriggered:
       _PersistentCalls:
+      - _Target: {fileID: 0}
+        _MemberName: CameraFocusLook, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null.TriggerFocusLookStatic
+        _PersistentArguments:
+        - _Type: 13
+          _Int: 0
+          _String: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _X: 0
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 7273858794550397465}
+        - _Type: 5
+          _Int: 0
+          _String: 
+          _X: 0.75
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
+        - _Type: 5
+          _Int: 0
+          _String: 
+          _X: 4
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
+        - _Type: 4
+          _Int: 3
+          _String: PlayerInput+ActionTypes, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+          _X: 0
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
+      - _Target: {fileID: 0}
+        _MemberName: CameraFocusLook, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null.TriggerFocusLookStatic
+        _PersistentArguments:
+        - _Type: 13
+          _Int: 0
+          _String: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _X: 0
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 7273858794550397465}
+        - _Type: 5
+          _Int: 0
+          _String: 
+          _X: 0.75
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
+        - _Type: 5
+          _Int: 0
+          _String: 
+          _X: 4
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
+        - _Type: 4
+          _Int: 3
+          _String: PlayerInput+ActionTypes, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+          _X: 0
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
+  - TriggerTime: 4.5
+    OnTriggered:
+      _PersistentCalls:
+      - _Target: {fileID: 0}
+        _MemberName: CameraFocusLook, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null.TriggerFocusLookStatic
+        _PersistentArguments:
+        - _Type: 13
+          _Int: 0
+          _String: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _X: 0
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 7273858794550397465}
+        - _Type: 5
+          _Int: 0
+          _String: 
+          _X: 0.75
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
+        - _Type: 5
+          _Int: 0
+          _String: 
+          _X: 4
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
+        - _Type: 4
+          _Int: 3
+          _String: PlayerInput+ActionTypes, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+            PublicKeyToken=null
+          _X: 0
+          _Y: 0
+          _Z: 0
+          _W: 0
+          _Object: {fileID: 0}
       - _Target: {fileID: 0}
         _MemberName: CameraFocusLook, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null.TriggerFocusLookStatic
@@ -5482,6 +5600,134 @@ MonoBehaviour:
       _MemberName: Activate
       _PersistentArguments: []
   _triggerTypes: 1
+--- !u!1 &8861355024360764248
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2599845217062867262}
+  - component: {fileID: 9084228138718866037}
+  m_Layer: 0
+  m_Name: Rawr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2599845217062867262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8861355024360764248}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 3.2700005}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 885449998044971532}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &9084228138718866037
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8861355024360764248}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -2633832918951429155, guid: c6cceb697f88c6f41af12a9bc6c0c298, type: 2}
+  m_audioClip: {fileID: 8300000, guid: 4a7af1de22457094bb7d941e8fc415d9, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 3.590559
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &9038467136041858420
 GameObject:
   m_ObjectHideFlags: 0
