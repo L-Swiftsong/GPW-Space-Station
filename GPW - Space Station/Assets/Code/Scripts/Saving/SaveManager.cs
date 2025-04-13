@@ -122,7 +122,7 @@ namespace Saving
                 // Courtesy of 'Henrik'. Link: 'https://stackoverflow.com/a/23627452'.
                 System.Array.Sort(fileInfoArray, delegate (FileInfo f1, FileInfo f2)
                 {
-                    return f2.CreationTime.CompareTo(f1.CreationTime);
+                    return f2.CreationTime.CompareTo(f1.LastWriteTime);
                 });
             }
 
