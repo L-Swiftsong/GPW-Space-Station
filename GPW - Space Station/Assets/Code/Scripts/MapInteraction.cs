@@ -70,6 +70,8 @@ public class MapInteraction : MonoBehaviour, IInteractable
 
         // Subscribe to cancel event.
         PlayerInput.OnUICancelPerformed += StopInteraction;
+        PlayerInput.OnUILeftClickPerformed += StopInteraction;
+        PlayerInput.OnUISubmitPerformed += StopInteraction;
     }
     public void StopInteraction()
     {
@@ -80,5 +82,7 @@ public class MapInteraction : MonoBehaviour, IInteractable
 
         // Unsubscribe from cancel event.
         PlayerInput.OnUICancelPerformed -= StopInteraction;
+        PlayerInput.OnUILeftClickPerformed -= StopInteraction;
+        PlayerInput.OnUISubmitPerformed -= StopInteraction;
     }
 }
