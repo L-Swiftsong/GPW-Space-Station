@@ -100,14 +100,15 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _exitSpots:
-  - {x: 1.25, y: 0, z: 0}
-  - {x: -1.25, y: 0, z: 0}
-  - {x: 0, y: 0, z: 2}
-  - {x: 0, y: 0, z: -2}
+  - {x: 1.25, y: 0.01, z: 0}
+  - {x: -1.25, y: 0.01, z: 0}
+  - {x: 0, y: 0.01, z: 2}
+  - {x: 0, y: 0.01, z: -2}
   _automaticallyRemoveObstructedSpots: 1
   _exitSpotObstructionLayers:
     serializedVersion: 2
     m_Bits: 897
+  _showExitSpotRemovalLogs: 0
   <IsInteractable>k__BackingField: 1
 --- !u!65 &2640111463620756257
 BoxCollider:
