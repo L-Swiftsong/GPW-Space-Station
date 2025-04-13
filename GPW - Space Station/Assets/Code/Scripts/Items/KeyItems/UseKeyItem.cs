@@ -119,8 +119,10 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 	{
 		IInteractable.StartHighlight(this.gameObject, ref _previousLayer);
 
-		if (!_hasPlacedItem && _ghostModel != null)
+		if (!_hasPlacedItem && CollectableManager.HasObtainedCollectable(_requiredKeyItem) && _ghostModel != null)
+		{
 			_ghostModel.SetActive(true);
+		}
 	}
 	public void StopHighlighting()
 	{

@@ -27,6 +27,21 @@ namespace Items.Collectables
                 _obtainedCollectableData.Add(dataType, new CollectableDataList(collectableData));
             }
         }
+        public static bool HasObtainedCollectable(CollectableData collectableData)
+        {
+            // Get the type of the given collectable data (E.g. CodexData).
+            Type dataType = collectableData.GetType();
+
+            if (_obtainedCollectableData.TryGetValue(dataType, out CollectableDataList collectableDataList))
+            {
+                return collectableDataList.ContainsItem(collectableData);
+            }
+            else
+            {
+                // No Collectables of this type exist.
+                return false;
+            }
+        }
 
         /// <remarks>
         ///     May be unsafe.
@@ -176,6 +191,7 @@ namespace Items.Collectables
                 // Return our array.
                 return dataObtainedStateArray;
             }
+            public bool ContainsItem(CollectableData collectableData) => _list.Contains(collectableData);
         }
     }
 }
