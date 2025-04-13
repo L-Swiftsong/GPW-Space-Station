@@ -2,14 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Items.Collectables;
-using Items.KeyItem;
 using UI.ItemDisplay;
 using Interaction;
 using TMPro;
 using Audio;
-using UnityEngine.InputSystem;
 using Entities.Player;
-using UnityEditor.ShaderKeywordFilter;
+
 
 public class UseKeyItem : MonoBehaviour, IInteractable
 {
