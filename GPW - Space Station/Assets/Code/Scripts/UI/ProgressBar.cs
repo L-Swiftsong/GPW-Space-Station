@@ -38,7 +38,8 @@ public class ProgressBar : MonoBehaviour
 
     [Header("Text")]
     [SerializeField] private TMP_Text _progressText = null;
-    [SerializeField] private bool _showExactValue = false; // False = Shows percentage value. True = Shows value of currentValue.
+    [SerializeField] private bool _displayExactValue = false; // False = Percentage Value. True = Value of 'CurrentValue'.
+    [SerializeField] private int _textSignificantFigures = 0;
     [SerializeField] private string _progressTextSuffix = string.Empty;
 
 
@@ -66,7 +67,13 @@ public class ProgressBar : MonoBehaviour
             return;
         }
 
-        _progressText.text = (_showExactValue ? _currentValue.ToString("0") : (GetCurrentFillPercentage() * 100.0f).ToString("0")) + _progressTextSuffix;
+        float displayValueNumber = _displayExactValue ? _currentValue : GetCurrentFillPercentage() * 100.0f;
+        _progressText.text = Round(displayValueNumber, _textSignificantFigures).ToString() + _progressTextSuffix;
+    }
+    private float Round(float value, int significantFigures)
+    {
+        float multiplier = Mathf.Pow(10.0f, significantFigures);
+        return Mathf.Round(value * multiplier) / multiplier;
     }
 
 

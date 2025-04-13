@@ -362,6 +362,7 @@ MonoBehaviour:
   _currentProgressText: {fileID: 2972956511206447220}
   _loadingProgressBar: {fileID: 2323673899330223025}
   _loadingCompleteContainer: {fileID: 2112752657556355487}
+  _fadeDelay: 0.2
   _fadeDuration: 0.25
 --- !u!1 &3579439326294364485
 GameObject:
@@ -613,7 +614,7 @@ MonoBehaviour:
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   _progressText: {fileID: 2972956511206447220}
-  _showExactValue: 0
+  _textSignificantFigures: 1
   _progressTextSuffix: '%'
   _maximumValue: 100
   _minimumValue: 0

@@ -86,7 +86,6 @@ public class LoadingScreenUI : MonoBehaviour
             progress = SceneLoader.Instance.GetSceneLoadProgress() * 100.0f;
 
             // Update the UI to show the current progress.
-            _currentProgressText.text = Mathf.CeilToInt(progress).ToString() + "%";
             _loadingProgressBar.SetCurrentValue(progress);
 
             // Wait a frame between checks.
@@ -94,8 +93,7 @@ public class LoadingScreenUI : MonoBehaviour
         }
 
         // Finished loading.
-        _currentProgressText.text = "100%";
-        _loadingProgressBar.SetCurrentValue(100.0f);
+        _loadingProgressBar.SetCurrentValue(99.9f);
 
         yield return new WaitForSecondsRealtime(_fadeDelay);
 
