@@ -83,7 +83,10 @@ namespace JSONSerialisation
         {
             foreach(string filePath in Directory.GetFiles(DATA_PATH))
             {
-                File.Delete(filePath);
+                if (Path.GetExtension(filePath).EndsWith(FILE_EXTENSION))
+                {
+                    File.Delete(filePath);
+                }
             }
         }
 
