@@ -15,7 +15,7 @@ namespace UI
 
         private System.Action<bool> _onSaveCountChangedCallback;
         private System.Action _onConfirmationQueryOpenedCallback;
-        private System.Action _onConfirmationQueryCancelledCallback;
+        private System.Action _onConfirmationQueryFinishedCallback;
 
 
         [Header("References")]
@@ -33,11 +33,11 @@ namespace UI
 
 
 
-        public void SetCallbacks(System.Action<bool> onSaveCountChanged, System.Action onConfirmationQueryOpenedCallback = null, System.Action onConfirmationQueryCancelledCallback = null)
+        public void SetCallbacks(System.Action<bool> onSaveCountChanged, System.Action onConfirmationQueryOpenedCallback = null, System.Action onConfirmationQueryFinishedCallback = null)
         {
             this._onSaveCountChangedCallback = onSaveCountChanged;
             this._onConfirmationQueryOpenedCallback = onConfirmationQueryOpenedCallback;
-            this._onConfirmationQueryCancelledCallback = onConfirmationQueryCancelledCallback;
+            this._onConfirmationQueryFinishedCallback = onConfirmationQueryFinishedCallback;
         }
         public bool HasSaves() => _saveGameFiles != null && _saveGameFiles.Length > 0;
 
@@ -92,7 +92,7 @@ namespace UI
                 loadSaveButtonInstance.OnDeleteSaveCallback += () => DeleteSaveFile(fileInfoRef);
 
                 loadSaveButtonInstance.OnConfirmationStartedCallback += _onConfirmationQueryOpenedCallback;
-                loadSaveButtonInstance.OnConfirmationCancelledCallback += _onConfirmationQueryCancelledCallback;
+                loadSaveButtonInstance.OnConfirmationCancelledCallback += _onConfirmationQueryFinishedCallback;
 
 
                 // Set the button's text to match its corresponding save file's name.
@@ -133,7 +133,7 @@ namespace UI
         public void RequestAllSaveDeletion()
         {
             _onConfirmationQueryOpenedCallback?.Invoke();
-            _confirmationUI.RequestConfirmation("Are you sure you wish to\nDelete All Existing Saves?", onCancelCallback: _onConfirmationQueryCancelledCallback, onConfirmCallback: DeleteAllSaves);
+            _confirmationUI.RequestConfirmation("Are you sure you wish to\nDelete All Existing Saves?", onCancelCallback: _onConfirmationQueryFinishedCallback, onConfirmCallback: DeleteAllSaves);
         }
 
 
@@ -143,6 +143,7 @@ namespace UI
         {
             SaveManager.DeleteSave(fileInfo);
             UpdateSavedGames();
+            _onConfirmationQueryFinishedCallback?.Invoke();
         }
         private void DeleteAllSaves()
         {

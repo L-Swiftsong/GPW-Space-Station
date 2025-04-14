@@ -21,7 +21,7 @@ namespace UI.Menus
         [SerializeField] private Button _loadSavesButton;
 
 
-        private void Awake() => _loadSaveUI.SetCallbacks(onSaveCountChanged: UpdateMainSaveButtons, onConfirmationQueryOpenedCallback: HideUIForConfirmation, onConfirmationQueryCancelledCallback: ShowLoadSaveUIAfterConfirmation);
+        private void Awake() => _loadSaveUI.SetCallbacks(onSaveCountChanged: UpdateMainSaveButtons, onConfirmationQueryOpenedCallback: HideUIForConfirmation, onConfirmationQueryFinishedCallback: ShowLoadSaveUIAfterConfirmation);
         private void OnEnable()
         {
             _loadSaveUI.UpdateSavedGames();
