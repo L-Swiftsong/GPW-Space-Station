@@ -767,29 +767,6 @@ namespace Entities.Player
         public float GetYRotation() => _rotationPivot.localEulerAngles.y;
         public void SetYRotation(float yRotation) => _rotationPivot.localRotation = Quaternion.Euler(0.0f, yRotation, 0.0f);
 
-        public static IEnumerator MovePlayerTowardsObject(Transform target, float speed)
-        {
-            PlayerController playerController = FindObjectOfType<PlayerController>();
-
-            if (playerController == null || target == null)
-                yield break;
-
-            playerController._controller.enabled = false;
-
-            Vector3 directionToTarget = target.position - playerController.transform.position;
-            directionToTarget.y = 0;
-            directionToTarget.Normalize();
-
-            while (Vector3.Distance(playerController.transform.position, target.position) > 0.1f)
-            {
-                playerController._controller.Move(directionToTarget * speed * Time.deltaTime);
-
-                yield return null;
-            }
-
-            playerController._controller.enabled = true;
-        }
-
         private void OnDrawGizmosSelected()
         {
             if (_drawDetectionRadiusGizmos)
