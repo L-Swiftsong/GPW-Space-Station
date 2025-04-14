@@ -12,23 +12,13 @@ namespace Environment.Partitioning
         [SerializeField] private GameObject[] _toggledRoots = new GameObject[0];
 
 
-        private static bool s_hasPerformedInitialCheck = false;
-
-
         private void Awake()
         {
             LevelPartitionManager.OnLevelSectionEnabled += LevelPartitionManager_OnLevelSectionEnabled;
             LevelPartitionManager.OnLevelSectionDisabled += LevelPartitionManager_OnLevelSectionDisabled;
         }
-        private void Start()
-        {
-            if (!s_hasPerformedInitialCheck)
-            {
-                // Perform our initial enabled check (Rather than only disabling when the player has entered then left a trigger).
-                LevelPartitionManager.InitialiseCheck();
-                s_hasPerformedInitialCheck = true;
-            }
-        }
+        private void Start() => LevelPartitionManager.InitialiseCheck(_levelSection); // Perform our initial enabled check (Rather than only disabling when the player has entered then left a trigger).
+        
         private void OnDestroy()
         {
             LevelPartitionManager.OnLevelSectionEnabled -= LevelPartitionManager_OnLevelSectionEnabled;

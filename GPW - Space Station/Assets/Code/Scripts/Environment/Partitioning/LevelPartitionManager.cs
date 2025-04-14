@@ -13,16 +13,11 @@ namespace Environment.Partitioning
         private static Dictionary<LevelSection, int> s_levelSectionCounts = new Dictionary<LevelSection, int>();
 
 
-        public static void InitialiseCheck()
-        {
-            // Perform checks for our existing level sections so that they start enabled/disabled depending on where the player is.
-            PerformCheck(LevelSection.Hub);
-            PerformCheck(LevelSection.Engineering);
-            PerformCheck(LevelSection.Medical);
-            PerformCheck(LevelSection.CrewQuarters);
-            PerformCheck(LevelSection.StealthArea);
-            PerformCheck(LevelSection.VentChase);
-        }
+        public static void ResetPartitioningInformation() => s_levelSectionCounts.Clear();
+
+
+        // Perform checks for our existing level sections so that they start enabled/disabled depending on where the player is.
+        public static void InitialiseCheck(LevelSection levelSectionType) => PerformCheck(levelSectionType);
         private static void PerformCheck(LevelSection levelSectionType)
         {
             if (s_levelSectionCounts.TryGetValue(levelSectionType, out int enabledCount) == false || enabledCount == 0)

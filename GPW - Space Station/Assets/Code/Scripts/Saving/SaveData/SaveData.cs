@@ -24,6 +24,8 @@ namespace Saving
 
         public void LoadData()
         {
+            Environment.Partitioning.LevelPartitionManager.ResetPartitioningInformation();
+
             PlayerData.LoadToPlayer(PlayerManager.Instance.Player.GetComponent<PlayerController>());
             ItemSaveData.LoadToInventory(PlayerManager.Instance.Player.GetComponent<Items.PlayerInventory>());
             ProgressData.LoadData();
@@ -32,6 +34,7 @@ namespace Saving
         public static void PrepareForNewGame()
         {
             // Ensure that we're not using old data.
+            Environment.Partitioning.LevelPartitionManager.ResetPartitioningInformation();
             CollectableManager.ResetObtainedCollectables();
             LevelDataManager.ClearSaveDataForNewGame();
         }
