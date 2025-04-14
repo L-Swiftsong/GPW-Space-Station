@@ -261,7 +261,7 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
 
     public void BindExisting(ObjectSaveData saveData)
     {
-        this._saveData = new PadlockSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this), _lockWheels.Length);
+        this._saveData = new PadlockSaveInformation(saveData, _lockWheels.Length);
         _saveData.ID = ID;
 
         ISaveableObject.PerformBindingChecks(this._saveData.ObjectSaveData, this);

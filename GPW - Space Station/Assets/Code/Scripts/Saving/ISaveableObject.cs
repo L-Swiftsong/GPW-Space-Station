@@ -51,7 +51,8 @@ namespace Saving.LevelData
         private static void PerformSharedBindingChecks(ObjectSaveData saveData, MonoBehaviour monoBehaviour)
         {
             monoBehaviour.enabled = !saveData.DisabledState.HasFlag(DisabledState.ComponentDisabled);
-            //monoBehaviour.gameObject.SetActive(!saveData.DisabledState.HasFlag(DisabledState.EntityDisabled));
+            monoBehaviour.gameObject.SetActive(!saveData.DisabledState.HasFlag(DisabledState.EntityDisabled));
+            Debug.Log($"{monoBehaviour.name} enabled: {!saveData.DisabledState.HasFlag(DisabledState.EntityDisabled)}", monoBehaviour);
 
             monoBehaviour.transform.position = saveData.Position;
             monoBehaviour.transform.rotation = saveData.Rotation;

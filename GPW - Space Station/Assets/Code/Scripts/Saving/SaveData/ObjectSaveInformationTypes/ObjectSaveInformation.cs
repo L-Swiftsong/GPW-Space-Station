@@ -14,10 +14,9 @@ namespace Saving.LevelData
         public DisabledState DisabledState { get => ObjectSaveData.DisabledState; set => ObjectSaveData.DisabledState = value; }
 
 
-        public ObjectSaveInformation(ObjectSaveData objectSaveData, DisabledState disabledState, int boolCount, int intCount)
+        public ObjectSaveInformation(ObjectSaveData objectSaveData, int boolCount, int intCount)
         {
             this.ObjectSaveData = objectSaveData;
-            this.DisabledState = disabledState;
 
             if (objectSaveData.BoolValues.Length != boolCount)
                 objectSaveData.BoolValues = new bool[boolCount];

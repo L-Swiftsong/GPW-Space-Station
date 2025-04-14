@@ -81,7 +81,7 @@ namespace Environment.Doors
 
         public void BindExisting(ObjectSaveData saveData)
         {
-            this._saveData = new DoorSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this));
+            this._saveData = new DoorSaveInformation(saveData);
             _saveData.ID = ID;
 
             ISaveableObject.PerformBindingChecks(this._saveData.ObjectSaveData, this);

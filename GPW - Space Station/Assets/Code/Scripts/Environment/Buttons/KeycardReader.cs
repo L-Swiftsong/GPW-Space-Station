@@ -179,7 +179,7 @@ namespace Environment.Buttons
 
         public void BindExisting(ObjectSaveData saveData)
         {
-            this._saveData = new KeycardReaderSaveInformation(saveData, ISaveableObject.DetermineDisabledState(this));
+            this._saveData = new KeycardReaderSaveInformation(saveData);
             _saveData.ID = ID;
             Debug.Log("Bind Existing");
 
