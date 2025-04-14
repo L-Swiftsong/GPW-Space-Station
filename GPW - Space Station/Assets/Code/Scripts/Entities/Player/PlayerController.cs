@@ -153,10 +153,10 @@ namespace Entities.Player
             PlayerInput.OnSprintStarted += PlayerInput_OnSprintStarted;
             PlayerInput.OnSprintCancelled += PlayerInput_OnSprintCancelled;
 
-            PlayerInput.OnLeanLeftStarted += PlayerInput_OnLeanLeftStarted;
-            PlayerInput.OnLeanLeftCancelled += PlayerInput_OnLeanLeftCancelled;
-            PlayerInput.OnLeanRightStarted += PlayerInput_OnLeanRightStarted;
-            PlayerInput.OnLeanRightCancelled += PlayerInput_OnLeanRightCancelled;
+            //PlayerInput.OnLeanLeftStarted += PlayerInput_OnLeanLeftStarted;
+            //PlayerInput.OnLeanLeftCancelled += PlayerInput_OnLeanLeftCancelled;
+            //PlayerInput.OnLeanRightStarted += PlayerInput_OnLeanRightStarted;
+            //PlayerInput.OnLeanRightCancelled += PlayerInput_OnLeanRightCancelled;
         }
         private void OnDisable()
         {
@@ -169,10 +169,10 @@ namespace Entities.Player
             PlayerInput.OnSprintStarted -= PlayerInput_OnSprintStarted;
             PlayerInput.OnSprintCancelled -= PlayerInput_OnSprintCancelled;
 
-            PlayerInput.OnLeanLeftStarted -= PlayerInput_OnLeanLeftStarted;
-            PlayerInput.OnLeanLeftCancelled -= PlayerInput_OnLeanLeftCancelled;
-            PlayerInput.OnLeanRightStarted -= PlayerInput_OnLeanRightStarted;
-            PlayerInput.OnLeanRightCancelled -= PlayerInput_OnLeanRightCancelled;
+            //PlayerInput.OnLeanLeftStarted -= PlayerInput_OnLeanLeftStarted;
+            //PlayerInput.OnLeanLeftCancelled -= PlayerInput_OnLeanLeftCancelled;
+            //PlayerInput.OnLeanRightStarted -= PlayerInput_OnLeanRightStarted;
+            //PlayerInput.OnLeanRightCancelled -= PlayerInput_OnLeanRightCancelled;
         }
 
 
