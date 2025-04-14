@@ -16,15 +16,14 @@ namespace Saving
 
 
         private const bool USE_PRETTY_PRINT = true;
-#if UNITY_EDITOR
-        private const bool ALLOW_AUTOSAVE_IN_EDITOR = true;
-#endif
 
 
         public void NewGame()
         {
-            Debug.Log("Starting New Game");
+            // Reset Input Prevention.
+            PlayerInput.ResetInputPrevention();
 
+            // Initialise our Save.
             _currentSaveID = GetUnusedSaveID();
             SaveData.PrepareForNewGame();
 
@@ -99,9 +98,14 @@ namespace Saving
         public void LoadGame(FileInfo fileInfo) => LoadGame(Path.GetFileNameWithoutExtension(fileInfo.Name));
         public void LoadGame(string fileName)
         {
+            // Get the desired Save Data.
             SaveData saveData = JsonDataService.Load<SaveData>(fileName);
             _currentSaveID = saveData.SaveID;
 
+            // Reset input prevention.
+            PlayerInput.ResetInputPrevention();
+
+            // Load the save.
             SceneLoader.Instance.LoadFromSave(saveData.LoadedSceneIndices, saveData.ActiveSceneIndex, onScenesLoadedCallback: () => PerformDataLoad(saveData));
         }
 

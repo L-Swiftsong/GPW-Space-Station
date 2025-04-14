@@ -377,6 +377,15 @@ public class PlayerInput : MonoBehaviour
 
     #region Action Prevention
 
+    public static void ResetInputPrevention()
+    {
+        s_typeToMovementPreventionCountDictionary = new Dictionary<Type, int>();
+        s_typeToInteractionPreventionCountDictionary = new Dictionary<Type, int>();
+        s_typeToCameraPreventionCountDictionary = new Dictionary<Type, int>();
+        s_typeToCameraPreventionCountDictionary = new Dictionary<Type, int>();
+    }
+
+
     [System.Serializable] [System.Flags]
     public enum ActionTypes
     {
