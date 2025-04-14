@@ -13,7 +13,7 @@ namespace Environment.Partitioning
         private static Dictionary<LevelSection, int> s_levelSectionCounts = new Dictionary<LevelSection, int>();
 
 
-        public static void ResetPartitioningInformation() => s_levelSectionCounts.Clear();
+        public static void ResetPartitioningInformation() => s_levelSectionCounts = new Dictionary<LevelSection, int>();
 
 
         // Perform checks for our existing level sections so that they start enabled/disabled depending on where the player is.

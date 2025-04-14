@@ -191,7 +191,7 @@ namespace Saving.LevelData
                     Component foundSaveable = _saveableObjects.Where(s => (s as ISaveableObject).ID == levelSaveData.ObjectSaveData[i].ID).FirstOrDefault();
                     if (foundSaveable != null)
                     {
-                        Debug.Log($"Binding for Object with ID {levelSaveData.ObjectSaveData[i].ID.ToString()}", foundSaveable);
+                        //Debug.Log($"Binding for Object with ID {levelSaveData.ObjectSaveData[i].ID.ToString()}", foundSaveable);
                         (foundSaveable as ISaveableObject).BindExisting(levelSaveData.ObjectSaveData[i]);
                     }
                     else

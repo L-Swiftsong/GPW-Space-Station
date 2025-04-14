@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Items.Collectables;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UI.ItemDisplay
 {
@@ -9,6 +10,19 @@ namespace UI.ItemDisplay
     {
         private static List<KeyItemEntryUI> _allKeyItemEntryUIs = new List<KeyItemEntryUI>();
         public static Dictionary<KeyItemData, bool> s_KeyItemDataUsedState = new Dictionary<KeyItemData, bool>(); // Find a new place for this that isn't in UI?
+
+
+        public static void ResetUsedKeyItems()
+        {
+            if (s_KeyItemDataUsedState != null)
+            {
+                KeyItemData[] keyItemDatas = s_KeyItemDataUsedState.Keys.ToArray();
+                for (int i = 0; i < keyItemDatas.Length; ++i)
+                {
+                    s_KeyItemDataUsedState[keyItemDatas[i]] = false;
+                }
+            }
+        }
 
 
         [SerializeField] private Image _keyItemImage;

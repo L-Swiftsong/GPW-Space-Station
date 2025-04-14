@@ -63,16 +63,6 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 				_playerTablet = PlayerManager.Instance.Player.GetComponentInChildren<PlayerTablet>(true);
 			}
 		}
-
-		if (CollectableManager.HasObtainedCollectable(_requiredKeyItem))
-		{
-            OnSuccessfulInteraction?.Invoke();
-
-            _completeModel.SetActive(true);
-	        _hasPlacedItem = true;
-
-            UpdateUsedKeyItems();
-        }
     }
 
     public void TryUseKeyItem(KeyItemData selectedKeyItem)
@@ -180,7 +170,13 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 	public void SetHasPlacedItem(bool newValue)
 	{
 		_hasPlacedItem = newValue;
-		UpdateUsedKeyItems();
+
+        if (newValue == true)
+        {
+            _completeModel.SetActive(true);
+        }
+
+        UpdateUsedKeyItems();
 	}
 	public bool GetHasPlacedItem() => _hasPlacedItem;
 

@@ -25,6 +25,7 @@ namespace Saving
 
             // Initialise our Save.
             _currentSaveID = GetUnusedSaveID();
+            UI.ItemDisplay.KeyItemEntryUI.ResetUsedKeyItems();
             SaveData.PrepareForNewGame();
 
             Debug.Log("Starting New Game. ID: " + _currentSaveID);

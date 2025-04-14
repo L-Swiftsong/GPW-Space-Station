@@ -88,7 +88,8 @@ namespace ScriptedEvents
                 this._saveData = new ObjectSaveData()
                 {
                     ID = this.ID,
-                    Exists = true
+                    Exists = true,
+                    DisabledState = ISaveableObject.DetermineDisabledState(this),
                 };
             }
 
