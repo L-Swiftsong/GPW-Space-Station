@@ -6,25 +6,27 @@ namespace Items.Collectables
 {
     public static class CollectableManager
     {
-        private static Dictionary<Type, CollectableDataList> _obtainedCollectableData = new Dictionary<Type, CollectableDataList>();
+        private static Dictionary<Type, CollectableDataList> s_obtainedCollectableData = new Dictionary<Type, CollectableDataList>();
 
+
+        public static void ResetObtainedCollectables() => s_obtainedCollectableData = new Dictionary<Type, CollectableDataList>();
 
         public static void AddCollectable(CollectableData collectableData)
         {
             // Get the type of the given collectable data (E.g. CodexData).
             Type dataType = collectableData.GetType();
 
-            if (_obtainedCollectableData.ContainsKey(dataType))
+            if (s_obtainedCollectableData.ContainsKey(dataType))
             {
                 // We have an entry for this collectableType.
                 // Add our obtained collectable to the existing list.
-                _obtainedCollectableData[dataType].Add(collectableData);
+                s_obtainedCollectableData[dataType].Add(collectableData);
             }
             else
             {
                 // We don't have an entry for this collectableType.
                 // Create a new entry for this collectableType and add our obtained collectable as the first value.
-                _obtainedCollectableData.Add(dataType, new CollectableDataList(collectableData));
+                s_obtainedCollectableData.Add(dataType, new CollectableDataList(collectableData));
             }
         }
         public static bool HasObtainedCollectable(CollectableData collectableData)
@@ -32,7 +34,7 @@ namespace Items.Collectables
             // Get the type of the given collectable data (E.g. CodexData).
             Type dataType = collectableData.GetType();
 
-            if (_obtainedCollectableData.TryGetValue(dataType, out CollectableDataList collectableDataList))
+            if (s_obtainedCollectableData.TryGetValue(dataType, out CollectableDataList collectableDataList))
             {
                 return collectableDataList.ContainsItem(collectableData);
             }
@@ -48,9 +50,9 @@ namespace Items.Collectables
         /// </remarks>
         public static List<CollectableData> GetCollectablesOfType(CollectableDataType collectableDataType)
         {
-            if (_obtainedCollectableData.ContainsKey(collectableDataType.ToSystemType()))
+            if (s_obtainedCollectableData.ContainsKey(collectableDataType.ToSystemType()))
             {
-                return _obtainedCollectableData[collectableDataType.ToSystemType()].AsList();
+                return s_obtainedCollectableData[collectableDataType.ToSystemType()].AsList();
             }
             else
             {
@@ -59,9 +61,9 @@ namespace Items.Collectables
         }
         public static List<T> GetCollectablesOfType<T>() where T : CollectableData
         {
-            if (_obtainedCollectableData.ContainsKey(typeof(T)))
+            if (s_obtainedCollectableData.ContainsKey(typeof(T)))
             {
-                return _obtainedCollectableData[typeof(T)].AsList().ConvertAll(x => (T)x);
+                return s_obtainedCollectableData[typeof(T)].AsList().ConvertAll(x => (T)x);
             }
             else
             {
@@ -70,7 +72,7 @@ namespace Items.Collectables
         }
 
 
-        public static void PrepareForLoad() => _obtainedCollectableData.Clear();
+        public static void PrepareForLoad() => s_obtainedCollectableData.Clear();
         public static void LoadObtainedCollectables(CollectableDataType type, bool[] collectableObtainedStates) => LoadObtainedCollectables(type.ToSystemType(), collectableObtainedStates);
         public static void LoadObtainedCollectables(System.Type type, bool[] collectableObtainedStates)
         {
@@ -92,7 +94,7 @@ namespace Items.Collectables
             }
 
             // Our obtainedCollectables list SHOULD be all collectables that the player has for this type.
-            _obtainedCollectableData.Add(type, new CollectableDataList(obtainedCollectables));
+            s_obtainedCollectableData.Add(type, new CollectableDataList(obtainedCollectables));
         }
         public static bool[] GetObtainedStateArrayForType(System.Type type)
         {
@@ -101,7 +103,7 @@ namespace Items.Collectables
                 throw new ArgumentException($"{type.Name} does not inherit from CollectableData.");
             }
 
-            if (_obtainedCollectableData.TryGetValue(type, out CollectableDataList data))
+            if (s_obtainedCollectableData.TryGetValue(type, out CollectableDataList data))
             {
                 // We have an instance.
                 return data.AsObtainedArray();

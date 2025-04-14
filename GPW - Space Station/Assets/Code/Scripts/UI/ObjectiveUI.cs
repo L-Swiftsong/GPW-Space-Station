@@ -49,4 +49,12 @@ public class ObjectiveUI : MonoBehaviour
 			Debug.LogWarning("ObjectiveSystem not initialized yet.");
 		}
 	}
+
+
+	public static void SetObjectiveIndex(int newValue)
+	{
+		Instance.currentIndex = newValue;
+        Instance.objectiveText.text = Instance.objectives[Instance.currentIndex];
+    }
+    public static int GetObjectiveIndex() => Instance.currentIndex;
 }

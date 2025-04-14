@@ -1,6 +1,7 @@
 using UnityEngine;
 using Entities.Player;
 using Items;
+using Items.Collectables;
 using Saving.LevelData;
 
 namespace Saving
@@ -27,6 +28,12 @@ namespace Saving
             ItemSaveData.LoadToInventory(PlayerManager.Instance.Player.GetComponent<Items.PlayerInventory>());
             ProgressData.LoadData();
             LevelDataManager.LoadLevelSaves(LevelSaveDatas);
+        }
+        public static void PrepareForNewGame()
+        {
+            // Ensure that we're not using old data.
+            CollectableManager.ResetObtainedCollectables();
+            LevelDataManager.ClearSaveDataForNewGame();
         }
         public static SaveData FromCurrent(int saveID)
         {

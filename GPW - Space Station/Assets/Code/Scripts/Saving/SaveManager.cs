@@ -12,7 +12,6 @@ namespace Saving
     // Source: 'https://www.youtube.com/watch?v=z1sMhGIgfoo'.
     public class SaveManager : Singleton<SaveManager>
     {
-        [SerializeField] private SaveData _saveData;
         private int _currentSaveID;
 
 
@@ -25,8 +24,10 @@ namespace Saving
         public void NewGame()
         {
             Debug.Log("Starting New Game");
+
             _currentSaveID = GetUnusedSaveID();
-            LevelDataManager.ClearSaveDataForNewGame(); // Ensure that we're not using old save data in the LevelDataManager.
+            SaveData.PrepareForNewGame();
+
             Debug.Log("Starting New Game. ID: " + _currentSaveID);
         }
 
@@ -98,16 +99,14 @@ namespace Saving
         public void LoadGame(FileInfo fileInfo) => LoadGame(Path.GetFileNameWithoutExtension(fileInfo.Name));
         public void LoadGame(string fileName)
         {
-            _saveData = JsonDataService.Load<SaveData>(fileName);
-            _currentSaveID = _saveData.SaveID;
+            SaveData saveData = JsonDataService.Load<SaveData>(fileName);
+            _currentSaveID = saveData.SaveID;
 
-            SceneLoader.Instance.LoadFromSave(_saveData.LoadedSceneIndices, _saveData.ActiveSceneIndex, onScenesLoadedCallback: PerformDataLoad);
+            SceneLoader.Instance.LoadFromSave(saveData.LoadedSceneIndices, saveData.ActiveSceneIndex, onScenesLoadedCallback: () => PerformDataLoad(saveData));
         }
 
-        private void PerformDataLoad()
-        {
-            _saveData.LoadData();
-        }
+        private void PerformDataLoad(SaveData saveData) => saveData.LoadData();
+        
 
         public static FileInfo[] GetAllSaveFiles(bool ordered = false)
         {
@@ -118,7 +117,7 @@ namespace Saving
 
             if (ordered)
             {
-                // Order the files by their creation time in descending order (Index 0 is the newest file).
+                // Order the files by their last edit time in descending order (Index 0 is the newest file).
                 // Courtesy of 'Henrik'. Link: 'https://stackoverflow.com/a/23627452'.
                 System.Array.Sort(fileInfoArray, delegate (FileInfo f1, FileInfo f2)
                 {

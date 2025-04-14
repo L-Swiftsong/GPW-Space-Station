@@ -10,6 +10,8 @@ namespace Saving
         public bool[] KeyItemsObtainedArray;
         public bool[] RepairSpotStates;
 
+        public int CurrentObjectiveIndex;
+
 
         public void LoadData()
         {
@@ -18,6 +20,9 @@ namespace Saving
 
             CollectableManager.LoadObtainedCollectables(CollectableDataType.KeyItem, KeyItemsObtainedArray);
             RepairSpotManager.LoadRepairStates(RepairSpotStates);
+
+            UnityEngine.Debug.Log("Objective Index: " + CurrentObjectiveIndex);
+            ObjectiveUI.SetObjectiveIndex(CurrentObjectiveIndex);
         }
         public static ProgressData FromCurrent()
         {
@@ -27,6 +32,8 @@ namespace Saving
 
                 KeyItemsObtainedArray = CollectableManager.GetObtainedStateArrayForType(CollectableDataType.KeyItem.ToSystemType()),
                 RepairSpotStates = RepairSpotManager.GetRepairStates(),
+
+                CurrentObjectiveIndex = ObjectiveUI.GetObjectiveIndex(),
             };
         }
     }
