@@ -3,15 +3,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using Items;
 using Interaction;
-using System;
-using Audio;
+using Saving.LevelData;
 
 namespace Environment
 {
     /// <summary> An environmental item which recharges the player flashlight when interacted with.</summary>
-    public class FlashlightRechargeStation : MonoBehaviour, IInteractable
+    public class FlashlightRechargeStation : MonoBehaviour, IInteractable, ISaveableObject
     {
-        private bool _hasFlashlight = false;
+        #region Saving Variables
+
+        [field: SerializeField] public SerializableGuid ID { get; set; }
+        [SerializeField] private FlashlightChargeStationSaveInformation _saveData;
+
+        #endregion
+
+
+        private bool m_hasFlashlight = false;
+        private bool _hasFlashlight
+        {
+            get => m_hasFlashlight;
+            set
+            {
+                m_hasFlashlight = value;
+                if (_saveData != null)
+                    _saveData.HasFlashlight = value;
+            }
+        }
 
 
         [Header("Recharge Settings")]
@@ -45,6 +62,7 @@ namespace Environment
         public event System.Action OnFailedInteraction;
 
         #endregion
+
 
 
         private void Awake()
@@ -173,6 +191,9 @@ namespace Environment
                 yield return null;
             }
 
+            _rechargeProgressBar.SetValues(current: _maxBattery, min: 0.0f, max: _maxBattery);
+
+
             // We have finished recharging.
             _rechargeAudioSource.Stop();
             if (_rechargeFinishClip != null)
@@ -185,5 +206,45 @@ namespace Environment
 
         private void ShowRechargeProgressBar() => _progressBarContainer.SetActive(true);
         private void HideRechargeProgressBar() => _progressBarContainer.SetActive(false);
+
+
+
+        #region Saving Functions
+
+        public void BindExisting(ObjectSaveData saveData)
+        {
+            this._saveData = new FlashlightChargeStationSaveInformation(saveData);
+            _saveData.ID = ID;
+
+            ISaveableObject.PerformBindingChecks(this._saveData.ObjectSaveData, this);
+
+            if (this._saveData.HasFlashlight)
+            {
+                StartRecharge(100.0f);
+            }
+        }
+        public ObjectSaveData BindNew()
+        {
+            if (this._saveData == null || !this._saveData.Exists)
+            {
+                this._saveData = new FlashlightChargeStationSaveInformation(this.ID, ISaveableObject.DetermineDisabledState(this), _hasFlashlight);
+            }
+
+            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+
+            return this._saveData.ObjectSaveData;
+        }
+        public void InitialiseID()
+        {
+            ID = SerializableGuid.NewGuid();
+            Debug.Log(ID);
+        }
+
+        protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData.ObjectSaveData, this);
+        protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
+        protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData.ObjectSaveData, this);
+        protected virtual void LateUpdate() => ISaveableObject.UpdatePositionAndRotationInformation(this._saveData.ObjectSaveData, this);
+
+        #endregion
     }
 }
