@@ -9,9 +9,9 @@ namespace Audio.Footsteps
     {
         [SerializeField] private MaterialFootstepClips[] _materialFootstepClipsArray;
 
-        public FootstepClipInformation GetAudioSettings(/*MaterialType materialType, */MovementState movementState)
+        public FootstepClipInformation GetAudioSettings(MovementState movementState, float volumeOverride = -1f)
         {
-            return _materialFootstepClipsArray[0].GetAudioValues(movementState);
+            return _materialFootstepClipsArray[0].GetAudioValues(movementState, volumeOverride);
         }
     }
 

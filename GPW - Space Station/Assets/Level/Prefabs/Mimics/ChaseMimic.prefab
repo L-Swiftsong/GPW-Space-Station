@@ -204,11 +204,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _stunnedMovementMultiplier: 0.5
-  _chaseSFX:
-    AudioClip: {fileID: 8300000, guid: 0d3fe7f18a4ee4c41a9c57d09fe8b689, type: 3}
-    BaseVolume: 0.75
-    BasePitch: 1
-  _defaultBGMResumeDelay: 2
+  _minChaseSpeed: 5.5
   _breakDoorClip: {fileID: 0}
   _chaseEndClip: {fileID: 0}
 --- !u!114 &8540833462637668316
@@ -241,8 +237,11 @@ MonoBehaviour:
   _biteSoundClip: {fileID: 8300000, guid: c9bcecd7dc012c44ab0f774d4e40c99d, type: 3}
   _biteSoundVolume: 1.2
   _biteSoundDelay: 0
+  _leftFootstepClip: {fileID: 0}
+  _rightFootstepClip: {fileID: 0}
   _isAttacking: 0
   SkipVisorDamageOnKill: 1
+  _sendToMainMenuOnDeath: 0
 --- !u!114 &4244903140711574374
 MonoBehaviour:
   m_ObjectHideFlags: 0

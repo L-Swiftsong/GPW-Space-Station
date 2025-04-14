@@ -37,6 +37,7 @@ namespace Entities.Mimic
 
         public State GetCurrentState() => _currentState;
         public PreparingToChaseState GetPreparingToChaseState() => _preparingToChaseState;
+        public WanderState GetWanderState() => _wanderState;
 
         private bool _skipPrepareStateOnce = false;
 

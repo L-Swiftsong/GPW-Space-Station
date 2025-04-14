@@ -35,6 +35,9 @@ public class MimicAttack : MonoBehaviour
     [SerializeField] public AudioClip _biteSoundClip;
     [SerializeField] [Range(0f, 2f)] public float _biteSoundVolume = 1f;
     [SerializeField] public float _biteSoundDelay = 1f;
+    [SerializeField] public AudioClip _leftFootstepClip;
+    [SerializeField] public AudioClip _rightFootstepClip;
+    private Coroutine _attackFootstepRoutine;
 
     [HideInInspector] public bool _isAttacking = false;
     private bool _canAttack = true;
@@ -44,6 +47,8 @@ public class MimicAttack : MonoBehaviour
     private bool _hasTriggeredJumpscare = false;
 
     public bool SkipVisorDamageOnKill = false;
+
+    public bool _sendToMainMenuOnDeath = false;
 
     private void Start()
     {
@@ -120,6 +125,9 @@ public class MimicAttack : MonoBehaviour
 
     private IEnumerator AttackSequence()
     {
+        // Play foostep audio since it stops playing during attack
+        StartAttackFootsteps();
+
         // Trigger attack animation and audio
         OnAttackPerformed?.Invoke();
         StartCoroutine(PlaySound(_attackSoundClip, _attackSoundDelay, _attackSoundVolume));
@@ -137,6 +145,34 @@ public class MimicAttack : MonoBehaviour
         yield return new WaitForSeconds(_attackCooldown);
         _navMeshAgent.isStopped = false;
         _isAttacking = false;
+    }
+
+    public void StartAttackFootsteps(float duration = 1.2f, float stepInterval = 0.4f)
+    {
+        if (_attackFootstepRoutine != null)
+            StopCoroutine(_attackFootstepRoutine);
+
+        _attackFootstepRoutine = StartCoroutine(PlayAttackFootsteps(duration, stepInterval));
+    }
+
+    private IEnumerator PlayAttackFootsteps(float duration, float stepInterval)
+    {
+        float timer = 0f;
+        bool isLeft = true;
+
+        while (timer < duration)
+        {
+            var clip = isLeft ? _leftFootstepClip : _rightFootstepClip;
+
+            SFXManager.Instance.PlayClipAtPosition(clip, transform.position, minPitch: 1f, maxPitch: 1f, volume: 0.8f, minDistance: 6.5f, maxDistance: 15f);
+
+            isLeft = !isLeft;
+
+            yield return new WaitForSeconds(stepInterval);
+            timer += stepInterval;
+        }
+
+        _attackFootstepRoutine = null;
     }
 
     public IEnumerator PlaySound(AudioClip clip, float delay, float volume)
@@ -208,6 +244,11 @@ public class MimicAttack : MonoBehaviour
         }
 
         transform.position = targetPosition;
+
+        if (GetComponent<ChaseMimic>())
+        {
+            BackgroundMusicManager.RemoveBackgroundMusicOverride();
+        }
     }
 
     private void SetJumpscareSettings()

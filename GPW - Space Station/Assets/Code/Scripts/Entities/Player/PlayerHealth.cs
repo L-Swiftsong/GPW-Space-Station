@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -165,7 +165,6 @@ public class PlayerHealth : MonoBehaviour
         if (mimicAttack.SkipVisorDamageOnKill)
         {
             _updatHealthUI = false;
-            DisableHealthVisors();
         }
 
         // Trigger focus on the Mimic that killed the player.

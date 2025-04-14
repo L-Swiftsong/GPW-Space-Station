@@ -17,10 +17,10 @@ namespace Audio.Footsteps
 
 
 
-        public FootstepClipInformation GetAudioValues(MovementState movementState)
+        public FootstepClipInformation GetAudioValues(MovementState movementState, float volumeOverride = -1f)
         {
             FootstepClipContainer footstepClipContainer = _defaultFootstepClips;
-            for(int i = 0; i < _movementStateClipOverridesArray.Length; ++i)
+            for (int i = 0; i < _movementStateClipOverridesArray.Length; ++i)
             {
                 if (_movementStateClipOverridesArray[i].MovementState == movementState)
                 {
@@ -33,7 +33,7 @@ namespace Audio.Footsteps
             return new FootstepClipInformation()
             {
                 FootstepClip = footstepClipContainer.FootstepClips[randomClipIndex],
-                VolumeMultiplier = footstepClipContainer.VolumeMultiplier,
+                VolumeMultiplier = (volumeOverride >= 0f) ? volumeOverride : footstepClipContainer.VolumeMultiplier,
                 PitchRange = new Vector2(footstepClipContainer.MinPitch, footstepClipContainer.MaxPitch)
             };
         }

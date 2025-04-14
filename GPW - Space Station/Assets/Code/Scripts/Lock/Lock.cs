@@ -5,6 +5,7 @@ using Interaction;
 using UI;
 using Environment.Doors;
 using Saving.LevelData;
+using Audio;
 
 
 [RequireComponent(typeof(FocusableObject))]
@@ -46,6 +47,8 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
     [SerializeField] private int[] _correctDigits;
 
     public ExternalInputDoor connectedDoor;
+
+    [SerializeField] private AudioSource _audioSource;
 
 
     private void Awake()
@@ -196,6 +199,7 @@ public class Lock : MonoBehaviour, IInteractable, ISaveableObject
     {
         StopInteraction();
         connectedDoor.Activate();
+        _audioSource.Play();
         Destroy(this.gameObject);
     }
 

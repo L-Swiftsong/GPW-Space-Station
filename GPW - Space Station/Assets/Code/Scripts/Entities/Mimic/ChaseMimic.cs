@@ -26,6 +26,7 @@ namespace Entities.Mimic
         private bool _isBeingStunned = false;
 
         [Space(5)]
+        [SerializeField] private float _minChaseSpeed = 3.5f;
         [SerializeField] private AudioClip _breakDoorClip;
         [SerializeField] private AudioClip _chaseEndClip;
 
@@ -61,14 +62,14 @@ namespace Entities.Mimic
         private void Update()
         {
             if (!isChasing || PlayerManager.Instance.Player == null)
-            {
                 return;
-            }
 
             _navMeshAgent.SetDestination(PlayerManager.Instance.Player.position);
-                
+
             float distanceToPlayer = Vector3.Distance(transform.position, PlayerManager.Instance.Player.position);
-            _targetSpeed = _chaseSpeedCurve.Evaluate(distanceToPlayer);
+            float baseSpeed = _chaseSpeedCurve.Evaluate(distanceToPlayer);
+            _targetSpeed = Mathf.Max(baseSpeed, _minChaseSpeed);
+
             if (_isBeingStunned)
                 _targetSpeed *= _stunnedMovementMultiplier;
 
