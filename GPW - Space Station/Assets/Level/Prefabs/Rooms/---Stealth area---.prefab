@@ -6826,8 +6826,60 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5979555077910088901, guid: c0249d95573d06c47a977ca0243a48c8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9036748962894139378}
   m_SourcePrefab: {fileID: 100100000, guid: c0249d95573d06c47a977ca0243a48c8, type: 3}
+--- !u!1 &6357587540548172472 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5979555077910088901, guid: c0249d95573d06c47a977ca0243a48c8, type: 3}
+  m_PrefabInstance: {fileID: 774924279029724797}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9036748962894139378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6357587540548172472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    <ID>k__BackingField:
+      Part1: 0
+      Part2: 0
+      Part3: 0
+      Part4: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Exists: 0
+    DisabledState: 0
+    BoolValues: 
+    IntValues: 
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 0}
+      _MemberName: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.SetNextObjective
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerTypes: 1
 --- !u!4 &8616672079410334955 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9031269886980258454, guid: c0249d95573d06c47a977ca0243a48c8, type: 3}
@@ -48651,8 +48703,61 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7945846699776288529, guid: b876f8497a2a18f4981d07e65cff5b0b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8305468384595570119}
   m_SourcePrefab: {fileID: 100100000, guid: b876f8497a2a18f4981d07e65cff5b0b, type: 3}
+--- !u!1 &1194652755276500260 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7945846699776288529, guid: b876f8497a2a18f4981d07e65cff5b0b, type: 3}
+  m_PrefabInstance: {fileID: 9138106149484276277}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8305468384595570119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1194652755276500260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a17c9df550fc4848b546c1e7b26a014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    <ID>k__BackingField:
+      Part1: 0
+      Part2: 0
+      Part3: 0
+      Part4: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Exists: 0
+    DisabledState: 0
+    BoolValues: 
+    IntValues: 
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 0}
+      _MemberName: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.SetNextObjective
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerOnSuccess: 1
+  _triggerOnFailure: 0
 --- !u!4 &1801571524883082824 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7480871374472332413, guid: b876f8497a2a18f4981d07e65cff5b0b, type: 3}

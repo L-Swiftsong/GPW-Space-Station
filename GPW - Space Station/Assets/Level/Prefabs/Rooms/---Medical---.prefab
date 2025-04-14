@@ -1669,6 +1669,10 @@ MonoBehaviour:
         _Z: 0
         _W: 0
         _Object: {fileID: 0}
+    - _Target: {fileID: 0}
+      _MemberName: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.SetNextObjective
+      _PersistentArguments: []
   _useDelayedTrigger: 0
   _canTriggerWhileAwaitingDelay: 0
   _overridePreviousDelay: 1
@@ -13361,6 +13365,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8382254184819155539}
     - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
+      propertyPath: OnTriggerActivated._PersistentCalls.Array.data[3]._Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._MemberName
       value: SetActive
       objectReference: {fileID: 0}
@@ -13369,12 +13377,20 @@ PrefabInstance:
       value: _isLocked=
       objectReference: {fileID: 0}
     - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
+      propertyPath: OnTriggerActivated._PersistentCalls.Array.data[3]._MemberName
+      value: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null.SetNextObjective
+      objectReference: {fileID: 0}
+    - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._PersistentArguments.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[2]._PersistentArguments.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
+      propertyPath: OnTriggerActivated._PersistentCalls.Array.data[3]._PersistentArguments.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._PersistentArguments.Array.data[0]._Int
@@ -13386,6 +13402,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
       propertyPath: OnTriggerActivated._PersistentCalls.Array.data[2]._PersistentArguments.Array.data[0]._Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7338825444503294002, guid: dd07c08cb5fedb843bd16ca923456f48, type: 3}
+      propertyPath: OnTriggerActivated._PersistentCalls.Array.data[3]._PersistentArguments.Array.data[0]._Type
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -14319,6 +14339,18 @@ PrefabInstance:
     - target: {fileID: 1549667464034575662, guid: 87f3528c95cb56a4c893cbc68688a970, type: 3}
       propertyPath: <ID>k__BackingField.Part4
       value: 1742036079
+      objectReference: {fileID: 0}
+    - target: {fileID: 1549667464034575662, guid: 87f3528c95cb56a4c893cbc68688a970, type: 3}
+      propertyPath: OnTriggerActivated._PersistentCalls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1549667464034575662, guid: 87f3528c95cb56a4c893cbc68688a970, type: 3}
+      propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1549667464034575662, guid: 87f3528c95cb56a4c893cbc68688a970, type: 3}
+      propertyPath: OnTriggerActivated._PersistentCalls.Array.data[1]._MemberName
+      value: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null.SetNextObjective
       objectReference: {fileID: 0}
     - target: {fileID: 2520198290860794140, guid: 87f3528c95cb56a4c893cbc68688a970, type: 3}
       propertyPath: <ID>k__BackingField.Part1
@@ -38280,8 +38312,61 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8393542029877967486, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6154927393710078460}
   m_SourcePrefab: {fileID: 100100000, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
+--- !u!1 &1405898565684395303 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8393542029877967486, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
+  m_PrefabInstance: {fileID: 7492049462701229913}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6154927393710078460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1405898565684395303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a17c9df550fc4848b546c1e7b26a014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    <ID>k__BackingField:
+      Part1: 0
+      Part2: 0
+      Part3: 0
+      Part4: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Exists: 0
+    DisabledState: 0
+    BoolValues: 
+    IntValues: 
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 0}
+      _MemberName: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.SetNextObjective
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerOnSuccess: 1
+  _triggerOnFailure: 0
 --- !u!4 &3780303577159460428 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6021116274624225557, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}

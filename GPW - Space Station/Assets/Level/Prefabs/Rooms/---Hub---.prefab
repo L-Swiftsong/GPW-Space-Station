@@ -2727,6 +2727,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4891923786441598198}
     m_Modifications:
+    - target: {fileID: 3026968923438808042, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      propertyPath: _destroyObjectOnTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6210122935115495373, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
       propertyPath: m_Name
       value: Escape Pod
@@ -2774,8 +2778,61 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8041960862760948544, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8497227280690590621}
   m_SourcePrefab: {fileID: 100100000, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+--- !u!1 &7049160685348012122 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8041960862760948544, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
+  m_PrefabInstance: {fileID: 1029475487956898586}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8497227280690590621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7049160685348012122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a17c9df550fc4848b546c1e7b26a014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <ID>k__BackingField:
+    Part1: 0
+    Part2: 0
+    Part3: 0
+    Part4: 0
+  _saveData:
+    <ID>k__BackingField:
+      Part1: 0
+      Part2: 0
+      Part3: 0
+      Part4: 0
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    Exists: 0
+    DisabledState: 0
+    BoolValues: 
+    IntValues: 
+  _onlyTriggerOnce: 1
+  _destroyObjectOnTrigger: 0
+  OnTriggerActivated:
+    _PersistentCalls:
+    - _Target: {fileID: 0}
+      _MemberName: ObjectiveUI, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+        PublicKeyToken=null.SetNextObjective
+      _PersistentArguments: []
+  _useDelayedTrigger: 0
+  _canTriggerWhileAwaitingDelay: 0
+  _overridePreviousDelay: 1
+  _delayedTriggerDelayTime: 1
+  OnDelayedTriggerActivated:
+    _PersistentCalls: []
+  _triggerOnSuccess: 1
+  _triggerOnFailure: 0
 --- !u!4 &9102535463889223846 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8078293651687986108, guid: 0af2eaacc0ec5fa4fb3cff8808781322, type: 3}
