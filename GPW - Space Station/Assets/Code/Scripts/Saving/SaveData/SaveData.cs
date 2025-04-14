@@ -35,6 +35,7 @@ namespace Saving
             CollectableManager.ResetObtainedCollectables();
             LevelDataManager.ClearSaveDataForNewGame();
         }
+
         public static SaveData FromCurrent(int saveID)
         {
             return new SaveData()
@@ -52,5 +53,7 @@ namespace Saving
                 LevelSaveDatas = LevelDataManager.GetAllExistingSaveData(),
             };
         }
+        public static void PrepareForSave() => LevelDataManager.PrepareForSave();
+        public static void OnAfterSave() => LevelDataManager.OnAfterSave();
     }
 }

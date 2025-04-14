@@ -51,6 +51,7 @@ public class SerializableGuid : IEquatable<SerializableGuid>
         );
     }
     public string ToHexString() => $"{Part1:X8},{Part2:X8},{Part3:X8},{Part4:X8}";
+    public override string ToString() => $"{Part1},{Part2},{Part3},{Part4}";
 
 
     public Guid ToGuid()

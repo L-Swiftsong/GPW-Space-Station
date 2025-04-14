@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Saving.LevelData
 {
     [System.Serializable]
-    public class ObjectSaveData : ISerializationCallbackReceiver
+    public class ObjectSaveData
     {
         [field: ReadOnly] [field: SerializeField] public SerializableGuid ID { get; set; }
         
@@ -23,12 +23,15 @@ namespace Saving.LevelData
         #region Rounding for Space Optimisation
 
         private float ROUNDING_FACTOR = 1000.0f;
-        public void OnBeforeSerialize()
+        public void OnBeforeSave()
         {
             Position = new Vector3(Round(Position.x), Round(Position.y), Round(Position.z));
             Rotation = new Quaternion(Round(Rotation.x), Round(Rotation.y), Round(Rotation.z), Round(Rotation.w));
         }
-        public void OnAfterDeserialize()
+        public void OnAfterSave() => TranslateSavedValues();
+        public void OnBeforeLoad() => TranslateSavedValues();
+
+        private void TranslateSavedValues()
         {
             Position = Position / ROUNDING_FACTOR;
             Rotation = new Quaternion(Rotation.x / ROUNDING_FACTOR, Rotation.y / ROUNDING_FACTOR, Rotation.z / ROUNDING_FACTOR, Rotation.w / ROUNDING_FACTOR);

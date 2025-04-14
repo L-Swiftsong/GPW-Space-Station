@@ -35,7 +35,12 @@ namespace Saving
         public void SaveGameManual() => SaveGame(CreateSaveName("Manual"));
         public void SaveGameAutosave() => SaveGame(CreateSaveName("Autosave"));
         public void SaveGameDebug() => SaveGame("DebugSave");
-        private void SaveGame(string saveDataName) => JsonDataService.Save<SaveData>(saveDataName, CreateSaveData(), USE_PRETTY_PRINT, overwrite: true);
+        private void SaveGame(string saveDataName)
+        {
+            SaveData.PrepareForSave();
+            JsonDataService.Save<SaveData>(saveDataName, SaveData.FromCurrent(_currentSaveID), USE_PRETTY_PRINT, overwrite: true);
+            SaveData.OnAfterSave();
+        }
 
         // To-Do: Find a better way to do this.
         private int GetUnusedSaveID()
@@ -87,7 +92,6 @@ namespace Saving
             return fileCount;
         }
         private string CreateSaveName(string saveTypeIdentifier) => string.Concat("Playthrough-", _currentSaveID, "_", saveTypeIdentifier);
-        private SaveData CreateSaveData() => SaveData.FromCurrent(_currentSaveID);
 
         #endregion
 

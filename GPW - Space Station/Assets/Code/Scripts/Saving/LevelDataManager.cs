@@ -24,6 +24,27 @@ namespace Saving.LevelData
             }
         }
         public static LevelSaveData[] GetAllExistingSaveData() => s_sceneIndexToSaveDataDictionary.Values.ToArray();
+        public static void PrepareForSave()
+        {
+            foreach (LevelSaveData levelSaveData in s_sceneIndexToSaveDataDictionary.Values)
+            {
+                for (int i = 0; i < levelSaveData.ObjectSaveData.Length; ++i)
+                {
+                    levelSaveData.ObjectSaveData[i].OnBeforeSave();
+                }
+            }
+        }
+        public static void OnAfterSave()
+        {
+            foreach(LevelSaveData levelSaveData in s_sceneIndexToSaveDataDictionary.Values)
+            {
+                for(int i = 0; i < levelSaveData.ObjectSaveData.Length; ++i)
+                {
+                    levelSaveData.ObjectSaveData[i].OnAfterSave();
+                }
+            }
+        }
+
         public static void ClearSaveDataForNewGame() => s_sceneIndexToSaveDataDictionary = new Dictionary<int, LevelSaveData>();
 
 
@@ -163,6 +184,8 @@ namespace Saving.LevelData
 
             for (int i = 0; i < levelSaveData.ObjectSaveData.Length; ++i)
             {
+                levelSaveData.ObjectSaveData[i].OnBeforeLoad();
+
                 try
                 {
                     Component foundSaveable = _saveableObjects.Where(s => (s as ISaveableObject).ID == levelSaveData.ObjectSaveData[i].ID).FirstOrDefault();
