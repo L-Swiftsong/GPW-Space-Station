@@ -50,12 +50,14 @@ namespace ScriptedEvents
         private void SceneLoader_OnLoadFinished()
         {
             DisablePlayerAndInput();
+            Environment.Partitioning.LevelPartitionManager.AddToEnabledCount(Environment.Partitioning.LevelSection.Hub);
             _animator.Play(INTRO_CUTSCENE_CLIP_HASH);
         }
         public void OnIntroCutsceneCompleted()
         {
             Debug.Log("Intro Cutscene Complete");
             EnablePlayerAndInput();
+            Environment.Partitioning.LevelPartitionManager.SubtractFromEnabledCount(Environment.Partitioning.LevelSection.Hub);
             Destroy(this.gameObject);
         }
         
