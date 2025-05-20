@@ -29,6 +29,21 @@ namespace Saving
             SaveData.PrepareForNewGame();
 
             Debug.Log("Starting New Game. ID: " + _currentSaveID);
+
+            // Save after starting the new game.
+            // We need to listen to the 'OnLoadFinished' event so that we don't save when saveables (Such as the player) haven't been loaded.
+            SceneLoader.OnLoadFinished += SceneLoader_OnLoadFinished;
+        }
+
+
+
+        private void SceneLoader_OnLoadFinished()
+        {
+            // Save after starting the new game.
+            SaveGameAutosave();
+
+            // Unsubscribe from the event so that we don't double-trigger.
+            SceneLoader.OnLoadFinished -= SceneLoader_OnLoadFinished;
         }
 
         #region Saving

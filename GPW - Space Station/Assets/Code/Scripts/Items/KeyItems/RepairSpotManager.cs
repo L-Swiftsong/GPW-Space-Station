@@ -58,7 +58,12 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
             if (_activeRepairSpot.IsKeyItemCorrect(keyItemData))
             {
                 _activeRepairSpot.TryUseKeyItem(keyItemData);
-                CompletedRepairs();
+                
+                if (!CheckForWinCondition())
+                {
+                    // We haven't yet won. Perform an autosave.
+                    Saving.SaveManager.Instance.SaveGameAutosave();
+                }
             }
             else
             {
@@ -74,7 +79,7 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
 
     private void HandleSuccessfulInteraction()
 	{
-		Debug.Log("Repair spot interaction succeeded. " + _repairSpots.Where(t => t.GetHasPlacedItem()).Count());
+		Debug.Log("Repair spot interaction succeeded. " + _repairSpots.Where(t => t.GetHasPlacedItem()).Count()); // Sometimes displays the incorrect count for some reason.
         CheckForWinCondition();
     }
     private void HandleFailedInteraction()
@@ -83,20 +88,17 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
 		Debug.Log("Repair spot interaction failed.");
     }
 
-    private void CompletedRepairs()
-    {
-		Debug.Log($"Completed Repair Spot Count: {_repairSpots.Where(t => t.GetHasPlacedItem()).Count()}");
-
-        CheckForWinCondition();
-	}
-
-    private void CheckForWinCondition()
+    private bool CheckForWinCondition()
     {
         if (_repairSpots.All(t => t.GetHasPlacedItem()))
         {
 			Debug.Log("All repair spots completed! You win!");
             OnAllRepairsCompleted?.Invoke();
+
+            return true;
 		}
+        
+        return false;
     }
 
     public static bool[] GetRepairStates() => HasInstance ? Instance.GetRepairStates_Instance() : new bool[0];
