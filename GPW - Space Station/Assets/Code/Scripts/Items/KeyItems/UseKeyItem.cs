@@ -67,8 +67,6 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 
     public void TryUseKeyItem(KeyItemData selectedKeyItem)
 	{
-		if (_hasPlacedItem) return;
-
 		if (IsKeyItemCorrect(selectedKeyItem))
 		{
 			SFXManager.Instance.PlayClipAtPosition(correctItemSound, transform.position, 1, 1, 2f);
@@ -103,7 +101,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 		if (_hasPlacedItem) return;
 
 		_playerTablet.Equip(PlayerTabletMenu.Items);
-		//_itemsTab.SetActive(true);
+		KeyItemEntryUI.SetRequiredKeyItem(_requiredKeyItem);
 
 		var repairSpotManager = FindObjectOfType<RepairSpotManager>();
 

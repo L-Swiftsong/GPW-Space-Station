@@ -5,7 +5,7 @@ using Interaction;
 using Items.Collectables;
 using Audio;
 using System;
-using UI.ItemDisplay;
+using System.Linq;
 
 public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
 {
@@ -17,16 +17,13 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
 	[SerializeField] private AudioClip incorrectItemSound;
 	[SerializeField] private AudioSource audioSource;
 
-    [Header("Win")]
-    private int _successfulRepairs = 0;
-    private int _totalRepairsNeeded = 3;
+
 
     public static event Action OnAllRepairsCompleted;
 
+
 	void Start()
     {
-        _totalRepairsNeeded = _repairSpots.Count;
-
         foreach (var repairSpot in _repairSpots)
         {
             repairSpot.OnSuccessfulInteraction += HandleSuccessfulInteraction;
@@ -77,8 +74,8 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
 
     private void HandleSuccessfulInteraction()
 	{
-		Debug.Log("Repair spot interaction succeeded. " + _successfulRepairs);
-		CheckForWinCondition();
+		Debug.Log("Repair spot interaction succeeded. " + _repairSpots.Where(t => t.GetHasPlacedItem()).Count());
+        CheckForWinCondition();
     }
     private void HandleFailedInteraction()
     {
@@ -88,15 +85,14 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
 
     private void CompletedRepairs()
     {
-        _successfulRepairs++;
-		Debug.Log($"Completed repair spots: {_successfulRepairs}");
+		Debug.Log($"Completed Repair Spot Count: {_repairSpots.Where(t => t.GetHasPlacedItem()).Count()}");
 
         CheckForWinCondition();
 	}
 
     private void CheckForWinCondition()
     {
-        if (_successfulRepairs == _totalRepairsNeeded)
+        if (_repairSpots.All(t => t.GetHasPlacedItem()))
         {
 			Debug.Log("All repair spots completed! You win!");
             OnAllRepairsCompleted?.Invoke();
@@ -126,13 +122,8 @@ public class RepairSpotManager : ProtectedSingleton<RepairSpotManager>
         for (int i = 0; i < currentRepairStates.Length; ++i)
         {
             _repairSpots[i].SetHasPlacedItem(currentRepairStates[i]);
-            if (currentRepairStates[i] == true)
-            {
-                ++_successfulRepairs;
-            }
         }
 
-        Debug.Log($"Loaded completed repair spots: {_successfulRepairs}");
+        Debug.Log($"Loaded completed repair spots: {_repairSpots.Where(t => t.GetHasPlacedItem()).Count()}");
     }
-
 }

@@ -25,8 +25,12 @@ namespace Environment
             set
             {
                 m_hasFlashlight = value;
-                if (_saveData != null)
+                
+                try
+                {
                     _saveData.HasFlashlight = value;
+                }
+                catch { } // No SaveData or Invalid SaveData.
             }
         }
 

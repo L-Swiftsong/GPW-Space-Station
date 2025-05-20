@@ -23,6 +23,13 @@ namespace UI.ItemDisplay
                 }
             }
         }
+        public static void SetRequiredKeyItem(KeyItemData requiredKeyItemData)
+        {
+            s_requiredKeyItemData = requiredKeyItemData;
+            OnRequiredKeyItemChanged?.Invoke();
+        }
+        private static KeyItemData s_requiredKeyItemData;
+        private static event System.Action OnRequiredKeyItemChanged;
 
 
         [SerializeField] private Image _keyItemImage;
@@ -31,7 +38,15 @@ namespace UI.ItemDisplay
         public KeyItemData _currentKeyItem;
         private RepairSpotManager _repairSpotManager;
 
-        public bool _isUsed = false;
+
+        [Header("Selection Colours")]
+        [SerializeField] private Color _isRequiredPressedColour = new Color(0.21f, 1.0f, 0.21f);
+        [SerializeField] private Color _isRequiredHighlightedColour = new Color(0.5f, 1.0f, 0.5f);
+
+        [Space(5)]
+        [SerializeField] private Color _isNotRequiredPressedColour = new Color(1.0f, 0.21f, 0.21f);
+        [SerializeField] private Color _isNotRequiredHighlightedColour = new Color(1.0f, 0.5f, 0.5f);
+
 
 		private void Awake()
 		{
@@ -39,11 +54,19 @@ namespace UI.ItemDisplay
                 _allKeyItemEntryUIs.Add(this);
 
             _repairSpotManager = FindObjectOfType<RepairSpotManager>();
-		}
+            OnRequiredKeyItemChanged += CheckIsRequired;
+        }
         private void OnEnable()
         {
             CheckIsUsed();
+            CheckIsRequired();
         }
+        private void OnDestroy()
+        {
+            OnRequiredKeyItemChanged -= CheckIsRequired;
+            UnregisterKeyItemEntry(this);
+        }
+
 
         public override void SetupCollectableEntry(CollectableData collectableData)
         {
@@ -69,14 +92,11 @@ namespace UI.ItemDisplay
             _UseButton.onClick.AddListener(() => OnUseButtonClicked());
 
             CheckIsUsed();
+            CheckIsRequired();
         }
 
         private void OnUseButtonClicked()
         {
-			//KeyItemManager.Instance.EquipKeyItem(_currentKeyItem);
-
-            if (_isUsed) return;
-
             if (_repairSpotManager != null)
             {
                 _repairSpotManager.TryUseKeyItem(_currentKeyItem);
@@ -86,11 +106,31 @@ namespace UI.ItemDisplay
         {
             if (_currentKeyItem != null && s_KeyItemDataUsedState.TryGetValue(_currentKeyItem, out bool hasBeenUsed) && hasBeenUsed)
             {
-                _isUsed = true;
                 _UseButton.interactable = false;
                 _keyItemImage.color = new Color(1, 1, 1, 0.5f);
                 _currentKeyItem = null;
             }
+        }
+        private void CheckIsRequired()
+        {
+            // Copy our button's colours to a new struct as we cannot edit the individual values otherwise.
+            ColorBlock newColourBlock = _UseButton.colors;
+
+            if (_currentKeyItem != null && _currentKeyItem == s_requiredKeyItemData)
+            {
+                // This slot's Key Item is the currently required one.
+                newColourBlock.pressedColor = _isRequiredPressedColour;
+                newColourBlock.highlightedColor = _isRequiredHighlightedColour;
+            }
+            else
+            {
+                // This slot's Key Item is NOT the currently required one.
+                newColourBlock.pressedColor = _isNotRequiredPressedColour;
+                newColourBlock.highlightedColor = _isNotRequiredHighlightedColour;
+            }
+
+            // Set our button's colours.
+            _UseButton.colors = newColourBlock;
         }
 
 		public void UnregisterKeyItemEntry(KeyItemEntryUI entryUI)
@@ -99,11 +139,6 @@ namespace UI.ItemDisplay
 			{
 				_allKeyItemEntryUIs.Remove(entryUI);
 			}
-		}
-
-		private void OnDestroy()
-		{
-			UnregisterKeyItemEntry(this);
 		}
 	}
 }
