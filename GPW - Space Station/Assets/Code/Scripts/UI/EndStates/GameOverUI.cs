@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SceneManagement;
-using Saving;
-using UnityEngine.UI;
 
-namespace UI.GameOver
+namespace UI.EndStates
 {
     public class GameOverUI : MonoBehaviour
     {

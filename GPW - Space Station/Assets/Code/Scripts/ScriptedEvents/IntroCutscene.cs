@@ -42,6 +42,7 @@ namespace ScriptedEvents
         private void OnDestroy()
         {
             SceneLoader.OnLoadFinished -= SceneLoader_OnLoadFinished;
+
             PlayerInput.RemoveAllActionPrevention(typeof(IntroCutscene));
             _saveData.DisabledState = DisabledState.Destroyed;
         }
@@ -49,6 +50,9 @@ namespace ScriptedEvents
 
         private void SceneLoader_OnLoadFinished()
         {
+            if (_saveData.DisabledState.HasFlag(DisabledState.Destroyed))
+                return;
+
             DisablePlayerAndInput();
             Environment.Partitioning.LevelPartitionManager.AddToEnabledCount(Environment.Partitioning.LevelSection.Hub);
             _animator.Play(INTRO_CUTSCENE_CLIP_HASH);
@@ -81,7 +85,7 @@ namespace ScriptedEvents
             this._saveData = saveData;
             _saveData.ID = ID;
 
-            ISaveableObject.PerformBindingChecks(this._saveData, this, onDestroyCallback: OnIntroCutsceneCompleted);
+            ISaveableObject.PerformBindingChecks(this._saveData, this, onDestroyCallback: () => Destroy(this.gameObject));
         }
         public ObjectSaveData BindNew()
         {

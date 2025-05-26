@@ -593,6 +593,7 @@ Transform:
   - {fileID: 437613774}
   - {fileID: 1333578651}
   - {fileID: 1274624463}
+  - {fileID: 1895620920}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1274624462
@@ -1123,6 +1124,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843009900}
   m_CullTransparentMesh: 1
+--- !u!1 &1895620919
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1895620920}
+  - component: {fileID: 1895620921}
+  m_Layer: 0
+  m_Name: DeathCutsceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1895620920
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1895620919}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1068847871}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1895620921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1895620919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeb119824c40b8b489afd704ffb69a76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _defaultJumpscareDuration: 0.15
+  _defaultDeathSFX: {fileID: 11400000, guid: 503926000153b20419bb0a2564cb1612, type: 2}
+  _defaultDeathSFXDelay: 0.1
+  _defaultBiteSFX: {fileID: 11400000, guid: daef0bb76baffd54bb7c22f499eddd88, type: 2}
+  _defaultBiteSFXDelay: 1
 --- !u!224 &1951115250 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 364650224073855692, guid: fdec6850642e8e7439512f43fda3cccc, type: 3}
@@ -1172,28 +1222,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f0ff14abb9c079429409db24a2fb891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _saveData:
-    Exists: 0
-    SaveTime: 0
-    LoadedSceneIndices: 
-    ActiveSceneIndex: 0
-    PlayerData:
-      RootPosition: {x: 0, y: 0, z: 0}
-      YRotation: 0
-      CameraXRotation: 0
-      MovementState: 0
-    ItemSaveData:
-      HasFlashlight: 0
-      FlashlightBattery: 0
-      FlashlightActiveState: 0
-      HasDecoder: 0
-      DecoderSecurityLevel: 0
-      MedkitCount: 0
-    ProgressData:
-      JournalsObtainedArray: 
-      KeyItemsObtainedArray: 
-      RepairSpotStates: 
-    LevelSaveDatas: []
 --- !u!1001 &2378209989168475897
 PrefabInstance:
   m_ObjectHideFlags: 0

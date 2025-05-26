@@ -65,5 +65,15 @@ namespace Environment.Partitioning
                 OnLevelSectionDisabled?.Invoke(levelSectionType);
             }
         }
+
+        public static int GetCountForSectionType(LevelSection levelSectionType)
+        {
+            if (s_levelSectionCounts.TryGetValue(levelSectionType, out int output))
+            {
+                return output;
+            }
+
+            return 0;
+        }
     }
 }

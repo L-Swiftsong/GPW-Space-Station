@@ -14,6 +14,7 @@ public class MimicAttack : MonoBehaviour
     private PlayerController _playerController;
     private GeneralMimic _generalMimic;
     private MimicController _mimicController;
+    [SerializeField] private Transform _lookAtTransform;
 
     [Header("Settings")]
     [SerializeField] private float _attackCooldown = 2f;
@@ -29,12 +30,8 @@ public class MimicAttack : MonoBehaviour
     [SerializeField] private AudioClip _attackSoundClip;
     [SerializeField] [Range(0f, 2f)] private float _attackSoundVolume = 1f;
     [SerializeField] private float _attackSoundDelay = 1f;
-    [SerializeField] public AudioClip _deathSoundClip;
-    [SerializeField] [Range(0f, 2f)] public float _deathSoundVolume = 1f;
-    [SerializeField] public float _deathSoundDelay = 1f;
-    [SerializeField] public AudioClip _biteSoundClip;
-    [SerializeField] [Range(0f, 2f)] public float _biteSoundVolume = 1f;
-    [SerializeField] public float _biteSoundDelay = 1f;
+
+    [Space(5)]
     [SerializeField] public AudioClip _leftFootstepClip;
     [SerializeField] public AudioClip _rightFootstepClip;
     private Coroutine _attackFootstepRoutine;
@@ -48,7 +45,6 @@ public class MimicAttack : MonoBehaviour
 
     public bool SkipVisorDamageOnKill = false;
 
-    public bool _sendToMainMenuOnDeath = false;
 
     private void Start()
     {
@@ -260,7 +256,7 @@ public class MimicAttack : MonoBehaviour
 
         _navMeshAgent.isStopped = true;
         _playerHealth.TakeDamage(1);
-        _playerHealth.StartCoroutine(_playerHealth.DeathCutscene(gameObject));
+        DeathCutsceneManager.TriggerDeathCutscene(transform, _lookAtTransform);
     }
 
     private void FacePlayer()

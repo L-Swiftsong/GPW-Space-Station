@@ -48,6 +48,13 @@ namespace Environment.Partitioning
                 collider.isTrigger = true;
             }
         }
+
+
+        [ContextMenu("Display Locks for Type")]
+        private void DisplayLocksForType()
+        {
+            Debug.Log(LevelPartitionManager.GetCountForSectionType(_associatedSection));
+        }
 #endif
     }
 }

@@ -93,7 +93,7 @@ public class PlayerHealth : MonoBehaviour
     }
 
     // (Temp Implementation) Show the game over UI once the player dies.
-    private void Die() => UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
+    private void Die() => UI.EndStates.GameOverUI.Instance.ShowGameOverUI();
 
     void UpdateHealthUI()
     {
@@ -151,51 +151,7 @@ public class PlayerHealth : MonoBehaviour
         OnUsedHealthKit?.Invoke();
     }
 
-    public IEnumerator DeathCutscene(GameObject mimic)
-    {
-        if (_hasTriggeredDeathCutscene)
-            yield break;
-
-        _hasTriggeredDeathCutscene = true;
-
-        // Get necessary references from the Mimic object.
-        MimicAttack mimicAttack = mimic.GetComponent<MimicAttack>();
-        Transform mimicLookAt = mimic.transform.Find("MimicLookAt");
-
-        if (mimicAttack.SkipVisorDamageOnKill)
-        {
-            _updatHealthUI = false;
-        }
-
-        // Trigger focus on the Mimic that killed the player.
-        if (mimicLookAt != null)
-        {
-            CameraFocusLook.TriggerFocusLookStatic(mimicLookAt.gameObject, 3f, 7.5f, PlayerInput.ActionTypes.Movement | PlayerInput.ActionTypes.Camera);
-        }
-
-        // Play death jumpscare audio.
-        mimicAttack.StartCoroutine(mimicAttack.PlaySound(mimicAttack._deathSoundClip, mimicAttack._deathSoundDelay, mimicAttack._deathSoundVolume));
-
-        // Wait before applying other effects.
-        yield return new WaitForSeconds(1f);
-
-        // Play final audio cue.
-        mimicAttack.StartCoroutine(mimicAttack.PlaySound(mimicAttack._biteSoundClip, mimicAttack._biteSoundDelay, mimicAttack._biteSoundVolume));
-
-        //delay to sync audio.
-        yield return new WaitForSeconds(0.5f);
-
-        //Move mimic towrds player.
-        yield return mimicAttack.StartCoroutine(mimicAttack.JumpScare());
-
-        // Disable health visors.
-        DisableHealthVisors();
-
-        // Show Game Over Menu.
-        UI.GameOver.GameOverUI.Instance.ShowGameOverUI();
-    }
-
-    private void DisableHealthVisors()
+    public void DisableHealthVisors()
     {
         // Disable the health visors (for UI effects)
         for(int i = 0; i < _healthValueToVFXReferences.Length; ++i)

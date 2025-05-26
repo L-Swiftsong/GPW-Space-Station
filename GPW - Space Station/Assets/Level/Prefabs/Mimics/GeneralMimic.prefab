@@ -395,6 +395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _navMeshAgent: {fileID: 0}
+  _lookAtTransform: {fileID: 591446055184461331}
   _attackCooldown: 3
   _attackRadius: 1
   _mimicKnockbackStrength: 1.75
@@ -406,17 +407,10 @@ MonoBehaviour:
   _attackSoundClip: {fileID: 8300000, guid: eef07cde5b792374fb22640f689824f9, type: 3}
   _attackSoundVolume: 1
   _attackSoundDelay: 0.75
-  _deathSoundClip: {fileID: 8300000, guid: 4a7af1de22457094bb7d941e8fc415d9, type: 3}
-  _deathSoundVolume: 2
-  _deathSoundDelay: 0.1
-  _biteSoundClip: {fileID: 8300000, guid: c9bcecd7dc012c44ab0f774d4e40c99d, type: 3}
-  _biteSoundVolume: 1.2
-  _biteSoundDelay: 0
   _leftFootstepClip: {fileID: 8300000, guid: 24f3435b2693a38469ee676581e009eb, type: 3}
   _rightFootstepClip: {fileID: 8300000, guid: 18516f52e1d6a154fa742543457ce2d3, type: 3}
   _isAttacking: 0
   SkipVisorDamageOnKill: 0
-  _sendToMainMenuOnDeath: 0
 --- !u!114 &5446247313011897447
 MonoBehaviour:
   m_ObjectHideFlags: 0

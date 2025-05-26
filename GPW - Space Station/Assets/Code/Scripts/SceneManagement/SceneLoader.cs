@@ -222,18 +222,21 @@ namespace SceneManagement
         }
 
 
-        public void ReloadToMainMenu()
+        public void ReloadToMainMenu(bool notifyListeners = true)
         {
             UI.Menus.MainMenuUI.SetEntryFromOtherScene();
-            StartCoroutine(PerformLoadFromBuildIndices(new int[1] { _mainMenuScene.BuildIndex }, 0, transitionType: TransitionType.Menu));
+            StartCoroutine(PerformLoadFromBuildIndices(new int[1] { _mainMenuScene.BuildIndex }, 0, transitionType: TransitionType.Menu, nofityListeners: notifyListeners));
         }
         public void LoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onScenesLoadedCallback = null, System.Action onFullyCompleteCallback = null) => StartCoroutine(PerformLoadFromBuildIndices(buildIndices, activeSceneBuildIndex, onScenesLoadedCallback: onScenesLoadedCallback, onFullyCompleteCallback: onFullyCompleteCallback));
         
         private enum TransitionType { Default, Hub, Menu };
-        private IEnumerator PerformLoadFromBuildIndices(int[] buildIndices, int activeSceneBuildIndex, System.Action onScenesLoadedCallback = null, System.Action onFullyCompleteCallback = null, TransitionType transitionType = TransitionType.Default)
+        private IEnumerator PerformLoadFromBuildIndices(int[] buildIndices, int activeSceneBuildIndex, System.Action onScenesLoadedCallback = null, System.Action onFullyCompleteCallback = null, TransitionType transitionType = TransitionType.Default, bool nofityListeners = true)
         {
             // Notify listeners that a foreground load has started.
-            OnHardLoadStarted?.Invoke();
+            if (nofityListeners)
+            {
+                OnHardLoadStarted?.Invoke();
+            }
 
 
             // Unload all non-persistent scenes.

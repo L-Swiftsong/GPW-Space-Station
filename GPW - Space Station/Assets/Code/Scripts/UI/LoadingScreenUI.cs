@@ -2,7 +2,7 @@ using SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UI.GameOver;
+using UI.EndStates;
 using UnityEngine;
 
 public class LoadingScreenUI : MonoBehaviour

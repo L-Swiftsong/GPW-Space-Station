@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Audio.Footsteps
+namespace Audio
 {
-    [CreateAssetMenu(menuName = "Audio Containers/Footsteps/New Footstep Clip Container", fileName = "FootstepClipContainer", order = 2)]
-    public class FootstepClipContainer : ScriptableObject
+    [CreateAssetMenu(menuName = "Audio Containers/New Clip Container", fileName = "AudioClipContainer", order = 2)]
+    public class AudioClipContainer : ScriptableObject
     {
-        [SerializeField] private AudioClip[] _footstepClips;
+        [SerializeField] private AudioClip[] _audioClips;
 
         [Space(5)]
         [SerializeField] private float _volumeMultiplier = 1.0f;
@@ -18,7 +18,8 @@ namespace Audio.Footsteps
 
 
         #region Properties
-        public AudioClip[] FootstepClips => _footstepClips;
+        public AudioClip[] AudioClips => _audioClips;
+        public AudioClip GetRandomClip() => _audioClips[Random.Range(0, _audioClips.Length)];
         
         public float VolumeMultiplier => _volumeMultiplier;
 

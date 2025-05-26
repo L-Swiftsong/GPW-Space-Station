@@ -9,7 +9,7 @@ namespace Audio.Footsteps
     {
         /*private MaterialType _materialType;*/
 
-        [SerializeField] private FootstepClipContainer _defaultFootstepClips;
+        [SerializeField] private AudioClipContainer _defaultFootstepClips;
         [SerializeField] private MovementStateClipOverrides[] _movementStateClipOverridesArray;
 
 
@@ -19,7 +19,7 @@ namespace Audio.Footsteps
 
         public FootstepClipInformation GetAudioValues(MovementState movementState, float volumeOverride = -1f)
         {
-            FootstepClipContainer footstepClipContainer = _defaultFootstepClips;
+            AudioClipContainer footstepClipContainer = _defaultFootstepClips;
             for (int i = 0; i < _movementStateClipOverridesArray.Length; ++i)
             {
                 if (_movementStateClipOverridesArray[i].MovementState == movementState)
@@ -29,10 +29,10 @@ namespace Audio.Footsteps
                 }
             }
 
-            int randomClipIndex = Random.Range(0, footstepClipContainer.FootstepClips.Length);
+            int randomClipIndex = Random.Range(0, footstepClipContainer.AudioClips.Length);
             return new FootstepClipInformation()
             {
-                FootstepClip = footstepClipContainer.FootstepClips[randomClipIndex],
+                FootstepClip = footstepClipContainer.AudioClips[randomClipIndex],
                 VolumeMultiplier = (volumeOverride >= 0f) ? volumeOverride : footstepClipContainer.VolumeMultiplier,
                 PitchRange = new Vector2(footstepClipContainer.MinPitch, footstepClipContainer.MaxPitch)
             };
@@ -44,10 +44,10 @@ namespace Audio.Footsteps
         private struct MovementStateClipOverrides
         {
             [SerializeField] private MovementState _movementState;
-            [SerializeField] private FootstepClipContainer _footstepClipContainer;
+            [SerializeField] private AudioClipContainer _footstepClipContainer;
 
             public MovementState MovementState => _movementState;
-            public FootstepClipContainer FootstepClipContainer => _footstepClipContainer;
+            public AudioClipContainer FootstepClipContainer => _footstepClipContainer;
         }
     }
 }
