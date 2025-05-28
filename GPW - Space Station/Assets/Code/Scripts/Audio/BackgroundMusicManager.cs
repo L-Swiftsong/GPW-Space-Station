@@ -60,7 +60,7 @@ namespace Audio
             }
 
 
-            if (_currentAudioSource.time >= (_currentAudioSource.clip.length - _defaultFadeDuration))
+            if (_currentAudioSource.clip == null || _currentAudioSource.time >= (_currentAudioSource.clip.length - _defaultFadeDuration))
             {
                 SelectNewAudioClip(transitionTime: _defaultFadeDuration, delayBetweenClips: 0.0f);
             }

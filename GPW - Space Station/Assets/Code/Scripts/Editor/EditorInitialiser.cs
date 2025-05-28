@@ -93,7 +93,7 @@ public class EditorInitialiser
     private static void LoadExtraScenes()
     {
         // Load extra scenes.
-        if (ContainsActiveScene(_persistentOnly, out string _))
+        if (!ContainsActiveScene(_persistentOnly, out string _))
         {
             foreach (string scenePath in _extraScenesToLoad)
             {

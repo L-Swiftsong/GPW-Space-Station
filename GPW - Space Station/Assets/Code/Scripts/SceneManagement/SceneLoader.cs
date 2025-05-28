@@ -155,7 +155,7 @@ namespace SceneManagement
 
 
             // Alter player rotation.
-            if (transitionData.AlterPlayerLocation)
+            if (transitionData.AlterPlayerLocation && PlayerManager.Exists && PlayerManager.Instance.Player != null)
             {
                 PlayerManager.Instance.SetPlayerPositionAndRotation(transitionData.EntryPosition, transitionData.EntryRotation);
             }
