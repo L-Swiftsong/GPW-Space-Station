@@ -115,15 +115,18 @@ namespace SceneManagement
 
 
             // Unload all non-persistent scenes.
+            bool hasForcedUnloadScenes = transitionData.ScenesToForceUnload != null && transitionData.ScenesToForceUnload.Length > 0;
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
-                if (_foregroundTransitionScenesToKeep.Any(t => t == SceneManager.GetSceneAt(i).name))
+                if (_foregroundTransitionScenesToKeep.Any(t => t == SceneManager.GetSceneAt(i).name)
+                    && !(hasForcedUnloadScenes && transitionData.ScenesToForceUnload.Any(t => t == SceneManager.GetSceneAt(i).name)))
                 {
                     continue;
                 }
 
                 _scenesUnloading.Add(SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i).buildIndex));
             }
+
             yield return new WaitUntil(() => _scenesUnloading.All(t => t.isDone));
 
 
