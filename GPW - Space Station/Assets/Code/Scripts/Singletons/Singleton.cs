@@ -25,7 +25,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         }
         else
         {
-            Debug.LogError($"Error: A SceneLoader instance already exists: {s_instance.name}.\n Destroying {this.name}", this);
+            Debug.LogError($"Error: A {typeof(T).Name} instance already exists: {s_instance.name}.\n Destroying {this.name}", this);
             Destroy(this.gameObject);
         }
     }

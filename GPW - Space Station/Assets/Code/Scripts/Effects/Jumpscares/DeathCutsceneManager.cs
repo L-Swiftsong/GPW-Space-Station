@@ -22,22 +22,31 @@ public class DeathCutsceneManager : ProtectedSingleton<DeathCutsceneManager>
 
 
     public static void TriggerDeathCutscene(Transform mimic, Transform mimicLookAt) => Instance.PerformDealthCutscene(mimic, mimicLookAt, OnDefaultCutsceneComplete);
-    public static void TriggerDeathCutscene(Transform mimic, Transform mimicLookAt, System.Action onCompleteCallback) => Instance.PerformDealthCutscene(mimic, mimicLookAt, onCompleteCallback);
-    private void PerformDealthCutscene(Transform mimic, Transform mimicLookAt, System.Action onCompleteCallback)
+    public static void TriggerDeathCutscene(Transform mimic, Transform mimicLookAt, System.Action onCompleteCallback, CameraFocusLook focusLookOverride) => Instance.PerformDealthCutscene(mimic, mimicLookAt, onCompleteCallback, focusLookOverride);
+    private void PerformDealthCutscene(Transform mimic, Transform mimicLookAt, System.Action onCompleteCallback, CameraFocusLook focusLookOverride = null)
     {
         DeathCutsceneJumpscareInformation cutsceneInformation = new DeathCutsceneJumpscareInformation(_defaultJumpscareDuration);
         DeathCutsceneAudioInformation cutsceneAudioInformation = new DeathCutsceneAudioInformation(_defaultDeathSFX, _defaultDeathSFXDelay, _defaultBiteSFX, _defaultBiteSFXDelay);
 
         // Handle the Death Cutscene.
-        StartCoroutine(DeathCutscene(mimic, mimicLookAt, cutsceneInformation, cutsceneAudioInformation, onCompleteCallback));
+        StartCoroutine(DeathCutscene(mimic, mimicLookAt, cutsceneInformation, cutsceneAudioInformation, onCompleteCallback, focusLookOverride));
     }
 
     private IEnumerator DeathCutscene(Transform mimic, Transform mimicLookAt,
         DeathCutsceneJumpscareInformation cutsceneInformation, DeathCutsceneAudioInformation cutsceneAudioInformation,
-        System.Action onCompleteCallback)
+        System.Action onCompleteCallback,
+        CameraFocusLook focusLookOverride = null)
     {
-        // Force the player to look at the mimic
-        CameraFocusLook.TriggerFocusLookStatic(mimicLookAt.gameObject, 3f, 7.5f, PlayerInput.ActionTypes.Everything);
+        // Force the player to look at the mimic.
+        if (focusLookOverride == null)
+        {
+            CameraFocusLook.TriggerFocusLookStatic(mimicLookAt.gameObject, 3f, 7.5f, PlayerInput.ActionTypes.Everything);
+        }
+        else
+        {
+            focusLookOverride.TriggerFocusLook(mimicLookAt.gameObject, 3f, 7.5f, PlayerInput.ActionTypes.Everything);
+        }
+        Transform playerCameraTransform = focusLookOverride != null ? focusLookOverride.transform : PlayerManager.Instance.GetPlayerCameraTransform();
 
 
         // Handle Audio.
@@ -47,7 +56,7 @@ public class DeathCutsceneManager : ProtectedSingleton<DeathCutsceneManager>
         yield return new WaitForSeconds(0.5f);
 
         // Handle the Jumpscare/Mimic Movement.
-        yield return StartCoroutine(HandleDeathJumpscare(mimic, cutsceneInformation));
+        yield return StartCoroutine(HandleDeathJumpscare(mimic, playerCameraTransform, cutsceneInformation));
 
 
         // Stop any Background Music overrides.
@@ -68,26 +77,23 @@ public class DeathCutsceneManager : ProtectedSingleton<DeathCutsceneManager>
         yield return new WaitForSeconds(cutsceneAudioInformation.BiteAudioClipDelay);
         AudioSource.PlayClipAtPoint(cutsceneAudioInformation.BiteAudioClipContainer.GetRandomClip(), audioSourceTransform.position, cutsceneAudioInformation.BiteAudioClipContainer.VolumeMultiplier);
     }
-    private IEnumerator HandleDeathJumpscare(Transform mimic, DeathCutsceneJumpscareInformation cutsceneInformation)
+    private IEnumerator HandleDeathJumpscare(Transform mimic, Transform cameraTransform, DeathCutsceneJumpscareInformation cutsceneInformation)
     {
-        Transform playerCamTransform = PlayerManager.Instance.GetPlayerCameraTransform();
-
-
         // Disable all mimic colliders.
         foreach (Collider collider in mimic.GetComponents<Collider>())
         {
             collider.enabled = false;
         }
 
-        // Force the mimic to face the player.
-        Vector3 mimicToPlayerDirection = playerCamTransform.position - mimic.position;
-        mimicToPlayerDirection.y = 0.0f; // Zero the vertcal changes of direction to prevent the mimic leaning.
-        mimic.rotation = Quaternion.LookRotation(mimicToPlayerDirection.normalized); // Rotate the mimic to face the player.
+        // Force the mimic to face the camera.
+        Vector3 mimicToCameraDirection = cameraTransform.position - mimic.position;
+        mimicToCameraDirection.y = 0.0f; // Zero the vertcal changes of direction to prevent the mimic leaning.
+        mimic.rotation = Quaternion.LookRotation(mimicToCameraDirection.normalized); // Rotate the mimic to face the camera.
 
 
         // Calculate our required positions for movment.
         Vector3 startPosition = mimic.position;
-        Vector3 targetPosition = playerCamTransform.position + playerCamTransform.forward * -0.1f;
+        Vector3 targetPosition = cameraTransform.position + cameraTransform.forward * -0.1f;
         targetPosition.y = transform.position.y;
 
         // Move the mimic towards the camera, keeping it grounded.

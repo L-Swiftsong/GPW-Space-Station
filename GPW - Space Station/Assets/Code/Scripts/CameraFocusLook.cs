@@ -24,7 +24,7 @@ public class CameraFocusLook : MonoBehaviour
 
     private void Start()
     {
-        playerCamera = Camera.main;
+        playerCamera ??= Camera.main;
         isFocusLookActive = false;
     }
 
@@ -64,11 +64,11 @@ public class CameraFocusLook : MonoBehaviour
 
     public static void TriggerFocusLookStatic(GameObject target, float duration = 3f, float strength = 3f, PlayerInput.ActionTypes preventedActionTypes = PlayerInput.ActionTypes.Movement)
     {
-        var playerInstance = Entities.Player.PlayerManager.Instance;
+        var playerManagerInstance = Entities.Player.PlayerManager.Instance;
 
-        if (playerInstance.CameraFocusLook)
+        if (playerManagerInstance.CameraFocusLook != null)
         {
-            playerInstance.CameraFocusLook.TriggerFocusLook(target, duration, strength, preventedActionTypes);
+            playerManagerInstance.CameraFocusLook.TriggerFocusLook(target, duration, strength, preventedActionTypes);
         }
     }
 
