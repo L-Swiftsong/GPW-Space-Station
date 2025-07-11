@@ -16,10 +16,16 @@ namespace SceneManagement
         public float EntryRotation;
 
 
+        [Header("Special Settings")]
+        [SerializeField] private SceneField[] _scenesToForceUnload = null;
+        public SceneField[] ScenesToForceUnload => _scenesToForceUnload;
+
+
         public HardLoadData GetLoadData()
         {
             return new HardLoadData(
                 scenesToLoad: ScenesToLoad, activeSceneName: ActiveSceneName,
+                scenesToForceUnload: ScenesToForceUnload,
                 IsHubTransition,
                 EntryPosition, EntryRotation);
         }

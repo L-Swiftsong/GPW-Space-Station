@@ -81,7 +81,7 @@ namespace UI.World
         {
             if (_useSpriteSwap && (_targetGraphic == null || _targetGraphic is not Image))
             {
-                Debug.LogError("Target Graphic needs to be an image if you are wanting to use Sprite Swap");
+                Debug.LogError("Target Graphic needs to be an image if you are wanting to use Sprite Swap", this);
             }
         }
 

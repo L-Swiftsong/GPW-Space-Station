@@ -11,7 +11,7 @@ namespace ScriptedEvents.Triggers
         #region Saving Variables & References
 
         [field: SerializeField] public SerializableGuid ID { get; set; }
-        [SerializeField] private ObjectSaveData _saveData;
+        [SerializeField] protected ObjectSaveData SaveData;
 
         #endregion
 
@@ -91,10 +91,10 @@ namespace ScriptedEvents.Triggers
 
         public void BindExisting(ObjectSaveData saveData)
         {
-            this._saveData = saveData;
-            _saveData.ID = ID;
+            this.SaveData = saveData;
+            SaveData.ID = ID;
 
-            ISaveableObject.PerformBindingChecks(this._saveData, this, () =>
+            ISaveableObject.PerformBindingChecks(this.SaveData, this, () =>
             {
                 if (_destroyObjectOnTrigger)
                 {
@@ -108,9 +108,9 @@ namespace ScriptedEvents.Triggers
         }
         public ObjectSaveData BindNew()
         {
-            if (this._saveData == null || !this._saveData.Exists)
+            if (this.SaveData == null || !this.SaveData.Exists)
             {
-                this._saveData = new ObjectSaveData()
+                this.SaveData = new ObjectSaveData()
                 {
                     ID = this.ID,
                     Exists = true,
@@ -118,14 +118,14 @@ namespace ScriptedEvents.Triggers
                 };
             }
 
-            ISaveableObject.UpdatePositionAndRotationInformation(this._saveData, this);
+            ISaveableObject.UpdatePositionAndRotationInformation(this.SaveData, this);
 
-            return this._saveData;
+            return this.SaveData;
         }
 
-        protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this._saveData, this);
-        protected virtual void OnDestroy() => _saveData.DisabledState = DisabledState.Destroyed;
-        protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this._saveData, this);
+        protected virtual void OnEnable() => ISaveableObject.DefaultOnEnableSetting(this.SaveData, this);
+        protected virtual void OnDestroy() => SaveData.DisabledState = DisabledState.Destroyed;
+        protected virtual void OnDisable() => ISaveableObject.DefaultOnDisableSetting(this.SaveData, this);
 
         #endregion
 

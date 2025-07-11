@@ -8,6 +8,7 @@ namespace SceneManagement
     {
         public SceneField[] ScenesToLoad;
         public string ActiveSceneName;
+        public SceneField[] ScenesToForceUnload;
 
         public bool IsHubTransition;
 
@@ -16,10 +17,11 @@ namespace SceneManagement
         public float EntryRotation;
 
 
-        public HardLoadData(SceneField[] scenesToLoad, string activeSceneName, bool isHubTransition)
+        public HardLoadData(SceneField[] scenesToLoad, string activeSceneName, SceneField[] scenesToForceUnload, bool isHubTransition)
         {
             this.ScenesToLoad = scenesToLoad;
             this.ActiveSceneName = activeSceneName;
+            this.ScenesToForceUnload = scenesToForceUnload;
 
             this.IsHubTransition = isHubTransition;
             
@@ -27,10 +29,11 @@ namespace SceneManagement
             this.EntryPosition = Vector3.zero;
             this.EntryRotation = 0.0f;
         }
-        public HardLoadData(SceneField[] scenesToLoad, string activeSceneName, bool isHubTransition, Vector3 entryPosition, float entryRotation)
+        public HardLoadData(SceneField[] scenesToLoad, string activeSceneName, SceneField[] scenesToForceUnload, bool isHubTransition, Vector3 entryPosition, float entryRotation)
         {
             this.ScenesToLoad = scenesToLoad;
             this.ActiveSceneName = activeSceneName;
+            this.ScenesToForceUnload = scenesToForceUnload;
 
             this.IsHubTransition = isHubTransition;
 

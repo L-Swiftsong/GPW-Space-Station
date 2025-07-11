@@ -4,6 +4,7 @@ using UnityEngine;
 using SceneManagement;
 using Entities.Player;
 using Saving.LevelData;
+using UI;
 
 namespace ScriptedEvents
 {
@@ -21,6 +22,8 @@ namespace ScriptedEvents
 
         #endregion
 
+
+        private const float CUTSCENE_UI_BARS_FADEOUT_TIME = 1.0f;
 
         [Header("References")]
         [SerializeField] private Animator _animator;
@@ -56,13 +59,25 @@ namespace ScriptedEvents
             DisablePlayerAndInput();
             Environment.Partitioning.LevelPartitionManager.AddToEnabledCount(Environment.Partitioning.LevelSection.Hub);
             _animator.Play(INTRO_CUTSCENE_CLIP_HASH);
+
+            if (CutsceneUI.HasInstance)
+                CutsceneUI.Instance.ShowCutsceneBars(0.0f);
+            StartCoroutine(HideCutsceneBars());
         }
         public void OnIntroCutsceneCompleted()
         {
-            Debug.Log("Intro Cutscene Complete");
             EnablePlayerAndInput();
             Environment.Partitioning.LevelPartitionManager.SubtractFromEnabledCount(Environment.Partitioning.LevelSection.Hub);
             Destroy(this.gameObject);
+        }
+
+        private IEnumerator HideCutsceneBars()
+        {
+            float clipDuration = _animator.GetCurrentAnimatorClipInfo(0)[0].clip.averageDuration;
+            yield return new WaitForSeconds(Mathf.Max(clipDuration - CUTSCENE_UI_BARS_FADEOUT_TIME, 0));
+
+            if (CutsceneUI.HasInstance)
+                CutsceneUI.Instance.HideCutsceneBars(CUTSCENE_UI_BARS_FADEOUT_TIME);
         }
         
         

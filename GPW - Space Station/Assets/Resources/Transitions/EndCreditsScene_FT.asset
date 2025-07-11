@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e65b5b0c14a12e47822648c6596711f, type: 3}
+  m_Name: EndCreditsScene_FT
+  m_EditorClassIdentifier: 
+  _scenesToLoad:
+  - _sceneAsset: {fileID: 102900000, guid: ea13d2c9e849a7946a7cb2a01521f3be, type: 3}
+    _sceneName: EndCreditsScene
+    _buildIndex: 4
+  _activeSceneIndex: 0
+  IsHubTransition: 0
+  AlterPlayerLocation: 1
+  EntryPosition: {x: 0, y: 0, z: 0}
+  EntryRotation: 0
+  _scenesToForceUnload:
+  - _sceneAsset: {fileID: 102900000, guid: ed6342c6e18043d439224ff71d189c70, type: 3}
+    _sceneName: PlayerScene
+    _buildIndex: 2

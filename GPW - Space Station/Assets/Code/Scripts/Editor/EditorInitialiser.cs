@@ -23,10 +23,12 @@ public class EditorInitialiser
     private static List<string> _invalidScenes = new List<string>
     {
         Path.GetFileNameWithoutExtension(PERSISTENT_SCENE_PATH),
-        "MimicryTestScene",
-        "TempStartScene",
         "MainMenuScene",
-        "SavingTestScene",
+    };
+    // The names of the scenes which we only wish to load the persistent scene from, not the additional scenes.
+    private static List<string> _persistentOnly = new List<string>
+    {
+        "EndCreditsScene",
     };
     // The names of the scenes which we wish to load in addition to the first scene. Loaded in the order they appear in the List.
     private static List<string> _extraScenesToLoad = new List<string>
@@ -48,7 +50,7 @@ public class EditorInitialiser
     {
         if (state == PlayModeStateChange.ExitingEditMode)
         {
-            if (!IsActiveSceneInvalid(_invalidScenes, out string activeSceneName))
+            if (!ContainsActiveScene(_invalidScenes, out string activeSceneName))
             {
                 EditorPrefs.SetString(ACTIVE_EDITOR_SCENE_PREF_IDENTIFIER, activeSceneName);
                 EditorPrefs.SetBool(EDITOR_INITIALISED_PREF_IDENTIFIER, true);
@@ -91,9 +93,12 @@ public class EditorInitialiser
     private static void LoadExtraScenes()
     {
         // Load extra scenes.
-        foreach (string scenePath in _extraScenesToLoad)
+        if (!ContainsActiveScene(_persistentOnly, out string _))
         {
-            SceneManager.LoadScene(scenePath, LoadSceneMode.Additive);
+            foreach (string scenePath in _extraScenesToLoad)
+            {
+                SceneManager.LoadScene(scenePath, LoadSceneMode.Additive);
+            }
         }
 
         // Load the original scene.
@@ -115,7 +120,7 @@ public class EditorInitialiser
     }
 
 
-    private static bool IsActiveSceneInvalid(List<string> invalidScenes, out string sceneName)
+    private static bool ContainsActiveScene(List<string> invalidScenes, out string sceneName)
     {
         sceneName = SceneManager.GetActiveScene().name;
         return invalidScenes.Contains(sceneName);

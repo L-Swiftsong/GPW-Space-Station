@@ -39,6 +39,10 @@ namespace ScriptedEvents.Triggers
 
         private bool IsInPlayerView()
         {
+            if (_playerCamera == null)
+                return false;
+
+
             if (Vector3.Distance(transform.position, _playerCamera.transform.position) >= _maxActivationDistance)
             {
                 // Outwith our maximum distance.
