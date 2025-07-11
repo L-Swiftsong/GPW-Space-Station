@@ -11,6 +11,8 @@ namespace UI
 
         [Space(5)]
         [SerializeField] private float _defaultCutsceneBarSize;
+        
+        private Coroutine _smoothTransitionCoroutine;
 
 
         protected override void Awake()
@@ -21,22 +23,37 @@ namespace UI
         public void ShowCutsceneBars(float transitionDuration)
         {
             ShowSelf();
-            SmoothlyMoveHeight(_defaultCutsceneBarSize, transitionDuration);
+
+            StopSmoothMove();
+            _smoothTransitionCoroutine = StartCoroutine(SmoothlyMoveHeight(0.0f, _defaultCutsceneBarSize, transitionDuration));
         }
         public void HideCutsceneBars(float transitionDuration)
         {
-            SmoothlyMoveHeight(0.0f, transitionDuration, HideSelf);
+            if (IsHidden())
+                return;
+
+            StopSmoothMove();
+            _smoothTransitionCoroutine = StartCoroutine(SmoothlyMoveHeight(_defaultCutsceneBarSize, 0.0f, transitionDuration, HideSelf));
         }
-        private IEnumerator SmoothlyMoveHeight(float targetSize, float transitionDuration, System.Action onCompleteCallback = null)
+
+        private void StopSmoothMove()
         {
-            float transitionRate = 1.0f / transitionDuration;
-            while (Mathf.Approximately(_topBarTransform.sizeDelta.y, targetSize))
+            if (_smoothTransitionCoroutine == null)
+                return;
+            
+            StopCoroutine(_smoothTransitionCoroutine);
+        }
+        private IEnumerator SmoothlyMoveHeight(float initialSize, float targetSize, float transitionDuration, System.Action onCompleteCallback = null)
+        {
+            float lerpTime = 0.0f;
+            while (lerpTime < 1.0f)
             {
-                float currentHeight = Mathf.MoveTowards(_topBarTransform.sizeDelta.y, targetSize, transitionRate * Time.deltaTime);
-                _topBarTransform.sizeDelta = new Vector2(_topBarTransform.sizeDelta.x, targetSize);
-                _bottomBarTransform.sizeDelta = new Vector2(_topBarTransform.sizeDelta.x, targetSize);
+                float currentHeight = Mathf.Lerp(initialSize, targetSize, lerpTime);
+                _topBarTransform.sizeDelta = new Vector2(_topBarTransform.sizeDelta.x, currentHeight);
+                _bottomBarTransform.sizeDelta = new Vector2(_topBarTransform.sizeDelta.x, currentHeight);
 
                 yield return null;
+                lerpTime += Time.deltaTime / transitionDuration;
             }
 
             _topBarTransform.sizeDelta = new Vector2(_topBarTransform.sizeDelta.x, targetSize);
@@ -46,15 +63,8 @@ namespace UI
         }
 
 
-        [ContextMenu("Test")]
-        private void Test()
-        {
-            _topBarTransform.sizeDelta = new Vector2(_topBarTransform.sizeDelta.x, _defaultCutsceneBarSize);
-            _bottomBarTransform.sizeDelta = new Vector2(_topBarTransform.sizeDelta.x, _defaultCutsceneBarSize);
-        }
-
-
         private void ShowSelf() => gameObject.SetActive(true);
         private void HideSelf() => gameObject.SetActive(false);
+        private bool IsHidden() => !gameObject.activeInHierarchy;
     }
 }
