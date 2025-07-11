@@ -9,8 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6710615893916353859}
-  - component: {fileID: 1626116003734802574}
-  - component: {fileID: 1470118500576900270}
   m_Layer: 0
   m_Name: waypoint 4
   m_TagString: Untagged
@@ -33,89 +31,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5575890089181223411}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1626116003734802574
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026685078750493851}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1470118500576900270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1026685078750493851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <ID>k__BackingField:
-    Part1: 0
-    Part2: 0
-    Part3: 0
-    Part4: 0
-  _saveData:
-    <ID>k__BackingField:
-      Part1: 0
-      Part2: 0
-      Part3: 0
-      Part4: 0
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Exists: 0
-    DisabledState: 0
-    BoolValues: 
-    IntValues: 
-  _triggerEventIfDestroyedOnLoad: 0
-  _onlyTriggerOnce: 1
-  _destroyObjectOnTrigger: 0
-  OnTriggerActivated:
-    _PersistentCalls:
-    - _Target: {fileID: 0}
-      _MemberName: UnityEngine.Object, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-        PublicKeyToken=null.DestroyImmediate
-      _PersistentArguments:
-      - _Type: 13
-        _Int: 0
-        _String: UnityEngine.Object, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral,
-          PublicKeyToken=null
-        _X: 0
-        _Y: 0
-        _Z: 0
-        _W: 0
-        _Object: {fileID: 0}
-      - _Type: 1
-        _Int: 1
-        _String: 
-        _X: 0
-        _Y: 0
-        _Z: 0
-        _W: 0
-        _Object: {fileID: 0}
-  _useDelayedTrigger: 0
-  _canTriggerWhileAwaitingDelay: 0
-  _overridePreviousDelay: 1
-  _delayedTriggerDelayTime: 1
-  OnDelayedTriggerActivated:
-    _PersistentCalls: []
-  _triggerTypes: 0
 --- !u!1 &1834395423685241261
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,7 +754,7 @@ MonoBehaviour:
     Part2: 0
     Part3: 0
     Part4: 0
-  _saveData:
+  SaveData:
     <ID>k__BackingField:
       Part1: 0
       Part2: 0
@@ -851,7 +766,6 @@ MonoBehaviour:
     DisabledState: 0
     BoolValues: 
     IntValues: 
-  _triggerEventIfDestroyedOnLoad: 0
   _onlyTriggerOnce: 1
   _destroyObjectOnTrigger: 0
   OnTriggerActivated:
@@ -883,7 +797,7 @@ MonoBehaviour:
     Part2: 0
     Part3: 0
     Part4: 0
-  _saveData:
+  SaveData:
     <ID>k__BackingField:
       Part1: 0
       Part2: 0
@@ -895,7 +809,6 @@ MonoBehaviour:
     DisabledState: 0
     BoolValues: 
     IntValues: 
-  _triggerEventIfDestroyedOnLoad: 0
   _onlyTriggerOnce: 0
   _destroyObjectOnTrigger: 0
   OnTriggerActivated:
@@ -927,7 +840,7 @@ MonoBehaviour:
     Part2: 0
     Part3: 0
     Part4: 0
-  _saveData:
+  SaveData:
     <ID>k__BackingField:
       Part1: 0
       Part2: 0
@@ -939,7 +852,6 @@ MonoBehaviour:
     DisabledState: 0
     BoolValues: 
     IntValues: 
-  _triggerEventIfDestroyedOnLoad: 0
   _onlyTriggerOnce: 1
   _destroyObjectOnTrigger: 0
   OnTriggerActivated:
@@ -971,7 +883,7 @@ MonoBehaviour:
     Part2: 0
     Part3: 0
     Part4: 0
-  _saveData:
+  SaveData:
     <ID>k__BackingField:
       Part1: 0
       Part2: 0
@@ -983,7 +895,6 @@ MonoBehaviour:
     DisabledState: 0
     BoolValues: 
     IntValues: 
-  _triggerEventIfDestroyedOnLoad: 0
   _onlyTriggerOnce: 1
   _destroyObjectOnTrigger: 0
   OnTriggerActivated:

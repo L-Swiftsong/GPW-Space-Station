@@ -2329,8 +2329,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4466939142108997665}
-  - component: {fileID: 7033413554885194793}
-  - component: {fileID: 4826901539624681982}
   m_Layer: 0
   m_Name: End Door open
   m_TagString: Untagged
@@ -2353,70 +2351,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2174708057692238703}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &7033413554885194793
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6846626128799708729}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 6.489449}
-  m_Center: {x: 0, y: 0, z: 0.07169604}
---- !u!114 &4826901539624681982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6846626128799708729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41ad726eeefaeef4d9126404404cac2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <ID>k__BackingField:
-    Part1: 0
-    Part2: 0
-    Part3: 0
-    Part4: 0
-  SaveData:
-    <ID>k__BackingField:
-      Part1: 0
-      Part2: 0
-      Part3: 0
-      Part4: 0
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 0}
-    Exists: 0
-    DisabledState: 0
-    BoolValues: 
-    IntValues: 
-  _onlyTriggerOnce: 1
-  _destroyObjectOnTrigger: 0
-  OnTriggerActivated:
-    _PersistentCalls:
-    - _Target: {fileID: 5451275700329805190}
-      _MemberName: Activate
-      _PersistentArguments: []
-  _useDelayedTrigger: 0
-  _canTriggerWhileAwaitingDelay: 0
-  _overridePreviousDelay: 1
-  _delayedTriggerDelayTime: 1
-  OnDelayedTriggerActivated:
-    _PersistentCalls: []
-  _triggerTypes: 0
 --- !u!1 &7596538008244045824
 GameObject:
   m_ObjectHideFlags: 0
