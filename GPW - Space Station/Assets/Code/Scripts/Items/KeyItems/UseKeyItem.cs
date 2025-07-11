@@ -22,12 +22,16 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 
     #endregion
 
+	private static readonly Color INDICATOR_LIGHT_INCORRECT_COLOUR = Color.red;
+
 
     [Header("Key Item")]
 	[SerializeField] private KeyItemData _requiredKeyItem;
 	[SerializeField] private Transform _keyItemPlacement;
 	[SerializeField] private GameObject _ghostModel;
 	[SerializeField] private GameObject _completeModel;
+	[SerializeField] private Light _indicatorLight;
+
 
 	[Header("Player Tablet")]
 	[SerializeField] private PlayerTablet _playerTablet;
@@ -53,6 +57,8 @@ public class UseKeyItem : MonoBehaviour, IInteractable
     {
         _completeModel.SetActive(false);
 		_ghostModel.SetActive(false);
+		_indicatorLight.gameObject.SetActive(true);
+        _indicatorLight.color = INDICATOR_LIGHT_INCORRECT_COLOUR;
     }
     private void Start()
 	{
@@ -76,6 +82,7 @@ public class UseKeyItem : MonoBehaviour, IInteractable
 
 			_ghostModel.SetActive(false);
             _completeModel.SetActive(true);
+			_indicatorLight.gameObject.SetActive(false);
 
             UpdateUsedKeyItems();
 
