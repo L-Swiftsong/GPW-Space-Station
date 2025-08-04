@@ -380,8 +380,8 @@ namespace UI.Icons
 
         // No Prefix.
         private const int KEYBOARD_SPRITE_PREFIX_LENGTH = 0;
-        // Suffix: "_Key_Dark" = 9 chars.
-        private const int KEYBOARD_SPRITE_SUFFIX_LENGTH = 9;
+        // Suffix: "_Key" = 4 chars.
+        private const int KEYBOARD_SPRITE_SUFFIX_LENGTH = 4;
 
         public void Editor_SetupKeyboardIcons(string path)
         {
