@@ -908,6 +908,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 50510531}
+  - component: {fileID: 50510532}
   m_Layer: 0
   m_Name: InWorldTutorialTests
   m_TagString: Untagged
@@ -931,6 +932,22 @@ Transform:
   - {fileID: 8851947}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &50510532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 50510530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30006ed31c59b314c8578ac518c3450c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactionType: 5
+  _testText: {fileID: 1948318848}
+  _mouseAndKeyboardAsset: {fileID: 11400000, guid: d09c3202d5a2f6644bc01a59f117e2bc, type: 2}
+  _gamepadAsset: {fileID: 11400000, guid: c71e56075ba1ea84d94d0f3b19d21d59, type: 2}
 --- !u!4 &51120295 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1702416786630395011, guid: a218e2741c769944a9598fe1fba1c5b4, type: 3}
@@ -15316,7 +15333,7 @@ MonoBehaviour:
   m_text: 'Testing Sprites: <sprite name="Button_North"> <sprite name="Left_Trigger">
 
     Press
-    <sprite name="Left_Stick_Press"> to sprint'
+    <sprite name="Dpad_Left"><sprite name="Dpad_Right"> to sprint'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -22680,7 +22697,7 @@ MonoBehaviour:
   m_text: 'Testing Sprites: <sprite name="Button_North"> <sprite name="Left_Trigger">
 
     Press
-    <sprite name="Left_Stick_Press"> to sprint'
+    <sprite name="Dpad_Left"><sprite name="Dpad_Right"> to sprint'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -25996,10 +26013,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Testing Sprites: <sprite name="0_Key"> <sprite name="Mouse_Left_Key">
-
-    Press
-    <sprite name="Shift_Key"> to sprint<sprite name="Mouse_Left_Key">'
+  m_text: <sprite name="W_Key"><sprite name="S_Key"><sprite name="A_Key"><sprite
+    name="D_Key">
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

@@ -161,5 +161,16 @@ namespace UI.Popups
             Debug.Log(InputIconManager.GetIconForAction(_playerInputAsset[schemeName]));
             return InputIconManager.GetIconForAction(_playerInputAsset[schemeName]);
         }
+        public static string GetInteractionSpriteIdentifierFromInteractionType_Static(InteractionType interactionType) => s_instance.GetInteractionSpriteIdentifierFromInteractionType(interactionType);
+        private string GetInteractionSpriteIdentifierFromInteractionType(InteractionType interactionType)
+        {
+            if (s_interactionTypeToIdentifierDictionary.TryGetValue(interactionType, out string schemeName) == false)
+            {
+                Debug.LogError("Error: No Identifier set for Interaction Type: " + interactionType.ToString());
+                throw new System.NotImplementedException();
+            }
+
+            return InputIconManager.GetIconIdentifierForAction(_playerInputAsset[schemeName]);
+        }
     }
 }
