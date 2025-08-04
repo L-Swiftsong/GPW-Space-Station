@@ -107,8 +107,8 @@ namespace UI.Icons
 
 #if UNITY_EDITOR
 
-        // Prefix: "PS4_" = 4 chars.
-        private const int DS4_SPRITE_PREFIX_LENGTH = 4;
+        // No Prefix.
+        private const int DS4_SPRITE_PREFIX_LENGTH = 0;
         // No Suffix.
         private const int DS4_SPRITE_SUFFIX_LENGTH = 0;
 
@@ -126,10 +126,10 @@ namespace UI.Icons
                 switch (spriteKeyName)
                 {
                     // Buttons.
-                    case "triangle": buttonNorth = sprite; break;
-                    case "cross": buttonSouth = sprite; break;
-                    case "circle": buttonEast = sprite; break;
-                    case "square": buttonWest = sprite; break;
+                    case "button_north": buttonNorth = sprite; break;
+                    case "button_south": buttonSouth = sprite; break;
+                    case "button_east": buttonEast = sprite; break;
+                    case "button_west": buttonWest = sprite; break;
                     
                     // D-Pad.
                     case "dpad_up": dpadUp = sprite; break;
@@ -139,27 +139,27 @@ namespace UI.Icons
                     case "dpad": dpad = sprite; break;
                     
                     // Triggers.
-                    case "l2": leftTrigger = sprite; break;
-                    case "r2": rightTrigger = sprite; break;
-                    case "l1": leftShoulder = sprite; break;
-                    case "r1": rightShoulder = sprite; break;
+                    case "left_trigger": leftTrigger = sprite; break;
+                    case "right_trigger": rightTrigger = sprite; break;
+                    case "left_shoulder": leftShoulder = sprite; break;
+                    case "right_shoulder": rightShoulder = sprite; break;
                     
                     // Sticks.
                     case "left_stick": leftStick = sprite; break;
                     case "right_stick": rightStick = sprite; break;
-                    case "left_stick_click": leftStickPress = sprite; break;
-                    case "right_stick_click": rightStickPress = sprite; break;
+                    case "left_stick_press": leftStickPress = sprite; break;
+                    case "right_stick_press": rightStickPress = sprite; break;
 
                     // Other.
-                    case "options": startButton = sprite; break;
-                    case "share": selectButton = sprite; break;
+                    case "start": startButton = sprite; break;
+                    case "select": selectButton = sprite; break;
                 }
             }
         }
 
 
-        // Prefix: "XboxSeriesX_" = 12 chars.
-        private const int XBOX_SPRITE_PREFIX_LENGTH = 12;
+        // No Prefix.
+        private const int XBOX_SPRITE_PREFIX_LENGTH = 0;
         // No Suffix.
         private const int XBOX_SPRITE_SUFFIX_LENGTH = 0;
 
@@ -176,10 +176,10 @@ namespace UI.Icons
                 switch (spriteKeyName)
                 {
                     // Buttons.
-                    case "y": buttonNorth = sprite; break;
-                    case "a": buttonSouth = sprite; break;
-                    case "b": buttonEast = sprite; break;
-                    case "x": buttonWest = sprite; break;
+                    case "button_north": buttonNorth = sprite; break;
+                    case "button_south": buttonSouth = sprite; break;
+                    case "button_east": buttonEast = sprite; break;
+                    case "button_west": buttonWest = sprite; break;
                     
                     // D-Pad.
                     case "dpad_up": dpadUp = sprite; break;
@@ -189,20 +189,20 @@ namespace UI.Icons
                     case "dpad": dpad = sprite; break;
                     
                     // Triggers.
-                    case "lt": leftTrigger = sprite; break;
-                    case "rt": rightTrigger = sprite; break;
-                    case "lb": leftShoulder = sprite; break;
-                    case "rb": rightShoulder = sprite; break;
+                    case "left_trigger": leftTrigger = sprite; break;
+                    case "right_trigger": rightTrigger = sprite; break;
+                    case "left_shoulder": leftShoulder = sprite; break;
+                    case "right_shoulder": rightShoulder = sprite; break;
                     
                     // Sticks.
                     case "left_stick": leftStick = sprite; break;
                     case "right_stick": rightStick = sprite; break;
-                    case "left_stick_click": leftStickPress = sprite; break;
-                    case "right_stick_click": rightStickPress = sprite; break;
+                    case "left_stick_press": leftStickPress = sprite; break;
+                    case "right_stick_press": rightStickPress = sprite; break;
 
                     // Other.
-                    case "menu": startButton = sprite; break;
-                    case "view": selectButton = sprite; break;
+                    case "start": startButton = sprite; break;
+                    case "select": selectButton = sprite; break;
                 }
             }
         }
