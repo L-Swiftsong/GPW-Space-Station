@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace UI.Icons
 {
@@ -8,8 +9,15 @@ namespace UI.Icons
     public class InputIconDataSO : ScriptableObject
     {
         [SerializeField] private KeyboardIcons _keyboardIcons;
+        [SerializeField] private TMP_SpriteAsset _keyboardSpriteAsset;
+
+        [Space(5)]
         [SerializeField] private GamepadIcons _xboxIcons;
+        [SerializeField] private TMP_SpriteAsset _xboxSpriteAsset;
+
+        [Space(5)]
         [SerializeField] private GamepadIcons _ds4Icons;
+        [SerializeField] private TMP_SpriteAsset _ds4SpriteAsset;
         [SerializeField] private bool _useDs4Icons = false;
 
 
@@ -19,6 +27,14 @@ namespace UI.Icons
             {
                 PlayerInput.DeviceType.MnK => _keyboardIcons.GetSprite(controlPath),
                 _ => _useDs4Icons ? _ds4Icons.GetSprite(controlPath) : _xboxIcons.GetSprite(controlPath)
+            };
+        }
+        public TMP_SpriteAsset GetSpriteAsset(PlayerInput.DeviceType deviceType)
+        {
+            return deviceType switch
+            {
+                PlayerInput.DeviceType.MnK => _keyboardSpriteAsset,
+                _ => _useDs4Icons ? _ds4SpriteAsset : _xboxSpriteAsset,
             };
         }
 

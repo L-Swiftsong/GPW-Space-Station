@@ -10,7 +10,6 @@ namespace UI.Icons
         private static InputIconDataSO s_inputIconData;
         private const string INPUT_ICON_DATA_PATH = "UI/Icons/InputIconData";
 
-
         static InputIconManager()
         {
             try
@@ -24,6 +23,7 @@ namespace UI.Icons
                 Debug.LogError("Error when trying to load the InputIconDataSO from path: " + INPUT_ICON_DATA_PATH);
             }
         }
+
 
 
         public static Sprite GetIconForAction(InputAction inputAction)
@@ -59,7 +59,6 @@ namespace UI.Icons
                 {
                     // This binding is compatable with our active device. Use it to determine our Icon.
                     inputAction.GetBindingDisplayString(i, out string deviceLayoutName, out string controlPath);
-                    Debug.Log(controlPath);
 
                     if (s_inputSystemIdentifierToSpriteIdenfitierDictionary.TryGetValue(controlPath, out string spriteIdentifier))
                     {
@@ -67,12 +66,10 @@ namespace UI.Icons
                     }
                 }
             }
-            Debug.Log("Control Path: " + output);
             return output;
-
-            Debug.LogError($"Error: No Binding for the action '{inputAction.name}' for the last used device ({PlayerInput.LastUsedDevice.ToString()})");
-            return null;
         }
+
+        public static TMPro.TMP_SpriteAsset GetSpriteAsset(PlayerInput.DeviceType deviceType) => s_inputIconData.GetSpriteAsset(deviceType);
 
 
         private static Dictionary<string, string> s_inputSystemIdentifierToSpriteIdenfitierDictionary = new Dictionary<string, string>()

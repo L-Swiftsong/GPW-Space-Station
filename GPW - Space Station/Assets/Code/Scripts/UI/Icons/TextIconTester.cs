@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UI.Popups;
 using TMPro;
 
@@ -9,7 +8,7 @@ namespace UI.Icons
 {
     public class TextIconTester : MonoBehaviour
     {
-        [SerializeField] private PopupManager.InteractionType _interactionType = PopupManager.InteractionType.DefaultInteract;
+        [SerializeField] private InteractionType _interactionType = InteractionType.DefaultInteract;
         [SerializeField] private TMP_Text _testText;
 
 
@@ -34,7 +33,7 @@ namespace UI.Icons
                     break;
             }
 
-            string spriteIdentifier = PopupManager.GetInteractionSpriteIdentifierFromInteractionType_Static(_interactionType);
+            string spriteIdentifier = InteractionTypeExtension.GetInteractionSpriteIdentifierFromInteractionType(_interactionType);
             _testText.text = spriteIdentifier;
         }
     }

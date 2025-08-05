@@ -8,7 +8,7 @@ using UnityEngine.Pool;
 
 namespace UI.Popups
 {
-    public class PopupManager : MonoBehaviour
+    public partial class PopupManager : MonoBehaviour
     {
         private static PopupManager s_instance;
 
@@ -37,22 +37,6 @@ namespace UI.Popups
         [SerializeField] private Vector2 _tutorialPopupPosition;
         [SerializeField] private Vector2 _tutorialPopupPivot;
         
-
-        [Header("Interaction Settings")]
-        [SerializeField] private InputActionAsset _playerInputAsset;
-
-        private static Dictionary<InteractionType, string> s_interactionTypeToIdentifierDictionary = new Dictionary<InteractionType, string>()
-        {
-            {  InteractionType.DefaultInteract, "Interaction/Interact" },
-            {  InteractionType.FlashlightEnable, "Interaction/ToggleFlashlight" },
-            {  InteractionType.FlashlightFocus, "Interaction/FocusFlashlight" },
-            {  InteractionType.Healing, "Interaction/UseHealingItem" },
-            {  InteractionType.Movement, "Movement/Movement" },
-            {  InteractionType.Sprint, "Movement/Sprint" },
-            {  InteractionType.Crouch, "Movement/Crouch" },
-        };
-
-
 
         private void Awake()
         {
@@ -135,42 +119,14 @@ namespace UI.Popups
             ObjectPool<ScreenSpacePopupElement> utilisedPool = setupInformation.DisplayOnMultipleLines ? s_instance._screenSpaceMultiLinePopupPool : s_instance._screenSpaceSingleLinePopupPool;
             ScreenSpacePopupElement popupElement = utilisedPool.Get();
 
-            popupElement.SetupWithInformation(setupInformation, s_instance.GetInteractionSpriteFromInteractionType(setupInformation.InteractionType), () => utilisedPool.Release(popupElement));
+            popupElement.SetupWithInformation(setupInformation, InteractionTypeExtension.GetInteractionSpriteFromInteractionType(setupInformation.InteractionType), () => utilisedPool.Release(popupElement));
         }
-
-
-        [System.Serializable] public enum InteractionType { DefaultInteract, FlashlightEnable, FlashlightFocus, Healing, Movement, Sprint, Crouch }
         public static void CreateWorldSpacePopup(WorldSpacePopupSetupInformation popupSetupInformation)
         {
             ObjectPool<WorldSpacePopupElement> utilisedPool = popupSetupInformation.DisplayOnMultipleLines ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
             WorldSpacePopupElement popupElement = utilisedPool.Get();
 
-            popupElement.SetupWithInformation(popupSetupInformation, s_instance.GetInteractionSpriteFromInteractionType(popupSetupInformation.InteractionType), () => utilisedPool.Release(popupElement));
-        }
-
-
-
-        private Sprite GetInteractionSpriteFromInteractionType(InteractionType interactionType)
-        {
-            if (s_interactionTypeToIdentifierDictionary.TryGetValue(interactionType, out string schemeName) == false)
-            {
-                Debug.LogError("Error: No Identifier set for Interaction Type: " + interactionType.ToString());
-                throw new System.NotImplementedException();
-            }
-
-            Debug.Log(InputIconManager.GetIconForAction(_playerInputAsset[schemeName]));
-            return InputIconManager.GetIconForAction(_playerInputAsset[schemeName]);
-        }
-        public static string GetInteractionSpriteIdentifierFromInteractionType_Static(InteractionType interactionType) => s_instance.GetInteractionSpriteIdentifierFromInteractionType(interactionType);
-        private string GetInteractionSpriteIdentifierFromInteractionType(InteractionType interactionType)
-        {
-            if (s_interactionTypeToIdentifierDictionary.TryGetValue(interactionType, out string schemeName) == false)
-            {
-                Debug.LogError("Error: No Identifier set for Interaction Type: " + interactionType.ToString());
-                throw new System.NotImplementedException();
-            }
-
-            return InputIconManager.GetIconIdentifierForAction(_playerInputAsset[schemeName]);
-        }
+            popupElement.SetupWithInformation(popupSetupInformation, InteractionTypeExtension.GetInteractionSpriteFromInteractionType(popupSetupInformation.InteractionType), () => utilisedPool.Release(popupElement));
+        }        
     }
 }
