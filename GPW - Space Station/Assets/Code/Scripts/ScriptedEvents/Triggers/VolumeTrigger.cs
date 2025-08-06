@@ -13,9 +13,25 @@ namespace ScriptedEvents.Triggers
         private enum TriggerTypes { None = 0, Player = 1 << 0, Mimic = 1 << 1, Object = 1 << 2 }
 
         [Header("Trigger Volume Settings")]
-        [SerializeField] private TriggerTypes _triggerTypes = TriggerTypes.None;
+        [SerializeField] private TriggerTypes _triggerTypes = TriggerTypes.None;    // What types of entities should trigger this volume?
+        [SerializeField] private bool _triggerOnExit = false;   // Should this trigger activate when the entity exits the collider rather than when entering it?
+
 
         protected virtual void OnTriggerEnter(Collider other)
+        {
+            if (_triggerOnExit)
+                return;
+
+            TestCollider(other);
+        }
+        protected virtual void OnTriggerExit(Collider other)
+        {
+            if (!_triggerOnExit)
+                return;
+
+            TestCollider(other);
+        }
+        private void TestCollider(Collider other)
         {
             Debug.Log(other.name);
             if (IsValidCollider(other))
@@ -44,15 +60,7 @@ namespace ScriptedEvents.Triggers
             {
                 // We are wanting to test if the collider was a Mimic.
 
-                if (collider.GetComponent<GeneralMimic>())
-                {
-                    return true;
-                }
-                if (collider.GetComponent<ChaseMimic>())
-                {
-                    return true;
-                }
-                if (collider.GetComponent<MimicController>())
+                if (collider.GetComponent<BaseMimic>())
                 {
                     return true;
                 }

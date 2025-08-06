@@ -27,7 +27,21 @@ namespace Tutorials
 
         #if UNITY_EDITOR
         public void SetTutorialText_Editor(string tutorialText) => _tutorialText = tutorialText;
-        public void SetInteractionTypes_Editor(InteractionType[] interactionTypes) => _interactionTypes = interactionTypes; 
+        public void SetInteractionTypesLength_Editor(int length)
+        {
+            // Generate a new array of InteractionTypes to replace our old one.
+            InteractionType[] newInteractionTypes = new InteractionType[length];
+
+            // Populate the new array with our current values (Not exceeding either array).
+            int lowestLength = Mathf.Min(length, _interactionTypes.Length);
+            for(int i = 0; i < lowestLength; ++i)
+            {
+                newInteractionTypes[i] = _interactionTypes[i];
+            }
+
+            // Set our array.
+            _interactionTypes = newInteractionTypes;
+        } 
         #endif
     }
 }

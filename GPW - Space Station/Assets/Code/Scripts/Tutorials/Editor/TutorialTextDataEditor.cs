@@ -41,15 +41,14 @@ namespace Tutorials
         {
             int identifiersCount = data.TutorialText.Split('{').Length - 1;
             if (data.InteractionTypes.Length != identifiersCount)
-                data.SetInteractionTypes_Editor(new InteractionType[identifiersCount]);
+                data.SetInteractionTypesLength_Editor(identifiersCount);
 
             try
             {
                 return data.GetFormattedTutorialText();
             }
-            catch (System.Exception e)
+            catch
             {
-                Debug.LogException(e);
                 return "Error: Invalid Data";
             }
         }

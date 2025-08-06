@@ -14,38 +14,58 @@ namespace Tutorials
         [SerializeField] private TutorialTextData _tutorialTextData;
 
 
+        [Header("Flicker")]
+        [SerializeField] private bool _useFlicker;
+        [SerializeField] private AnimationCurve _enabledFlickerDuration;
+        [SerializeField] private AnimationCurve _disabledFlickerDuration;
+        private Coroutine _flickerCoroutine;
+
+
         [Header("World Canvas")]
-        [SerializeField] private GameObject _worldCanvasRoot;
+        [SerializeField] private GameObject[] _disabledObjects;
         [SerializeField] private TMP_Text _tutorialText;
 
 
         private void Awake() => this.enabled = false;   // Start Disabled.
-        public void Trigger() => this.enabled = true;   // Enable the Display.
+
+        public void Activate() => this.enabled = true;   // Enable the Display.
+        public void Deactivate() => this.enabled = false;   // Disable the Display.
 
 
         private void OnEnable()
         {
             // Update and show the tutorial message.
+            UpdateTutorialText();
             ShowCanvas();
+            if (_useFlicker)
+                StartFlickerCoroutine();
 
             // Subscribe to events.
-            PlayerInput.OnInputDeviceChanged += ShowCanvas; // Update the tutorial message on device change.
+            PlayerInput.OnInputDeviceChanged += UpdateTutorialText; // Update the tutorial message on device change.
         }
         private void OnDisable()
         {
             // Hide the tutorial message.
             HideCanvas();
+            if (_useFlicker)
+                StopFlickerCoroutine();
 
             // Unsubscribe from events.
-            PlayerInput.OnInputDeviceChanged -= ShowCanvas;
+            PlayerInput.OnInputDeviceChanged -= UpdateTutorialText;
         }
 
 
         private void ShowCanvas()
         {
-            // Show the tutorial text.
-            _worldCanvasRoot.SetActive(true);
+            // Show the tutorial text and other desired objects.
+            for(int i = 0; i < _disabledObjects.Length; ++i)
+            {
+                _disabledObjects[i].SetActive(true);
+            }
+        }
 
+        private void UpdateTutorialText()
+        {
             // Update the active sprite atlas.
             _tutorialText.spriteAsset = InputIconManager.GetSpriteAsset(PlayerInput.LastUsedDevice);
 
@@ -54,8 +74,40 @@ namespace Tutorials
         }
         private void HideCanvas()
         {
-            // Hide the tutorial text.
-            _worldCanvasRoot.SetActive(false);
+            // Hide the tutorial text and other desired objects.
+            for (int i = 0; i < _disabledObjects.Length; ++i)
+            {
+                _disabledObjects[i].SetActive(false);
+            }
+        }
+
+
+        private void StartFlickerCoroutine()
+        {
+            StopFlickerCoroutine();
+            _flickerCoroutine = StartCoroutine(FlickerCoroutine());
+        }
+        private void StopFlickerCoroutine()
+        {
+            if (_flickerCoroutine != null)
+            {
+                StopCoroutine(_flickerCoroutine);
+            }
+        }
+        private IEnumerator FlickerCoroutine()
+        {
+            float flickerDuration;
+            const float MIN_FLICKER_DURATION = 0.1f;    // Min duration to prevent rapid flashing.
+            while(true)
+            {
+                ShowCanvas();
+                flickerDuration = Mathf.Max(_enabledFlickerDuration.Evaluate(Random.Range(0.0f, 1.0f)), MIN_FLICKER_DURATION);
+                yield return new WaitForSeconds(flickerDuration);
+
+                HideCanvas();
+                flickerDuration = Mathf.Max(_disabledFlickerDuration.Evaluate(Random.Range(0.0f, 1.0f)), MIN_FLICKER_DURATION);
+                yield return new WaitForSeconds(flickerDuration);
+            }
         }
     }
 }
