@@ -12,9 +12,7 @@ public enum InteractionType
     Healing,
     Movement,
     Sprint,
-    Crouch,
-    Pause,
-    Journal,
+    Crouch
 }
 
 public static class InteractionTypeExtension
@@ -41,8 +39,6 @@ public static class InteractionTypeExtension
         {  InteractionType.Movement, "Movement/Movement" },
         {  InteractionType.Sprint, "Movement/Sprint" },
         {  InteractionType.Crouch, "Movement/Crouch" },
-        {  InteractionType.Pause, "Global/PauseGame" },
-        {  InteractionType.Journal, "Global/OpenJournal" },
     };
 
 

@@ -12,7 +12,6 @@ namespace Tutorials
     public class InWorldTutorialDisplay : MonoBehaviour
     {
         [SerializeField] private TutorialTextData _tutorialTextData;
-        [SerializeField] private bool _startEnabled = false;
 
 
         [Header("Flicker")]
@@ -27,7 +26,7 @@ namespace Tutorials
         [SerializeField] private TMP_Text _tutorialText;
 
 
-        private void Awake() => this.enabled = _startEnabled;
+        private void Awake() => this.enabled = false;   // Start Disabled.
 
         public void Activate() => this.enabled = true;   // Enable the Display.
         public void Deactivate() => this.enabled = false;   // Disable the Display.
@@ -53,13 +52,6 @@ namespace Tutorials
 
             // Unsubscribe from events.
             PlayerInput.OnInputDeviceChanged -= UpdateTutorialText;
-        }
-
-
-        public void SetTutorialTextData(TutorialTextData newTutorialTextData)
-        {
-            _tutorialTextData = newTutorialTextData;
-            UpdateTutorialText();
         }
 
 
