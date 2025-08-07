@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -114,19 +115,19 @@ namespace UI.Popups
         #endregion
 
 
-        public static void CreateScreenSpacePopup(ScreenSpacePopupSetupInformation setupInformation)
+        public static void CreateScreenSpacePopup(ScreenSpacePopupSetupInformation setupInformation, PopupTextData textData)
         {
-            ObjectPool<ScreenSpacePopupElement> utilisedPool = setupInformation.DisplayOnMultipleLines ? s_instance._screenSpaceMultiLinePopupPool : s_instance._screenSpaceSingleLinePopupPool;
+            ObjectPool<ScreenSpacePopupElement> utilisedPool = s_instance._screenSpaceSingleLinePopupPool;
             ScreenSpacePopupElement popupElement = utilisedPool.Get();
 
-            popupElement.SetupWithInformation(setupInformation, InteractionTypeExtension.GetInteractionSpriteFromInteractionType(setupInformation.InteractionType), () => utilisedPool.Release(popupElement));
+            popupElement.SetupWithInformation(setupInformation, textData, () => utilisedPool.Release(popupElement));
         }
-        public static void CreateWorldSpacePopup(WorldSpacePopupSetupInformation popupSetupInformation)
+        public static void CreateWorldSpacePopup(WorldSpacePopupSetupInformation popupSetupInformation, PopupTextData textData, Transform pivotTransform, Vector3 popupPosition, bool rotateInPlace = true)
         {
-            ObjectPool<WorldSpacePopupElement> utilisedPool = popupSetupInformation.DisplayOnMultipleLines ? s_instance._worldSpaceMultiLinePopupPool : s_instance._worldSpaceSingleLinePopupPool;
+            ObjectPool<WorldSpacePopupElement> utilisedPool = s_instance._worldSpaceSingleLinePopupPool;
             WorldSpacePopupElement popupElement = utilisedPool.Get();
 
-            popupElement.SetupWithInformation(popupSetupInformation, InteractionTypeExtension.GetInteractionSpriteFromInteractionType(popupSetupInformation.InteractionType), () => utilisedPool.Release(popupElement));
+            popupElement.SetupWithInformation(popupSetupInformation, textData, pivotTransform, popupPosition, rotateInPlace, () => utilisedPool.Release(popupElement));
         }        
     }
 }

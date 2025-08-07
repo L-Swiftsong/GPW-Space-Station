@@ -91,6 +91,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""6113b510-5b8c-49f8-beaa-5fe5a76ea5c7"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OpenJournal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""456cd4b3-38a8-4226-953b-0436d0bda0e9"",
                     ""path"": ""<Keyboard>/i"",
                     ""interactions"": """",

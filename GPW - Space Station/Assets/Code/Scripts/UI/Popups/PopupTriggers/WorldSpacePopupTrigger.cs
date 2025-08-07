@@ -8,42 +8,32 @@ namespace UI.Popups
     {
         [SerializeField] private WorldSpacePopupSetupInformation _popupSetupInformation;
 
-        public override void Trigger() => PopupManager.CreateWorldSpacePopup(_popupSetupInformation);
+
+        [Header("Popup Positioning")]
+        [SerializeField] private Transform _pivotTransform;
+        [SerializeField] private Vector3 _popupOffset = Vector3.zero;
+        [SerializeField] private bool _rotateInPlace = true;
 
 
-#if UNITY_EDITOR
-
-        [ContextMenu("Breaks Connections/Convert to Screen-Space")]
-        private void Editor_ConvertToScreenSpace()
-        {
-            ScreenSpacePopupTrigger popupTrigger = gameObject.AddComponent<ScreenSpacePopupTrigger>();
-            popupTrigger.Editor_SetupFromPopupInfo(this._popupSetupInformation);
-            DestroyImmediate(this);
-        }
-        public void Editor_SetupFromPopupInfo(PopupSetupInformation previousSetupInformation)
-        {
-            _popupSetupInformation = new WorldSpacePopupSetupInformation(previousSetupInformation);
-        }
-
-#endif
+        public override void Trigger() => PopupManager.CreateWorldSpacePopup(_popupSetupInformation, TextData, _pivotTransform, _popupOffset, _rotateInPlace);
 
 
         private void OnDrawGizmosSelected()
         {
-            if (_popupSetupInformation.PivotTransform != null)
+            if (_pivotTransform != null)
             {
                 Gizmos.color = Color.yellow;
-                if (_popupSetupInformation.RotateInPlace)
+                if (_rotateInPlace)
                 {
-                    Gizmos.DrawSphere(_popupSetupInformation.PivotTransform.position + _popupSetupInformation.PopupOffset, 0.25f);
+                    Gizmos.DrawSphere(_pivotTransform.position + _popupOffset, 0.25f);
                 }
                 else
                 {
                     // Draw a circle a the horizontal pivot line.
-                    Gizmos.DrawSphere(_popupSetupInformation.PivotTransform.position + Vector3.up * _popupSetupInformation.PopupOffset.y, 0.1f);
+                    Gizmos.DrawSphere(_pivotTransform.position + Vector3.up * _popupOffset.y, 0.1f);
 
                     // Draw a line to represent the horizontal offset.
-                    Gizmos.DrawRay(_popupSetupInformation.PivotTransform.position + Vector3.up * _popupSetupInformation.PopupOffset.y, new Vector3(_popupSetupInformation.PopupOffset.x, 0.0f, _popupSetupInformation.PopupOffset.z));
+                    Gizmos.DrawRay(_pivotTransform.position + Vector3.up * _popupOffset.y, new Vector3(_popupOffset.x, 0.0f, _popupOffset.z));
                 }
             }
         }

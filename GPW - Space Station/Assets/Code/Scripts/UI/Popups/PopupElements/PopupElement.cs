@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using Interaction;
+using UI.Icons;
 
 namespace UI.Popups
 {
@@ -12,7 +13,6 @@ namespace UI.Popups
     {
         [SerializeField] private RectTransform _contentsContainer;
         [SerializeField] private Vector2 _contentsPadding = new Vector2(5.0f, 5.0f); // Padding in each direction.
-        [SerializeField] private bool _isMultiLine = false;
         [SerializeField] private bool _dontUpdateContentsRootPosition = false;
 
 
@@ -26,12 +26,8 @@ namespace UI.Popups
 
 
         [Header("Contents")]
-        [SerializeField] private TMP_Text _preText;
-        [SerializeField] private Image _image;
-        [SerializeField] private TMP_Text _postText;
-
-        [Space(5)]
-        [SerializeField] private LayoutGroup _elementLayoutGroup;
+        [SerializeField] private TMP_Text _popupText;
+        private PopupTextData _popupTextData;
 
 
         [Header("Background")]
@@ -59,6 +55,9 @@ namespace UI.Popups
             ShouldShow = true;
             _isReady = false;
             IsDisabled = false;
+
+            // Ensure we have the correct sprite assets in use.
+            PlayerInput.OnInputDeviceChanged += OnInputDeviceChanged;
         }
         protected void OnDisable()
         {
@@ -67,6 +66,8 @@ namespace UI.Popups
                 _linkedInteractable.OnSuccessfulInteraction -= Deactivate;
                 _linkedInteractable.OnFailedInteraction -= Deactivate;
             }
+
+            PlayerInput.OnInputDeviceChanged -= OnInputDeviceChanged;
         }
 
         protected virtual void Update()
@@ -96,6 +97,13 @@ namespace UI.Popups
             HandleCanvasAlpha(ShouldShow);
         }
         private void HandleCanvasAlpha(bool show) => _canvasGroup.alpha = Mathf.MoveTowards(_canvasGroup.alpha, show ? 1.0f : 0.0f, (1.0f / (show ? _showDuration : _fadeDuration)) * Time.deltaTime);
+
+
+        private void OnInputDeviceChanged()
+        {
+            UpdateSpriteAsset();
+            UpdateText();
+        }
 
 
         protected virtual bool CheckForDeactivation()
@@ -131,77 +139,21 @@ namespace UI.Popups
         
 
 
-        protected void SetupContents(string preText, Sprite sprite, string postText)
+        protected void SetupContents(PopupTextData popupTextData)
         {
-            // Ensure the image is enabled.
-            _image.gameObject.SetActive(true);
+            this._popupTextData = popupTextData;
 
-            // Set Values.
-            _preText.text = preText;
-            _image.sprite = sprite;
-            _postText.text = postText;
+            UpdateSpriteAsset();
+            UpdateText();
         }
-        protected void SetupCustomText(string customPreText = "", Sprite customSprite = null, string customPostText = "")
+        private void UpdateText() => _popupText.text = _popupTextData.GetFormattedText();
+        private void UpdateSpriteAsset() => _popupText.spriteAsset = InputIconManager.GetSpriteAsset(PlayerInput.LastUsedDevice);
+        
+
+
+        protected void SetContentsSize(float textSize)
         {
-            // Ensure the image is only active if we are supplying it with a value.
-            _image.gameObject.SetActive(customSprite != null);
-
-            // Set the value of the pre-text.
-            _preText.text = customPreText;
-            _image.sprite = customSprite;
-            _postText.text = customPostText;
-        }
-
-
-        protected void SetContentsSize(float textSize, float imageSize)
-        {
-            _preText.fontSize = textSize;
-            _postText.fontSize = textSize;
-
-            _image.rectTransform.sizeDelta = new Vector2(imageSize, imageSize);
-        }
-        protected void UpdateTextWidth(bool keepIconCentred)
-        {
-            if (keepIconCentred)
-            {
-                // Disable the Horizontal/Vertical Layout Group.
-                _elementLayoutGroup.enabled = false;
-
-                // Position the text boxes & image so that the icon is in the centre.
-                if (_elementLayoutGroup is HorizontalLayoutGroup)
-                {
-                    // Position Horizontally.
-                    float spacing = (_elementLayoutGroup as HorizontalLayoutGroup).spacing;
-
-                    _image.rectTransform.localPosition = Vector2.zero;
-                    _preText.rectTransform.localPosition = new Vector2(-(_image.rectTransform.sizeDelta.x / 2.0f + spacing), 0.0f);
-                    _postText.rectTransform.localPosition = new Vector2(_image.rectTransform.sizeDelta.x / 2.0f + spacing, 0.0f);
-                }
-                else if (_elementLayoutGroup is VerticalLayoutGroup)
-                {
-                    // Position Vertically.
-                    float spacing = (_elementLayoutGroup as VerticalLayoutGroup).spacing;
-
-                    _image.rectTransform.localPosition = Vector2.zero;
-                    _preText.rectTransform.localPosition = new Vector2(0.0f, _image.rectTransform.sizeDelta.y / 2.0f + spacing);
-                    _postText.rectTransform.localPosition = new Vector2(0.0f, -(_image.rectTransform.sizeDelta.y / 2.0f + spacing));
-                }
-
-                _preText.ForceMeshUpdate();
-                _postText.ForceMeshUpdate();
-            }
-            else
-            {
-                // Enable the Horizontal/Vertical Layout Group.
-                _elementLayoutGroup.enabled = true;
-
-                // Resize the Text Boxes to accurately represent the text size.
-                _preText.ForceMeshUpdate();
-                _preText.rectTransform.sizeDelta = _preText.text == string.Empty ? Vector2.zero : _preText.textBounds.size;
-
-                _postText.ForceMeshUpdate();
-                _postText.rectTransform.sizeDelta = _postText.text == string.Empty ? Vector2.zero : _postText.textBounds.size;
-            }
+            _popupText.fontSize = textSize;
         }
         protected IEnumerator UpdateContentsRootSizeAndReadyAfterDelay()
         {
@@ -215,22 +167,16 @@ namespace UI.Popups
                 return;
 
             // Calculate corners.
-            Vector2 topLeft = _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMax);
-            Vector2 bottomLeft = _isMultiLine ? _postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMin, _postText.rectTransform.rect.yMin)
-                                                : _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMin, _preText.rectTransform.rect.yMin);
+            Vector2 topLeft = _popupText.rectTransform.localPosition + new Vector3(_popupText.rectTransform.rect.xMin, _popupText.rectTransform.rect.yMax);
+            Vector2 bottomLeft = _popupText.rectTransform.localPosition + new Vector3(_popupText.rectTransform.rect.xMin, _popupText.rectTransform.rect.yMin);
 
-            Vector2 bottomRight = _postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMin);
-            Vector2 topRight = _isMultiLine ? _preText.rectTransform.localPosition + new Vector3(_preText.rectTransform.rect.xMax, _preText.rectTransform.rect.yMax)
-                                            : _postText.rectTransform.localPosition + new Vector3(_postText.rectTransform.rect.xMax, _postText.rectTransform.rect.yMax);
+            Vector2 bottomRight = _popupText.rectTransform.localPosition + new Vector3(_popupText.rectTransform.rect.xMax, _popupText.rectTransform.rect.yMin);
+            Vector2 topRight = _popupText.rectTransform.localPosition + new Vector3(_popupText.rectTransform.rect.xMax, _popupText.rectTransform.rect.yMax);
 
             // Calculate centre position & desired size.
             Vector2 centre = (topLeft + topRight + bottomLeft + bottomRight) / 4.0f;
             float width = Mathf.Max(topRight.x, bottomRight.x) - Mathf.Min(topLeft.x, bottomLeft.x);
             float height = Mathf.Max(topRight.y, topLeft.y) - Mathf.Min(bottomRight.y, bottomLeft.y);
-
-            // Account for image size in width & height calculations.
-            width = Mathf.Max(width, _image.rectTransform.sizeDelta.x);
-            height = Mathf.Max(height, _image.rectTransform.sizeDelta.y);
 
 
             // Set the position and size of the background.

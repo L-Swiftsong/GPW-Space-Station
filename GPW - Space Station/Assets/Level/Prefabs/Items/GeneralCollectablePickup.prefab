@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6318305640585859996}
   - component: {fileID: 9134933286200169282}
   - component: {fileID: 7338825444503294002}
+  - component: {fileID: 5071775791366484114}
   - component: {fileID: 7637236103786133703}
   m_Layer: 9
   m_Name: GeneralCollectablePickup
@@ -35,7 +36,6 @@ Transform:
   m_Children:
   - {fileID: 4969998538961470327}
   - {fileID: 6897477400414083811}
-  - {fileID: 1629050612957652999}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6318305640585859996
@@ -104,7 +104,7 @@ MonoBehaviour:
     Part2: 0
     Part3: 0
     Part4: 0
-  _saveData:
+  SaveData:
     <ID>k__BackingField:
       Part1: 0
       Part2: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
   _destroyObjectOnTrigger: 0
   OnTriggerActivated:
     _PersistentCalls:
-    - _Target: {fileID: 5448137416189820541}
+    - _Target: {fileID: 5071775791366484114}
       _MemberName: Trigger
       _PersistentArguments: []
   _useDelayedTrigger: 0
@@ -131,6 +131,20 @@ MonoBehaviour:
     _PersistentCalls: []
   _triggerOnSuccess: 1
   _triggerOnFailure: 0
+--- !u!114 &5071775791366484114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650553735342460502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TextData: {fileID: 11400000, guid: b805fb0dc2737af4cb2a03d16a500898, type: 2}
+  _popupSetupInformation: {fileID: 11400000, guid: f48f61f0cb51b054a9fcacb4d2707702, type: 2}
 --- !u!65 &7637236103786133703
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -152,168 +166,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.65057313, y: 0.30862394, z: 0.58812547}
   m_Center: {x: 0.01804024, y: 0.16774984, z: -0.008403778}
---- !u!1 &4492032364382638729
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1629050612957652999}
-  - component: {fileID: 5448137416189820541}
-  - component: {fileID: 4522645937706356536}
-  m_Layer: 0
-  m_Name: New Entry Popup
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1629050612957652999
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4492032364382638729}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.039964795, y: 0.030203402, z: 0.15351796}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3484100038014117902}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5448137416189820541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4492032364382638729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _popupSetupInformation:
-    PopupPreText: Press
-    InteractionType: 0
-    PopupPostText: to Interact
-    FontSize: 36
-    IconSize: 50
-    DisplayOnMultipleLines: 1
-    KeepIconCentred: 1
-    UseCustomText: 1
-    CustomPreText: New Journal Entry
-    CustomSprite: {fileID: 21300000, guid: 83cee9e325aec334dadf31ec6f9984b1, type: 3}
-    CustomPostText: to Open Journal
-    ShowBackground: 1
-    PopupLifetime: 3
-    LinkedInteractable: {fileID: 0}
-    LinkToSuccess: 1
-    LinkToFailure: 1
-    AnchoredPosition: {x: 0, y: -100}
-    Pivot: {x: 1, y: 1}
-    AnchorMin: {x: 1, y: 1}
-    AnchorMax: {x: 1, y: 1}
---- !u!82 &4522645937706356536
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4492032364382638729}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: -2633832918951429155, guid: c6cceb697f88c6f41af12a9bc6c0c298, type: 2}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &5817206788285601617
 GameObject:
   m_ObjectHideFlags: 0

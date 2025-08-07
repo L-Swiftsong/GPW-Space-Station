@@ -105,30 +105,22 @@ namespace UI.Popups
 
 
 
-        public void SetupWithInformation(WorldSpacePopupSetupInformation setupInformation, Sprite contentsSprite, Action onDisableCallback)
+        public void SetupWithInformation(WorldSpacePopupSetupInformation setupInformation, PopupTextData textData, Transform pivotTransform, Vector3 popupPosition, bool rotateInPlace, Action onDisableCallback)
         {
             // Position Setup.
-            SetupPosition(setupInformation);
+            SetupPosition(pivotTransform, popupPosition, rotateInPlace);
 
             // Contents Setup.
-            if (setupInformation.UseCustomText)
-            {
-                SetupCustomText(setupInformation.CustomPreText, setupInformation.CustomSprite, setupInformation.CustomPostText);
-            }
-            else
-            {
-                SetupContents(setupInformation.PopupPreText, contentsSprite, setupInformation.PopupPostText);
-            }
-            SetContentsSize(setupInformation.FontSize, setupInformation.IconSize);
+            SetupContents(textData);
+            SetContentsSize(setupInformation.FontSize);
             ToggleBackground(setupInformation.ShowBackground);
 
-            UpdateTextWidth(setupInformation.KeepIconCentred);
             StartCoroutine(UpdateContentsRootSizeAndReadyAfterDelay()); // Invoked after a single frame delay so that bounds properly update.
 
             // General Disabling Setup.
             OnDisableCallback = onDisableCallback;
             SetupLifetimeDisabling(setupInformation.PopupLifetime);
-            SetupGeneralDisabling(setupInformation);
+            SetupGeneralDisabling(setupInformation, pivotTransform);
 
             // Interaction Disabling Setup.
             if (setupInformation.LinkedInteractable != null)
@@ -136,27 +128,31 @@ namespace UI.Popups
                 SetupInteractionDisabling(setupInformation.LinkedInteractable, setupInformation.LinkToSuccess, setupInformation.LinkToFailure);
             }
         }
-        private void SetupPosition(WorldSpacePopupSetupInformation popupSetupInformation)
+        private void SetupPosition(Transform pivotTransform, Vector3 popupOffset, bool rotateInPlace)
         {
-            if (popupSetupInformation.PivotTransform == null)
+            if (pivotTransform == null)
             {
                 Debug.LogWarning("WARNING: You are trying to create a WorldSpacePopup without assigning a pivot transform.\nEnsure the pivot transform is not null or missing.");
                 Destroy(this.gameObject);
                 return;
             }
 
-            if (popupSetupInformation.RotateInPlace)
+            if (rotateInPlace)
             {
-                _pivotTransform.position = popupSetupInformation.PivotTransform.position + popupSetupInformation.PopupOffset;
+                _pivotTransform.position = pivotTransform.position + popupOffset;
                 _offsetTransform.localPosition = Vector3.zero;
             }
             else
             {
-                _pivotTransform.position = popupSetupInformation.PivotTransform.position;
-                _offsetTransform.localPosition = popupSetupInformation.PopupOffset;
+                _pivotTransform.position = pivotTransform.position;
+                _offsetTransform.localPosition = popupOffset;
             }
         }
-        private void SetupGeneralDisabling(WorldSpacePopupSetupInformation popupSetupInformation)
+        /// <summary>
+        ///     Setup our values for the most common methods which we will be disabling this popup.
+        /// </summary>
+        /// <remarks> Distance, Obstruction, Pivot Loss. </remarks>
+        private void SetupGeneralDisabling(WorldSpacePopupSetupInformation popupSetupInformation, Transform pivotTransform)
         {
             _maxPlayerDistance = popupSetupInformation.MaxDistance;
             _fadeIfOutwithDistance = popupSetupInformation.OnlyFadeIfOutwithMaxDistance;
@@ -165,7 +161,7 @@ namespace UI.Popups
             _fadeIfObstructed = popupSetupInformation.OnlyFadeIfObstructed;
 
             _disableIfPivotLost = popupSetupInformation.DisableIfPivotDestroyed;
-            _linkedPivot = popupSetupInformation.PivotTransform;
+            _linkedPivot = pivotTransform;
         }
     }
 }
