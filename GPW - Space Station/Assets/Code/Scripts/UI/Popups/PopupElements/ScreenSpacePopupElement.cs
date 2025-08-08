@@ -11,7 +11,10 @@ namespace UI.Popups
         public void SetupWithInformation(ScreenSpacePopupSetupInformation setupInformation, PopupTextData textData, Action onDisableCallback)
         {
             // Position Setup.
-            SetupPosition(setupInformation.AnchoredPosition, setupInformation.Anchors, setupInformation.Pivot, setupInformation.Bounds);
+            {
+                setupInformation.AnchorPosition.GetAnchorValues(out Vector2 anchors, out Vector2 pivot);
+                SetupPosition(setupInformation.PositionOffset, anchors, pivot, setupInformation.Bounds);
+            }
 
             // Contents Setup.
             SetupContents(textData);
