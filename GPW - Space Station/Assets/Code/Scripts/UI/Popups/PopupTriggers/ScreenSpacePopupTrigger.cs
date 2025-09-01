@@ -8,23 +8,15 @@ namespace UI.Popups
     {
         [SerializeField] private ScreenSpacePopupSetupInformation _popupSetupInformation;
 
-        public override void Trigger() => PopupManager.CreateScreenSpacePopup(_popupSetupInformation);
+
+        [Header("Popup Early Disable")]
+        [SerializeField] private GameObject _linkedInteractable;
+
+        [Space(5)]
+        [SerializeField] private bool _linkToSuccess = true;
+        [SerializeField] private bool _linkToFailure = true;
 
 
-#if UNITY_EDITOR
-
-        [ContextMenu("Breaks Connections/Convert to World-Space")]
-        private void Editor_ConvertToWorldSpace()
-        {
-            WorldSpacePopupTrigger popupTrigger = gameObject.AddComponent<WorldSpacePopupTrigger>();
-            popupTrigger.Editor_SetupFromPopupInfo(this._popupSetupInformation);
-            DestroyImmediate(this);
-        }
-        public void Editor_SetupFromPopupInfo(PopupSetupInformation previousSetupInformation)
-        {
-            _popupSetupInformation = new ScreenSpacePopupSetupInformation(previousSetupInformation);
-        }
-
-#endif
+        public override void Trigger() => PopupManager.CreateScreenSpacePopup(_popupSetupInformation, _linkedInteractable, _linkToSuccess, _linkToFailure, TextData);
     }
 }

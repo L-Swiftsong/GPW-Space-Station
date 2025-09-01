@@ -24,6 +24,7 @@ public class EditorInitialiser
     {
         Path.GetFileNameWithoutExtension(PERSISTENT_SCENE_PATH),
         "MainMenuScene",
+        "InGameHintsSampleScene",
     };
     // The names of the scenes which we only wish to load the persistent scene from, not the additional scenes.
     private static List<string> _persistentOnly = new List<string>

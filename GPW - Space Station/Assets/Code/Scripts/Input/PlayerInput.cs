@@ -73,6 +73,7 @@ public class PlayerInput : MonoBehaviour
 
     private static InputControlScheme s_currentControlScheme = default;
     public static InputControl CurrentInputDevice { get; private set; }
+    public static event Action OnInputDeviceChanged;
 
     public enum DeviceType { MnK, Gamepad }
     public static DeviceType LastUsedDevice => s_currentControlScheme.name == MOUSE_AND_KEYBOARD_CONTROL_SCHEME_NAME ? DeviceType.MnK : DeviceType.Gamepad;
@@ -348,6 +349,8 @@ public class PlayerInput : MonoBehaviour
             // A input device belonging to a different control scheme has been used.
             s_currentControlScheme = deviceControlScheme;
             Debug.Log("New Used. Scheme Name: " + deviceControlScheme.name);
+
+            OnInputDeviceChanged?.Invoke();
         }
     }
     private void InputSystem_onDeviceChange(InputDevice inputDevice, InputDeviceChange inputDeviceChange)

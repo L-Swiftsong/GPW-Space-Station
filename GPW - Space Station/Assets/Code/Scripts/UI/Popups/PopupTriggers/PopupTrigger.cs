@@ -6,6 +6,8 @@ namespace UI.Popups
 {
     public abstract class PopupTrigger : MonoBehaviour
     {
+        [SerializeField] protected PopupTextData TextData;
+
         public abstract void Trigger();
     }
 }

@@ -8,24 +8,19 @@ namespace UI.Popups
         [Header("Screen Space Element Settings")]
         [SerializeField] private RectTransform _rootTransform;
 
-        public void SetupWithInformation(ScreenSpacePopupSetupInformation setupInformation, Sprite contentsSprite, Action onDisableCallback)
+        public void SetupWithInformation(ScreenSpacePopupSetupInformation setupInformation, GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure, PopupTextData textData, Action onDisableCallback)
         {
             // Position Setup.
-            SetupPosition(setupInformation.AnchoredPosition, setupInformation.Pivot, setupInformation.AnchorMin, setupInformation.AnchorMax);
+            {
+                setupInformation.AnchorPosition.GetAnchorValues(out Vector2 anchors, out Vector2 pivot);
+                SetupPosition(setupInformation.PositionOffset, anchors, pivot, setupInformation.Bounds);
+            }
 
             // Contents Setup.
-            if (setupInformation.UseCustomText)
-            {
-                SetupCustomText(setupInformation.CustomPreText, setupInformation.CustomSprite, setupInformation.CustomPostText);
-            }
-            else
-            {
-                SetupContents(setupInformation.PopupPreText, contentsSprite, setupInformation.PopupPostText);
-            }
-            SetContentsSize(setupInformation.FontSize, setupInformation.IconSize);
+            SetupContents(textData);
+            SetContentsSize(setupInformation.FontSize);
             ToggleBackground(setupInformation.ShowBackground);
 
-            UpdateTextWidth(setupInformation.KeepIconCentred);
             StartCoroutine(UpdateContentsRootSizeAndReadyAfterDelay()); // Invoked after a single frame delay so that bounds properly update.
 
             // General Disabling Setup.
@@ -33,17 +28,20 @@ namespace UI.Popups
             SetupLifetimeDisabling(setupInformation.PopupLifetime);
 
             // Interaction Disabling Setup.
-            if (setupInformation.LinkedInteractable != null)
+            if (linkedInteractable != null)
             {
-                SetupInteractionDisabling(setupInformation.LinkedInteractable, setupInformation.LinkToSuccess, setupInformation.LinkToFailure);
+                SetupInteractionDisabling(linkedInteractable, linkToSuccess, linkToFailure);
             }
         }
-        private void SetupPosition(Vector2 anchoredPosition, Vector2 pivot, Vector2 anchorMin, Vector2 anchorMax)
+        private void SetupPosition(Vector2 position, Vector2 anchors, Vector2 pivot, Vector2 bounds)
         {
             _rootTransform.pivot = pivot;
-            _rootTransform.anchorMin = anchorMin;
-            _rootTransform.anchorMax = anchorMax;
-            _rootTransform.anchoredPosition = anchoredPosition;
+
+            _rootTransform.sizeDelta = bounds;
+
+            _rootTransform.anchorMin = anchors;
+            _rootTransform.anchorMax = anchors;
+            _rootTransform.anchoredPosition = position;
         }
     }
 }

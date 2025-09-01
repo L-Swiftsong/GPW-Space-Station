@@ -44,27 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _popupSetupInformation:
-    PopupPreText: Press
-    InteractionType: 4
-    PopupPostText: to Move
-    FontSize: 36
-    IconSize: 50
-    DisplayOnMultipleLines: 0
-    KeepIconCentred: 1
-    UseCustomText: 1
-    CustomPreText: Press
-    CustomSprite: {fileID: 21300000, guid: 0f4f245794530354099be277f95f1f48, type: 3}
-    CustomPostText: to Open Tablet
-    ShowBackground: 1
-    PopupLifetime: 3
-    LinkedInteractable: {fileID: 0}
-    LinkToSuccess: 1
-    LinkToFailure: 1
-    AnchoredPosition: {x: 0, y: -100}
-    Pivot: {x: 1, y: 1}
-    AnchorMin: {x: 1, y: 1}
-    AnchorMax: {x: 1, y: 1}
+  TextData: {fileID: 11400000, guid: 95fac6b4b00a08242afab30b11d19390, type: 2}
+  _popupSetupInformation: {fileID: 11400000, guid: 85691d823a243744ba0d091230824519, type: 2}
+  _linkedInteractable: {fileID: 0}
+  _linkToSuccess: 1
+  _linkToFailure: 1
 --- !u!1 &1073989459836234512
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,31 +241,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0463f937fa2a2444a1ceb5e195dfb50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _popupSetupInformation:
-    PopupPreText: Press
-    InteractionType: 0
-    PopupPostText: to Pick Up
-    FontSize: 72
-    IconSize: 100
-    DisplayOnMultipleLines: 0
-    KeepIconCentred: 0
-    UseCustomText: 0
-    CustomPreText: 
-    CustomSprite: {fileID: 0}
-    CustomPostText: 
-    ShowBackground: 0
-    PopupLifetime: -1
-    LinkedInteractable: {fileID: 1640603804086378364}
-    LinkToSuccess: 1
-    LinkToFailure: 1
-    MaxDistance: -1
-    OnlyFadeIfOutwithMaxDistance: 1
-    DisableIfObstructed: 1
-    OnlyFadeIfObstructed: 1
-    DisableIfPivotDestroyed: 1
-    PivotTransform: {fileID: 8649990552324593374}
-    PopupOffset: {x: 0, y: 0, z: 0}
-    RotateInPlace: 0
+  TextData: {fileID: 11400000, guid: 616b084c21ab58343a57e759e4a34e2b, type: 2}
+  _popupSetupInformation: {fileID: 11400000, guid: 7b9dc0cffb13b1e4ea7a673049c99468, type: 2}
+  _linkedInteractable: {fileID: 1640603804086378364}
+  _linkToSuccess: 1
+  _linkToFailure: 0
+  _pivotTransform: {fileID: 3544349602517484567}
+  _popupOffset: {x: 0.5, y: 0.33, z: 0}
+  _rotateInPlace: 1
 --- !u!1 &2627237755328607520
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,31 +293,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0463f937fa2a2444a1ceb5e195dfb50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _popupSetupInformation:
-    PopupPreText: Press
-    InteractionType: 0
-    PopupPostText: to Open Door
-    FontSize: 72
-    IconSize: 100
-    DisplayOnMultipleLines: 0
-    KeepIconCentred: 0
-    UseCustomText: 0
-    CustomPreText: 
-    CustomSprite: {fileID: 0}
-    CustomPostText: 
-    ShowBackground: 0
-    PopupLifetime: -1
-    LinkedInteractable: {fileID: 2629107634979133222}
-    LinkToSuccess: 1
-    LinkToFailure: 1
-    MaxDistance: -1
-    OnlyFadeIfOutwithMaxDistance: 1
-    DisableIfObstructed: 1
-    OnlyFadeIfObstructed: 1
-    DisableIfPivotDestroyed: 1
-    PivotTransform: {fileID: 3393950678867835547}
-    PopupOffset: {x: 0, y: 0, z: 0}
-    RotateInPlace: 0
+  TextData: {fileID: 11400000, guid: 616b084c21ab58343a57e759e4a34e2b, type: 2}
+  _popupSetupInformation: {fileID: 11400000, guid: 7b9dc0cffb13b1e4ea7a673049c99468, type: 2}
+  _linkedInteractable: {fileID: 2629107634979133222}
+  _linkToSuccess: 1
+  _linkToFailure: 0
+  _pivotTransform: {fileID: 3307967519177651274}
+  _popupOffset: {x: 0.25, y: 0.5, z: 0}
+  _rotateInPlace: 1
 --- !u!1 &3078313944441686511
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +729,7 @@ MonoBehaviour:
       _MemberName: PlaySound
       _PersistentArguments: []
   _triggerTypes: 1
+  _triggerOnExit: 0
 --- !u!114 &4716364530807617904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1295,6 +1246,7 @@ Transform:
   - {fileID: 9096441199632867005}
   - {fileID: 3544349602517484567}
   - {fileID: 1898683405304805338}
+  - {fileID: 7982322403817149762}
   m_Father: {fileID: 5350389583730707545}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7072409599082464731
@@ -1446,27 +1398,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _popupSetupInformation:
-    PopupPreText: Press
-    InteractionType: 4
-    PopupPostText: to Move
-    FontSize: 36
-    IconSize: 50
-    DisplayOnMultipleLines: 0
-    KeepIconCentred: 1
-    UseCustomText: 0
-    CustomPreText: 
-    CustomSprite: {fileID: 0}
-    CustomPostText: 
-    ShowBackground: 1
-    PopupLifetime: 3
-    LinkedInteractable: {fileID: 0}
-    LinkToSuccess: 1
-    LinkToFailure: 1
-    AnchoredPosition: {x: 0, y: -100}
-    Pivot: {x: 1, y: 1}
-    AnchorMin: {x: 1, y: 1}
-    AnchorMax: {x: 1, y: 1}
+  TextData: {fileID: 11400000, guid: 3b3122b37fd5993499ce6144c90d34f8, type: 2}
+  _popupSetupInformation: {fileID: 11400000, guid: 85691d823a243744ba0d091230824519, type: 2}
+  _linkedInteractable: {fileID: 0}
+  _linkToSuccess: 1
+  _linkToFailure: 1
 --- !u!1 &7734073996933150087
 GameObject:
   m_ObjectHideFlags: 0
@@ -1511,27 +1447,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b793ab505184769478448f441ed81bf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _popupSetupInformation:
-    PopupPreText: Press
-    InteractionType: 0
-    PopupPostText: to Stop Interacting
-    FontSize: 36
-    IconSize: 50
-    DisplayOnMultipleLines: 0
-    KeepIconCentred: 0
-    UseCustomText: 1
-    CustomPreText: Press
-    CustomSprite: {fileID: 21300000, guid: 0f4f245794530354099be277f95f1f48, type: 3}
-    CustomPostText: to Stop Interacting
-    ShowBackground: 1
-    PopupLifetime: 3
-    LinkedInteractable: {fileID: 0}
-    LinkToSuccess: 1
-    LinkToFailure: 1
-    AnchoredPosition: {x: 0, y: -100}
-    Pivot: {x: 1, y: 1}
-    AnchorMin: {x: 1, y: 1}
-    AnchorMax: {x: 1, y: 1}
+  TextData: {fileID: 11400000, guid: 616b084c21ab58343a57e759e4a34e2b, type: 2}
+  _popupSetupInformation: {fileID: 11400000, guid: 85691d823a243744ba0d091230824519, type: 2}
+  _linkedInteractable: {fileID: 0}
+  _linkToSuccess: 1
+  _linkToFailure: 1
 --- !u!1 &7749206877288110552
 GameObject:
   m_ObjectHideFlags: 0
@@ -8092,6 +8012,68 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 662563413281935989, guid: d80a035800fb56f4d99b768da32f7cb5, type: 3}
   m_PrefabInstance: {fileID: 5523168397773555725}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &5546804455430117303
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4903211677342081513}
+    m_Modifications:
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -11
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4093559501361467340, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+      propertyPath: m_Name
+      value: Computer
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+--- !u!4 &7982322403817149762 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2467078335128044277, guid: 6a372ee80b0b53f4f82b60c38e288a7d, type: 3}
+  m_PrefabInstance: {fileID: 5546804455430117303}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5668472649949974466
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9405,7 +9387,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4254296136129539123, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_Center.x
-      value: 0.26013827
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4254296136129539123, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_Center.y
@@ -9425,7 +9407,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6021116274624225557, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -11.524
+      value: -11.274
       objectReference: {fileID: 0}
     - target: {fileID: 6021116274624225557, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_LocalRotation.w
@@ -9469,7 +9451,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8810308347559236098, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8810308347559236098, guid: aa704fd48b5ebd54aae4b1fba1267137, type: 3}
       propertyPath: m_LocalPosition.y
