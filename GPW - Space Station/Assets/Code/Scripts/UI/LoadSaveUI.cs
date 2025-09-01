@@ -30,6 +30,7 @@ namespace UI
 
         [Space(5)]
         [SerializeField] private ConfirmationUI _confirmationUI;
+        [SerializeField] private ScrollRect _scrollRect;
 
 
 
@@ -96,7 +97,7 @@ namespace UI
 
 
                 // Set the button's text to match its corresponding save file's name.
-                loadSaveButtonInstance.Setup(_confirmationUI, fileInfoRef.Name);
+                loadSaveButtonInstance.Setup(_confirmationUI, _scrollRect, fileInfoRef.Name);
             }
 
             // Setup navigation for the new elements.
@@ -113,7 +114,7 @@ namespace UI
                     {
                         // This is the last button.
                         loadSaveButtons[i].SetupNavigation(aboveLoadOrDeleteButton: loadSaveButtons[i - 1], downLeft: _loadSavesBackButton, downRight: _loadSavesBackButton);
-                        _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[i].GetDefaultSelectable(), selectOnDown: loadSaveButtons[0].GetDefaultSelectable());
+                        _loadSavesBackButton.UpdateNavigation(selectOnUp: loadSaveButtons[i].GetDefaultSelectable(), selectOnDown: loadSaveButtons[0].GetDefaultSelectable());
                     }
                     else
                     {
@@ -125,7 +126,7 @@ namespace UI
             else if (loadSaveButtons.Count == 1)
             {
                 loadSaveButtons[0].SetupNavigation(upLeft: _loadSavesBackButton, upRight: _loadSavesBackButton, downLeft: _loadSavesBackButton, downRight: _loadSavesBackButton);
-                _loadSavesBackButton.SetupNavigation(selectOnUp: loadSaveButtons[0].GetDefaultSelectable(), selectOnDown: loadSaveButtons[0].GetDefaultSelectable());
+                _loadSavesBackButton.UpdateNavigation(selectOnUp: loadSaveButtons[0].GetDefaultSelectable(), selectOnDown: loadSaveButtons[0].GetDefaultSelectable());
             }
         }
 

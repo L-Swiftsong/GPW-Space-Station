@@ -21,4 +21,20 @@ public static class SelectableExtension
         selectable.navigation = customNavigation;
 
     }
+    public static void UpdateNavigation(this Selectable selectable, Selectable selectOnUp = null, Selectable selectOnDown = null, Selectable selectOnLeft = null, Selectable selectOnRight = null)
+    {
+        // Create the custom navigation.
+        Navigation customNavigation = selectable.navigation;
+        customNavigation.mode = Navigation.Mode.Explicit;
+
+        // Set the selection targets.
+        if (selectOnUp) customNavigation.selectOnUp = selectOnUp;
+        if (selectOnDown) customNavigation.selectOnDown = selectOnDown;
+        if (selectOnLeft) customNavigation.selectOnLeft = selectOnLeft;
+        if (selectOnRight) customNavigation.selectOnRight = selectOnRight;
+
+        // Assign the custom navigation.
+        selectable.navigation = customNavigation;
+
+    }
 }

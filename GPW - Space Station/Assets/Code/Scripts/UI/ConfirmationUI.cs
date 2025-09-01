@@ -1,11 +1,14 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UI
 {
     public class ConfirmationUI : MonoBehaviour
     {
         [SerializeField] private TMP_Text _confirmationQueryText;
+        [SerializeField] private Selectable _cancelButton;
 
         private System.Action _onCancelCallback;
         private System.Action _onConfirmCallback;
@@ -42,7 +45,11 @@ namespace UI
         }
 
 
-        private void ShowConfirmationUI() => this.gameObject.SetActive(true);
+        private void ShowConfirmationUI()
+        {
+            this.gameObject.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(_cancelButton.gameObject);
+        }
         private void HideConfirmationUI() => this.gameObject.SetActive(false);
     }
 }
