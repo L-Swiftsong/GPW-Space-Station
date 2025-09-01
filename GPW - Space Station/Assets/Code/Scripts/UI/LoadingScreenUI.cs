@@ -59,7 +59,7 @@ public class LoadingScreenUI : MonoBehaviour
     {
         // Subscribe to events.
         SceneLoader.OnHardLoadStarted += SceneLoader_OnHardLoadStarted;
-        SceneLoader.OnScenesLoaded += SceneLoader_OnScenesLoaded;
+        SceneLoader.OnScenesLoaded += ShowLoadingCompleteVisuals;
         SceneLoader.OnLoadFinished += Hide;
         SceneLoader.OnMainMenuReloadFinished += HideWithoutCursorLock;
     }
@@ -67,7 +67,7 @@ public class LoadingScreenUI : MonoBehaviour
     {
         // Unsubscribe from events.
         SceneLoader.OnHardLoadStarted -= SceneLoader_OnHardLoadStarted;
-        SceneLoader.OnScenesLoaded -= SceneLoader_OnScenesLoaded;
+        SceneLoader.OnScenesLoaded -= ShowLoadingCompleteVisuals;
         SceneLoader.OnLoadFinished -= Hide;
         SceneLoader.OnMainMenuReloadFinished -= HideWithoutCursorLock;
     }
@@ -99,7 +99,7 @@ public class LoadingScreenUI : MonoBehaviour
     }
 
     // Slowly reveal the 'Loading Complete' visuals.
-    private void SceneLoader_OnScenesLoaded() => StartCoroutine(SwapToLoadingCompleteContainer());
+    private void ShowLoadingCompleteVisuals() => StartCoroutine(SwapToLoadingCompleteContainer());
     private IEnumerator SwapToLoadingCompleteContainer()
     {
         // Enable the LoadingCompleteContainer, but keep it hidden by starting its alpha at 0.

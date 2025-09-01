@@ -3,19 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class ObjectiveUI : MonoBehaviour
+public class ObjectiveUI : Singleton<ObjectiveUI>
 {
-	public static ObjectiveUI Instance { get; private set; }
-
 	[SerializeField] private TextMeshProUGUI objectiveText;
 	[SerializeField] private List<string> objectives = new List<string>();
 
 	private int currentIndex = 0;
 
-	private void Awake()
-	{
-		Instance = this;
-	}
 
 	public void SetNextObjectiveInstance()
 	{
@@ -56,5 +50,5 @@ public class ObjectiveUI : MonoBehaviour
 		Instance.currentIndex = newValue;
         Instance.objectiveText.text = Instance.objectives[Instance.currentIndex];
     }
-    public static int GetObjectiveIndex() => Instance.currentIndex;
+    public static int GetObjectiveIndex() => HasInstance ? Instance.currentIndex : 0;
 }

@@ -8,6 +8,11 @@ namespace Items.Collectables
     {
         private static Dictionary<Type, CollectableDataList> s_obtainedCollectableData = new Dictionary<Type, CollectableDataList>();
 
+        static CollectableManager()
+        {
+            s_obtainedCollectableData = new Dictionary<Type, CollectableDataList>();
+        }
+
 
         public static void ResetObtainedCollectables() => s_obtainedCollectableData = new Dictionary<Type, CollectableDataList>();
 
