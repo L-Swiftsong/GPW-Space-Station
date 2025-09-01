@@ -34,8 +34,8 @@ namespace Interaction
         }
 
 
-        private void PlaySuccessAudioClip() => SFXManager.Instance.PlayClipAtPosition(_successAudioClip, Vector3.zero, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume, minDistance: _minDistance);
-        private void PlayFailedAudioClip() => SFXManager.Instance.PlayClipAtPosition(_failedAudioClip, Vector3.zero, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume, minDistance: _minDistance);
+        private void PlaySuccessAudioClip() => SFXManager.Instance.PlayClipAtPosition(_successAudioClip, transform.position, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume, minDistance: _minDistance);
+        private void PlayFailedAudioClip() => SFXManager.Instance.PlayClipAtPosition(_failedAudioClip, transform.position, minPitch: _minPitch, maxPitch: _maxPitch, volume: _volume, minDistance: _minDistance);
 
 
 
