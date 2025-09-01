@@ -76,10 +76,11 @@ namespace Interaction
         private void UpdateCurrentInteractable()
         {
             // Find all potential interactables, and order them based on their distance to the player camera (Ascending).
-            IEnumerable<RaycastHit> potentialInteractables = Physics.RaycastAll(_playerCamera.transform.position, _playerCamera.transform.forward, _interactionRange, _interactableLayers, QueryTriggerInteraction.Collide).OrderBy(t => (t.transform.position - _playerCamera.transform.position).sqrMagnitude);
+            // We're ordering by ascending distance so that index 0 is the closest interactable, then sorting through them to determine the closest active & unobstructed interactable.
+            IEnumerable<RaycastHit> potentialInteractables = Physics.RaycastAll(_playerCamera.transform.position, _playerCamera.transform.forward, _interactionRange, _interactableLayers, QueryTriggerInteraction.Collide).OrderBy(t => (t.point - _playerCamera.transform.position).sqrMagnitude);
             for (int i = 0; i < potentialInteractables.Count(); ++i)
             {
-                if (potentialInteractables.ElementAt(i).collider.TryFindFirstWithCondition<IInteractable>((interactable) => interactable.IsInteractable, out IInteractable interactableScript))
+                if (potentialInteractables.ElementAt(i).collider.TryFindFirstWithCondition<IInteractable>(condition: (interactable) => interactable.IsInteractable, out IInteractable interactableScript))
                 {
                     // This is an active interactable.
                     if (Physics.Linecast(_playerCamera.transform.position, potentialInteractables.ElementAt(i).point, _interactableObstructionLayers, QueryTriggerInteraction.Ignore))
