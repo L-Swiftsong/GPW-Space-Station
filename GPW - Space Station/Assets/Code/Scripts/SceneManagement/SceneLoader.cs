@@ -55,10 +55,10 @@ namespace SceneManagement
 
         public static event Action OnHardLoadStarted; // Hard Load -> Loading Screen.
         public static event Action OnSoftLoadStarted; // Soft Load -> Load in Background.
+        public static event Action OnScenesLoaded;
 
         public static event Action OnMainMenuReloadFinished;
         public static event Action OnLoadFinished;
-        public static event Action OnHubLoadFinished;
 
 
         public static bool s_HasGameStarted = false;
@@ -87,11 +87,11 @@ namespace SceneManagement
         }
 
 
-        public void PerformTransition(ISceneTransition transition)
+        public void PerformTransition(ISceneTransition transition, bool isNewGameLoad = false)
         {
             if (transition is ForegroundSceneTransition)
             {
-                StartCoroutine(PerformHardTransition((transition as ForegroundSceneTransition).GetLoadData()));
+                StartCoroutine(PerformHardTransition((transition as ForegroundSceneTransition).GetLoadData(), isNewGameLoad));
             }
             else if (transition is BackgroundSceneTransition)
             {
@@ -99,12 +99,12 @@ namespace SceneManagement
             }
             else if (transition is MainMenuEntryTransition)
             {
-                StartCoroutine(PerformHardTransition((transition as MainMenuEntryTransition).GetLoadData()));
+                StartCoroutine(PerformHardTransition((transition as MainMenuEntryTransition).GetLoadData(), isNewGameLoad));
             }
         }
 
 
-        private IEnumerator PerformHardTransition(HardLoadData transitionData)
+        private IEnumerator PerformHardTransition(HardLoadData transitionData, bool isNewGameLoad)
         {
             // Hard/Foreground load.
             OnHardLoadStarted?.Invoke();
@@ -144,6 +144,8 @@ namespace SceneManagement
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(activeSceneName));
             }
 
+            OnScenesLoaded?.Invoke();
+
 
             // Stop time while things load.
             _previousTimeScale = Time.timeScale;
@@ -161,28 +163,21 @@ namespace SceneManagement
             }
 
 
-            // Once we recieve player input, continue.
-#if ENABLE_INPUT_SYSTEM
-            if (transitionData.IsHubTransition)
-            {
-                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishHubLoading());
-            }
-            else
-            {
-                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
-            }
-#elif ENABLE_LEGACY_INPUT_MANAGER
-            yield return new WaitUntil(() => Input.anyKeyDown);
-
-            if (transition.IsHubTransition)
-            {
-                FinishHubLoading();
-            }
-            else
+            if (isNewGameLoad)
             {
                 FinishLoading();
             }
+            else
+            {
+                // Once we recieve player input, continue.
+#if ENABLE_INPUT_SYSTEM
+                InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+#elif ENABLE_LEGACY_INPUT_MANAGER
+                yield return new WaitUntil(() => Input.anyKeyDown);
+
+                FinishLoading();
 #endif
+            }
         }
         private IEnumerator PerformSoftTransition(SoftLoadData transitionData)
         {
@@ -232,7 +227,7 @@ namespace SceneManagement
         }
         public void LoadFromSave(int[] buildIndices, int activeSceneBuildIndex, System.Action onScenesLoadedCallback = null, System.Action onFullyCompleteCallback = null) => StartCoroutine(PerformLoadFromBuildIndices(buildIndices, activeSceneBuildIndex, onScenesLoadedCallback: onScenesLoadedCallback, onFullyCompleteCallback: onFullyCompleteCallback));
         
-        private enum TransitionType { Default, Hub, Menu };
+        private enum TransitionType { Default, NewSave, Menu };
         private IEnumerator PerformLoadFromBuildIndices(int[] buildIndices, int activeSceneBuildIndex, System.Action onScenesLoadedCallback = null, System.Action onFullyCompleteCallback = null, TransitionType transitionType = TransitionType.Default, bool nofityListeners = true)
         {
             // Notify listeners that a foreground load has started.
@@ -271,6 +266,7 @@ namespace SceneManagement
             Time.timeScale = 0.0f;
 
             onScenesLoadedCallback?.Invoke();
+            OnScenesLoaded?.Invoke();
 
             // Wait for script inialisation.
             yield return new WaitForSecondsRealtime(SCRIPT_INITIALISATION_DELAY);
@@ -279,36 +275,38 @@ namespace SceneManagement
             onFullyCompleteCallback?.Invoke();
 
 
-            // Once we recieve player input, continue and perform our 'Finish Loading' function based on the type of transition this is.
+            // For our initial load, don't await input.
+            if (transitionType == TransitionType.NewSave)
+            {
+                FinishLoading();
+            }
+            else
+            {
+                // Once we recieve player input, continue and perform our 'Finish Loading' function based on the type of transition this is.
 #if ENABLE_INPUT_SYSTEM
-            switch (transitionType)
-            {
-                case TransitionType.Menu:
-                    InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishMenuReload());
-                    break;
-                case TransitionType.Hub:
-                    InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishHubLoading());
-                    break;
-                default:
-                    InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
-                    break;
-            }
+                switch (transitionType)
+                {
+                    case TransitionType.Menu:
+                        InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishMenuReload());
+                        break;
+                    default:
+                        InputSystem.onAnyButtonPress.CallOnce(ctrl => FinishLoading());
+                        break;
+                }
 #elif ENABLE_LEGACY_INPUT_MANAGER
-            yield return new WaitUntil(() => Input.anyKeyDown);
+                yield return new WaitUntil(() => Input.anyKeyDown);
 
-            switch (transitionType)
-            {
-                case TransitionType.Menu:
-                    FinishMenuReload();
-                    break;
-                case TransitionType.Hub:
-                    ctrl => FinishHubLoading();
-                    break;
-                default:
-                    ctrl => FinishLoading();
-                    break;
-            }
+                switch (transitionType)
+                {
+                    case TransitionType.Menu:
+                        FinishMenuReload();
+                        break;
+                    default:
+                        ctrl => FinishLoading();
+                        break;
+                }
 #endif
+            }
         }
 
 
@@ -344,11 +342,6 @@ namespace SceneManagement
 
         private void FinishLoading() => StartCoroutine(PerformAfterFrame(() => {
             OnLoadFinished?.Invoke();
-            Time.timeScale = _previousTimeScale;
-        }));
-        private void FinishHubLoading() => StartCoroutine(PerformAfterFrame(() => {
-            OnLoadFinished?.Invoke();
-            OnHubLoadFinished?.Invoke();
             Time.timeScale = _previousTimeScale;
         }));
         private void FinishMenuReload() => StartCoroutine(PerformAfterFrame(() => {

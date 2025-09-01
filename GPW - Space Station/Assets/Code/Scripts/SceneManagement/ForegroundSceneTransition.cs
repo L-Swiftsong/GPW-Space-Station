@@ -7,9 +7,6 @@ namespace SceneManagement
     [CreateAssetMenu(menuName = "Scene Transitions/Foreground Scene Transition", fileName = "NewForegroundTransition")]
     public class ForegroundSceneTransition : SceneTransition
     {
-        public bool IsHubTransition = false;
-
-
         [Header("Positioning Settings")]
         public bool AlterPlayerLocation;
         public Vector3 EntryPosition;
@@ -26,7 +23,6 @@ namespace SceneManagement
             return new HardLoadData(
                 scenesToLoad: ScenesToLoad, activeSceneName: ActiveSceneName,
                 scenesToForceUnload: ScenesToForceUnload,
-                IsHubTransition,
                 EntryPosition, EntryRotation);
         }
     }

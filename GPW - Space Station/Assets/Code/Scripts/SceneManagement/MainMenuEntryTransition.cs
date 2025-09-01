@@ -27,7 +27,6 @@ namespace SceneManagement
             return new HardLoadData(
                 scenesToLoad: scenes, activeSceneName: CorrespondingTransition.ActiveSceneName,
                 scenesToForceUnload: null,
-                CorrespondingTransition.IsHubTransition,
                 CorrespondingTransition.EntryPosition, CorrespondingTransition.EntryRotation);
         }
     }
