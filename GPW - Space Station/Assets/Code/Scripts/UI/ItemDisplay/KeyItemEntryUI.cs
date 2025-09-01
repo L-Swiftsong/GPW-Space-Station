@@ -121,12 +121,14 @@ namespace UI.ItemDisplay
                 // This slot's Key Item is the currently required one.
                 newColourBlock.pressedColor = _isRequiredPressedColour;
                 newColourBlock.highlightedColor = _isRequiredHighlightedColour;
+                newColourBlock.selectedColor = _isRequiredHighlightedColour;
             }
             else
             {
                 // This slot's Key Item is NOT the currently required one.
                 newColourBlock.pressedColor = _isNotRequiredPressedColour;
                 newColourBlock.highlightedColor = _isNotRequiredHighlightedColour;
+                newColourBlock.selectedColor = _isNotRequiredHighlightedColour;
             }
 
             // Set our button's colours.
