@@ -5,8 +5,18 @@ using TMPro;
 
 public class AccessibilityText : ProtectedSingleton<AccessibilityText>
 {
-    [SerializeField] private TMP_Text _text;
     private const PlayerInput.ActionTypes PREVENTED_INPUT_TYPES = PlayerInput.ActionTypes.Everything & ~PlayerInput.ActionTypes.Interaction;
+
+    [Header("With Header Text")]
+    [SerializeField] private GameObject _withHeaderContainer;
+    [SerializeField] private TMP_Text _bodyWithContainerText;
+    [SerializeField] private TMP_Text _titleText;
+
+
+    [Header("Without Header Text")]
+    [SerializeField] private GameObject _withoutHeaderContainer;
+    [SerializeField] private TMP_Text _bodyWithoutContainerText;
+
 
 
     protected override void Awake()
@@ -21,11 +31,15 @@ public class AccessibilityText : ProtectedSingleton<AccessibilityText>
     }
 
 
-    public static void DisplayAccessibleText(string text)
+    public static void DisplayAccessibleText(string text, string titleText = null)
     {
         if (AccessibilityText.HasInstance)
         {
-            AccessibilityText.Instance.DisplayText(text);
+            if (titleText == null)
+                AccessibilityText.Instance.DisplayText(text);
+            else
+                AccessibilityText.Instance.DisplayText(text, titleText);
+            
             PlayerInput.PreventActions(typeof(AccessibilityText), PREVENTED_INPUT_TYPES);
         }
     }
@@ -40,7 +54,21 @@ public class AccessibilityText : ProtectedSingleton<AccessibilityText>
     private void DisplayText(string text)
     {
         this.gameObject.SetActive(true);
-        _text.text = text;
+        this._withHeaderContainer.SetActive(false);
+        this._withoutHeaderContainer.SetActive(true);
+
+        // Set the text.
+        _bodyWithoutContainerText.text = text;
+    }
+    private void DisplayText(string text, string titleText)
+    {
+        this.gameObject.SetActive(true);
+        this._withHeaderContainer.SetActive(true);
+        this._withoutHeaderContainer.SetActive(false);
+
+        // Set the text.
+        _titleText.text = titleText;
+        _bodyWithContainerText.text = text;
     }
     private void StopDisplayingText()
     {

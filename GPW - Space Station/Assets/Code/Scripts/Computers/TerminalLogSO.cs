@@ -8,6 +8,6 @@ namespace Computers
     public class TerminalLogSO : ScriptableObject
     {
         public string LogName;
-        [TextArea()] public string LogText;
+        [TextArea(3, 10)] public string LogText;
     }
 }

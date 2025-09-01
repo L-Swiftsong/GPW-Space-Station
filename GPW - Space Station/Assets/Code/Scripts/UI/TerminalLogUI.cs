@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using UI.World;
 using Interaction;
 
@@ -24,20 +23,19 @@ namespace Computers
 
         private void SubscribeToButtonEvents()
         {
-            _logNameButton.OnSuccessfulInteraction += ShowAccessibleTextForName;
-            _logMainButton.OnSuccessfulInteraction += ShowAccessibleTextForMain;
+            _logNameButton.OnSuccessfulInteraction += ShowAccessibleText;
+            _logMainButton.OnSuccessfulInteraction += ShowAccessibleText;
         }
         private void UnsubscribeFromButtonEvents()
         {
-            _logNameButton.OnSuccessfulInteraction -= ShowAccessibleTextForName;
-            _logMainButton.OnSuccessfulInteraction -= ShowAccessibleTextForMain;
+            _logNameButton.OnSuccessfulInteraction -= ShowAccessibleText;
+            _logMainButton.OnSuccessfulInteraction -= ShowAccessibleText;
         }
 
-        private void ShowAccessibleTextForName() => ShowAccessibleText(_logNameButton.TryGetText());
-        private void ShowAccessibleTextForMain() => ShowAccessibleText(_logMainButton.TryGetText());
-        private void ShowAccessibleText(string text)
+        private void ShowAccessibleText() => ShowAccessibleText(_logMainButton.TryGetText(), _logNameButton.TryGetText());
+        private void ShowAccessibleText(string bodyText, string titleText = null)
         {
-            AccessibilityText.DisplayAccessibleText(text);
+            AccessibilityText.DisplayAccessibleText(bodyText, titleText);
 
             PlayerInput.OnInteractPerformed += PlayerInput_OnInteractPerformed;
 

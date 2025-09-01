@@ -1023,6 +1023,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TextData: {fileID: 11400000, guid: a5f75c522b3c1834d93f5fb08c0f9345, type: 2}
   _popupSetupInformation: {fileID: 11400000, guid: a132234e756dce64da55e6f308cd59c2, type: 2}
+  _linkedInteractable: {fileID: 0}
+  _linkToSuccess: 1
+  _linkToFailure: 1
 --- !u!1 &4339709085073602655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,9 +1680,9 @@ MonoBehaviour:
   m_fontSize: 54
   m_fontSizeBase: 54
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 48
+  m_fontSizeMax: 54
   m_fontStyle: 36
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
