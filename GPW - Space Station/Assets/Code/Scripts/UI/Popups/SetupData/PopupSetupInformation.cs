@@ -19,14 +19,6 @@ namespace UI.Popups
         public float PopupLifetime = -1;
 
 
-        [Header("Advanced Deactivation Settings")]
-        public GameObject LinkedInteractable;
-
-        [Space(5)]
-        public bool LinkToSuccess = true;
-        public bool LinkToFailure = true;
-
-
         private PopupSetupInformation() { }
         public PopupSetupInformation(float fontSize, float lifetime, bool showBackground)
         {
@@ -41,11 +33,6 @@ namespace UI.Popups
 
 
             this.PopupLifetime = other.PopupLifetime;
-
-
-            this.LinkedInteractable = other.LinkedInteractable;
-            this.LinkToSuccess = other.LinkToSuccess;
-            this.LinkToFailure = other.LinkToFailure;
         }
     }
 }

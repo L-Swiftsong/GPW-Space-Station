@@ -105,7 +105,7 @@ namespace UI.Popups
 
 
 
-        public void SetupWithInformation(WorldSpacePopupSetupInformation setupInformation, PopupTextData textData, Transform pivotTransform, Vector3 popupPosition, bool rotateInPlace, Action onDisableCallback)
+        public void SetupWithInformation(WorldSpacePopupSetupInformation setupInformation, PopupTextData textData, Transform pivotTransform, Vector3 popupPosition, bool rotateInPlace, GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure, Action onDisableCallback)
         {
             // Position Setup.
             SetupPosition(pivotTransform, popupPosition, rotateInPlace);
@@ -123,9 +123,9 @@ namespace UI.Popups
             SetupGeneralDisabling(setupInformation, pivotTransform);
 
             // Interaction Disabling Setup.
-            if (setupInformation.LinkedInteractable != null)
+            if (linkedInteractable != null)
             {
-                SetupInteractionDisabling(setupInformation.LinkedInteractable, setupInformation.LinkToSuccess, setupInformation.LinkToFailure);
+                SetupInteractionDisabling(linkedInteractable, linkToSuccess, linkToFailure);
             }
         }
         private void SetupPosition(Transform pivotTransform, Vector3 popupOffset, bool rotateInPlace)

@@ -112,23 +112,30 @@ namespace UI.Popups
         #endregion
 
 
-        public static void CreateWorldSpacePopup(WorldSpacePopupSetupInformation popupSetupInformation, PopupTextData textData, Transform pivotTransform, Vector3 popupPosition, bool rotateInPlace = true)
+        public static void CreateWorldSpacePopup(WorldSpacePopupSetupInformation popupSetupInformation, PopupTextData textData, Transform pivotTransform, Vector3 popupPosition, bool rotateInPlace = true, GameObject linkedInteractable = null, bool linkToSuccess = true, bool linkToFailure = false)
         {
             ObjectPool<WorldSpacePopupElement> utilisedPool = s_instance._worldSpaceSingleLinePopupPool;
             WorldSpacePopupElement popupElement = utilisedPool.Get();
 
-            popupElement.SetupWithInformation(popupSetupInformation, textData, pivotTransform, popupPosition, rotateInPlace, () => utilisedPool.Release(popupElement));
+            popupElement.SetupWithInformation(popupSetupInformation, textData, pivotTransform, popupPosition, rotateInPlace, linkedInteractable, linkToSuccess, linkToFailure, () => utilisedPool.Release(popupElement));
         }
 
 
         /// <summary>
         ///     Creates a request for a Screen Space Popup which will appear once all prior requests for the AnchorPosition have concluded.
         /// </summary>
-        public static void CreateScreenSpacePopup(ScreenSpacePopupSetupInformation setupInformation, PopupTextData textData) => s_instance.EnqueueScreenSpacePopupRequest(setupInformation, textData);
+        public static void CreateScreenSpacePopup(ScreenSpacePopupSetupInformation setupInformation, GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure, PopupTextData textData)
+            => s_instance.EnqueueScreenSpacePopupRequest(setupInformation, linkedInteractable, linkToSuccess, linkToFailure, textData);
+        /// <summary>
+        ///     Creates a request for a Screen Space Popup which will appear once all prior requests for the AnchorPosition have concluded.
+        /// </summary>
+        public static void CreateScreenSpacePopup(ScreenSpacePopupSetupInformation setupInformation, PopupTextData textData)
+            => CreateScreenSpacePopup(setupInformation, null, false, false, textData);
         /// <summary>
         ///     Creates and Enqueues a ScreenSpacePopupRequest, processing it if no other requests are being processed.
         /// </summary>
-        private void EnqueueScreenSpacePopupRequest(ScreenSpacePopupSetupInformation setupInformation, PopupTextData textData) => EnqueueScreenSpacePopupRequest(new ScreenSpacePopupRequest(setupInformation, textData));
+        private void EnqueueScreenSpacePopupRequest(ScreenSpacePopupSetupInformation setupInformation, GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure, PopupTextData textData)
+            => EnqueueScreenSpacePopupRequest(new ScreenSpacePopupRequest(setupInformation, linkedInteractable, linkToSuccess, linkToFailure, textData));
         /// <summary>
         ///     Enqueue a ScreenSpacePopupRequest, processing it if no other requests are being processed.
         /// </summary>
@@ -167,7 +174,7 @@ namespace UI.Popups
 
             // Setup the popup element.
             ScreenSpacePopupRequest request = _activeAnchorPositionCounts[requestTypeIndex][0];
-            popupElement.SetupWithInformation(request.SetupInformation, request.TextData, () => FinishRequestProcessing());
+            popupElement.SetupWithInformation(request.SetupInformation, request.LinkedInteractable, request.LinkToSuccess, request.LinkToFailure, request.TextData, () => FinishRequestProcessing());
 
 
             // Function for cleaning up a popup once it has completed. Triggers the 'TryProcessNextRequest' call to keep processing requests.
@@ -190,12 +197,22 @@ namespace UI.Popups
         private struct ScreenSpacePopupRequest
         {
             public ScreenSpacePopupSetupInformation SetupInformation { get; }
+            public GameObject LinkedInteractable { get; }
+            public bool LinkToSuccess { get; }
+            public bool LinkToFailure { get; }
+
             public PopupTextData TextData { get; }
 
 
-            public ScreenSpacePopupRequest(ScreenSpacePopupSetupInformation setupInformation, PopupTextData textData)
+            public ScreenSpacePopupRequest(ScreenSpacePopupSetupInformation setupInformation, GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure, PopupTextData textData)
             {
+                // Setup.
                 this.SetupInformation = setupInformation;
+                this.LinkedInteractable = linkedInteractable;
+                this.LinkToSuccess = linkToSuccess;
+                this.LinkToFailure = linkToFailure;
+
+                // Text.
                 this.TextData = textData;
             }
         }

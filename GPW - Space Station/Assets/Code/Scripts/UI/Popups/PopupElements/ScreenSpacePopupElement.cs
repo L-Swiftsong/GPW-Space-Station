@@ -8,7 +8,7 @@ namespace UI.Popups
         [Header("Screen Space Element Settings")]
         [SerializeField] private RectTransform _rootTransform;
 
-        public void SetupWithInformation(ScreenSpacePopupSetupInformation setupInformation, PopupTextData textData, Action onDisableCallback)
+        public void SetupWithInformation(ScreenSpacePopupSetupInformation setupInformation, GameObject linkedInteractable, bool linkToSuccess, bool linkToFailure, PopupTextData textData, Action onDisableCallback)
         {
             // Position Setup.
             {
@@ -28,9 +28,9 @@ namespace UI.Popups
             SetupLifetimeDisabling(setupInformation.PopupLifetime);
 
             // Interaction Disabling Setup.
-            if (setupInformation.LinkedInteractable != null)
+            if (linkedInteractable != null)
             {
-                SetupInteractionDisabling(setupInformation.LinkedInteractable, setupInformation.LinkToSuccess, setupInformation.LinkToFailure);
+                SetupInteractionDisabling(linkedInteractable, linkToSuccess, linkToFailure);
             }
         }
         private void SetupPosition(Vector2 position, Vector2 anchors, Vector2 pivot, Vector2 bounds)

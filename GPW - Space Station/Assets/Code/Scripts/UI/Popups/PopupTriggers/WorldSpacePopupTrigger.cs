@@ -9,13 +9,21 @@ namespace UI.Popups
         [SerializeField] private WorldSpacePopupSetupInformation _popupSetupInformation;
 
 
+        [Header("Popup Early Disable")]
+        [SerializeField] private GameObject _linkedInteractable;
+
+        [Space(5)]
+        [SerializeField] private bool _linkToSuccess = true;
+        [SerializeField] private bool _linkToFailure = true;
+
+
         [Header("Popup Positioning")]
         [SerializeField] private Transform _pivotTransform;
         [SerializeField] private Vector3 _popupOffset = Vector3.zero;
         [SerializeField] private bool _rotateInPlace = true;
 
 
-        public override void Trigger() => PopupManager.CreateWorldSpacePopup(_popupSetupInformation, TextData, _pivotTransform, _popupOffset, _rotateInPlace);
+        public override void Trigger() => PopupManager.CreateWorldSpacePopup(_popupSetupInformation, TextData, _pivotTransform, _popupOffset, _rotateInPlace, _linkedInteractable, _linkToSuccess, _linkToFailure);
 
 
         private void OnDrawGizmosSelected()
